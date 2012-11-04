@@ -1,7 +1,11 @@
 import webapp2
 
+
+
 from google.appengine.api.urlfetch import fetch
 import json
+
+import site_db
 def getIntOrNone(s):
   try:
     return int(s)
@@ -19,7 +23,7 @@ class ImportHandler(webapp2.RequestHandler):
       for s in all_sites:
         self.response.write(s["Resident Name"] + "<br />")
         zip_code = getIntOrNone(s["Zip Code"])
-        lookup = Site.gql("WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
+        lookup = site_db.Site.gql("WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
                           name = s["Resident Name"],
                           address = s["Address"],
                           zip_code = zip_code)
@@ -28,7 +32,7 @@ class ImportHandler(webapp2.RequestHandler):
           site = l
         if not site:
           # Save the data, and redirect to the view page
-          site = Site(address = s["Address"],
+          site = site_db.Site(address = s["Address"],
                       name = s["Resident Name"],
                       phone1 = str(s["Contact # s (Home and Cell)"]),
                       city = s["City"],

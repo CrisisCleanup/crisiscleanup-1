@@ -20,7 +20,7 @@ class FormHandler(webapp2.RequestHandler):
   def post(self):
     data = site_db.SiteForm(self.request.POST)
     if data.validate():
-      lookup = Site_db.gql(
+      lookup = site_db.Site.gql(
         "WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
         name = data.name.data,
         address = data.address.data,
@@ -30,7 +30,7 @@ class FormHandler(webapp2.RequestHandler):
         site = l
       if not site:
               # Save the data, and redirect to the view page
-        site = Site(zip_code = data.zip_code.data,
+        site = site_db.Site(zip_code = data.zip_code.data,
                     address = data.address.data,
                     name = data.name.data,
                     phone1 = data.phone1.data,

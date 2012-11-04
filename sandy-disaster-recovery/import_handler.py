@@ -1,18 +1,13 @@
 import webapp2
-import site_db
-
-
-
 from google.appengine.api.urlfetch import fetch
+import site_db
 import json
 
-import site_db
 def getIntOrNone(s):
   try:
     return int(s)
   except ValueError:
     return None
-
 
 class ImportHandler(webapp2.RequestHandler):
   def get(self):
@@ -53,3 +48,4 @@ class ImportHandler(webapp2.RequestHandler):
             site.longitude = float(lls[1])
 
         site.put()
+

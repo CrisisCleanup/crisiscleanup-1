@@ -1,0 +1,18 @@
+
+class MapHandler(webapp2.RequestHandler):
+  def get(self):
+    template_values = {
+        "sites" : [json.dumps(dict(to_dict(site).items() + [("id", site.key().id())]), default=dthandler) for site in Site.all()],
+        "filters" : [
+            ["debris_only", "Remove Debris Only"],
+            ["electricity", "Has Electricity"],
+            ["no_standing_water", "No Standing Water"],
+            ["not_habitable", "Home is not habitable"],
+            ["Flood", "Primary problem is flood damage"],
+            ["Trees", "Primary problem is trees"],
+            ["NJ", "New Jersey"],
+            ["NY", "New York"]],
+        }
+
+    template = jinja_environment.get_template('main.html')
+    self.response.out.write(template.render(template_values))

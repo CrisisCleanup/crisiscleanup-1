@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<title>Report a Work Zone</title>
+<link href="stylesheets/form.css" rel="stylesheet">
+<link href="stylesheets/default.css" rel="stylesheet">
+{% if in_prod %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&v=3.exp&sensor=false"></script>
+{% else %}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+{% endif %}
+<script src="closure/goog/base.js"></script>
+<script src="javascript/form.js"></script>
+</head>
+<body onload="initialize()">
+<div id="form_background">
+<div id="form">
+<form method="POST" action="{{page}}">
+<table>
+<div class=question>Requestor name:</div>
+<div class=answer>{{ form.name(class_='someclass') }}</div><hr />
+<div class=question>Zip Code:</div>
+<div class=answer> {{form.zip_code() }}</div><hr />
+<div class=question>Street Address:</div>
+<div class=answer> {{form.address() }}</div><hr />
+<div class=question>City:</div>
+<div class=answer> {{form.city()}} <div id=citySuggestion></div></div><hr />
+<div class=question>State:</div>
+<div class=answer> {{form.state()}}<div id=stateSuggestion></div></div><hr />
+
+<div class=question>Cross Street:</div>
+<div class=answer> {{form.cross_street() }}</div><hr />
+<div class=question>Nearby Landmark:</div>
+<div class=answer> {{form.landmark() }}</div><hr />
+<div class=question>Phone Numbers:</div>
+<div class=answer> {{form.phone1 }}{{form.phone2}}</div><hr />
+<div class=question>Best time to call:</div>
+<div class=answer> {{form.time_to_call}}</div><hr />
+<div class=question>What type of property is it? Multi-unit, home, business?</div>
+<div class=answer> {{form.property_type}}</div><hr />
+<div class=question>Are you renting the property?</div>
+<div class=answer> {{form.renting}}</div><hr />
+<div class=question>Can we work without a resident present?</div>
+<div class=answer> {{form.work_without_resident}}</div><hr />
+<div class=question>Ages of residents:</div>
+<div class=answer> {{form.ages_of_residents}}</div><hr />
+<div class=question>Special needs:</div>
+<div class=answer> {{form.special_needs}}</div><hr />
+<div class=question>Has electricity:</div>
+<div class=answer> {{form.electricity}}</div><hr />
+<div class=question>Has standing water:</div>
+<div class=answer> {{form.standing_water}}</div><hr />
+<div class=question>Did a tree damage the home?</div>
+<div class=answer> {{form.tree_damage}}</div><hr/ >
+<div class=question>Where?</div><div class=answer>{{form.tree_damage_details}}</div><hr />
+<div class=question>Is the home habitable:</div>
+<div class=answer> {{form.habitable}}</div><hr />
+<div class=question>What type of work is requested:</div>
+<div class=answer> {{form.work_requested}}</div><hr />
+<div class=question>Say: "Do you have any family members, friends, or neighbors who can help? If so, we would like them to assist our volunteers."</div>
+<div class=answer>{{form.others_help}} </div><hr />
+<div class=question>If requesting tree removal, what is the DIAMETER (width) of the tree(s) - note feet or inches:</div>
+<div class=answer> {{form.tree_diameter}}</div><hr />
+<div class=question>Are you only requesting debris removal:</div>
+<div class=answer> {{form.debris_removal_only}}</div><hr />
+<div class=question>Primary work type:</div>
+<div class=answer> {{form.work_type}}</div><hr />
+<div class=question>Are there electrical lines in the cleanup area:</div>
+<div class=answer> {{form.electrical_lines}}</div><hr />
+<div class=question>Are there cable or phone lines in the cleanup area:</div>
+<div class=answer> {{form.cable_lines}}</div><hr />
+<div class=question>Will Cutting the tree threaten buildings or property:</div>
+<div class=answer> {{form.cutting_cause_harm}}</div><hr />
+<div class=question>Any Other Hazards in the Clean-Up Area:</div>
+<div class=answer> {{form.other_hazards}}</div><hr />
+
+<div class=question>Do you have insurance that covers all or some of the damage:</div>
+<div class=answer> {{form.insurance}}</div><hr />
+<div class=question>Additional notes:</div>
+<div class=answer> {{form.notes}}</div><hr />
+
+
+<div class=question>Latitude:</div>
+<div class=answer> {{form.latitude}}</div><hr />
+<div class=question>Longitude:</div>
+<div class=answer> {{form.longitude}}</div><hr />
+
+
+</table>
+{% if id %}
+<input type="hidden" name="_id" value="{{id}}">
+{% endif %}
+<input type="submit">
+</form>
+</div>
+</div>
+<div id="map_canvas"></div>
+</body>
+</html>

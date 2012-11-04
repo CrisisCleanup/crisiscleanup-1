@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Sandy Disaster Response -- Request Map</title>
+    <link href="stylesheets/default.css" rel="stylesheet">
+    <link href="/closure/css/dialog.css" rel="stylesheet">
+    <script src="closure/goog/base.js"></script>
+    <script src="javascript/main.js"></script>
+{% if in_prod %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&v=3.exp&sensor=false"></script>
+{% else %}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+{% endif %}
+<script type="text/javascript">
+var sites = [
+{% for s in sites %}
+{{s}},
+{% endfor %}
+];
+</script>
+  </head>
+  <body onload="initialize()"><div id="container" style="width:100%;height:100%">
+
+</div>
+<div id="map_canvas"></div>
+<div id="filtersbackground">
+<div id="filters">
+    Only show the following types:<br />
+{% for f in filters %}
+<input type="checkbox" onclick="refilter()" name="filter" id="{{f[0]}}">
+<label for="{{f[0]}}">{{f[1]}}</label><br />
+{% endfor %}
+</div></div>
+<div id="pano">
+</div>
+<div id="info">
+</div>
+</div>
+  </body>
+</html>

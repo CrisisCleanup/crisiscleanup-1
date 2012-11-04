@@ -1,0 +1,30 @@
+#id_address {
+  width: 400px;
+}
+#form_background {
+  z-index: 3;
+  position: absolute;
+  right: 10px;
+  top: 30px;
+  bottom: 10px;
+  background-color: #ffffff;
+  opacity: .8;
+  padding: 20px;
+}
+#form {
+  width: 600px;
+  opacity: 1.0;
+  overflow: auto;
+  height: 100%;
+}
+.question {
+  width: 280px;
+  float: left;
+}
+.answer {
+  width: 280px;
+  float: right;
+}
+hr {
+  width: 100%;
+}

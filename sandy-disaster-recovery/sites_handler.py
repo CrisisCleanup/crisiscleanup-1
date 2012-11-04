@@ -5,7 +5,7 @@ import site
 import json
 import datetime
 from google.appengine.ext import db
-
+import site_db
 
 class SitesHandler(webapp2.RequestHandler):
   def get(self):

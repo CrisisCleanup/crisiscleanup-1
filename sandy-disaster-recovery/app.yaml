@@ -20,7 +20,7 @@ handlers:
 
 - url: .*
   script: main.app
-
+  secure: always
 libraries:
 - name: webapp2
   version: "2.5.1"

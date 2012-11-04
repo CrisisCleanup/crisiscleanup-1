@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from google.appengine.api.urlfetch import fetch
+
 
 # from google.appengine.ext import webapp
 

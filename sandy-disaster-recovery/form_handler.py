@@ -12,7 +12,7 @@ class FormHandler(webapp2.RequestHandler):
     data = site_db.SiteForm(self.request.POST)
     template_values = {"form": data,
                        "id": None,
-                       "page": "/"}
+                       "page": "/dev/"}
     template = jinja_environment.get_template('form.html')
     self.response.out.write(template.render(template_values))
 

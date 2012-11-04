@@ -1,5 +1,7 @@
 import webapp2
 
+from google.appengine.api.urlfetch import fetch
+import json
 def getIntOrNone(s):
   try:
     return int(s)

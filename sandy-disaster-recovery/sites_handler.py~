@@ -1,9 +1,0 @@
-
-class SitesPage(webapp.RequestHandler):
-  def get(self):
-    query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
-    for site in query:
-      self.response.out.write('<a href="/edit?id=%d">Edit</a> - ' %
-                              site.key().id())
-      self.response.out.write("%s - %s<br />" %
-                              (site.name, site.address))

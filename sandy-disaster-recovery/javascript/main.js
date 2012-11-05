@@ -1,5 +1,10 @@
 goog.require('goog.dom');
+goog.require('goog.events.EventType');
+goog.require('goog.string');
 goog.require('goog.ui.Dialog');
+goog.require('goog.ui.Dialog.ButtonSet');
+goog.require('goog.ui.Option');
+goog.require('goog.ui.Select');
 
 var markers = [];
 var panorama;
@@ -38,6 +43,73 @@ function refilter() {
   }
 }
 var dialog;
+
+// Creates and returns a <select> DOM element populated with status choices.
+// The site's current value is selected.
+var createStatusSelect = function(site) {
+  var status_select = document.createElement('select');
+  var addOption = function (value) {
+    var option = document.createElement('option');
+    if (value == site['status']) {
+      option.selected = true;
+    }
+    option.text = value;
+    goog.dom.append(status_select, option);
+  };
+  var added_current_value = false;
+  for(var i = 0; i < STATUS_CHOICES.length; i++) {
+    var choice = STATUS_CHOICES[i];
+    addOption(choice);
+    if (choice == site['status']) {
+      added_current_value = true;
+    }
+  }
+  if (!added_current_value) {
+    addOption(site['status']);
+  }
+  status_select.onchange = function(e) {
+    // TODO(Bruce): Implement.
+    var select = e.target;
+    var new_value = select.value;
+    alert("Change status hasn't been implemented yet.");
+    return false;
+  };
+  return status_select;
+};
+
+// Updates dialog content and event listeners for the given site.
+var updateDialogForSite = function(dialog, site) {
+  var addField = function(label, value) {
+    var div = document.createElement('div');
+    div.innerHTML = "<b>" + goog.string.htmlEscape(label) + ":</b> ";
+    if (typeof value == "string") {
+      // Treat the value as a key into site.
+      goog.dom.appendChild(div, document.createTextNode(site[value]));
+    } else {
+      // Treat the value as a DOM element.
+      goog.dom.appendChild(div, value);
+    }
+    goog.dom.appendChild(dialog.getContentElement(), div);
+  };
+
+  dialog.setTitle("Case number: A" + site["id"]);
+
+  dialog.setContent('');
+  addField("Name", "name");
+  addField("Requests", "work_requested");
+  addField("Status", createStatusSelect(site));
+
+  goog.events.listen(dialog, goog.ui.Dialog.EventType.SELECT, function(e) {
+    var dialog = e.target;
+    if (e.key == "edit") {
+      window.location = "/edit?id=" + site["id"];
+    } else if (e.key == "claim") {
+      // TODO(Bruce): Implement.
+      alert("Claiming hasn't been implemented yet.");
+    }
+    return false;
+  });
+};
 
 function AddMarker(lat, lng, site, map, infowindow) {
   function siteToIconUrl(site) {
@@ -79,13 +151,13 @@ function AddMarker(lat, lng, site, map, infowindow) {
       dialog = new goog.ui.Dialog();
       dialog.setModal(false);
       dialog.setDraggable(false);
-      dialog.setButtonSet(goog.ui.Dialog.ButtonSet.OK);
+      var buttonSet = new goog.ui.Dialog.ButtonSet();
+      buttonSet.addButton({caption: "Edit", key: "edit"});
+      buttonSet.addButton({caption: "Claim", key: "claim"});
+      dialog.setButtonSet(buttonSet);
     }
     dialog.setVisible(false);
-    dialog.setContent("<h2>" + site["name"] + "</h2>" + "<a href='/edit?id=" + site["id"] + "'>Edit</a><br />" + "Address: " + site["address"] + " " + site["city"] + "<br/>" + "Requests: " + site["work_requested"] + "<br/>");
-    dialog.setTitle(site["name"]);
-    goog.events.listen(dialog, goog.ui.Dialog.EventType.SELECT, function(e) {});
-
+    updateDialogForSite(dialog, site);
     dialog.setVisible(true);
     dialog.getElement().style.left = null;
     dialog.getElement().style.top = null;

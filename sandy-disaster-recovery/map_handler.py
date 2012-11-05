@@ -22,6 +22,7 @@ class MapHandler(base.AuthenticatedHandler):
                            [("id", s.key().id())]),
                       default=dthandler)
            for s in site_db.Site.all()],
+        "status_choices" : [json.dumps(c) for c in site_db.STATUS_CHOICES],
         "filters" : [
             ["debris_only", "Remove Debris Only"],
             ["electricity", "Has Electricity"],

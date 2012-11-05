@@ -19,6 +19,11 @@ var sites = [
 {{s}},
 {% endfor %}
 ];
+var STATUS_CHOICES = [
+{% for status in status_choices %}
+{{status}},
+{% endfor %}
+];
 </script>
   </head>
   <body onload="initialize()"><div id="container" style="width:100%;height:100%">

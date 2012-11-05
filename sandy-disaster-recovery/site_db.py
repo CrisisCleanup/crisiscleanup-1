@@ -1,6 +1,8 @@
 from wtforms.ext.appengine.db import model_form
 from google.appengine.ext import db
 
+STATUS_CHOICES = ["Open, unassigned", "Closed, out of scope"]
+
 class Site(db.Model):
   # Data about the site itself.
   name = db.StringProperty(required = True)
@@ -46,8 +48,8 @@ class Site(db.Model):
   # Metadata
   # TODO(Bruce): We need to add an "assigned organization" field, once we have
   # organizations.
-  status = db.StringProperty(
-      choices=set(["Open, unassigned", "Closed, out of scope"]), default = "Open, unassigned")
+  status = db.StringProperty(choices=set(STATUS_CHOICES),
+                             default=STATUS_CHOICES[0])
   date_closed = db.DateTimeProperty()
   # Number of volunteers who helped.
   total_volunteers = db.FloatProperty()

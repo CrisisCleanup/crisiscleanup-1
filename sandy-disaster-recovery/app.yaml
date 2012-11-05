@@ -11,6 +11,8 @@ handlers:
 
 - url: /stylesheets
   static_dir: stylesheets
+- url: /icons
+  static_dir: icons
 - url: /javascript
   static_dir: javascript
 - url: /closure/goog

@@ -40,10 +40,27 @@ function refilter() {
 var dialog;
 
 function AddMarker(lat, lng, site, map, infowindow) {
+  function siteToIconUrl(site) {
+    if (!site.work_type) {
+      return '/icons/darkred-dot.png';
+    }
+    var url = '/icons/' + site.work_type + '_';
+    var now = new Date();
+    var TWO_DAYS_IN_MSEC = 172800000;
+    if (!site.habitable) {
+      url += 'red.png';
+    } else if (now - new Date(site.request_date) > TWO_DAYS_IN_MSEC) {
+      url += 'orange.png';
+    } else {
+      url += 'green.png';
+    }
+    return url;
+  }
   var marker = new google.maps.Marker({
     position: new google.maps.LatLng(lat, lng),
     map: map,
     title: site.name,
+    icon: new google.maps.MarkerImage(siteToIconUrl(site))
   });
   marker["tags"] = classifySite(site);
   markers.push(marker);

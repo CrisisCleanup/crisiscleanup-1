@@ -18,6 +18,7 @@ import edit_handler
 import form_handler
 import sites_handler
 import import_handler
+import problem_handler
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -34,6 +35,7 @@ class SpreadsheetRedirectHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/map', MapRedirectHandler),
+    ('/problems', problem_handler.ProblemHandler),
     ('/dev/map', map_handler.MapHandler),
     ('/dev/', form_handler.FormHandler),
     ('/', SpreadsheetRedirectHandler),

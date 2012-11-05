@@ -18,11 +18,10 @@ class ImportHandler(webapp2.RequestHandler):
       all_sites = json.loads(c)
       for s in all_sites:
         self.response.write(s["Resident Name"] + "<br />")
-        zip_code = getIntOrNone(s["Zip Code"])
         lookup = site_db.Site.gql("WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
                           name = s["Resident Name"],
                           address = s["Address"],
-                          zip_code = zip_code)
+                          zip_code = s["Zip Code"])
         site = None
         for l in lookup:
           site = l
@@ -33,7 +32,7 @@ class ImportHandler(webapp2.RequestHandler):
                       phone1 = str(s["Contact # s (Home and Cell)"]),
                       city = s["City"],
                       state = s["State"],
-                      zip_code = zip_code,
+                      zip_code = s["Zip Code"],
                       cross_street = s["Cross Street/ Landmark"],
                       time_to_call = s["Best Time to call"],
                       habitable = "yes" in s["Is Home Habitable?"].lower(),

@@ -41,7 +41,7 @@ class FormHandler(webapp2.RequestHandler):
       self.get()
       return
     else:
-      logging.critical("\n\n\n\n\n\nPost.")
+      logging.critical("\n\n\n\n\n\nPost." + str(data.errors))
       logging.critical("Failed to validate.")
       template_values = {"form": data,
                          "page": "/dev/",

@@ -36,10 +36,10 @@ class Site(db.Model):
   other_hazards = db.StringProperty(multiline = True)
   insurance = db.StringProperty(multiline = True)
   notes = db.StringProperty(multiline = True)
-  latitude = db.FloatProperty()
-  longitude = db.FloatProperty()
+  latitude = db.FloatProperty(default = 0.0)
+  longitude = db.FloatProperty(default = 0.0)
   # Priority assigned by organization (1 is highest).
-  priority = db.IntegerProperty()
+  priority = db.IntegerProperty(default = 1)
   # Name of org. rep (e.g. "Jill Smith")
   inspected_by = db.StringProperty()
 
@@ -47,7 +47,7 @@ class Site(db.Model):
   # TODO(Bruce): We need to add an "assigned organization" field, once we have
   # organizations.
   status = db.StringProperty(
-      choices=set(["Open, unassigned", "Closed, out of scope"]))
+      choices=set(["Open, unassigned", "Closed, out of scope"]), default = "Open, unassigned")
   date_closed = db.DateTimeProperty()
   # Number of volunteers who helped.
   total_volunteers = db.FloatProperty()

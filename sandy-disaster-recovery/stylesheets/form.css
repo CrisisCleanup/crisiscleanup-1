@@ -56,3 +56,29 @@ hr {
 input[type="submit"] {
   padding: 10px;
 }
+.form_message {
+  font-size: 18px;
+  color: green;
+  font-weight: bold;
+  margin-bottom: 35px;
+}
+section#errors {
+  border: #f00 2px solid;
+  background-color: pink;
+  padding: 5px;
+  margin-bottom: 30px;
+}
+section#errors header {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+section#errors li {
+  font-weight: bold;
+  color: #000;
+}
+
+.error_field input, .error_field select, .error_field textarea {
+  border: #f00 2px solid;
+}
+

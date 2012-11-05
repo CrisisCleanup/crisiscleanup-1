@@ -1,13 +1,13 @@
 {% macro with_errors(field) %}
-    <div class="form_field">
-    {% if field.errors %}
-        {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
-        {{ field(class=css_class, **kwargs) }}
-        <ul class="errors">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
-    {% else %}
-        {{ field(**kwargs) }}
-    {% endif %}
-    </div>
+  {% if field.errors %}
+    {% set error_class = ' error_field' %}
+  {% else %}
+    {% set error_class = '' %}
+  {% endif %}
+
+  <div class="form_field{{error_class}}">
+    {{ field(class=css_class, **kwargs) }}
+  </div>
 {% endmacro %}
 
 <!DOCTYPE html>
@@ -44,19 +44,21 @@
 {% endif %}
 
 {% if errors %}
-<table>
-<tr>
-<td class="error_header">The submission had errors</td><td></td></tr>
-
-{% for k in errors %}
-  <tr><td class="error">{{k}}:</td><td class="error_detail">
-  {% for e in errors[k] %}
-  {{e}}<br />
-  {% endfor %}
-  </td></tr>
-{% endfor %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
 {% endif %}
-</table>
 <table>
 <tr><td class=question>Requestor name:</td>
 <td class="answer">{{ with_errors(form.name) }}</td></tr>

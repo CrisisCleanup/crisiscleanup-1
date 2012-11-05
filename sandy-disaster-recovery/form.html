@@ -12,7 +12,8 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
 <title>Report a Work Zone</title>
 <link href="/stylesheets/form.css" rel="stylesheet">
 <link href="/stylesheets/default.css" rel="stylesheet">
@@ -24,9 +25,19 @@
 <script src="/closure/goog/base.js"></script>
 <script src="/javascript/form.js"></script>
 </head>
+
 <body onload="initialize()">
 <div id="form_background">
 <div id="form">
+{% if delete %}
+<div class=delete_form>
+  <form method=POST action="{{delete_post_url}}">
+  <input type=hidden name=_id value="{{id}}">
+  <input type=submit value="Permanently delete this site" class=delete_button>
+  (this cannot be undone)
+  </form>
+</div>{# end delete_form #}
+{% endif %}
 <form method="POST" action="{{page}}">
 {% if message %}
 <div class="form_message">{{message}}</div>
@@ -120,7 +131,9 @@
 {% if id %}
 <input type="hidden" name="_id" value="{{id}}">
 {% endif %}
+{% if not delete %}
 <input type="submit">
+{% endif %}
 </form>
 </div>
 </div>

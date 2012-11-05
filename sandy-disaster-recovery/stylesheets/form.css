@@ -1,3 +1,6 @@
+html {
+  font-size: 14px;
+}
 #id_address {
   width: 400px;
 }
@@ -38,4 +41,18 @@ hr {
 .error_detail {
   color: red;
   width: 280px;
+}
+.delete_form {
+  border: 2px solid red;
+  background-color: #ffc;
+  padding: 5px;
+}
+.delete_button {
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+input[type="submit"] {
+  padding: 10px;
 }

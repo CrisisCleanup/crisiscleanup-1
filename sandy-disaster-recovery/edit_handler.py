@@ -11,8 +11,8 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
 
-class EditHandler(base.RequestHandler):
-  def get(self):
+class EditHandler(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org):
     id = int(self.request.get('id'))
     site = site_db.Site.get(db.Key.from_path('Site', id))
     self.response.out.write(template.render(
@@ -20,7 +20,7 @@ class EditHandler(base.RequestHandler):
            "id": id,
            "page": "/edit"}))
 
-  def post(self):
+  def AuthenticatedPost(self, org):
     id = int(self.request.get('_id'))
     site = site_db.Site.get(db.Key.from_path('Site', id))
     data = site_db.SiteForm(self.request.POST, site)

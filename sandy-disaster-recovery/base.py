@@ -2,6 +2,10 @@
 
 # System libraries.
 import webapp2
+import urllib
+
+# For authentication
+import key
 
 class RequestHandler(webapp2.RequestHandler):
   """Base class for all of this app's request handlers.
@@ -21,3 +25,20 @@ class RequestHandler(webapp2.RequestHandler):
         'no-cache, no-store, must-revalidate')
     self.response.headers['Pragma'] = 'no-cache'
     self.response.headers['Expires'] = '0'
+
+class AuthenticatedHandler(RequestHandler):
+  def post(self):
+    org = key.CheckAuthorization(self.request)
+    if not org:
+      self.redirect("/authentication?destination=" +
+                    urllib.quote(str(self.request.url).encode('utf-8')))
+      return
+    self.AuthenticatedPost(org)
+
+  def get(self):
+    org = key.CheckAuthorization(self.request)
+    if not org:
+      self.redirect("/authentication?destination=" +
+                    urllib.quote(str(self.request.url).encode('utf-8')))
+      return
+    self.AuthenticatedGet(org)

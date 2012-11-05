@@ -8,8 +8,8 @@ from google.appengine.ext import db
 import base
 import site_db
 
-class SitesHandler(base.RequestHandler):
-  def get(self):
+class SitesHandler(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org):
     query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
     for s in query:
       self.response.out.write(

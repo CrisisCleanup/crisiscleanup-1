@@ -2,7 +2,6 @@ from google.appengine.ext import db
 import Cookie
 import datetime
 import hashlib
-import logging
 import organization
 
 class Key(db.Model):
@@ -39,7 +38,6 @@ def GetDeleteCookie():
   return str(cookie)
 
 def getIntOrNone(s):
-  # TODO(Bruce): Remove this if it's unused.
   try:
     return int(s)
   except ValueError:
@@ -47,26 +45,19 @@ def getIntOrNone(s):
 
 
 def CheckAuthorization(request):
-  logging.critical(str(request.headers))
   if "Cookie" in request.headers.keys():
     cookie = Cookie.SimpleCookie(request.headers["Cookie"])
     if "sandy-recovery-auth" in cookie.keys():
       contents = cookie["sandy-recovery-auth"].value
-      logging.critical("here")
       if contents:
         parts = contents.split(":")
-        logging.critical(str(len(parts)) + " : " + contents)
         if len(parts) == 3:
-          logging.critical("here")
           org_id = getIntOrNone(parts[2])
           key_id = getIntOrNone(parts[1])
           if org_id and key_id:
-            logging.critical("here")
             org = organization.Organization.get_by_id(org_id)
             key = Key.get_by_id(key_id)
             if org and key:
-              logging.critical("here")
               if (parts[0] == key.hashOrganization(org)):
-                logging.critical("here")
-                return True
+                return org
   return False

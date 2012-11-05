@@ -14,8 +14,8 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) el
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-class MapHandler(base.RequestHandler):
-  def get(self):
+class MapHandler(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org):
     template_values = {
         "sites" :
           [json.dumps(dict(to_dict(s).items() +

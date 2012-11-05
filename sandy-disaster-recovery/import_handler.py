@@ -6,15 +6,8 @@ from google.appengine.api.urlfetch import fetch
 import base
 import site_db
 
-def getIntOrNone(s):
-  # TODO(Bruce): Remove this if it's unused.
-  try:
-    return int(s)
-  except ValueError:
-    return None
-
-class ImportHandler(base.RequestHandler):
-  def get(self):
+class ImportHandler(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org):
     f = fetch("https://script.googleusercontent.com/echo?user_content_key=FhDerHYRqmPomvddrWG5z1EPE2M6pIsdWoneKZggh5tOOwrmP4Atbge70tQMNTIGyGqIpA2WfT2mn-b9xDGva0ig28c7dyAJm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnLQWLGh0dZkw6EUdDCIUunrCvAUHV5O19lgdOMElR3BpzsNnsNxUs69kLAqLclCCiDOmbnRGq-tk&lib=MIG37R_y3SDE8eP6TP_JVJA0rWYMbTwle");
     if f.status_code == 200:
 

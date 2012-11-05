@@ -1,6 +1,5 @@
 # System libraries.
 import jinja2
-import logging
 import os
 
 # Local libraries.
@@ -11,8 +10,8 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
 
-class FormHandler(base.RequestHandler):
-  def get(self):
+class FormHandler(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org):
     self.response.out.write(template.render(
         {"form": site_db.SiteForm(),
          "id": None,

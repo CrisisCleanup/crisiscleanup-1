@@ -1,6 +1,5 @@
 # System libraries.
 import jinja2
-import logging
 import os
 from google.appengine.ext import db
 
@@ -11,9 +10,9 @@ import site_db
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-class DeleteHandler(base.RequestHandler):
+class DeleteHandler(base.AuthenticatedHandler):
   """Handler to confirm and then actually delete a site."""
-  def get(self):
+  def AuthenticatedGet(self, org):
     id = int(self.request.get('id'))
     site = site_db.Site.get(db.Key.from_path('Site', id))
     template_values = {"form": site_db.SiteForm(self.request.POST, site),

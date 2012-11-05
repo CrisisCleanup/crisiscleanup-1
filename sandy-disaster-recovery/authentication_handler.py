@@ -2,8 +2,8 @@
 import Cookie
 import datetime
 import jinja2
-import logging
 import os
+import urllib
 from google.appengine.ext import db
 import random
 import string
@@ -31,18 +31,16 @@ def GetOrganizationForm(post_data):
     default = organization.Organization(name = "Administrator",
                                         password = "temporary_password")
     default.put()
-    organizations.push(default)
+    organizations.append(default)
   elif len(organizations) >= 2:
     modified = []
     for o in organizations:
       if o.name == "Administrator":
         o.delete()
       else:
-        modified.push(o)
+        modified.append(o)
     organizations = modified
 
-  logging.critical(len(organizations))
-  logging.critical([o.name for o in organizations])
   class OrganizationForm(wtforms.form.Form):
     name = wtforms.fields.SelectField(
         'Name',
@@ -52,7 +50,6 @@ def GetOrganizationForm(post_data):
         'Password',
         validators = [ wtforms.validators.required() ])
   form = OrganizationForm(post_data)
-  logging.critical(str(form.password()))
   return form
 
 
@@ -72,7 +69,6 @@ class AuthenticationHandler(base.RequestHandler):
     now = datetime.datetime.now()
     form = GetOrganizationForm(self.request.POST)
     if not form.validate():
-      logging.critical(form.errors)
       self.redirect('/authentication')
     org = None
     for l in organization.Organization.gql(
@@ -91,7 +87,6 @@ class AuthenticationHandler(base.RequestHandler):
         elif age.days <= 1:
           selected_key = k
       if not selected_key:
-        logging.critical("Creating a new key.")
         selected_key = key.Key(
             secret_key = ''.join(random.choice(
                 string.ascii_uppercase + string.digits)
@@ -100,8 +95,6 @@ class AuthenticationHandler(base.RequestHandler):
 
       self.response.headers.add_header("Set-Cookie",
                                        selected_key.getCookie(org))
-      self.redirect(self.request.get('destination', default_value='/dev/'))
+      self.redirect(urllib.unquote(self.request.get('destination', default_value='/dev/').encode('ascii')))
     else:
-      if org:
-        logging.critical(form.password.data + ' ' + org.password)
       self.redirect('/authentication')

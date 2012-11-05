@@ -13,8 +13,8 @@ def ProblemSeverity(s):
   distance = math.sqrt(math.pow(s.latitude - 39.5, 2) + math.pow(s.longitude + 75, 2))
   return -distance
 
-class ProblemHandler(base.RequestHandler):
-  def get(self):
+class ProblemHandler(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org):
     query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
     ordered = sorted(query, key = lambda s: ProblemSeverity(s))
     for s in ordered:

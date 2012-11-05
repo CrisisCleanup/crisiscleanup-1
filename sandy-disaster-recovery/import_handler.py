@@ -51,4 +51,3 @@ class ImportHandler(base.RequestHandler):
             site.longitude = float(lls[1])
 
         site.put()
-

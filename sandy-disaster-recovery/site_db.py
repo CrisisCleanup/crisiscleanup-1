@@ -8,7 +8,7 @@ class Site(db.Model):
   address = db.StringProperty(required = True)
   city = db.StringProperty()
   state = db.StringProperty()
-  zip_code = db.IntegerProperty()
+  zip_code = db.StringProperty()
   cross_street = db.StringProperty()
   landmark = db.StringProperty()
   phone1 = db.StringProperty()

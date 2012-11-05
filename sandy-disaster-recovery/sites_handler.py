@@ -1,12 +1,14 @@
-import webapp2
-
-import os
-import json
+# System libraries.
 import datetime
+import json
+import os
 from google.appengine.ext import db
+
+# Local libraries.
+import base
 import site_db
 
-class SitesHandler(webapp2.RequestHandler):
+class SitesHandler(base.RequestHandler):
   def get(self):
     query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
     for s in query:

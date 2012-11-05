@@ -1,15 +1,17 @@
+# System libraries.
 import jinja2
 import logging
 import os
-import site_db
-import webapp2
 from google.appengine.ext import db
+
+# Local libraries.
+import base
+import site_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-
-class DeleteHandler(webapp2.RequestHandler):
+class DeleteHandler(base.RequestHandler):
   """Handler to confirm and then actually delete a site."""
   def get(self):
     id = int(self.request.get('id'))

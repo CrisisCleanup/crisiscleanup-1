@@ -1,20 +1,20 @@
-import webapp2
-import os
-import jinja2
-import site_db
-import json
+# System libraries.
 import datetime
-
-
+import jinja2
+import json
+import os
 from google.appengine.ext.db import to_dict
+
+# Local libraries.
+import base
+import site_db
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-
-class MapHandler(webapp2.RequestHandler):
+class MapHandler(base.RequestHandler):
   def get(self):
     template_values = {
         "sites" :

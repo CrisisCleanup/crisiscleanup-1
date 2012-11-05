@@ -1,13 +1,17 @@
-import webapp2
-import site_db
-import os
+# System libraries.
 import jinja2
+import os
 from google.appengine.ext import db
+
+# Local libraries.
+import base
+import site_db
+
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
 
-class EditHandler(webapp2.RequestHandler):
+class EditHandler(base.RequestHandler):
   def get(self):
     id = int(self.request.get('id'))
     site = site_db.Site.get(db.Key.from_path('Site', id))

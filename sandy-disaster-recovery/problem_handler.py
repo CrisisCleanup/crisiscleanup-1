@@ -1,17 +1,19 @@
-import webapp2
-
-import os
-import json
+# System libraries.
 import datetime
-from google.appengine.ext import db
-import site_db
+import json
 import math
+import os
+from google.appengine.ext import db
+
+# Local libraries.
+import base
+import site_db
 
 def ProblemSeverity(s):
   distance = math.sqrt(math.pow(s.latitude - 39.5, 2) + math.pow(s.longitude + 75, 2))
   return -distance
 
-class ProblemHandler(webapp2.RequestHandler):
+class ProblemHandler(base.RequestHandler):
   def get(self):
     query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
     ordered = sorted(query, key = lambda s: ProblemSeverity(s))

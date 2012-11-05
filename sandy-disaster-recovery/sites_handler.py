@@ -1,7 +1,6 @@
 import webapp2
 
 import os
-import site
 import json
 import datetime
 from google.appengine.ext import db

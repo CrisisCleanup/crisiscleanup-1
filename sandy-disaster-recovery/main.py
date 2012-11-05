@@ -27,11 +27,10 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) el
 class MapRedirectHandler(webapp2.RequestHandler):
   def get(self):
     self.redirect("http://maps.google.com/?q=http://www.aarontitus.net/maps/sandy_work_orders.kmz")
-  
+
 class SpreadsheetRedirectHandler(webapp2.RequestHandler):
   def get(self):
     self.redirect("https://docs.google.com/spreadsheet/ccc?key=0AhBdPrWyrhIfdFVHMDFOc0NCQjNNbmVvNHJybTlBUXc#gid=0")
-
 
 app = webapp2.WSGIApplication([
     ('/map', MapRedirectHandler),
@@ -42,3 +41,4 @@ app = webapp2.WSGIApplication([
     ('/import', import_handler.ImportHandler),
     ('/sites', sites_handler.SitesHandler)
 ], debug=True)
+

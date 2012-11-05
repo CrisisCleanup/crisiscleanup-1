@@ -59,6 +59,10 @@
   <article>
 </section>
 {% endif %}
+<div class="QuestionHeading">
+The Hurricane Sandy Waiting List will alert volunteer organizations in your area that you need assistance. As the need is so great, we cannot guarantee that you will be helped, and we do not know how long you might need to wait before an organization helps. We are working as hard as we can.
+</div>
+<h2>Personal Information</h2>
 <table>
 <tr><td class=question>Requestor name:</td>
 <td class="answer">{{ with_errors(form.name) }}</td></tr>
@@ -70,66 +74,101 @@
 <td class="answer"> {{with_errors(form.city)}}<div id=citySuggestion></div></td></tr>
 <tr><td class=question>State:</td>
 <td class="answer"> {{with_errors(form.state)}}<div id=stateSuggestion></div></td></tr>
-
-<tr><td class=question>Cross Street:</td>
-<td class="answer"> {{with_errors(form.cross_street) }}</td></tr>
-<tr><td class=question>Nearby Landmark:</td>
-<td class="answer"> {{with_errors(form.landmark) }}</td></tr>
-<tr><td class=question>Phone Numbers:</td>
-<td class="answer"> {{with_errors(form.phone1) }}{{with_errors(form.phone2)}}</td></tr>
-<tr><td class=question>Best time to call:</td>
-<td class="answer"> {{with_errors(form.time_to_call)}}</td></tr>
-<tr><td class=question>What type of property is it? Multi-unit, home, business?</td>
-<td class="answer"> {{with_errors(form.property_type)}}</td></tr>
-<tr><td class=question>Are you renting the property?</td>
-<td class="answer"> {{with_errors(form.renting)}}</td></tr>
-<tr><td class=question>Can we work without a resident present?</td>
-<td class="answer"> {{with_errors(form.work_without_resident)}}</td></tr>
-<tr><td class=question>Ages of residents:</td>
-<td class="answer"> {{with_errors(form.ages_of_residents)}}</td></tr>
-<tr><td class=question>Special needs:</td>
-<td class="answer"> {{with_errors(form.special_needs)}}</td></tr>
-<tr><td class=question>Has electricity:</td>
-<td class="answer"> {{with_errors(form.electricity)}}</td></tr>
-<tr><td class=question>Has standing water:</td>
-<td class="answer"> {{with_errors(form.standing_water)}}</td></tr>
-<tr><td class=question>Did a tree damage the home?</td>
-<td class="answer"> {{with_errors(form.tree_damage)}}</td>
-<tr><td class=question>Where?</td><td class="answer">{{with_errors(form.tree_damage_details)}}</td></tr>
-<tr><td class=question>Is the home habitable:</td>
-<td class="answer"> {{with_errors(form.habitable)}}</td></tr>
-<tr><td class=question>What type of work is requested:</td>
-<td class="answer"> {{with_errors(form.work_requested)}}</td></tr>
-<tr><td class=question>Say: "Do you have any family members, friends, or neighbors who can help? If so, we would like them to assist our volunteers."</td>
-<td class="answer">{{with_errors(form.others_help)}} </td></tr>
-<tr><td class=question>If requesting tree removal, what is the DIAMETER (width) of the tree(s) - note feet or inches:</td>
-<td class="answer"> {{with_errors(form.tree_diameter)}}</td></tr>
-<tr><td class=question>Are you only requesting debris removal:</td>
-<td class="answer"> {{with_errors(form.debris_removal_only)}}</td></tr>
-<tr><td class=question>Primary work type:</td>
-<td class="answer"> {{with_errors(form.work_type)}}</td></tr>
-<tr><td class=question>Are there electrical lines in the cleanup area:</td>
-<td class="answer"> {{with_errors(form.electrical_lines)}}</td></tr>
-<tr><td class=question>Are there cable or phone lines in the cleanup area:</td>
-<td class="answer"> {{with_errors(form.cable_lines)}}</td></tr>
-<tr><td class=question>Will Cutting the tree threaten buildings or property:</td>
-<td class="answer"> {{with_errors(form.cutting_cause_harm)}}</td></tr>
-<tr><td class=question>Any Other Hazards in the Clean-Up Area:</td>
-<td class="answer"> {{with_errors(form.other_hazards)}}</td></tr>
-
-<tr><td class=question>Do you have insurance that covers all or some of the damage:</td>
-<td class="answer"> {{with_errors(form.insurance)}}</td></tr>
-<tr><td class=question>Additional notes:</td>
-<td class="answer"> {{with_errors(form.notes)}}</td></tr>
-
-
 <tr><td class=question>Latitude:</td>
 <td class="answer"> {{with_errors(form.latitude)}}</td></tr>
 <tr><td class=question>Longitude:</td>
 <td class="answer"> {{with_errors(form.longitude)}}</td></tr>
-
+<tr><td class=question>Cross Street or Nearby Landmark:</td>
+<td class="answer"> {{with_errors(form.cross_street) }}</td></tr>
+<tr><td class=question>Phone Numbers:</td>
+<td class="answer"> {{with_errors(form.phone1) }}{{with_errors(form.phone2)}}</td></tr>
+<tr><td class=question>Best time to call:</td>
+<td class="answer"> {{with_errors(form.time_to_call)}}</td></tr>
+<tr><td class=question>Rent/Own</td>
+<td class="answer"> {{with_errors(form.rent_or_own)}}</td></tr>
+<tr><td class=question>Work without resident present?</td>
+<td class="answer"> {{with_errors(form.work_without_resident)}}</td></tr>
+<tr><td class=question>Older than 60:</td>
+<td class="answer"> {{with_errors(form.older_than_60)}}</td></tr>
+<tr><td class=question>Disabled:</td>
+<td class="answer"> {{with_errors(form.disabled)}}</td></tr>
+<tr><td class=question>Special needs:</td>
+<td class="answer"> {{with_errors(form.special_needs)}}</td></tr>
+<tr><td class=question>Work requested:</td>
+<td class="answer"> {{with_errors(form.work_requested)}}</td></tr>
+<tr><td class=question>Notes:</td>
+<td class="answer"> {{with_errors(form.notes)}}</td></tr>
+<tr><td class=question>Priority:</td>
+<td class="answer">
+<table>
+<tr><td>Low</td>
+{% for f in form.priority %}
+<td>{{ f }}</td>
+{% endfor %}
+<td>High</td></tr></table>
+</td></tr>
 
 </table>
+<h2>Work</h2>
+<table>
+<tr><td class=question>Primary work type:</td>
+<td class="answer"> {{with_errors(form.work_type)}}</td></tr>
+</table>
+<h3>Flood-Related Damage and Needs</h3>
+<table>
+<tr><td class=question>Height of Flood (feet):</td>
+<td class="answer"> {{with_errors(form.flood_height)}}</td></tr>
+<tr><td class=question>Floors affected:</td>
+<td class="answer"> {{with_errors(form.floors_affected)}}</td></tr>
+<tr><td class=question>Carpet Removal:</td>
+<td class="answer"> {{with_errors(form.carpet_removal)}}</td></tr>
+<tr><td class=question>Drywall Removal:</td>
+<td class="answer"> {{with_errors(form.drywall_removal)}}</td></tr>
+<tr><td class=question>Heavy Item Removal:</td>
+<td class="answer"> {{with_errors(form.heavy_item_removal)}}</td></tr>
+<tr><td class=question>Standing water:</td>
+<td class="answer"> {{with_errors(form.standing_water)}}</td></tr>
+<tr><td class=question>Pump Needed:</td>
+<td class="answer"> {{with_errors(form.pump_needed)}}</td></tr>
+</table>
+
+<h3>Tree-Related Damage and Needs</h3>
+<table>
+<tr><td class=question>Number of trees down:</td>
+<td class="answer"> {{with_errors(form.num_trees_down)}}</td></tr>
+<tr><td class=question>Number of trees wider than 18 inches:</td>
+<td class="answer"> {{with_errors(form.num_wide_trees)}}</td></tr>
+</table>
+
+<h3>Wind-Related Damage and Needs</h3>
+<table>
+<tr><td class=question>Roof Damage:</td>
+<td class="answer"> {{with_errors(form.roof_damage)}}</td></tr>
+<tr><td class=question>Number of Tarps Needed:</td>
+<td class="answer"> {{with_errors(form.tarps_needed)}}</td></tr>
+</table>
+
+<h3>Goods and Services Requested</h3>
+<table>
+<tr><td class=question>Requesting Only Debris Removal?</td>
+<td class="answer"> {{with_errors(form.debris_removal_only)}}</td></tr>
+<tr><td class=question>Requests for Goods and Services:</td>
+<td class="answer"> {{with_errors(form.goods_and_services)}}</td></tr>
+</table>
+
+<h2>Hazards</h2>
+<table>
+<tr><td class=question>Is the home habitable:</td>
+<td class="answer"> {{with_errors(form.habitable)}}</td></tr>
+<tr><td class=question>Power on:</td>
+<td class="answer"> {{with_errors(form.electricity)}}</td></tr>
+<tr><td class=question>Downed Wires:</td>
+<td class="answer"> {{with_errors(form.electrical_lines)}}</td></tr>
+<tr><td class=question>Other Hazards:</td>
+<td class="answer"> {{with_errors(form.other_hazards)}}</td></tr>
+</table>
+
+
 {% if id %}
 <input type="hidden" name="_id" value="{{id}}">
 {% endif %}

@@ -1,4 +1,5 @@
 from wtforms.ext.appengine.db import model_form
+import wtforms.fields
 from google.appengine.ext import db
 
 STATUS_CHOICES = ["Open, unassigned", "Closed, out of scope"]
@@ -16,11 +17,10 @@ class Site(db.Model):
   phone1 = db.StringProperty()
   phone2 = db.StringProperty()
   time_to_call = db.StringProperty()
-  property_type = db.StringProperty(
-      choices=set(["Home", "Town House", "Multi-Unit", "Business"]))
-  renting = db.BooleanProperty()
+  rent_or_own = db.StringProperty(choices=set(["Rent", "Own"]))
   work_without_resident = db.BooleanProperty()
-  ages_of_residents = db.StringProperty()
+  older_than_60 = db.BooleanProperty()
+  disabled = db.BooleanProperty()
   special_needs = db.StringProperty(multiline=True)
   electricity = db.BooleanProperty()
   standing_water = db.BooleanProperty()
@@ -31,6 +31,24 @@ class Site(db.Model):
   others_help = db.StringProperty(multiline=True)
   debris_removal_only = db.BooleanProperty()
   work_type = db.StringProperty(choices=set(["Flood", "Trees", "Other"]))
+  flood_height = db.StringProperty()
+  floors_affected = db.StringProperty(choices=set([
+      "Basement Only",
+      "Basement and Ground Floor",
+      "Ground Floor Only"]))
+  carpet_removal = db.BooleanProperty()
+  drywall_removal = db.BooleanProperty()
+  heavy_item_removal = db.BooleanProperty()
+  standing_water = db.BooleanProperty()
+  pump_needed = db.BooleanProperty()
+  num_trees_down = db.IntegerProperty(
+      choices = set([0, 1, 2, 3, 4, 5]), default = 0)
+  num_wide_trees = db.IntegerProperty(
+      choices = set([0, 1, 2, 3, 4, 5]), default = 0)
+  roof_damage = db.BooleanProperty()
+  tarps_needed = db.IntegerProperty(default = 0)
+  goods_and_services = db.StringProperty(multiline = True)
+
   tree_diameter = db.StringProperty()
   electrical_lines = db.BooleanProperty()
   cable_lines = db.BooleanProperty()
@@ -41,7 +59,7 @@ class Site(db.Model):
   latitude = db.FloatProperty(default = 0.0)
   longitude = db.FloatProperty(default = 0.0)
   # Priority assigned by organization (1 is highest).
-  priority = db.IntegerProperty(default = 1)
+  priority = db.IntegerProperty(choices=set([1, 2, 3, 4, 5]), default = 3)
   # Name of org. rep (e.g. "Jill Smith")
   inspected_by = db.StringProperty()
 
@@ -59,5 +77,28 @@ class Site(db.Model):
   # total_volunteers * hours_worked_per_volunteer.
   hours_worked_per_volunteer = db.FloatProperty()
 
+SiteForm2 = model_form(Site)
 
-SiteForm = model_form(Site)
+class SiteForm(SiteForm2):
+  priority = wtforms.fields.RadioField(
+      choices = [(5, ""), (4, ""), (3, ""), (2, ""), (1, "")],
+      coerce = int,
+      default = 3)
+  num_trees_down = wtforms.fields.SelectField(
+      choices = [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, "5+")],
+      coerce = int,
+      default = 0)
+  num_wide_trees = wtforms.fields.SelectField(
+      choices = [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, "5+")],
+      coerce = int,
+      default = 3)
+
+"""def __init__(self, *args, **kwargs):
+    SiteForm2.__init__(self, *args, **kwargs)
+
+    self.priority.choices[4] = (5, "5 (lowest)")
+    self.priority.coerce = int
+    self.num_trees_down.choices[5] = (5, "5+")
+    self.num_wide_trees.choices[5] = (5, "5+")"""
+
+# SiteForm = SiteForm2

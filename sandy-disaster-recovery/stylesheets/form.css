@@ -1,9 +1,6 @@
 html {
   font-size: 14px;
 }
-#id_address {
-  width: 400px;
-}
 #form_background {
   z-index: 3;
   position: absolute;
@@ -81,4 +78,3 @@ section#errors li {
 .error_field input, .error_field select, .error_field textarea {
   border: #f00 2px solid;
 }
-

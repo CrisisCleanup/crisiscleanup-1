@@ -2,6 +2,7 @@ from wtforms.ext.appengine.db import model_form
 from google.appengine.ext import db
 
 class Site(db.Model):
+  # Data about the site itself.
   name = db.StringProperty(required = True)
   request_date = db.DateTimeProperty(auto_now_add=True)
   address = db.StringProperty(required = True)
@@ -37,6 +38,24 @@ class Site(db.Model):
   notes = db.StringProperty(multiline = True)
   latitude = db.FloatProperty()
   longitude = db.FloatProperty()
+  # Priority assigned by organization (1 is highest).
+  priority = db.IntegerProperty()
+  # Name of org. rep (e.g. "Jill Smith")
+  inspected_by = db.StringProperty()
+
+  # Metadata
+  # TODO(Bruce): We need to add an "assigned organization" field, once we have
+  # organizations.
+  status = db.StringProperty(
+      choices=set(["Open, unassigned", "Closed, out of scope"]))
+  date_closed = db.DateTimeProperty()
+  # Number of volunteers who helped.
+  total_volunteers = db.FloatProperty()
+  # Number of hours that each volunteer worked.
+  # There's apparently an assumption that all volunteers worked the same amount
+  # of time, since total time for the project is calculated as
+  # total_volunteers * hours_worked_per_volunteer.
+  hours_worked_per_volunteer = db.FloatProperty()
 
 
 SiteForm = model_form(Site)

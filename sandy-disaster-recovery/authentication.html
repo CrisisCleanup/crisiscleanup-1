@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Report a Work Zone</title>
+<link href="/stylesheets/default.css" rel="stylesheet">
+</head>
+<body>
+<form method="POST" action="{{page}}">
+<input type="hidden" value="{{destination}}" name="destination" />
+<table>
+<tr><td class=question>Organization:</td>
+<td class="answer">{{ form.name() }}</td></tr>
+<tr><td class=question>Password:</td>
+<td class="answer">{{ form.password() }}</td></tr>
+</table>
+<input type="submit" />
+</body>
+</html>

@@ -28,3 +28,14 @@
 hr {
   width: 100%;
 }
+.error {
+  color: red;
+  width: 280px;
+}
+.errors {
+  color: red;
+}
+.error_detail {
+  color: red;
+  width: 280px;
+}

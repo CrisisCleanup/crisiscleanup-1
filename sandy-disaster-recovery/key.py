@@ -23,9 +23,10 @@ class Key(db.Model):
                   str(self.key().id()),
                   str(org.key().id())]))
     cookie["sandy-recovery-auth"]["domain"] = ""
-    expires = datetime.datetime.now() + datetime.timedelta(days = 7)
-    cookie["sandy-recovery-auth"]["expires"] = (
-        expires.strftime('%a, %d %b %Y %H:%M:%S'))
+    if not org.only_session_authentication:
+      expires = datetime.datetime.now() + datetime.timedelta(days = 7)
+      cookie["sandy-recovery-auth"]["expires"] = (
+          expires.strftime('%a, %d %b %Y %H:%M:%S'))
     return str(cookie)
 
 def GetDeleteCookie():
@@ -57,6 +58,12 @@ def CheckAuthorization(request):
           if org_id and key_id:
             org = organization.Organization.get_by_id(org_id)
             key = Key.get_by_id(key_id)
+            # Check the age of the key, and delete it
+            # if it is too old.
+            age = datetime.datetime.now() - key.date
+            if age.days > 14:
+              key.delete()
+              key = None
             if org and key:
               if (parts[0] == key.hashOrganization(org)):
                 return org

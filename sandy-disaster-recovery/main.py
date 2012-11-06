@@ -20,6 +20,9 @@ import problem_handler
 import site_api_handler
 import sites_handler
 
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
 class MapRedirectHandler(base.RequestHandler):
   def get(self):
     self.redirect("http://maps.google.com/?q=http://www.aarontitus.net/maps/sandy_work_orders.kmz")

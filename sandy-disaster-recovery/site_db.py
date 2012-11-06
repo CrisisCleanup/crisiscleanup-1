@@ -1,4 +1,6 @@
 # System libraries.
+import datetime
+import wtforms.ext.dateutil.fields
 import wtforms.fields
 from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
@@ -109,6 +111,8 @@ class SiteForm(SiteForm2):
       choices = [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, "5+")],
       coerce = int,
       default = 0)
+  request_date = wtforms.ext.dateutil.fields.DateTimeField(
+      default = datetime.datetime.now())
 
 """def __init__(self, *args, **kwargs):
     SiteForm2.__init__(self, *args, **kwargs)

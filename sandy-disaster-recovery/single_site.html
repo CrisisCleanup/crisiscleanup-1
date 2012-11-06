@@ -17,8 +17,14 @@
 {% endif %}
 <h2>Personal Information</h2>
 <table>
-<tr><td class=question>Requestor name:</td>
+<tr><td class=question>Resident name:</td>
 <td class="answer">{{ with_errors(form.name) }}</td></tr>
+<tr><td class=question>Date of Request:</td>
+{% if readonly %}
+<td class="answer"> {{with_errors(form.request_date.strftime('%Y-%m-%d')) }}</td></tr>
+{% else %}
+<td class="answer"> {{with_errors(form.request_date) }}</td></tr>
+{% endif %}
 <tr><td class=question>Zip Code:</td>
 <td class="answer"> {{with_errors(form.zip_code) }}</td></tr>
 <tr><td class=question>Street Address:</td>

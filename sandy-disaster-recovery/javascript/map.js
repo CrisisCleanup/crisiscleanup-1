@@ -20,7 +20,7 @@ var layers = [
       description: "Affected Areas" },
               ];
 
-function classifySite(site) {
+sandy.map.ClassifySite = function(site) {
   var tags = [];
   tags.push(site["debris_removal_only"] ? "debris_only" : "not_only_debris");
   tags.push(site["electricity"] ? "electricity" : "no_electricty");
@@ -31,7 +31,6 @@ function classifySite(site) {
   tags.push(site["cable_lines"] ? "phone_or_cable_lines" : "phone_or_cable_line_free");
   tags.push(site["cutting_cause_harm"] ? "trees_threaten_property" : "trees_dont_threaten_property");
   tags.push(site["work_type"]);
-  tags.push(site["property_type"]);
   tags.push(site["state"]);
   return tags;
 }

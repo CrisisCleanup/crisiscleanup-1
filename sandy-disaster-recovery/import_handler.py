@@ -24,19 +24,21 @@ class ImportHandler(base.AuthenticatedHandler):
           site = l
         if not site:
           # Save the data, and redirect to the view page
-          site = site_db.Site(address = s["Address"],
-                      name = s["Resident Name"],
-                      phone1 = str(s["Contact # s (Home and Cell)"]),
-                      city = s["City"],
-                      state = s["State"],
-                      zip_code = s["Zip Code"],
-                      cross_street = s["Cross Street/ Landmark"],
-                      time_to_call = s["Best Time to call"],
-                      habitable = "yes" in s["Is Home Habitable?"].lower(),
-                      electricity = "yes" in s["Is electricity available on site?"].lower(),
-                      debris_only = "yes" in s["Are you only requesting Debris removal?"].lower(),
-                      standing_water = "yes" in s["Standing water on site?"].lower(),
-                      work_requested = s["Work Requested"])
+          site = site_db.Site(
+              address = str(s["Address"]),
+              name = s["Resident Name"],
+              phone1 = str(s["Contact # s (Home and Cell)"]),
+              city = s["City"],
+              state = s["State"],
+              zip_code = str(s["Zip Code"]),
+              cross_street = s["Cross Street/ Landmark"],
+              time_to_call = s["Best Time to call"],
+              habitable = "yes" in s["Is Home Habitable?"].lower(),
+              electricity = "yes" in s["Is electricity available on site?"].lower(),
+              debris_only = "yes" in s["Are you only requesting Debris removal?"].lower(),
+              standing_water = "yes" in s["Standing water on site?"].lower(),
+              work_requested = s["Work Requested"],
+              notes = str(s))
         if s["Lat, Long"]:
           lls = s["Lat, Long"].split(",")
           if len(lls) == 2:

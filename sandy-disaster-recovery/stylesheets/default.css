@@ -23,6 +23,15 @@ html, body {
   width: 40%;
   z-index: 2;
 }
+#logout_div {
+  position: absolute;
+  left: 100px;
+  top: 20px;
+  background-color: #ffffff;
+  opacity: .8;
+  z-index: 21;
+  padding: 20px;
+}
 #info {
   position: absolute;
   right: 30px;

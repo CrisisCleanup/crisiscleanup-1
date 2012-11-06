@@ -15,6 +15,7 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) el
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('main.html')
+logout_template = jinja_environment.get_template('logout.html')
 class MapHandler(base.RequestHandler):
   def get(self):
     filters = [
@@ -30,6 +31,7 @@ class MapHandler(base.RequestHandler):
     org = key.CheckAuthorization(self.request)
     if org:
       template_values = {
+          "logout" : logout_template.render({"org": org}),
           "sites" :
             [json.dumps(dict(to_dict(s).items() +
                              [("id", s.key().id())]),

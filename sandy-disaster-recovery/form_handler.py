@@ -10,6 +10,7 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site.html')
+logout_template = jinja_environment.get_template('logout.html')
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):
@@ -19,6 +20,7 @@ class FormHandler(base.AuthenticatedHandler):
         { "form": form })
     self.response.out.write(template.render(
         {"message" : message,
+         "logout" : logout_template.render({"org": org}),
          "single_site" : single_site,
          "form": site_db.SiteForm(),
          "id": None,
@@ -51,6 +53,7 @@ class FormHandler(base.AuthenticatedHandler):
           { "form": data })
       self.response.out.write(template.render(
           {"errors": data.errors,
+           "logout" : logout_template.render({"org": org}),
            "single_site": single_site,
            "form": data,
            "id": None,

@@ -11,6 +11,7 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site.html')
+logout_template = jinja_environment.get_template('logout.html')
 
 class EditHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):

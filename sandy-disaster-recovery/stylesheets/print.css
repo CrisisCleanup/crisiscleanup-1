@@ -1,0 +1,8 @@
+.question {
+  width: 280px;
+  float: left;
+}
+.answer {
+  width: 280px;
+  float: right;
+}

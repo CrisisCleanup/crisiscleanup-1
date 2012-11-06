@@ -74,6 +74,8 @@ var updateDialogForSite = function(dialog, site) {
     } else if (e.key == "claim") {
       // TODO(Bruce): Implement.
       alert("Claiming hasn't been implemented yet.");
+    } else if (e.key == "printer") {
+      window.open("/print?id=" + site["id"], '_blank');
     }
     return false;
   });
@@ -121,6 +123,7 @@ function AddMarker(lat, lng, site, map, infowindow) {
       var buttonSet = new goog.ui.Dialog.ButtonSet();
       buttonSet.addButton({caption: "Edit", key: "edit"});
       buttonSet.addButton({caption: "Claim", key: "claim"});
+      buttonSet.addButton({caption: "Printer Friendly", key: "printer"});
       dialog.setButtonSet(buttonSet);
     }
     dialog.setVisible(false);

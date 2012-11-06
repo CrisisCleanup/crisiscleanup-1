@@ -15,6 +15,7 @@ import form_handler
 import import_handler
 import key
 import map_handler
+import print_handler
 import problem_handler
 import sites_handler
 
@@ -43,6 +44,7 @@ app = webapp2.WSGIApplication([
     ('/edit', edit_handler.EditHandler),
     ('/import', import_handler.ImportHandler),
     ('/map', MapRedirectHandler),
+    ('/print', print_handler.PrintHandler),
     ('/problems', problem_handler.ProblemHandler),
     ('/sites', sites_handler.SitesHandler)
 ], debug=True)

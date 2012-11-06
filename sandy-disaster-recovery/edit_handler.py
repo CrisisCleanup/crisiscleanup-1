@@ -10,13 +10,19 @@ import site_db
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
+single_site_template = jinja_environment.get_template('single_site.html')
 
 class EditHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):
     id = int(self.request.get('id'))
     site = site_db.Site.get(db.Key.from_path('Site', id))
+    form = site_db.SiteForm(self.request.POST, site)
+    single_site = single_site_template.render(
+        { "form": form })
+
     self.response.out.write(template.render(
-          {"form": site_db.SiteForm(self.request.POST, site),
+          {"single_site": single_site,
+           "form": form,
            "id": id,
            "page": "/edit"}))
 
@@ -30,6 +36,9 @@ class EditHandler(base.AuthenticatedHandler):
       site.put()
       self.redirect('/dev/map')
     else:
+      single_site = single_site_template.render(
+          { "form": form })
+
       self.response.out.write(template.render(
           {"errors": data.errors,
            "form": data,

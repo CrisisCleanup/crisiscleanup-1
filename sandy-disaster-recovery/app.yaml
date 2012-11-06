@@ -16,9 +16,9 @@ handlers:
 - url: /javascript
   static_dir: javascript
 - url: /closure/goog
-  static_dir: closure_lib2/closure/goog
+  static_dir: closure_lib/closure/goog
 - url: /closure/css
-  static_dir: closure_lib2/closure/goog/css
+  static_dir: closure_lib/closure/goog/css
 
 - url: .*
   script: main.app

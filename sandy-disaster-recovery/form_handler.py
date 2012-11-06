@@ -9,18 +9,24 @@ import site_db
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
+single_site_template = jinja_environment.get_template('single_site.html')
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):
     message = self.request.get("message", default_value = None)
+    form = site_db.SiteForm()
+    single_site = single_site_template.render(
+        { "form": form })
     self.response.out.write(template.render(
         {"message" : message,
+         "single_site" : single_site,
          "form": site_db.SiteForm(),
          "id": None,
          "page": "/dev/"}))
 
   def post(self):
     data = site_db.SiteForm(self.request.POST)
+
     if data.validate():
       lookup = site_db.Site.gql(
         "WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
@@ -41,8 +47,11 @@ class FormHandler(base.AuthenticatedHandler):
       site.put()
       self.redirect("/dev/?message=" + "Successfully added " + site.name)
     else:
+      single_site = single_site_template.render(
+          { "form": data })
       self.response.out.write(template.render(
           {"errors": data.errors,
+           "single_site": single_site,
            "form": data,
            "id": None,
            "page": "/dev/"}))

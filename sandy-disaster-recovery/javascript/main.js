@@ -9,6 +9,13 @@ goog.require('goog.ui.Select');
 var markers = [];
 var panorama;
 
+var layers = [
+    { kml: "https://www.google.com/maps/ms?authuser=0&vps=3&ie=UTF8&msa=0&output=kml&msid=210988455284977221384.0004cdd5426e591f0780f",
+      description: "Command Centers" },
+    { kml: "https://www.google.com/maps/ms?ie=UTF8&authuser=0&msa=0&output=kml&msid=210988455284977221384.0004cdd57d7e7e61d9c00",
+      description: "Affected Areas" },
+              ];
+
 function classifySite(site) {
   var tags = [];
   tags.push(site["debris_removal_only"] ? "debris_only" : "not_only_debris");
@@ -166,6 +173,7 @@ function AddMarker(lat, lng, site, map, infowindow) {
   });
 }
 
+var layerObjects = [];
 function initialize() {
   var myLatlng = new google.maps.LatLng(39.483351, -74.999737);
   var mapOptions = {
@@ -175,7 +183,17 @@ function initialize() {
   };
 
   var map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
-
+  // Initialize KML layers
+  for (var i = 0; i < layers.length; ++i) {
+    var layer = new google.maps.KmlLayer({
+       clickable: true,
+       map: map,
+       preserveViewport: true,
+       suprressInfoWindows: false,
+       url: layers[i].kml,
+        });
+    layerObjects.push(layer);
+  }
 
   var infowindow = new google.maps.InfoWindow({
     content: ""

@@ -12,8 +12,10 @@ template = jinja_environment.get_template('form.html')
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):
+    message = self.request.get("message", default_value = None)
     self.response.out.write(template.render(
-        {"form": site_db.SiteForm(),
+        {"message" : message,
+         "form": site_db.SiteForm(),
          "id": None,
          "page": "/dev/"}))
 
@@ -37,11 +39,7 @@ class FormHandler(base.AuthenticatedHandler):
                             phone2 = data.phone2.data)
       data.populate_obj(site)
       site.put()
-      self.response.out.write(template.render(
-          {"message": "Successfully added " + site.name,
-           "form": site_db.SiteForm(),
-           "id": None,
-           "page": "/dev/"}))
+      self.redirect("/dev/?message=" + "Successfully added " + site.name)
     else:
       self.response.out.write(template.render(
           {"errors": data.errors,

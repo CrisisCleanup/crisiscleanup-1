@@ -91,7 +91,7 @@ class SiteForm(SiteForm2):
   num_wide_trees = wtforms.fields.SelectField(
       choices = [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, "5+")],
       coerce = int,
-      default = 3)
+      default = 0)
 
 """def __init__(self, *args, **kwargs):
     SiteForm2.__init__(self, *args, **kwargs)

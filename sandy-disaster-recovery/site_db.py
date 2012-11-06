@@ -6,7 +6,19 @@ from wtforms.ext.appengine.db import model_form
 # Local libraries.
 import organization
 
-STATUS_CHOICES = ["Open, unassigned", "Closed, out of scope"]
+STATUS_CHOICES = [
+    "Open, unassigned",
+    "Open, assigned",
+    "Open, partially completed",
+    "Open, needs follow-up",
+    "Closed, completed",
+    "Closed, incomplete",
+    "Closed, out of scope",
+    "Closed, done by others",
+    "Closed, rejected",
+    "Closed, duplicate",
+    "Closed, no help wanted",
+    ]
 
 class Site(db.Model):
   # Data about the site itself.

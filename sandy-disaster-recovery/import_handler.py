@@ -1,5 +1,7 @@
 # System libraries.
+
 import json
+import logging
 from google.appengine.api.urlfetch import fetch
 
 # Local libraries.
@@ -15,6 +17,7 @@ class ImportHandler(base.AuthenticatedHandler):
 
     f = fetch("https://script.googleusercontent.com/echo?user_content_key=FhDerHYRqmPomvddrWG5z1EPE2M6pIsdWoneKZggh5tOOwrmP4Atbge70tQMNTIGyGqIpA2WfT2mn-b9xDGva0ig28c7dyAJm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnLQWLGh0dZkw6EUdDCIUunrCvAUHV5O19lgdOMElR3BpzsNnsNxUs69kLAqLclCCiDOmbnRGq-tk&lib=MIG37R_y3SDE8eP6TP_JVJA0rWYMbTwle");
     if f.status_code == 200:
+      status_lower = [s.lower() for s in site_db.STATUS_CHOICES]
 
       c = f.content.replace("var sites = ", "", 1).replace(";", "")
       all_sites = json.loads(c)
@@ -27,6 +30,11 @@ class ImportHandler(base.AuthenticatedHandler):
         site = None
         for l in lookup:
           site = l
+        # Temporary testing code
+        # TODO(Jeremy): Remove this if we want to support incremental updates.
+        if site:
+          site.delete()
+          site = None
         if not site:
           # Save the data, and redirect to the view page
           site = site_db.Site(
@@ -44,9 +52,20 @@ class ImportHandler(base.AuthenticatedHandler):
               standing_water = "yes" in s["Standing water on site?"].lower(),
               work_requested = s["Work Requested"],
               county = s["County"],
+              special_needs = s["Special Needs"],
+              rent_or_own = ("Rent" if
+                             "rent" in s["Own/Rent"].lower().strip()
+                             else ("Own" if "own" in s["Own/Rent"].lower().strip() else None)),
+              work_without_resident = "yes" in s["Work without resident present?"].lower().strip(),
+              debris_removal_only = "yes" in s["Are you only requesting Debris removal?"].lower().strip(),
+              electrical_lines = (
+                  "yes" in s["Are there Electrical Lines in the Clean-Up Area?"].lower().strip() or
+                  "yes" in s["Are there Phone or Cable Lines in the Clean-up Area"].lower().strip()),
+              other_hazards = s["Any Other Hazards in the Clean-Up Area?"]
               )
-        if len(s["Ages of Residents"]) > 1:
-          site.notes += "Age of residents: " + s["Ages of Residents"]
+        site.notes = ""
+        if len(str(s["Ages of Residents"])) > 1:
+          site.notes = "Age of residents: " + str(s["Ages of Residents"])
         status_str = s["Status (Do not Edit)"]
         parts = [o.strip() for o in status_str.split(':')]
         if len(parts) == 2:
@@ -56,12 +75,11 @@ class ImportHandler(base.AuthenticatedHandler):
           if len(orgs):
             org = orgs[0]
             site.claimed_by = org
-          if status in site_db.STATUS_CHOICES:
-            site.status = status
-        if ["Lat, Long"]:
-          lls = s["Lat, Long"].split(",")
-          if len(lls) == 2:
-            site.latitude = float(lls[0])
-            site.longitude = float(lls[1])
-
+          if status.lower() in status_lower:
+            site.status = site_db.STATUS_CHOICES[status_lower.index(status.lower())]
+        lls = s["Lat,  Long"].split(",")
+        if len(lls) == 2:
+          site.latitude = float(lls[0].strip())
+          site.longitude = float(lls[1].strip())
+        #logging.critical('No lat/lng: ' + site.name + " " + s["Lat,  Long"])
         site.put()

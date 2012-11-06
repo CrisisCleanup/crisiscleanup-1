@@ -8,7 +8,6 @@ import urllib2
 # Local libraries.
 import base
 import site_db
-import util
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))

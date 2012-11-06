@@ -24,6 +24,9 @@ class PrintHandler(base.AuthenticatedHandler):
     except:
       return
     site = site_db.Site.get(db.Key.from_path('Site', id))
+    if not site:
+      self.response.set_status(404)
+      return
     template_values = {"form": site,
                        "id": id,
                        "readonly": True}

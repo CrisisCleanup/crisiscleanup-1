@@ -3,7 +3,11 @@
 <link href="/stylesheets/print.css" rel="stylesheet">
 </head>
 <body>
-<h1>Case A{{id}}</h1>
+<h3>Case #A{{id}}</h3>
+<h4>City Level View</h4>
+<img src="http://maps.googleapis.com/maps/api/staticmap?center={{form.latitude}},{{form.longitude}}&zoom=13&size=600x300&key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&sensor=true&markers=|{{form.latitude}},{{form.longitude}}" width=600 height=300 />
+<h4>Local View</h4>
+<img src="http://maps.googleapis.com/maps/api/staticmap?center={{form.latitude}},{{form.longitude}}&zoom=16&size=600x300&key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&sensor=true&markers=|{{form.latitude}},{{form.longitude}}" width=600 height=300 />
 <h2>Status</h2>
 <table>
 
@@ -14,7 +18,7 @@
 <tr><td class="question">Reported By:</td>
 <td class="answer">{{ form.reported_by }}</td></tr>
 <tr><td class="question">Claimed By:</td>
-<td class="answer">{{ form.claimed_by }}</td></tr>
+<td class="answer">{{ form.claimed_by.name }}</td></tr>
 
 {% if form.date_closed %}
 <tr><td class="question">Date Closed:</td>

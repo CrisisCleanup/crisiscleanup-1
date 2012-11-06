@@ -7,3 +7,4 @@ class Organization(db.Model):
   # set the passwords ourselves, and may need to be able
   # to retrieve them for an organization.
   password = db.StringProperty(required = True)
+  primary_contact_email = db.StringProperty(default = '')

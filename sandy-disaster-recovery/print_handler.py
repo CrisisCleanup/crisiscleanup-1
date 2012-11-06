@@ -25,5 +25,7 @@ class PrintHandler(base.AuthenticatedHandler):
                        "id": id,
                        "readonly": True}
     self.response.out.write(template.render({
+        "id": id,
+        "form": site,
         "single_site": single_site_template.render(template_values),
         }))

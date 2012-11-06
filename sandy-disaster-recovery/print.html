@@ -3,6 +3,25 @@
 <link href="/stylesheets/print.css" rel="stylesheet">
 </head>
 <body>
+<h1>Case A{{id}}</h1>
+<h2>Status</h2>
+<table>
+
+<tr><td class="question">Status:</td>
+<td class="answer">{{ form.status }}</td></tr>
+<tr><td class="question">Inspected By:</td>
+<td class="answer">{{ form.inspected_by }}</td></tr>
+
+{% if form.date_closed %}
+<tr><td class="question">Date Closed:</td>
+<td class="answer">{{ form.date_closed }}</td></tr>
+<tr><td class="question">Total Volunteers:</td>
+<td class="answer">{{ form.total_volunteers }}</td></tr>
+<tr><td class="question">Hours worked per volunteer:</td>
+<td class="answer">{{ form.hours_worked_per_volunteer }}</td></tr>
+{% endif %}
+</table>
+
 {{ single_site }}
 </body>
 </html>

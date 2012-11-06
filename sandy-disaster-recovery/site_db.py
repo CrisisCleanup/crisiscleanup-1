@@ -1,12 +1,17 @@
-from wtforms.ext.appengine.db import model_form
+# System libraries.
 import wtforms.fields
 from google.appengine.ext import db
+from wtforms.ext.appengine.db import model_form
+
+# Local libraries.
+import organization
 
 STATUS_CHOICES = ["Open, unassigned", "Closed, out of scope"]
 
 class Site(db.Model):
   # Data about the site itself.
   name = db.StringProperty(required = True)
+  claimed_by = db.ReferenceProperty(organization.Organization)
   request_date = db.DateTimeProperty(auto_now_add=True)
   address = db.StringProperty(required = True)
   city = db.StringProperty()

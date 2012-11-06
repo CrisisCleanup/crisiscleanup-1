@@ -33,9 +33,7 @@ class MapHandler(base.RequestHandler):
       template_values = {
           "logout" : logout_template.render({"org": org}),
           "sites" :
-            [json.dumps(dict(to_dict(s).items() +
-                             [("id", s.key().id())]),
-                        default=dthandler)
+            [json.dumps(self.SiteToDict(s), default=dthandler)
              for s in site_db.Site.all()],
           "status_choices" : [json.dumps(c) for c in site_db.STATUS_CHOICES],
           "filters" : filters,
@@ -62,3 +60,15 @@ class MapHandler(base.RequestHandler):
           "demo" : True,
         }
     self.response.out.write(template.render(template_values))
+
+  def SiteToDict(self, site):
+    site_dict = to_dict(site)
+    site_dict["id"] = site.key().id()
+    claimed_by = None
+    try:
+      claimed_by = site.claimed_by
+    except db.ReferencePropertyResolveError:
+      pass
+    if claimed_by:
+      site_dict["claimed_by"] = {"name": claimed_by.name}
+    return site_dict

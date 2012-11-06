@@ -17,6 +17,7 @@ import key
 import map_handler
 import print_handler
 import problem_handler
+import site_api_handler
 import sites_handler
 
 class MapRedirectHandler(base.RequestHandler):
@@ -29,12 +30,12 @@ class LogoutHandler(base.RequestHandler):
                                      key.GetDeleteCookie())
     self.redirect("/authentication")
 
-
 class SpreadsheetRedirectHandler(base.RequestHandler):
   def get(self):
     self.redirect("https://docs.google.com/spreadsheet/ccc?key=0AhBdPrWyrhIfdFVHMDFOc0NCQjNNbmVvNHJybTlBUXc#gid=0")
 
 app = webapp2.WSGIApplication([
+    ('/api/site', site_api_handler.SiteApiHandler),
     ('/authentication', authentication_handler.AuthenticationHandler),
     ('/logout', LogoutHandler),
     ('/', SpreadsheetRedirectHandler),

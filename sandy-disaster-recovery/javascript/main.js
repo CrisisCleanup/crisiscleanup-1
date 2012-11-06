@@ -1,5 +1,7 @@
 goog.require('goog.dom');
 goog.require('goog.events.EventType');
+goog.require('goog.json');
+goog.require('goog.net.XhrIo');
 goog.require('goog.string');
 goog.require('goog.ui.Dialog');
 goog.require('goog.ui.Dialog.ButtonSet');
@@ -11,6 +13,32 @@ goog.provide('sandy.main');
 
 var dialog;
 var panorama;
+
+var runSiteRpc = function(request, response_handler) {
+  goog.net.XhrIo.send('/api/site', function(e) {
+    var xhr = e.target;
+    var status = xhr.getStatus();
+    var response_text = xhr.getResponseText();
+    if (response_handler !== undefined) {
+      response_handler(status, response_text, xhr);
+    }
+  }, 'PUT', goog.json.serialize(request));
+};
+
+var claimSite = function(site_id, response_handler) {
+  var request = {id: site_id, action: 'claim'}
+  runSiteRpc(request, response_handler);
+};
+
+// fields is a field => value mapping.
+var updateSiteFields = function(site_id, fields, response_handler) {
+  var request = {id: site_id, action: 'update', update: fields};
+  runSiteRpc(request, response_handler);
+};
+
+var setMessageHtml = function(message_html) {
+  document.getElementById('message_div').innerHTML = message_html;
+};
 
 // Creates and returns a <select> DOM element populated with status choices.
 // The site's current value is selected.
@@ -36,10 +64,17 @@ var createStatusSelect = function(site) {
     addOption(site['status']);
   }
   status_select.onchange = function(e) {
-    // TODO(Bruce): Implement.
     var select = e.target;
     var new_value = select.value;
-    alert("Change status hasn't been implemented yet.");
+    setMessageHtml('working...');
+    updateSiteFields(site['id'], {status: select.value},
+      function(status, response_text, xhr) {
+        if (status == 200) {
+          setMessageHtml('Successfully changed status.');
+        } else {
+          setMessageHtml('Failure: ' + response_text);
+        }
+      });
     return false;
   };
   return status_select;
@@ -52,7 +87,7 @@ var updateDialogForSite = function(dialog, site) {
     div.innerHTML = "<b>" + goog.string.htmlEscape(label) + ":</b> ";
     if (typeof value == "string") {
       // Treat the value as a key into site.
-      goog.dom.appendChild(div, document.createTextNode(site[value]));
+      goog.dom.appendChild(div, document.createTextNode(value));
     } else {
       // Treat the value as a DOM element.
       goog.dom.appendChild(div, value);
@@ -60,25 +95,50 @@ var updateDialogForSite = function(dialog, site) {
     goog.dom.appendChild(dialog.getContentElement(), div);
   };
 
+  var addButton = function(label, event_handler) {
+    button = document.createElement('button');
+    button.innerHTML = label;
+    button.onclick = event_handler;
+    goog.dom.appendChild(dialog.getContentElement(), button);
+  };
+
   dialog.setTitle("Case number: A" + site["id"]);
 
   dialog.setContent('');
-  addField("Name", "name");
-  addField("Requests", "work_requested");
+  addField("Name", site["name"]);
+  addField("Requests", site["work_requested"]);
   addField("Status", createStatusSelect(site));
+  if (site.claimed_by !== null) {
+    addField("Claimed by", site["claimed_by"]["name"]);
+  }
 
-  goog.events.listen(dialog, goog.ui.Dialog.EventType.SELECT, function(e) {
-    var dialog = e.target;
-    if (e.key == "edit") {
-      window.location = "/edit?id=" + site["id"];
-    } else if (e.key == "claim") {
-      // TODO(Bruce): Implement.
-      alert("Claiming hasn't been implemented yet.");
-    } else if (e.key == "printer") {
-      window.open("/print?id=" + site["id"], '_blank');
-    }
-    return false;
+  addButton('Printer Friendly', function(e) {
+    window.open("/print?id=" + site["id"], '_blank');
   });
+  addButton('Edit', function(e) {
+    window.location = "/edit?id=" + site["id"];
+  });
+
+  if (site.claimed_by === null) {
+    addButton('Claim', function(e) {
+      setMessageHtml('working...');
+      claimSite(site['id'], function(status, response_text, xhr) {
+        if (status == 200) {
+          setMessageHtml('Succesfully claimed.')
+        } else {
+          if (response_text) {
+            setMessageHtml('Failure: ' + response_text);
+          } else {
+            setMessageHtml('Failure: an unknown error occurred.');
+          }
+        }
+      });
+    });
+  }
+
+  var message_div = document.createElement('div')
+  message_div.id = 'message_div'
+  goog.dom.appendChild(dialog.getContentElement(), message_div);
 };
 
 function AddMarker(lat, lng, site, map, infowindow) {
@@ -120,11 +180,7 @@ function AddMarker(lat, lng, site, map, infowindow) {
       dialog = new goog.ui.Dialog();
       dialog.setModal(false);
       dialog.setDraggable(false);
-      var buttonSet = new goog.ui.Dialog.ButtonSet();
-      buttonSet.addButton({caption: "Edit", key: "edit"});
-      buttonSet.addButton({caption: "Claim", key: "claim"});
-      buttonSet.addButton({caption: "Printer Friendly", key: "printer"});
-      dialog.setButtonSet(buttonSet);
+      dialog.setButtonSet(null);
     }
     dialog.setVisible(false);
     updateDialogForSite(dialog, site);

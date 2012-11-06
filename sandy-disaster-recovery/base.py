@@ -1,8 +1,8 @@
 # Basic utilities shared across the application.
 
 # System libraries.
-import webapp2
 import urllib
+import webapp2
 
 # For authentication
 import key
@@ -30,15 +30,31 @@ class AuthenticatedHandler(RequestHandler):
   def post(self):
     org = key.CheckAuthorization(self.request)
     if not org:
-      self.redirect("/authentication?destination=" +
-                    urllib.quote(str(self.request.url).encode('utf-8')))
+      self.HandleAuthenticationFailure('post')
       return
     self.AuthenticatedPost(org)
 
   def get(self):
     org = key.CheckAuthorization(self.request)
     if not org:
-      self.redirect("/authentication?destination=" +
-                    urllib.quote(str(self.request.url).encode('utf-8')))
+      self.HandleAuthenticationFailure('get')
       return
     self.AuthenticatedGet(org)
+
+  def put(self):
+    org = key.CheckAuthorization(self.request)
+    if not org:
+      self.HandleAuthenticationFailure('put')
+      return
+    self.AuthenticatedPut(org)
+
+  def HandleAuthenticationFailure(self, method):
+    """Takes some action when authentication fails.
+    This is its own method so that subclasses can customize the action.
+    """
+    if method == 'get':
+      self.redirect("/authentication?destination=" +
+                    urllib.quote(str(self.request.url).encode('utf-8')))
+    else:
+      # Redirecting to a non-GET URL doesn't really make sense.
+      self.redirect("/authentication")

@@ -17,16 +17,41 @@ function initialize() {
   // Set up validation events.
   goog.dom.getElement('address').onblur = validate;
   goog.dom.getElement('zip_code').onblur = validate;
+  goog.dom.getElement('state').onblur = validate;
+  goog.dom.getElement('county').onblur = validate;
+  goog.dom.getElement('city').onblur = validate;
 }
 
 
 var last_city = "";
 var last_state = "";
+var last_zip_code = "";
+var last_geocode = "";
 var geocoding = false;
 var marker;
 
 function validate() {
-  var address = goog.dom.getElement('address').value + " " + goog.dom.getElement('zip_code').value + " USA";
+  var zip_code = goog.dom.getElement('zip_code').value;
+  var city_value = goog.dom.getElement('city').value;
+  var state_value = goog.dom.getElement('state').value;
+  var street_address = goog.dom.getElement('address').value;
+  if ((zip_code.length < 5 && city_value.length < 2 && state_value.length < 2) ||
+      street_address.length < 5) return;
+  var address = street_address;
+  // If city was not automatically set, then use it.
+  if (city_value != last_city) {
+    address += " " + city_value;
+  }
+  if (state_value != last_state) {
+    address += " " + state_value;
+  }
+  if (zip_code != last_zip_code) {
+    address += " " + zip_code;
+  }
+  address += " USA";
+  if (address == last_geocode) return;
+  last_geocode = address;
+
   geocoder.geocode({ 'address': address }, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
       map.setCenter(results[0].geometry.location);
@@ -61,6 +86,18 @@ function validate() {
             } else {
               goog.dom.getElement("citySuggestion").innerHTML = "";
             }
+          } else if (comps[i].types[t] === "postal_code") {
+            var zip_code = goog.dom.getElement("zip_code");
+            if (zip_code.value === last_zip_code) {
+              zip_code.value = last_zip_code = comps[i].long_name;
+              goog.dom.getElement("zipCodeSuggestion").innerHTML = "";
+            } else if (zip_code.value !== comps[i].long_name) {
+              goog.dom.getElement("zipCodeSuggestion").innerHTML = comps[i].long_name + "?";
+            } else {
+              goog.dom.getElement("zipCodeSuggestion").innerHTML = "";
+            }
+          } else if (comps[i].types[t] === "administrative_area_level_2") {
+            goog.dom.getElement("county").value = comps[i].long_name;
           }
         }
       }

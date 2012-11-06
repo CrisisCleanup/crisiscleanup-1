@@ -29,6 +29,7 @@ class Site(db.Model):
   request_date = db.DateTimeProperty(auto_now_add=True)
   address = db.StringProperty(required = True)
   city = db.StringProperty()
+  county = db.StringProperty()
   state = db.StringProperty()
   zip_code = db.StringProperty()
   cross_street = db.StringProperty()

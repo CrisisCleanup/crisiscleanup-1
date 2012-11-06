@@ -26,11 +26,13 @@
 <td class="answer"> {{with_errors(form.request_date) }}</td></tr>
 {% endif %}
 <tr><td class=question>Zip Code:</td>
-<td class="answer"> {{with_errors(form.zip_code) }}</td></tr>
+<td class="answer"> {{with_errors(form.zip_code) }}<div id=zipCodeSuggestion></td></tr>
 <tr><td class=question>Street Address:</td>
-<td class="answer"> {{with_errors(form.address) }}</td></tr>
+<td class="answer"> {{with_errors(form.address) }}</div></td></tr>
 <tr><td class=question>City:</td>
 <td class="answer"> {{with_errors(form.city)}}<div id=citySuggestion></div></td></tr>
+<tr><td class=question>County:</td>
+<td class="answer"> {{with_errors(form.county)}}<div id=countySuggestion></div></td></tr>
 <tr><td class=question>State:</td>
 <td class="answer"> {{with_errors(form.state)}}<div id=stateSuggestion></div></td></tr>
 <tr><td class=question>Latitude:</td>

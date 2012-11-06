@@ -74,7 +74,7 @@ class Site(db.Model):
   cutting_cause_harm = db.BooleanProperty()
   other_hazards = db.StringProperty(multiline = True)
   insurance = db.StringProperty(multiline = True)
-  notes = db.StringProperty(multiline = True)
+  notes = db.TextProperty()
   latitude = db.FloatProperty(default = 0.0)
   longitude = db.FloatProperty(default = 0.0)
   # Priority assigned by organization (1 is highest).

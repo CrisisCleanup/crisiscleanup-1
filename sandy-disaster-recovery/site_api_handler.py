@@ -1,4 +1,5 @@
 # System libraries.
+import cgi
 import json
 import logging
 from google.appengine.ext import db
@@ -15,7 +16,7 @@ class SiteApiHandler(base.AuthenticatedHandler):
   def AuthenticatedPut(self, org):
     """Handles updating site fields."""
     # raw_data = '{"id": 1, "update": {"status": "Open, unassigned"}}'
-    json_request = json.loads(self.request.body)
+    json_request = json.loads(cgi.escape(self.request.body))
 
     REQUIRED_KEYS = ['id', 'action']
     if not self.CheckRequiredKeys(json_request, REQUIRED_KEYS):

@@ -1,10 +1,14 @@
 # System libraries.
+import cgi
 import jinja2
+import logging
 import os
+import urllib2
 
 # Local libraries.
 import base
 import site_db
+import util
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -14,7 +18,9 @@ logout_template = jinja_environment.get_template('logout.html')
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):
-    message = self.request.get("message", default_value = None)
+    message = cgi.escape(self.request.get("message"))
+    if len(message) == 0:
+      message = None
     form = site_db.SiteForm()
     single_site = single_site_template.render(
         { "form": form })
@@ -26,9 +32,8 @@ class FormHandler(base.AuthenticatedHandler):
          "id": None,
          "page": "/dev/"}))
 
-  def post(self):
+  def AuthenticatedPost(self, org):
     data = site_db.SiteForm(self.request.POST)
-
     if data.validate():
       lookup = site_db.Site.gql(
         "WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
@@ -46,8 +51,9 @@ class FormHandler(base.AuthenticatedHandler):
                             phone1 = data.phone1.data,
                             phone2 = data.phone2.data)
       data.populate_obj(site)
+      site.reported_by = org
       site.put()
-      self.redirect("/dev/?message=" + "Successfully added " + site.name)
+      self.redirect("/dev/?message=" + "Successfully added " + urllib2.quote(site.name))
     else:
       single_site = single_site_template.render(
           { "form": data })

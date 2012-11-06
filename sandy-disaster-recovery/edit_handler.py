@@ -15,7 +15,10 @@ logout_template = jinja_environment.get_template('logout.html')
 
 class EditHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):
-    id = int(self.request.get('id'))
+    try:
+      id = int(self.request.get('id'))
+    except:
+      return
     site = site_db.Site.get(db.Key.from_path('Site', id))
     form = site_db.SiteForm(self.request.POST, site)
     single_site = single_site_template.render(
@@ -28,7 +31,10 @@ class EditHandler(base.AuthenticatedHandler):
            "page": "/edit"}))
 
   def AuthenticatedPost(self, org):
-    id = int(self.request.get('_id'))
+    try:
+      id = int(self.request.get('_id'))
+    except:
+      return
     site = site_db.Site.get(db.Key.from_path('Site', id))
     data = site_db.SiteForm(self.request.POST, site)
     if data.validate():

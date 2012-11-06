@@ -19,7 +19,10 @@ single_site_template = jinja_environment.get_template('single_site.html')
 class PrintHandler(base.AuthenticatedHandler):
   """Handler to confirm and then actually delete a site."""
   def AuthenticatedGet(self, org):
-    id = int(self.request.get('id'))
+    try:
+      id = int(self.request.get('id'))
+    except:
+      return
     site = site_db.Site.get(db.Key.from_path('Site', id))
     template_values = {"form": site,
                        "id": id,

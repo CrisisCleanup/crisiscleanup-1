@@ -25,7 +25,10 @@ STATUS_CHOICES = [
 class Site(db.Model):
   # Data about the site itself.
   name = db.StringProperty(required = True)
-  claimed_by = db.ReferenceProperty(organization.Organization)
+  reported_by = db.ReferenceProperty(organization.Organization,
+                                     collection_name="reported_site_set")
+  claimed_by = db.ReferenceProperty(organization.Organization,
+                                    collection_name="claimed_site_set")
   request_date = db.DateTimeProperty(auto_now_add=True)
   address = db.StringProperty(required = True)
   city = db.StringProperty()
@@ -84,8 +87,6 @@ class Site(db.Model):
   inspected_by = db.StringProperty()
 
   # Metadata
-  # TODO(Bruce): We need to add an "assigned organization" field, once we have
-  # organizations.
   status = db.StringProperty(choices=set(STATUS_CHOICES),
                              default=STATUS_CHOICES[0])
   date_closed = db.DateTimeProperty()

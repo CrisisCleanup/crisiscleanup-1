@@ -1,6 +1,8 @@
 # Basic utilities shared across the application.
 
 # System libraries.
+import cgi
+import logging
 import urllib
 import webapp2
 
@@ -32,6 +34,8 @@ class AuthenticatedHandler(RequestHandler):
     if not org:
       self.HandleAuthenticationFailure('post')
       return
+    for i in self.request.POST.keys():
+      self.request.POST[i] = cgi.escape(self.request.POST[i])
     self.AuthenticatedPost(org)
 
   def get(self):

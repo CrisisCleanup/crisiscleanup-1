@@ -17,7 +17,7 @@ class ImportHandler(base.AuthenticatedHandler):
 
     f = fetch("https://script.googleusercontent.com/echo?user_content_key=FhDerHYRqmPomvddrWG5z1EPE2M6pIsdWoneKZggh5tOOwrmP4Atbge70tQMNTIGyGqIpA2WfT2mn-b9xDGva0ig28c7dyAJm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnLQWLGh0dZkw6EUdDCIUunrCvAUHV5O19lgdOMElR3BpzsNnsNxUs69kLAqLclCCiDOmbnRGq-tk&lib=MIG37R_y3SDE8eP6TP_JVJA0rWYMbTwle");
     if f.status_code == 200:
-      status_lower = [s.lower() for s in site_db.STATUS_CHOICES]
+      status_lower = [s.lower() for s in site_db.Site.status.choices]
 
       c = f.content.replace("var sites = ", "", 1).replace(";", "")
       all_sites = json.loads(c)
@@ -76,7 +76,8 @@ class ImportHandler(base.AuthenticatedHandler):
             org = orgs[0]
             site.claimed_by = org
           if status.lower() in status_lower:
-            site.status = site_db.STATUS_CHOICES[status_lower.index(status.lower())]
+            site.status = site_db.Site.status.choices[
+                status_lower.index(status.lower())]
         lls = s["Lat,  Long"].split(",")
         if len(lls) == 2:
           site.latitude = float(lls[0].strip())

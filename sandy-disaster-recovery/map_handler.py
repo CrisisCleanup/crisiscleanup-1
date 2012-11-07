@@ -43,7 +43,8 @@ class MapHandler(base.RequestHandler):
           "sites" :
             [json.dumps(SiteToDict(s), default=dthandler)
              for s in site_db.Site.all()],
-          "status_choices" : [json.dumps(c) for c in site_db.STATUS_CHOICES],
+          "status_choices" : [json.dumps(c) for c in
+                              site_db.Site.status.choices],
           "filters" : filters,
           "demo" : False,
         }

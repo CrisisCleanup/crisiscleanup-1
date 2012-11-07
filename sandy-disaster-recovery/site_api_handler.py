@@ -34,7 +34,7 @@ class SiteApiHandler(base.AuthenticatedHandler):
       return
 
     VALIDATORS = {
-        'status': lambda field, status: status in site_db.STATUS_CHOICES,
+        'status': lambda field, status: status in site_db.Site.status.choices,
         }
 
     unsupported_fields = [f for f in json_request['update']

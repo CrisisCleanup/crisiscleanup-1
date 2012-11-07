@@ -226,7 +226,7 @@ function AddMarker(lat, lng, site, map, infowindow) {
 sandy.main.initialize = function() {
   var myLatlng = new google.maps.LatLng(39.483351, -74.999737);
   var mapOptions = {
-    zoom: 4,
+    zoom: 10,
     center: myLatlng,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };

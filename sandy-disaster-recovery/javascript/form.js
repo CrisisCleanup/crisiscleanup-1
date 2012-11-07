@@ -5,9 +5,9 @@ var geocoder;
 
 function initialize() {
   geocoder = new google.maps.Geocoder();
-  var myLatlng = new google.maps.LatLng(39.483351, -74.999737);
+  var myLatlng = new google.maps.LatLng(40.7697, -73.5735);
   var mapOptions = {
-    zoom: 8,
+    zoom: 11,
     center: myLatlng,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
@@ -59,8 +59,13 @@ function validate() {
       if (marker) marker.setMap(null);
       marker = new google.maps.Marker({
         map: map,
-        position: ll
+        position: ll,
       });
+      var mapBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(ll.lat() - .05, ll.lng() - .02),
+	new google.maps.LatLng(ll.lat() + .05, ll.lng() + .08));
+      map.setZoom(10);
+      map.fitBounds(mapBounds);
       goog.dom.getElement('latitude').value = ll.lat();
       goog.dom.getElement('longitude').value = ll.lng();
       var comps = results[0].address_components;

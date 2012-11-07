@@ -42,7 +42,7 @@ var setMessageHtml = function(message_html) {
 
 // Creates and returns a <select> DOM element populated with status choices.
 // The site's current value is selected.
-var createStatusSelect = function(site) {
+var createStatusSelect = function(site, marker) {
   var status_select = document.createElement('select');
   var addOption = function (value) {
     var option = document.createElement('option');
@@ -72,6 +72,8 @@ var createStatusSelect = function(site) {
         if (status == 200) {
           setMessageHtml('Successfully changed status.');
           site["status"] = select.value;
+	  marker["tags"] = sandy.map.ClassifySite(site, my_organization);
+	  sandy.map.Refilter();
         } else {
           setMessageHtml('Failure: ' + response_text);
         }
@@ -81,8 +83,31 @@ var createStatusSelect = function(site) {
   return status_select;
 };
 
+var dialogSite = null;
+var updateSite = function(site, marker) {
+  // Schedule an update with XHR for this site.
+  goog.net.XhrIo.send('/api/site_ajax?id=' + site.id,
+		      function(e) {
+    var xhr = e.target;
+    var status = xhr.getStatus();
+    if (status == 200) {
+      var new_site = xhr.getResponseJson();
+      for (var p in new_site) {
+        site[p] = new_site[p];
+	if (dialog_site == site) {
+          updateDialogForSite(dialog, site, marker);
+	  marker["tags"] = sandy.map.ClassifySite(site, my_organization);
+	  sandy.map.Refilter();
+	}
+      }
+    }		  
+  })
+}
+
 // Updates dialog content and event listeners for the given site.
-var updateDialogForSite = function(dialog, site) {
+var updateDialogForSite = function(dialog, site, marker) {
+  dialog_site = site;
+  var main_div = document.createElement('div');
   var addField = function(label, value) {
     var div = document.createElement('div');
     div.innerHTML = "<b>" + goog.string.htmlEscape(label) + ":</b> ";
@@ -93,22 +118,21 @@ var updateDialogForSite = function(dialog, site) {
       // Treat the value as a DOM element.
       goog.dom.appendChild(div, value);
     }
-    goog.dom.appendChild(dialog.getContentElement(), div);
+    goog.dom.appendChild(main_div, div);
   };
 
   var addButton = function(label, event_handler) {
     button = document.createElement('button');
     button.innerHTML = label;
     button.onclick = event_handler;
-    goog.dom.appendChild(dialog.getContentElement(), button);
+    goog.dom.appendChild(main_div, button);
   };
 
   dialog.setTitle("Case number: A" + site["id"]);
 
-  dialog.setContent('');
   addField("Name", site["name"]);
   addField("Requests", site["work_requested"]);
-  addField("Status", createStatusSelect(site));
+  addField("Status", createStatusSelect(site, marker));
   if (site.claimed_by !== null) {
     addField("Claimed by", site["claimed_by"]["name"]);
   }
@@ -125,7 +149,8 @@ var updateDialogForSite = function(dialog, site) {
       setMessageHtml('working...');
       claimSite(site['id'], function(status, response_text, xhr) {
         if (status == 200) {
-          setMessageHtml('Succesfully claimed.')
+          setMessageHtml('Succesfully claimed.');
+	  updateSite(site, marker);
         } else {
           if (response_text) {
             setMessageHtml('Failure: ' + response_text);
@@ -138,8 +163,10 @@ var updateDialogForSite = function(dialog, site) {
   }
 
   var message_div = document.createElement('div')
-  message_div.id = 'message_div'
-  goog.dom.appendChild(dialog.getContentElement(), message_div);
+  message_div.id = 'message_div';
+  goog.dom.appendChild(main_div, message_div);
+  dialog.setContent('');
+  goog.dom.appendChild(dialog.getContentElement(), main_div);
 };
 
 function AddMarker(lat, lng, site, map, infowindow) {
@@ -185,12 +212,13 @@ function AddMarker(lat, lng, site, map, infowindow) {
       dialog.setButtonSet(null);
     }
     dialog.setVisible(false);
-    updateDialogForSite(dialog, site);
+    updateDialogForSite(dialog, site, marker);
     dialog.setVisible(true);
     dialog.getElement().style.left = null;
     dialog.getElement().style.top = null;
     dialog.getElement().style.right = "10px";
     dialog.getElement().style.bottom = "10px";
+    updateSite(site, marker);
   });
   return marker;
 }
@@ -215,15 +243,7 @@ sandy.main.initialize = function() {
       zoom: 1
     }
   };
-  panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoramaOptions);
+  panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"),
+						panoramaOptions);
   map.setStreetView(panorama);
-}
-
-
-function sayHi() {
-  var newHeader = goog.dom.createDom(
-    'h1',
-    { 'style': 'background-color:#EEE' },
-    'Hello world!');
-  goog.dom.appendChild(document.body, newHeader);
 }

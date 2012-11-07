@@ -29,7 +29,7 @@ class FormHandler(base.AuthenticatedHandler):
          "single_site" : single_site,
          "form": site_db.SiteForm(),
          "id": None,
-         "page": "/dev/"}))
+         "page": "/dev"}))
 
   def AuthenticatedPost(self, org):
     data = site_db.SiteForm(self.request.POST)
@@ -52,7 +52,7 @@ class FormHandler(base.AuthenticatedHandler):
       data.populate_obj(site)
       site.reported_by = org
       site.put()
-      self.redirect("/dev/?message=" + "Successfully added " + urllib2.quote(site.name))
+      self.redirect("/dev?message=" + "Successfully added " + urllib2.quote(site.name))
     else:
       single_site = single_site_template.render(
           { "form": data })
@@ -62,4 +62,4 @@ class FormHandler(base.AuthenticatedHandler):
            "single_site": single_site,
            "form": data,
            "id": None,
-           "page": "/dev/"}))
+           "page": "/dev"}))

@@ -56,12 +56,12 @@ def GetOrganizationForm(post_data):
 class AuthenticationHandler(base.RequestHandler):
   def get(self):
     if key.CheckAuthorization(self.request):
-      self.redirect(self.request.get('destination', default_value='/dev/'))
+      self.redirect(self.request.get('destination', default_value='/dev'))
       return
 
     self.response.out.write(template.render({
       "form" : GetOrganizationForm(self.request.POST),
-      "destination" : self.request.get('destination', default_value='/dev/'),
+      "destination" : self.request.get('destination', default_value='/dev'),
       "page" : "/authentication",
     }))
 
@@ -95,6 +95,6 @@ class AuthenticationHandler(base.RequestHandler):
 
       self.response.headers.add_header("Set-Cookie",
                                        selected_key.getCookie(org))
-      self.redirect(urllib.unquote(self.request.get('destination', default_value='/dev/').encode('ascii')))
+      self.redirect(urllib.unquote(self.request.get('destination', default_value='/dev').encode('ascii')))
     else:
       self.redirect('/authentication')

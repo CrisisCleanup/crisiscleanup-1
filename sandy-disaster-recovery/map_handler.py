@@ -41,7 +41,7 @@ class MapHandler(base.RequestHandler):
           "org" : org,
           "logout" : logout_template.render({"org": org}),
           "sites" :
-            [json.dumps(self.SiteToDict(s), default=dthandler)
+            [json.dumps(SiteToDict(s), default=dthandler)
              for s in site_db.Site.all()],
           "status_choices" : [json.dumps(c) for c in site_db.STATUS_CHOICES],
           "filters" : filters,
@@ -69,21 +69,21 @@ class MapHandler(base.RequestHandler):
         }
     self.response.out.write(template.render(template_values))
 
-  def SiteToDict(self, site):
-    site_dict = to_dict(site)
-    site_dict["id"] = site.key().id()
-    claimed_by = None
-    try:
-      claimed_by = site.claimed_by
-    except db.ReferencePropertyResolveError:
-      pass
-    if claimed_by:
-      site_dict["claimed_by"] = {"name": claimed_by.name}
-    reported_by = None
-    try:
-      reported_by = site.reported_by
-    except db.ReferencePropertyResolveError:
-      pass
-    if reported_by:
-      site_dict["reported_by"] = {"name": reported_by.name}
-    return site_dict
+def SiteToDict(site):
+  site_dict = to_dict(site)
+  site_dict["id"] = site.key().id()
+  claimed_by = None
+  try:
+    claimed_by = site.claimed_by
+  except db.ReferencePropertyResolveError:
+    pass
+  if claimed_by:
+    site_dict["claimed_by"] = {"name": claimed_by.name}
+  reported_by = None
+  try:
+    reported_by = site.reported_by
+  except db.ReferencePropertyResolveError:
+    pass
+  if reported_by:
+    site_dict["reported_by"] = {"name": reported_by.name}
+  return site_dict

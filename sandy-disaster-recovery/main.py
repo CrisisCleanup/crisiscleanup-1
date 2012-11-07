@@ -17,6 +17,7 @@ import key
 import map_handler
 import print_handler
 import problem_handler
+import site_ajax_handler
 import site_api_handler
 import sites_handler
 
@@ -43,6 +44,7 @@ class Route(routes.RedirectRoute):
 app = webapp2.WSGIApplication([
     Route(r'/', redirect_to=SPREADSHEET_URL, name='spreadsheet_redirect'),
     Route(r'/api/site', site_api_handler.SiteApiHandler, 'site_api'),
+    Route(r'/api/site_ajax', site_ajax_handler.SiteAjaxHandler, 'site_ajax'),
     Route(r'/authentication', authentication_handler.AuthenticationHandler,
           'auth'),
     Route(r'/logout', LogoutHandler, 'logout'),

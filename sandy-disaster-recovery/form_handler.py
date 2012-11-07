@@ -7,6 +7,7 @@ import urllib2
 
 # Local libraries.
 import base
+import event_db
 import site_db
 
 jinja_environment = jinja2.Environment(
@@ -23,16 +24,24 @@ class FormHandler(base.AuthenticatedHandler):
     form = site_db.SiteForm()
     single_site = single_site_template.render(
         { "form": form })
+    event_name = self.request.get(
+        "event_name", default_value = event_db.DefaultEventName())
+    logging.critical(event_name)
+    event = event_db.Event.get_by_key_name(event_name)
+    if event:
+      event_name = event.name
     self.response.out.write(template.render(
         {"message" : message,
          "logout" : logout_template.render({"org": org}),
          "single_site" : single_site,
          "form": site_db.SiteForm(),
          "id": None,
-         "page": "/dev"}))
+         "page": "/dev",
+         "event_name": event_name}))
 
   def AuthenticatedPost(self, org):
     data = site_db.SiteForm(self.request.POST)
+    message = ""
     if data.validate():
       lookup = site_db.Site.gql(
         "WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
@@ -41,7 +50,11 @@ class FormHandler(base.AuthenticatedHandler):
         zip_code = data.zip_code.data)
       site = None
       for l in lookup:
-        site = l
+        # See if this same site is for a different event.
+        # If so, we'll make a new one.
+        if not site.event or site.event.name != event_name:
+          site = l
+
       if not site:
         # Save the data, and redirect to the view page
         site = site_db.Site(zip_code = data.zip_code.data,
@@ -51,15 +64,21 @@ class FormHandler(base.AuthenticatedHandler):
                             phone2 = data.phone2.data)
       data.populate_obj(site)
       site.reported_by = org
-      site.put()
-      self.redirect("/dev?message=" + "Successfully added " + urllib2.quote(site.name))
-    else:
-      single_site = single_site_template.render(
-          { "form": data })
-      self.response.out.write(template.render(
-          {"errors": data.errors,
-           "logout" : logout_template.render({"org": org}),
-           "single_site": single_site,
-           "form": data,
-           "id": None,
-           "page": "/dev"}))
+      event_name = self.request.get("event_name",
+                                    default_value = event_db.DefaultEventName())
+      if not site.event and event_db.AddSiteToEvent(site, event_name):
+        self.redirect("/dev?message=" + "Successfully added " + urllib2.quote(site.name))
+        return
+      else:
+        message = "Failed to add site to event: " + event_name
+    single_site = single_site_template.render(
+        { "form": data })
+    self.response.out.write(template.render(
+        {"message": message,
+         "errors": data.errors,
+         "logout" : logout_template.render({"org": org}),
+         "single_site": single_site,
+         "form": data,
+         "id": None,
+         "page": "/dev",
+         "event_name": event_name}))

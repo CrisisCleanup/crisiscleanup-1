@@ -27,6 +27,7 @@
 </div>{# end delete_form #}
 {% endif %}
 <form method="POST" action="{{page}}">
+<input type="hidden" name="event_name" value="{{event_name}}" />
 {% if message %}
 <div class="form_message">{{message}}</div>
 {% endif %}

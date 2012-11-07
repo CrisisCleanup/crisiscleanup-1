@@ -6,6 +6,7 @@ from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 
 # Local libraries.
+import event_db
 import organization
 
 def _GetOrganizationName(site, field):
@@ -32,15 +33,10 @@ class Site(db.Model):
   # The list of fields that will be included in the CSV output.
   CSV_FIELDS = []
 
-  @property
-  def case_number(self):
-    try:
-      return 'A%s' % self.key().id()
-    except db.NotSavedError:
-      return None
-
   # Data about the site itself.
   name = db.StringProperty(required = True)
+  case_number = db.StringProperty()
+  event = db.ReferenceProperty(event_db.Event)
   reported_by = db.ReferenceProperty(organization.Organization,
                                      collection_name="reported_site_set")
   claimed_by = db.ReferenceProperty(organization.Organization,
@@ -185,6 +181,7 @@ class Site(db.Model):
       'date_closed',
       'total_volunteers',
       'hours_worked_per_volunteer',
+      'event',
       ]
 
   _CSV_ACCESSORS = {
@@ -196,7 +193,7 @@ class Site(db.Model):
     """Returns the site as a list of string values, one per field in
     CSV_FIELDS."""
     csv_row = []
-    for field in ['case_number'] + self.CSV_FIELDS:
+    for field in self.CSV_FIELDS:
       accessor = self._CSV_ACCESSORS.get(field, _GetField)
       value = accessor(self, field)
       if value is None:
@@ -249,13 +246,3 @@ class SiteForm(SiteForm2):
       choices=_ChoicesWithBlank(Site.rent_or_own.choices))
   work_type = wtforms.fields.SelectField(
       choices=_ChoicesWithBlank(Site.work_type.choices))
-
-"""def __init__(self, *args, **kwargs):
-    SiteForm2.__init__(self, *args, **kwargs)
-
-    self.priority.choices[4] = (5, "5 (lowest)")
-    self.priority.coerce = int
-    self.num_trees_down.choices[5] = (5, "5+")
-    self.num_wide_trees.choices[5] = (5, "5+")"""
-
-# SiteForm = SiteForm2

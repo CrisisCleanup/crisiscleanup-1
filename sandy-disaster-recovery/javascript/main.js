@@ -100,7 +100,7 @@ var updateSite = function(site, marker) {
 	  sandy.map.Refilter();
 	}
       }
-    }		  
+    }
   })
 }
 
@@ -128,7 +128,7 @@ var updateDialogForSite = function(dialog, site, marker) {
     goog.dom.appendChild(main_div, button);
   };
 
-  dialog.setTitle("Case number: A" + site["id"]);
+  dialog.setTitle("Case number: " + site["case_number"]);
 
   addField("Name", site["name"]);
   addField("Requests", site["work_requested"]);

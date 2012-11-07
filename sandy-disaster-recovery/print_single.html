@@ -1,6 +1,6 @@
 
 <h3 {% if page_break %}style="page-break-before:always;"{% endif %}>
-Case #A{{id}}</h3>
+Case #{{form.case_number}}</h3>
 {% if show_map %}
 <h4>City Level View</h4>
 <img src="http://maps.googleapis.com/maps/api/staticmap?center={{form.latitude}},{{form.longitude}}&zoom=13&size=600x300&key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&sensor=true&markers=|{{form.latitude}},{{form.longitude}}" width=600 height=300 />

@@ -70,6 +70,10 @@ sandy.map.Refilter = function() {
   if (print_el) {
     print_el.href = "/print?id=" + site_ids.join(",");
   }
+  var export_el = goog.dom.getElement('filtered_export');
+  if (export_el) {
+    export_el.href = "/export?id=" + site_ids.join(",");
+  }
 }
 
 sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {

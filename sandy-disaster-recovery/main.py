@@ -11,6 +11,7 @@ import authentication_handler
 import base
 import delete_handler
 import edit_handler
+import export_handler
 import form_handler
 import import_handler
 import key
@@ -47,6 +48,7 @@ app = webapp2.WSGIApplication([
     Route(r'/api/site_ajax', site_ajax_handler.SiteAjaxHandler, 'site_ajax'),
     Route(r'/authentication', authentication_handler.AuthenticationHandler,
           'auth'),
+    Route(r'/export', export_handler.ExportHandler, 'export'),
     Route(r'/logout', LogoutHandler, 'logout'),
     Route(r'/delete', delete_handler.DeleteHandler, 'delete'),
     Route(r'/dev', form_handler.FormHandler, 'dev'),

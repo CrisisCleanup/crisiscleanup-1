@@ -8,7 +8,37 @@ from wtforms.ext.appengine.db import model_form
 # Local libraries.
 import organization
 
+def _GetOrganizationName(site, field):
+  """Returns the name of the organization in the given field, if possible.
+  """
+  if hasattr(site, field):
+    try:
+      org = getattr(site, field)
+    except db.ReferencePropertyResolveError:
+      return None
+    if org:
+      return org.name
+    return None
+
+def _GetField(site, field):
+  """Simple field accessor, with a bit of logging."""
+  try:
+    return getattr(site, field)
+  except AttributeError:
+    logging.warn('site %s is missing attribute' % (site.key().id(), field))
+    return None
+
 class Site(db.Model):
+  # The list of fields that will be included in the CSV output.
+  CSV_FIELDS = []
+
+  @property
+  def case_number(self):
+    try:
+      return 'A%s' % self.key().id()
+    except db.NotSavedError:
+      return None
+
   # Data about the site itself.
   name = db.StringProperty(required = True)
   reported_by = db.ReferenceProperty(organization.Organization,
@@ -56,8 +86,8 @@ class Site(db.Model):
       choices = [0, 1, 2, 3, 4, 5], default = 0)
   roof_damage = db.BooleanProperty()
   tarps_needed = db.IntegerProperty(default = 0)
-  goods_and_services = db.StringProperty(multiline = True)
 
+  goods_and_services = db.StringProperty(multiline = True)
   tree_diameter = db.StringProperty()
   electrical_lines = db.BooleanProperty()
   cable_lines = db.BooleanProperty()
@@ -97,9 +127,100 @@ class Site(db.Model):
   # total_volunteers * hours_worked_per_volunteer.
   hours_worked_per_volunteer = db.FloatProperty()
 
+  # Defines the order of fields for CSV output.
+  CSV_FIELDS = [
+      'case_number',
+      'name',
+      'reported_by',
+      'claimed_by',
+      'request_date',
+      'address',
+      'city',
+      'county',
+      'state',
+      'zip_code',
+      'cross_street',
+      'landmark',
+      'phone1',
+      'phone2',
+      'time_to_call',
+      'rent_or_own',
+      'work_without_resident',
+      'older_than_60',
+      'disabled',
+      'special_needs',
+      'electricity',
+      'standing_water',
+      'tree_damage',
+      'tree_damage_details',
+      'habitable',
+      'work_requested',
+      'others_help',
+      'debris_removal_only',
+      'work_type',
+      'flood_height',
+      'floors_affected',
+      'carpet_removal',
+      'drywall_removal',
+      'heavy_item_removal',
+      'standing_water',
+      'pump_needed',
+      'num_trees_down',
+      'num_wide_trees',
+      'roof_damage',
+      'tarps_needed',
+      'goods_and_services',
+      'tree_diameter',
+      'electrical_lines',
+      'cable_lines',
+      'cutting_cause_harm',
+      'other_hazards',
+      'insurance',
+      'notes',
+      'latitude',
+      'longitude',
+      'priority',
+      'inspected_by',
+      'status',
+      'date_closed',
+      'total_volunteers',
+      'hours_worked_per_volunteer',
+      ]
+
+  _CSV_ACCESSORS = {
+    'reported_by': _GetOrganizationName,
+    'claimed_by': _GetOrganizationName,
+    }
+
+  def ToCsvLine(self):
+    """Returns the site as a list of string values, one per field in
+    CSV_FIELDS."""
+    csv_row = []
+    for field in ['case_number'] + self.CSV_FIELDS:
+      accessor = self._CSV_ACCESSORS.get(field, _GetField)
+      value = accessor(self, field)
+      if value is None:
+        csv_row.append('')
+      else:
+        csv_row.append(str(value))
+    return csv_row
+
+def _ValidateCsvFields():
+  """Ensures that there is an entry in Sites.CSV_FIELDS for every db
+  property."""
+  # NOTE(Bruce): If there's ever a field that we don't want to include in CSV
+  # output, we can add an exclusion list, and ensure that CSV_FIELDS + the
+  # exclusion list covers all properties.
+  missing = set(Site.fields()) - set(Site.CSV_FIELDS)
+  if missing:
+    raise ValueError('CSV_FIELDS is missing entries for these properties: %s' %
+                     ', '.join(missing))
+_ValidateCsvFields()
+del _ValidateCsvFields
+
 SiteForm2 = model_form(Site)
 
-def ChoicesWithBlank(choices):
+def _ChoicesWithBlank(choices):
   """Converts a list items into choices suitable for a wtforms choices list.
   Prepends a blank value to the list to ensure that a user has to purposefully
   choose all values.
@@ -123,11 +244,11 @@ class SiteForm(SiteForm2):
       default = datetime.datetime.now())
 
   floors_affected = wtforms.fields.SelectField(
-      choices=ChoicesWithBlank(Site.floors_affected.choices))
+      choices=_ChoicesWithBlank(Site.floors_affected.choices))
   rent_or_own = wtforms.fields.SelectField(
-      choices=ChoicesWithBlank(Site.rent_or_own.choices))
+      choices=_ChoicesWithBlank(Site.rent_or_own.choices))
   work_type = wtforms.fields.SelectField(
-      choices=ChoicesWithBlank(Site.work_type.choices))
+      choices=_ChoicesWithBlank(Site.work_type.choices))
 
 """def __init__(self, *args, **kwargs):
     SiteForm2.__init__(self, *args, **kwargs)

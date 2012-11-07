@@ -20,7 +20,7 @@ var layers = [
       description: "Affected Areas" },
               ];
 
-sandy.map.ClassifySite = function(site) {
+sandy.map.ClassifySite = function(site, my_organization) {
   var tags = [];
   tags.push(site["debris_removal_only"] ? "debris_only" : "not_only_debris");
   tags.push(site["electricity"] ? "electricity" : "no_electricty");
@@ -32,6 +32,17 @@ sandy.map.ClassifySite = function(site) {
   tags.push(site["cutting_cause_harm"] ? "trees_threaten_property" : "trees_dont_threaten_property");
   tags.push(site["work_type"]);
   tags.push(site["state"]);
+  if (!site.claimed_by) {
+    tags.push("unclaimed");
+  } else if (my_organization == site.claimed_by.name) {
+    tags.push("claimed");
+  }
+  if (site.reported_by && site.reported_by.name == my_organization) tags.push("reported");
+  if (site.status.indexOf("Open") >= 0) {
+    tags.push("open");
+  } else {
+    tags.push("closed");
+  }
   return tags;
 }
 

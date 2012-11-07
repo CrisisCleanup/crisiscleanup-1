@@ -71,6 +71,7 @@ var createStatusSelect = function(site) {
       function(status, response_text, xhr) {
         if (status == 200) {
           setMessageHtml('Successfully changed status.');
+          site["status"] = select.value;
         } else {
           setMessageHtml('Failure: ' + response_text);
         }
@@ -164,7 +165,7 @@ function AddMarker(lat, lng, site, map, infowindow) {
     title: site.name,
     icon: new google.maps.MarkerImage(siteToIconUrl(site))
   });
-  marker["tags"] = sandy.map.ClassifySite(site);
+  marker["tags"] = sandy.map.ClassifySite(site, my_organization);
   google.maps.event.addListener(marker, 'click', function() {
     infowindow.setContent("<h2>" + site["name"] + "</h2>" + "Address: " + site["address"] + " " + site["city"] + "<br/>" + "Requests: " + site["work_requested"] + "<br/>");
     // infowindow.open(map, marker);

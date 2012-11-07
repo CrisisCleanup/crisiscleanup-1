@@ -30,7 +30,14 @@ class MapHandler(base.RequestHandler):
 
     org = key.CheckAuthorization(self.request)
     if org:
+      filters = [["claimed", "Claimed by " + org.name],
+                 ["unclaimed", "Unclaimed"],
+                 ["open", "Open"],
+                 ["closed", "Closed"],
+                 ["reported", "Reported by " + org.name],
+                 ] + filters
       template_values = {
+          "org" : org,
           "logout" : logout_template.render({"org": org}),
           "sites" :
             [json.dumps(self.SiteToDict(s), default=dthandler)
@@ -71,4 +78,10 @@ class MapHandler(base.RequestHandler):
       pass
     if claimed_by:
       site_dict["claimed_by"] = {"name": claimed_by.name}
+    try:
+      reported_by = site.reported_by
+    except db.ReferencePropertyResolveError:
+      pass
+    if reported_by:
+      site_dict["reported_by"] = {"name": reported_by.name}
     return site_dict

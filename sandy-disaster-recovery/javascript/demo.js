@@ -41,7 +41,7 @@ function AddMarker(lat, lng, site, map, infowindow) {
         "<h2 class='unauthenticated_header'>Unauthenticated</h2><p class='unauthenticated_note'>This version of the map only contains " +
         "approximate latitude and longitude, and Street View is not provided.  In addition, " +
         "all personal details have been removed. </p>" +
-        "<p class='please_log_in'>Please log in to view details. <a href='/authentication?destination=/dev/map'>Authenticate</a></p>");
+        "<p class='please_log_in'>Please log in to view details. <a href='/authentication?destination=/map'>Authenticate</a></p>");
     infowindow.open(map, marker);
   });
   return marker;

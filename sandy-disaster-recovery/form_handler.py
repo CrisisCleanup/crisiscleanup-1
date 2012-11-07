@@ -36,7 +36,7 @@ class FormHandler(base.AuthenticatedHandler):
          "single_site" : single_site,
          "form": site_db.SiteForm(),
          "id": None,
-         "page": "/dev",
+         "page": "/",
          "event_name": event_name}))
 
   def AuthenticatedPost(self, org):
@@ -67,7 +67,7 @@ class FormHandler(base.AuthenticatedHandler):
       event_name = self.request.get("event_name",
                                     default_value = event_db.DefaultEventName())
       if not site.event and event_db.AddSiteToEvent(site, event_name):
-        self.redirect("/dev?message=" + "Successfully added " + urllib2.quote(site.name))
+        self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
         return
       else:
         message = "Failed to add site to event: " + event_name
@@ -80,5 +80,5 @@ class FormHandler(base.AuthenticatedHandler):
          "single_site": single_site,
          "form": data,
          "id": None,
-         "page": "/dev",
+         "page": "/",
          "event_name": event_name}))

@@ -1,5 +1,6 @@
 # System libraries.
 import datetime
+import logging
 import wtforms.ext.dateutil.fields
 import wtforms.fields
 from google.appengine.ext import db
@@ -199,7 +200,10 @@ class Site(db.Model):
       if value is None:
         csv_row.append('')
       else:
-        csv_row.append(str(value))
+        try:
+          csv_row.append(unicode(value).encode("utf-8"))
+        except:
+          logging.critical("Failed to parse: " + value + " " + str(self.key().id()))
     return csv_row
 
 def _ValidateCsvFields():

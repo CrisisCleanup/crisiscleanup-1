@@ -41,7 +41,7 @@ class EditHandler(base.AuthenticatedHandler):
       # Save the data, and redirect to the view page
       data.populate_obj(site);
       site.put()
-      self.redirect('/dev/map')
+      self.redirect('/map')
     else:
       single_site = single_site_template.render(
           { "form": form })

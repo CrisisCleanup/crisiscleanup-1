@@ -44,7 +44,7 @@ class Route(routes.RedirectRoute):
     routes.RedirectRoute.__init__(self, *args, **kwargs)
 
 app = webapp2.WSGIApplication([
-    Route(r'/', redirect_to=SPREADSHEET_URL, name='spreadsheet_redirect'),
+    Route(r'/old', redirect_to=SPREADSHEET_URL, name='spreadsheet_redirect'),
     Route(r'/api/site', site_api_handler.SiteApiHandler, 'site_api'),
     Route(r'/api/site_ajax', site_ajax_handler.SiteAjaxHandler, 'site_ajax'),
     Route(r'/authentication', authentication_handler.AuthenticationHandler,
@@ -53,13 +53,16 @@ app = webapp2.WSGIApplication([
     Route(r'/logout', LogoutHandler, 'logout'),
     Route(r'/delete', delete_handler.DeleteHandler, 'delete'),
     Route(r'/dev', form_handler.FormHandler, 'dev'),
+    Route(r'/', form_handler.FormHandler, 'dev'),
     Route(r'/dev/map', map_handler.MapHandler, 'map'),
     Route(r'/dev/maps', redirect_to_name='map', name='maps_redirect'),
+    Route(r'/map', map_handler.MapHandler, 'map'),
+    Route(r'/maps', redirect_to_name='map', name='maps_redirect'),
     Route(r'/edit', edit_handler.EditHandler, 'edit'),
     Route(r'/import', import_handler.ImportHandler, 'import'),
     Route(r'/initialize', initialize_handler.InitializeHandler, 'initialize'),
-    Route(r'/map', redirect_to=MAP_URL, name='external_map_redirect'),
-    Route(r'/maps', redirect_to_name=MAP_URL, name='external_maps_redirect'),
+    Route(r'/old/map', redirect_to=MAP_URL, name='external_map_redirect'),
+    Route(r'/old/maps', redirect_to_name=MAP_URL, name='external_maps_redirect'),
     Route(r'/print', print_handler.PrintHandler, 'print'),
     Route(r'/problems', problem_handler.ProblemHandler, 'problems'),
     Route(r'/sites', sites_handler.SitesHandler, 'sites')

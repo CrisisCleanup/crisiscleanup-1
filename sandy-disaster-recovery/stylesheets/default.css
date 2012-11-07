@@ -71,3 +71,12 @@ html, body {
   height: 100%;
   width: 100%;
 }
+#legend_div {
+  z-index: 2;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background-color: #ffffff;
+  opacity: .8;
+  padding: 0px;
+}

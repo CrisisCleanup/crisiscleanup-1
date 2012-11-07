@@ -12,7 +12,6 @@ goog.require('sandy.map');
 goog.provide('sandy.main');
 
 var dialog;
-var panorama;
 
 var runSiteRpc = function(request, response_handler) {
   goog.net.XhrIo.send('/api/site', function(e) {
@@ -196,15 +195,7 @@ function AddMarker(lat, lng, site, map, infowindow) {
   marker["site"] = site;
   google.maps.event.addListener(marker, 'click', function() {
     infowindow.setContent("<h2>" + site["name"] + "</h2>" + "Address: " + site["address"] + " " + site["city"] + "<br/>" + "Requests: " + site["work_requested"] + "<br/>");
-    // infowindow.open(map, marker);
-    panorama.setPosition(marker.getPosition());
-    panorama.setPov({
-      heading: 0,
-      pitch: 10,
-      zoom: 1
-    });
     infowindow.setZIndex(10);
-    panorama.setVisible(true);
     if (!dialog) {
       dialog = new goog.ui.Dialog();
       dialog.setModal(false);
@@ -232,18 +223,7 @@ sandy.main.initialize = function() {
   };
 
   var map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
-  // TODO(rostovpack): Set myLatLng to the location of the highest
+  // TODO(Jeremy): Set myLatLng to the location of the highest
   // priority current site.
   sandy.map.InitializeMap(sites, AddMarker, map);
-  var panoramaOptions = {
-    position: myLatlng,
-    pov: {
-      heading: 0,
-      pitch: 10,
-      zoom: 1
-    }
-  };
-  panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"),
-						panoramaOptions);
-  map.setStreetView(panorama);
 }

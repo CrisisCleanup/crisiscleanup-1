@@ -1,0 +1,33 @@
+
+<h3 {% if page_break %}style="page-break-before:always;"{% endif %}>
+Case #A{{id}}</h3>
+{% if show_map %}
+<h4>City Level View</h4>
+<img src="http://maps.googleapis.com/maps/api/staticmap?center={{form.latitude}},{{form.longitude}}&zoom=13&size=600x300&key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&sensor=true&markers=|{{form.latitude}},{{form.longitude}}" width=600 height=300 />
+<h4>Local View</h4>
+<img src="http://maps.googleapis.com/maps/api/staticmap?center={{form.latitude}},{{form.longitude}}&zoom=16&size=600x300&key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&sensor=true&markers=|{{form.latitude}},{{form.longitude}}" width=600 height=300 />
+<hr style="page-break-after:always;" />
+{% endif %}
+<h2>Status</h2>
+<table>
+
+<tr><td class="question">Status:</td>
+<td class="answer">{{ form.status }}</td></tr>
+<tr><td class="question">Inspected By:</td>
+<td class="answer">{{ form.inspected_by }}</td></tr>
+<tr><td class="question">Reported By:</td>
+<td class="answer">{{ form.reported_by }}</td></tr>
+<tr><td class="question">Claimed By:</td>
+<td class="answer">{{ form.claimed_by.name }}</td></tr>
+
+{% if form.date_closed %}
+<tr><td class="question">Date Closed:</td>
+<td class="answer">{{ form.date_closed }}</td></tr>
+<tr><td class="question">Total Volunteers:</td>
+<td class="answer">{{ form.total_volunteers }}</td></tr>
+<tr><td class="question">Hours worked per volunteer:</td>
+<td class="answer">{{ form.hours_worked_per_volunteer }}</td></tr>
+{% endif %}
+</table>
+{{ single_site }}
+<hr />

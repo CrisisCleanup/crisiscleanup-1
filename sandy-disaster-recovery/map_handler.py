@@ -4,6 +4,7 @@ import jinja2
 import json
 import os
 from google.appengine.ext.db import to_dict
+from google.appengine.ext import db
 
 # Local libraries.
 import base
@@ -78,6 +79,7 @@ class MapHandler(base.RequestHandler):
       pass
     if claimed_by:
       site_dict["claimed_by"] = {"name": claimed_by.name}
+    reported_by = None
     try:
       reported_by = site.reported_by
     except db.ReferencePropertyResolveError:

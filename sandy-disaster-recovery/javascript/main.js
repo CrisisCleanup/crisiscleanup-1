@@ -166,6 +166,7 @@ function AddMarker(lat, lng, site, map, infowindow) {
     icon: new google.maps.MarkerImage(siteToIconUrl(site))
   });
   marker["tags"] = sandy.map.ClassifySite(site, my_organization);
+  marker["site"] = site;
   google.maps.event.addListener(marker, 'click', function() {
     infowindow.setContent("<h2>" + site["name"] + "</h2>" + "Address: " + site["address"] + " " + site["city"] + "<br/>" + "Requests: " + site["work_requested"] + "<br/>");
     // infowindow.open(map, marker);

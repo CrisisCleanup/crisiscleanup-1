@@ -38,7 +38,7 @@ sandy.map.ClassifySite = function(site, my_organization) {
     tags.push("claimed");
   }
   if (site.reported_by && site.reported_by.name == my_organization) tags.push("reported");
-  if (site.status.indexOf("Open") >= 0) {
+  if (site.status && site.status.indexOf("Open") >= 0) {
     tags.push("open");
   } else {
     tags.push("closed");
@@ -46,7 +46,8 @@ sandy.map.ClassifySite = function(site, my_organization) {
   return tags;
 }
 
-function refilter() {
+sandy.map.Refilter = function() {
+  var site_ids = [];
   var els = document.getElementsByName("filter");
   var filters = [];
   for (var el = 0; el < els.length; ++el) {
@@ -61,6 +62,13 @@ function refilter() {
       }
     }
     markers[i].setVisible(include);
+    if (include) {
+      site_ids.push(markers[i]["site"]["id"]);
+    }
+  }
+  var print_el = goog.dom.getElement('filtered_print');
+  if (print_el) {
+    print_el.href = "/print?id=" + site_ids.join(",");
   }
 }
 

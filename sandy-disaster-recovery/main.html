@@ -17,7 +17,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 {% endif %}
 <script type="text/javascript">
-var my_organization = "{{org.name}}";
+var my_organization ="{% if org %}{{org.name}}{% endif %}";
 var sites = [
 {% for s in sites %}
 {{s}},
@@ -38,9 +38,11 @@ var STATUS_CHOICES = [
 <div id="filters">
     Only show the following types:<br />
 {% for f in filters %}
-<input type="checkbox" onclick="refilter()" name="filter" id="{{f[0]}}">
+<input type="checkbox" onclick="sandy.map.Refilter()" name="filter" id="{{f[0]}}">
 <label for="{{f[0]}}">{{f[1]}}</label><br />
 {% endfor %}
+<br />
+<a href="/print?" id="filtered_print" target="_blank">Get Printable Version</a><br />
 </div></div>
 {% if not demo %}
 <div id="pano">

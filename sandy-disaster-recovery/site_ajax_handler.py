@@ -2,9 +2,11 @@
 import datetime
 import jinja2
 import json
+import logging
 import os
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
+from google.appengine.api import memcache
 
 # Local libraries.
 import base
@@ -20,9 +22,15 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):
     id_param = self.request.get('id')
     if id_param == "all":
-      self.response.out.write(
-          json.dumps([map_handler.SiteToDict(s)
-                      for s in site_db.GetAllCached()], default=dthandler))
+      cache_key = "site_ajax_all"
+      output = memcache.get(cache_key)
+      if not output:
+        logging.critical("uncached.")
+        output = json.dumps(
+            [map_handler.SiteToDict(s)
+             for s in site_db.GetAllCached()], default=dthandler)
+        memcache.set(cache_key, output, 600)
+      self.response.out.write(output)
       return
     try:
       id = int(id_param)

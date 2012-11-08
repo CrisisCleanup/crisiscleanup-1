@@ -23,7 +23,7 @@ def AddSiteToEvent(site, event_name, force = False):
     return False
   event = Event.get_by_key_name(event_name)
   if not site or not event or ((not force) and site.event):
-    logging.critical("Could not initialize site: " + site.key().id())
+    logging.critical("Could not initialize site: " + str(site.key().id()))
     return False
   site.event = event
   site.case_number = event.case_label + str(event.num_sites)

@@ -1,0 +1,2 @@
+var google;
+var document;

@@ -95,7 +95,7 @@ var kCompletionStatusColors = {
   "Closed, rejected": "xgray",
   "Open, needs follow-up": "yellow",
   "Closed, duplicate": "invisible",
-  "Closed, no help wanted": "invisible",
+  "Closed, no help wanted": "invisible"
 };
 
 var getMarkerIcon = function(site) {
@@ -214,7 +214,7 @@ function AddMarker(lat, lng, site, map, infowindow) {
     position: new google.maps.LatLng(lat, lng),
     map: map,
     title: site.name,
-    icon: icon,
+    icon: icon
   });
   marker["tags"] = sandy.map.ClassifySite(site, my_organization);
   marker["site"] = site;

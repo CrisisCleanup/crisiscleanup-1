@@ -6,11 +6,15 @@
     <title>Sandy Disaster Response -- Request Map</title>
     <link href="/stylesheets/default.css" rel="stylesheet">
     <link href="/closure/css/dialog.css" rel="stylesheet">
+{% if uncompiled %}
     <script src="/closure/goog/base.js"></script>
     <script src="/javascript/deps.js"></script>
     <script type="text/javascript">
     goog.require("sandy.{% if demo %}demo{% else %}main{% endif %}");
     </script>
+{% else %}
+    <script src="/javascript/compiled_main.js"></script>
+{% endif %}
 {% if in_prod %}
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&v=3.exp&sensor=false"></script>
 {% else %}

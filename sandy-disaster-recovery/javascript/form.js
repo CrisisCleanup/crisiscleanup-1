@@ -1,9 +1,10 @@
 goog.require("goog.dom");
+goog.provide("sandy.form");
 
 var map;
 var geocoder;
 
-function initialize() {
+sandy.form.Initialize = function() {
   geocoder = new google.maps.Geocoder();
   var myLatlng = new google.maps.LatLng(40.7697, -73.5735);
   var mapOptions = {

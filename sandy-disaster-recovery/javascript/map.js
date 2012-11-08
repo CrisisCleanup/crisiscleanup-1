@@ -17,7 +17,7 @@ var layers = [
     { kml: "https://www.google.com/maps/ms?authuser=0&vps=3&ie=UTF8&msa=0&output=kml&msid=210988455284977221384.0004cdd5426e591f0780f",
       description: "Command Centers" },
     { kml: "https://www.google.com/maps/ms?ie=UTF8&authuser=0&msa=0&output=kml&msid=210988455284977221384.0004cdd57d7e7e61d9c00",
-      description: "Affected Areas" },
+      description: "Affected Areas" }
               ];
 
 sandy.map.ClassifySite = function(site, my_organization) {
@@ -85,7 +85,7 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
        map: map,
        preserveViewport: true,
        suprressInfoWindows: false,
-       url: layers[i].kml,
+       url: layers[i].kml
         });
     layerObjects.push(layer);
   }

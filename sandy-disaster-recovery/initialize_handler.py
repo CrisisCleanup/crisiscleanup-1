@@ -20,5 +20,5 @@ class InitializeHandler(base.AuthenticatedHandler):
                            case_label = "A")
     event.put()
     for s in site_db.Site.all():
-      event_db.AddSiteToEvent(s, event.name)
+      event_db.AddSiteToEvent(s, event.name, force = True)
     self.response.out.write("Initialized")

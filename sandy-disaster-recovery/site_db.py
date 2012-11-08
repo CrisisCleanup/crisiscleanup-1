@@ -66,7 +66,8 @@ class Site(db.Model):
   work_requested = db.StringProperty(multiline=True)
   others_help = db.StringProperty(multiline=True)
   debris_removal_only = db.BooleanProperty()
-  work_type = db.StringProperty(choices=["Flood", "Trees", "Other"])
+  work_type = db.StringProperty(choices=["Flood", "Trees", "Other",
+                                         "Unknown", "Goods or Services"])
   flood_height = db.StringProperty()
   floors_affected = db.StringProperty(choices=[
       "Basement Only",

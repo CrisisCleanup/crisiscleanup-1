@@ -102,7 +102,9 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
       good_ll = false;
     }
     if (good_ll) {
-      markers.push(AddMarker(lat, lng, site, map, infowindow));
+      var marker = AddMarker(lat, lng, site, map, infowindow);
+      if (marker)
+        markers.push(marker);
     }
   }
   if (markers.length > 0) {

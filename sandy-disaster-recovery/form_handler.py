@@ -26,7 +26,6 @@ class FormHandler(base.AuthenticatedHandler):
         { "form": form })
     event_name = self.request.get(
         "event_name", default_value = event_db.DefaultEventName())
-    logging.critical(event_name)
     event = event_db.Event.get_by_key_name(event_name)
     if event:
       event_name = event.name

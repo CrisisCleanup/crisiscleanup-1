@@ -82,6 +82,37 @@ var createStatusSelect = function(site, marker) {
   return status_select;
 };
 
+
+var kCompletionStatusColors = {
+  "Open, unassigned" : "red",
+  "Open, assigned": "yellow",
+  "Open, partially Completed": "yellow",
+  "Closed, completed": "green",
+  "Closed, incomplete": "green",
+  "Closed, out of Scope": "gray",
+  "Closed, done by Others": "darkgreen",
+  "Closed, rejected": "xgray",
+  "Open, needs follow-up": "yellow",
+  "Closed, duplicate": "invisible",
+  "Closed, no help wanted": "invisible",
+};
+
+var getMarkerIcon = function(site) {
+  if (kCompletionStatusColors[site["status"]] == "invisible") {
+    return null;
+  }
+  var color = "red";
+  if (site["claimed_by"] !== null &&
+      site["status"] == "Open, Unassigned") {
+    color = "orange";
+  } else {
+    color = kCompletionStatusColors[site["status"]] || "red";
+  }
+  site.work_type = site.work_type || "Unknown";
+  var icon_type = site.work_type.replace(/ /g, "_");
+  return "/icons/" + icon_type + "_" + color + ".png";
+}
+
 var dialogSite = null;
 var updateSite = function(site, marker) {
   // Schedule an update with XHR for this site.
@@ -97,6 +128,13 @@ var updateSite = function(site, marker) {
           updateDialogForSite(dialog, site, marker);
 	  marker["tags"] = sandy.map.ClassifySite(site, my_organization);
 	  sandy.map.Refilter();
+          var marker_icon = getMarkerIcon(site);
+          if (marker_icon) {
+            marker.setIcon(marker_icon);
+            marker.setVisible(true);
+          } else {
+            marker.setVisible(false);
+          }
 	}
       }
     }
@@ -169,27 +207,13 @@ var updateDialogForSite = function(dialog, site, marker) {
 };
 
 function AddMarker(lat, lng, site, map, infowindow) {
-  function siteToIconUrl(site) {
-    if (!site.work_type) {
-      return '/icons/darkred-dot.png';
-    }
-    var url = '/icons/' + site.work_type + '_';
-    var now = new Date();
-    var TWO_DAYS_IN_MSEC = 172800000;
-    if (!site.habitable) {
-      url += 'red.png';
-    } else if (now - new Date(site.request_date) > TWO_DAYS_IN_MSEC) {
-      url += 'orange.png';
-    } else {
-      url += 'green.png';
-    }
-    return url;
-  }
+  var icon = getMarkerIcon(site);
+  if (!icon) return null;
   var marker = new google.maps.Marker({
     position: new google.maps.LatLng(lat, lng),
     map: map,
     title: site.name,
-    icon: new google.maps.MarkerImage(siteToIconUrl(site))
+    icon: icon,
   });
   marker["tags"] = sandy.map.ClassifySite(site, my_organization);
   marker["site"] = site;

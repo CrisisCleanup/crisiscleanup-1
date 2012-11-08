@@ -26,6 +26,8 @@ class MapHandler(base.RequestHandler):
               ["not_habitable", "Home is not habitable"],
               ["Flood", "Primary problem is flood damage"],
               ["Trees", "Primary problem is trees"],
+              ["Goods or Services", "Primary need is goods and services"],
+              ["CT", "Connecticut"],
               ["NJ", "New Jersey"],
               ["NY", "New York"]]
 

@@ -30,11 +30,6 @@ class ImportHandler(base.AuthenticatedHandler):
         site = None
         for l in lookup:
           site = l
-        # Temporary testing code
-        # TODO(Jeremy): Remove this if we want to support incremental updates.
-        if site:
-          site.delete()
-          site = None
         if not site:
           # Save the data, and redirect to the view page
           site = site_db.Site(
@@ -63,6 +58,9 @@ class ImportHandler(base.AuthenticatedHandler):
                   "yes" in s["Are there Phone or Cable Lines in the Clean-up Area"].lower().strip()),
               other_hazards = s["Any Other Hazards in the Clean-Up Area?"]
               )
+        work_type = s["Primary Work Type: Flood, Trees, Other"].replace("_", " ")
+        if work_type in site_db.Site.work_type.choices:
+          site.work_type = work_type
         site.notes = ""
         if len(str(s["Ages of Residents"])) > 1:
           site.notes = "Age of residents: " + str(s["Ages of Residents"])

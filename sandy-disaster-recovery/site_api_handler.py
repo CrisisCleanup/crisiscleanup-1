@@ -67,7 +67,6 @@ class SiteApiHandler(base.AuthenticatedHandler):
 
   def HandleClaim(self, json_request, org):
     """Claims a site for an organization, if it's not already taken."""
-    logging.critical('Claiming')
     site = self.GetSite(json_request['id'])
     if not site:
       return

@@ -18,14 +18,13 @@ def DefaultEventName():
   return "Hurricane Sandy Recovery"
 
 @db.transactional(xg=True)
-def AddSiteToEvent(site, event_name):
+def AddSiteToEvent(site, event_name, force = False):
   if not len(event_name):
     return False
   event = Event.get_by_key_name(event_name)
-  if not site or not event or site.event:
-    logging.critical("here " + str(not site) + str(not event) + str(not site.event))
+  if not site or not event or ((not force) and site.event):
+    logging.critical("Could not initialize site: " + site.key().id())
     return False
-  logging.critical("here")
   site.event = event
   site.case_number = event.case_label + str(event.num_sites)
   event.num_sites += 1

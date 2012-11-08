@@ -31,3 +31,11 @@ def AddSiteToEvent(site, event_name, force = False):
   event.put()
   site.put()
   return True
+
+def GetCached(event_id):
+  one_hour_in_seconds = 3600
+  return cache.GetCachedById(Event, one_hour_in_seconds, event_id)
+
+def GetAllCached():
+  one_hour_in_seconds = 3600
+  return cache.GetAllCachedBy(Event, one_hour_in_seconds)

@@ -7,6 +7,7 @@ from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 
 # Local libraries.
+import cache
 import event_db
 import organization
 
@@ -251,3 +252,12 @@ class SiteForm(SiteForm2):
       choices=_ChoicesWithBlank(Site.rent_or_own.choices))
   work_type = wtforms.fields.SelectField(
       choices=_ChoicesWithBlank(Site.work_type.choices))
+
+
+def GetCached(site_id):
+  one_hour_in_seconds = 3600
+  return cache.GetCachedById(Site, one_hour_in_seconds, site_id)
+
+def GetAllCached():
+  one_hour_in_seconds = 3600
+  return cache.GetAllCachedBy(Site, one_hour_in_seconds)

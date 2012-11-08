@@ -4,6 +4,8 @@ import datetime
 import hashlib
 import organization
 
+import cache
+
 class Key(db.Model):
   secret_key = db.StringProperty(required = True)
   date = db.DateTimeProperty(required = True, auto_now_add = True)
@@ -28,6 +30,10 @@ class Key(db.Model):
       cookie["sandy-recovery-auth"]["expires"] = (
           expires.strftime('%a, %d %b %Y %H:%M:%S'))
     return str(cookie)
+
+def GetCached(key_id):
+  one_week_in_seconds = 604800
+  return cache.GetCachedById(Key, one_week_in_seconds, key_id)
 
 def GetDeleteCookie():
   cookie = Cookie.SimpleCookie("")
@@ -56,8 +62,8 @@ def CheckAuthorization(request):
           org_id = getIntOrNone(parts[2])
           key_id = getIntOrNone(parts[1])
           if org_id and key_id:
-            org = organization.Organization.get_by_id(org_id)
-            key = Key.get_by_id(key_id)
+            org = organization.GetCached(org_id)
+            key = GetCached(key_id)
             # Check the age of the key, and delete it
             # if it is too old.
             if key:

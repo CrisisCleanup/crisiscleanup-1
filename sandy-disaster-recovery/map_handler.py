@@ -44,7 +44,7 @@ class MapHandler(base.RequestHandler):
           "logout" : logout_template.render({"org": org}),
           "sites" :
             [json.dumps(SiteToDict(s), default=dthandler)
-             for s in site_db.Site.all()],
+             for s in site_db.GetAllCached()],
           "status_choices" : [json.dumps(c) for c in
                               site_db.Site.status.choices],
           "filters" : filters,
@@ -66,7 +66,7 @@ class MapHandler(base.RequestHandler):
                  "cutting_cause_harm": s.cutting_cause_harm,
                  "work_type": s.work_type,
                  "state": s.state,
-                 }) for s in site_db.Site.all()],
+                 }) for s in site_db.GetAllCached()],
           "filters" : filters,
           "demo" : True,
         }

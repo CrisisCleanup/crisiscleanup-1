@@ -1,5 +1,7 @@
 from google.appengine.ext import db
 
+import cache
+
 class Organization(db.Model):
   # Data about the organization.
   name = db.StringProperty(required = True)
@@ -12,3 +14,11 @@ class Organization(db.Model):
   # user's browser. Otherwise, they'll receive cookies that
   # will expire in 1 week.
   only_session_authentication = db.BooleanProperty(default = True)
+
+def GetCached(org_id):
+  one_hour_in_seconds = 3600
+  return cache.GetCachedById(Organization, one_hour_in_seconds, org_id)
+
+def GetAllCached():
+  two_minutes = 120
+  return cache.GetAllCachedBy(Organization, two_minutes)

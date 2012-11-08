@@ -15,5 +15,5 @@ class SitesHandler(base.AuthenticatedHandler):
       self.response.out.write(
           '<a href="/edit?id=%(id)s">Edit</a> '
           '<a href="/delete?id=%(id)s">Delete</a> - ' % {'id' : s.key().id() })
-      self.response.out.write("%s - %s<br />" %
-                              (s.name, s.address))
+      self.response.out.write("%s: %s - %s<br />" %
+                              (s.case_number, s.name, s.address))

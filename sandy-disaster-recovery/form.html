@@ -57,7 +57,11 @@ The Hurricane Sandy Waiting List will alert volunteer organizations in your area
 <input type="hidden" name="_id" value="{{id}}">
 {% endif %}
 {% if not delete %}
-<input type="submit">
+{% if id %}
+<input type=submit value="Save changes">
+{% else %}
+<input type=submit value="Submit request">
+{% endif %}
 {% endif %}
 </form>
 </div>

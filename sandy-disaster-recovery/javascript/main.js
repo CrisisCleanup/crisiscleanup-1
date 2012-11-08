@@ -7,12 +7,13 @@ goog.require('goog.ui.Dialog');
 goog.require('goog.ui.Dialog.ButtonSet');
 goog.require('goog.ui.Option');
 goog.require('goog.ui.Select');
+goog.require('goog.style');
 goog.require('sandy.map');
 
 goog.provide('sandy.main');
 
 var dialog;
-
+var sites;
 var runSiteRpc = function(request, response_handler) {
   goog.net.XhrIo.send('/api/site', function(e) {
     var xhr = e.target;
@@ -241,13 +242,26 @@ function AddMarker(lat, lng, site, map, infowindow) {
 sandy.main.initialize = function() {
   var myLatlng = new google.maps.LatLng(39.483351, -74.999737);
   var mapOptions = {
-    zoom: 10,
+    zoom: 8,
     center: myLatlng,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
+  goog.style.showElement(goog.dom.getElement('filtersbackground'), false);
   var map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
   // TODO(Jeremy): Set myLatLng to the location of the highest
   // priority current site.
-  sandy.map.InitializeMap(sites, AddMarker, map);
+  goog.net.XhrIo.send('/api/site_ajax?id=all',
+		      function(e) {
+    var xhr = e.target;
+    var status = xhr.getStatus();
+    if (status == 200) {
+      var sites = xhr.getResponseJson();
+      sandy.map.InitializeMap(sites, AddMarker, map);
+      var filters = goog.dom.getElement('filtersbackground');
+      goog.style.showElement(filters, true);
+    }
+  })
+
+
 }

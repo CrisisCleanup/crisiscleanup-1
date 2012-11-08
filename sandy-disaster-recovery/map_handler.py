@@ -2,9 +2,11 @@
 import datetime
 import jinja2
 import json
+import logging
 import os
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
+from google.appengine.api import memcache
 
 # Local libraries.
 import base
@@ -33,6 +35,7 @@ class MapHandler(base.RequestHandler):
 
     org = key.CheckAuthorization(self.request)
     if org:
+      logging.critical('here')
       filters = [["claimed", "Claimed by " + org.name],
                  ["unclaimed", "Unclaimed"],
                  ["open", "Open"],
@@ -42,9 +45,9 @@ class MapHandler(base.RequestHandler):
       template_values = {
           "org" : org,
           "logout" : logout_template.render({"org": org}),
-          "sites" :
-            [json.dumps(SiteToDict(s), default=dthandler)
-             for s in site_db.GetAllCached()],
+          #"sites" :
+          #  [json.dumps(SiteToDict(s), default=dthandler)
+          #   for s in site_db.GetAllCached()],
           "status_choices" : [json.dumps(c) for c in
                               site_db.Site.status.choices],
           "filters" : filters,

@@ -18,8 +18,14 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 class SiteAjaxHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):
+    id_param = self.request.get('id')
+    if id_param == "all":
+      self.response.out.write(
+          json.dumps([map_handler.SiteToDict(s)
+                      for s in site_db.GetAllCached()], default=dthandler))
+      return
     try:
-      id = int(self.request.get('id'))
+      id = int(id_param)
     except:
       self.response.set_status(404)
       return

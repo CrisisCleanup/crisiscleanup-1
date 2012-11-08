@@ -2,7 +2,6 @@
 import datetime
 import jinja2
 import json
-import logging
 import os
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
@@ -35,7 +34,6 @@ class MapHandler(base.RequestHandler):
 
     org = key.CheckAuthorization(self.request)
     if org:
-      logging.critical('here')
       filters = [["claimed", "Claimed by " + org.name],
                  ["unclaimed", "Unclaimed"],
                  ["open", "Open"],

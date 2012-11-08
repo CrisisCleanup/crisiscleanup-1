@@ -2,7 +2,6 @@
 import datetime
 import jinja2
 import json
-import logging
 import os
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
@@ -25,7 +24,6 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
       cache_key = "site_ajax_all"
       output = memcache.get(cache_key)
       if not output:
-        logging.critical("uncached.")
         output = json.dumps(
             [map_handler.SiteToDict(s)
              for s in site_db.GetAllCached()], default=dthandler)

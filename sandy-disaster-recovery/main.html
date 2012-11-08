@@ -18,12 +18,13 @@
 {% endif %}
 <script type="text/javascript">
 var my_organization ="{% if org %}{{org.name}}{% endif %}";
-/*
+{% if demo %}
 var sites = [
 {% for s in sites %}
 {{s}},
 {% endfor %}
-];*/
+];
+{% endif %}
 var STATUS_CHOICES = [
 {% for status in status_choices %}
 {{status}},

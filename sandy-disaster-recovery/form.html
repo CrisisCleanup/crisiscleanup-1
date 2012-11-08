@@ -10,8 +10,15 @@
 {% else %}
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 {% endif %}
+{% if not_compiled %}
 <script src="/closure/goog/base.js"></script>
-<script src="/javascript/form.js"></script>
+<script type="text/javascript">
+goog.require("sandy.form");
+</script>
+{% else %}
+<script src="/javascript/compiled_form.js">
+{% endif %}
+</script>
 </head>
 
 <body onload="sandy.form.Initialize()">

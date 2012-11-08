@@ -60,7 +60,7 @@ function validate() {
       if (marker) marker.setMap(null);
       marker = new google.maps.Marker({
         map: map,
-        position: ll,
+        position: ll
       });
       var mapBounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(ll.lat() - .05, ll.lng() - .02),

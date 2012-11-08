@@ -75,8 +75,12 @@ html, body {
   z-index: 2;
   position: absolute;
   right: 20px;
-  top: 20px;
+  top: 40px;
   background-color: #ffffff;
   opacity: .8;
   padding: 0px;
+}
+#legend_img {
+  max-width: 202px;
+
 }

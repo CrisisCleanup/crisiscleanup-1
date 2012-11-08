@@ -103,7 +103,7 @@ var getMarkerIcon = function(site) {
   }
   var color = "red";
   if (site["claimed_by"] !== null &&
-      site["status"] == "Open, Unassigned") {
+      site["status"] == "Open, unassigned") {
     color = "orange";
   } else {
     color = kCompletionStatusColors[site["status"]] || "red";

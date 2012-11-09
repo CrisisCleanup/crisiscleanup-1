@@ -128,12 +128,12 @@ class Site(db.Model):
 
   date_closed = db.DateTimeProperty()
   # Number of volunteers who helped.
-  total_volunteers = db.FloatProperty(default = 0)
+  total_volunteers = db.FloatProperty(default = 0.0)
   # Number of hours that each volunteer worked.
   # There's apparently an assumption that all volunteers worked the same amount
   # of time, since total time for the project is calculated as
   # total_volunteers * hours_worked_per_volunteer.
-  hours_worked_per_volunteer = db.FloatProperty(default = 0)
+  hours_worked_per_volunteer = db.FloatProperty(default = 0.0)
   # The initials of the resident who was present for the work.
   initials_of_resident_present = db.StringProperty()
 

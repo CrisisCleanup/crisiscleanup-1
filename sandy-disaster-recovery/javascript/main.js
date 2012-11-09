@@ -217,6 +217,7 @@ function selectSite(site) {
 }
 
 function AddMarker(lat, lng, site, map, infowindow) {
+  site["tags"] = sandy.map.ClassifySite(site, my_organization);
   var icon = getMarkerIcon(site);
   if (!icon) return null;
   var marker = new google.maps.Marker({
@@ -225,7 +226,6 @@ function AddMarker(lat, lng, site, map, infowindow) {
     title: site.name,
     icon: icon
   });
-  site["tags"] = sandy.map.ClassifySite(site, my_organization);
   site["marker"] = marker;
   google.maps.event.addListener(marker, 'click', function() {
     sandy.main.SelectSite(site);

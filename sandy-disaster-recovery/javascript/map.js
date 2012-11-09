@@ -56,7 +56,8 @@ sandy.map.Refilter = function() {
   for (var i = 0; i < mapSites.length; ++i) {
     var include = true;
     for (var f = 0; f < filters.length; ++f) {
-      if (mapSites[i]["tags"].indexOf(filters[f]) === -1) {
+      if (mapSites[i]["tags"] &&
+          mapSites[i]["tags"].indexOf(filters[f]) === -1) {
         include = false;
         break;
       }

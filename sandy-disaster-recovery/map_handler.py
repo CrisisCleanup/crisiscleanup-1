@@ -42,7 +42,8 @@ class MapHandler(base.RequestHandler):
                  ] + filters
       template_values = {
           "org" : org,
-          "logout" : logout_template.render({"org": org}),
+          "logout" : logout_template.render({"org": org,
+                                             "include_search": True}),
           #"sites" :
           #  [json.dumps(SiteToDict(s), default=dthandler)
           #   for s in site_db.GetAllCached()],

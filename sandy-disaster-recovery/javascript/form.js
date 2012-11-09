@@ -1,9 +1,18 @@
 goog.require("goog.dom");
+
+goog.require('goog.dom');
+goog.require('goog.ui.ac.ArrayMatcher');
+goog.require('goog.ui.ac.AutoComplete');
+goog.require('goog.ui.ac.InputHandler');
+goog.require('goog.ui.ac.Renderer');
+goog.require('goog.ui.ac');
+
 goog.provide("sandy.form");
+
 
 var map;
 var geocoder;
-
+var autocomplete;
 sandy.form.Initialize = function() {
   geocoder = new google.maps.Geocoder();
   var myLatlng = new google.maps.LatLng(40.7697, -73.5735);
@@ -21,6 +30,19 @@ sandy.form.Initialize = function() {
   goog.dom.getElement('state').onblur = validate;
   goog.dom.getElement('county').onblur = validate;
   goog.dom.getElement('city').onblur = validate;
+
+
+    data = tcMovies;
+    input = goog.dom.getElement("txtInput1");
+  /*var matcher = new goog.ui.ac.ArrayMatcher(data, false);
+    var renderer = new goog.ui.ac.Renderer();
+    var inputHandler = new goog.ui.ac.InputHandler(null, null, false);
+
+    autoComplete = new goog.ui.ac.AutoComplete(
+    matcher, renderer, inputHandler);
+    inputHandler.attachAutoComplete(autoComplete);
+    inputHandler.attachInputs(input);*/
+
 }
 
 

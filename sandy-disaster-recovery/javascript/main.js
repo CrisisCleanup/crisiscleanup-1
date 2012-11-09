@@ -1,3 +1,4 @@
+goog.require('goog.ui.ac');
 goog.require('goog.dom');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
@@ -11,7 +12,8 @@ goog.require('goog.style');
 goog.require('sandy.map');
 
 goog.provide('sandy.main');
-
+var siteMap = {};
+var autoComplete;
 var dialog;
 var sites;
 var runSiteRpc = function(request, response_handler) {
@@ -42,7 +44,7 @@ var setMessageHtml = function(message_html) {
 
 // Creates and returns a <select> DOM element populated with status choices.
 // The site's current value is selected.
-var createStatusSelect = function(site, marker) {
+var createStatusSelect = function(site) {
   var status_select = document.createElement('select');
   var addOption = function (value) {
     var option = document.createElement('option');
@@ -72,7 +74,7 @@ var createStatusSelect = function(site, marker) {
         if (status == 200) {
           setMessageHtml('Successfully changed status.');
           site["status"] = select.value;
-	  marker["tags"] = sandy.map.ClassifySite(site, my_organization);
+	  site["tags"] = sandy.map.ClassifySite(site, my_organization);
 	  sandy.map.Refilter();
         } else {
           setMessageHtml('Failure: ' + response_text);
@@ -115,7 +117,8 @@ var getMarkerIcon = function(site) {
 }
 
 var dialogSite = null;
-var updateSite = function(site, marker) {
+var updateSite = function(site) {
+  var marker = site["marker"];
   // Schedule an update with XHR for this site.
   goog.net.XhrIo.send('/api/site_ajax?id=' + site.id,
 		      function(e) {
@@ -126,15 +129,17 @@ var updateSite = function(site, marker) {
       for (var p in new_site) {
         site[p] = new_site[p];
 	if (dialog_site == site) {
-          updateDialogForSite(dialog, site, marker);
-	  marker["tags"] = sandy.map.ClassifySite(site, my_organization);
+          updateDialogForSite(dialog, site);
+	  site["tags"] = sandy.map.ClassifySite(site, my_organization);
 	  sandy.map.Refilter();
           var marker_icon = getMarkerIcon(site);
-          if (marker_icon) {
-            marker.setIcon(marker_icon);
-            marker.setVisible(true);
-          } else {
-            marker.setVisible(false);
+          if (marker) {
+            if (marker_icon) {
+              marker.setIcon(marker_icon);
+              marker.setVisible(true);
+            } else {
+              marker.setVisible(false);
+            }
           }
 	}
       }
@@ -143,7 +148,7 @@ var updateSite = function(site, marker) {
 }
 
 // Updates dialog content and event listeners for the given site.
-var updateDialogForSite = function(dialog, site, marker) {
+var updateDialogForSite = function(dialog, site) {
   dialog_site = site;
   var main_div = document.createElement('div');
   var addField = function(label, value) {
@@ -170,7 +175,7 @@ var updateDialogForSite = function(dialog, site, marker) {
 
   addField("Name", site["name"]);
   addField("Requests", site["work_requested"]);
-  addField("Status", createStatusSelect(site, marker));
+  addField("Status", createStatusSelect(site));
   if (site.claimed_by !== null) {
     addField("Claimed by", site["claimed_by"]["name"]);
   }
@@ -188,7 +193,7 @@ var updateDialogForSite = function(dialog, site, marker) {
       claimSite(site['id'], function(status, response_text, xhr) {
         if (status == 200) {
           setMessageHtml('Succesfully claimed.');
-	  updateSite(site, marker);
+	  updateSite(site);
         } else {
           if (response_text) {
             setMessageHtml('Failure: ' + response_text);
@@ -207,6 +212,10 @@ var updateDialogForSite = function(dialog, site, marker) {
   goog.dom.appendChild(dialog.getContentElement(), main_div);
 };
 
+function selectSite(site) {
+
+}
+
 function AddMarker(lat, lng, site, map, infowindow) {
   var icon = getMarkerIcon(site);
   if (!icon) return null;
@@ -216,27 +225,31 @@ function AddMarker(lat, lng, site, map, infowindow) {
     title: site.name,
     icon: icon
   });
-  marker["tags"] = sandy.map.ClassifySite(site, my_organization);
-  marker["site"] = site;
+  site["tags"] = sandy.map.ClassifySite(site, my_organization);
+  site["marker"] = marker;
   google.maps.event.addListener(marker, 'click', function() {
-    infowindow.setContent("<h2>" + site["name"] + "</h2>" + "Address: " + site["address"] + " " + site["city"] + "<br/>" + "Requests: " + site["work_requested"] + "<br/>");
-    infowindow.setZIndex(10);
-    if (!dialog) {
-      dialog = new goog.ui.Dialog();
-      dialog.setModal(false);
-      dialog.setDraggable(false);
-      dialog.setButtonSet(null);
-    }
-    dialog.setVisible(false);
-    updateDialogForSite(dialog, site, marker);
-    dialog.setVisible(true);
-    dialog.getElement().style.left = null;
-    dialog.getElement().style.top = null;
-    dialog.getElement().style.right = "10px";
-    dialog.getElement().style.bottom = "10px";
-    updateSite(site, marker);
+    sandy.main.SelectSite(site);
   });
   return marker;
+}
+
+var map;
+var largeMarker = null;
+sandy.main.SelectSite = function(site) {
+  if (!dialog) {
+    dialog = new goog.ui.Dialog();
+    dialog.setModal(false);
+    dialog.setDraggable(false);
+    dialog.setButtonSet(null);
+  }
+  dialog.setVisible(false);
+  updateDialogForSite(dialog, site);
+  dialog.setVisible(true);
+  dialog.getElement().style.left = null;
+  dialog.getElement().style.top = null;
+  dialog.getElement().style.right = "10px";
+  dialog.getElement().style.bottom = "10px";
+  updateSite(site);
 }
 
 sandy.main.initialize = function() {
@@ -248,7 +261,7 @@ sandy.main.initialize = function() {
   };
 
   goog.style.showElement(goog.dom.getElement('filtersbackground'), false);
-  var map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+  map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
   // TODO(Jeremy): Set myLatLng to the location of the highest
   // priority current site.
   goog.net.XhrIo.send('/api/site_ajax?id=all',
@@ -260,6 +273,55 @@ sandy.main.initialize = function() {
       sandy.map.InitializeMap(sites, AddMarker, map);
       var filters = goog.dom.getElement('filtersbackground');
       goog.style.showElement(filters, true);
+      var terms = [];
+      for (var i = 0; i < sites.length; ++i) {
+        if (sites[i].case_number && sites[i].name) {
+          var term = sites[i].case_number + ": <" + sites[i].name + ">";
+          if (sites[i].address) {
+            term += " " + sites[i].address;
+          }
+          if (sites[i].city) {
+            term += " " + sites[i].city;
+          }
+          if (sites[i].state) {
+            term += " " + sites[i].state;
+          }
+          if (sites[i].zip_code) {
+            term += " " + sites[i].zip_code;
+          }
+          terms.push(term);
+          siteMap[term] = sites[i];
+        }
+      }
+      var searchBox = goog.dom.getElement('search_box');
+      autoComplete = goog.ui.ac.createSimpleAutoComplete(
+          terms, searchBox, false);
+      var selectFunction = function(e) {
+        if (siteMap[e.row]) {
+          var site = siteMap[e.row];
+          sandy.main.SelectSite(site);
+          searchBox.value = "";
+          if (largeMarker) {
+            largeMarker.setZIndex(0);
+          }
+          largeMarker = site["marker"];
+          if (largeMarker) {
+            largeMarker.setZIndex(5);
+            largeMarker.setAnimation(google.maps.Animation.DROP);
+            if (map.getZoom() < 8) {
+              map.setZoom(8);
+            }
+            if (!map.getBounds().contains(largeMarker.getPosition())) {
+              map.panTo(largeMarker.getPosition());
+            }
+          }
+        }
+      }
+      searchBox.onchange = selectFunction;
+      goog.events.listen(
+          autoComplete,
+          goog.ui.ac.AutoComplete.EventType.UPDATE,
+          selectFunction);
     }
   })
 

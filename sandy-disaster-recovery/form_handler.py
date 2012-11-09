@@ -41,6 +41,9 @@ class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedPost(self, org):
     data = site_db.SiteForm(self.request.POST)
     message = ""
+    event_name = self.request.get("event_name",
+                                  default_value = event_db.DefaultEventName())
+
     if data.validate():
       lookup = site_db.Site.gql(
         "WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
@@ -63,8 +66,6 @@ class FormHandler(base.AuthenticatedHandler):
                             phone2 = data.phone2.data)
       data.populate_obj(site)
       site.reported_by = org
-      event_name = self.request.get("event_name",
-                                    default_value = event_db.DefaultEventName())
       if not site.event and event_db.AddSiteToEvent(site, event_name):
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
         return

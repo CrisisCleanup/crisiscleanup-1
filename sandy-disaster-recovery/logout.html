@@ -1,2 +1,7 @@
 <div id='logout_div'>
-<div>Organization: <b>{{ org.name }}</b>&nbsp;&nbsp; (<a class="logout_link" href="/logout">Log out</a>)</div></div>
+<div>Organization: <b>{{ org.name }}</b>&nbsp;&nbsp; (<a class="logout_link" href="/logout">Log out</a>)<br />
+<a href="/">Home</a> | <a href="/map">Map</a> | <a href="/sites">Browse Cases</a> | <a href="http://code.google.com/p/sandy-disaster-recovery/w/list">Help</a>
+{% if include_search %}
+<br />Search: <input id="search_box" style="width:300px" />
+{% endif %}
+</div></div>

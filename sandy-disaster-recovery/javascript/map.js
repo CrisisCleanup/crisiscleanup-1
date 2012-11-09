@@ -53,17 +53,18 @@ sandy.map.Refilter = function() {
   for (var el = 0; el < els.length; ++el) {
     if (els[el].checked) filters.push(els[el].id);
   }
-  for (var i = 0; i < markers.length; ++i) {
+  for (var i = 0; i < mapSites.length; ++i) {
     var include = true;
     for (var f = 0; f < filters.length; ++f) {
-      if (markers[i].tags.indexOf(filters[f]) === -1) {
+      if (mapSites[i]["tags"].indexOf(filters[f]) === -1) {
         include = false;
         break;
       }
     }
-    markers[i].setVisible(include);
+    if (mapSites[i]["marker"])
+      mapSites[i]["marker"].setVisible(include);
     if (include) {
-      site_ids.push(markers[i]["site"]["id"]);
+      site_ids.push(mapSites[i]["id"]);
     }
   }
   var print_el = goog.dom.getElement('filtered_print');

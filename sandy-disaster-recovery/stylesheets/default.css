@@ -4,6 +4,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: arial;
+  font-size: 14px;
 }
 
 #map_canvas {
@@ -83,4 +84,30 @@ html, body {
 #legend_img {
   max-width: 202px;
 
+}
+.ac-renderer {
+  z-index: 25;
+  font: normal 13px Arial, sans-serif;
+  position: absolute;
+  background: #fff;
+  border: 1px solid #666;
+  -moz-box-shadow: 2px 2px 2px rgba(102, 102, 102, .4);
+  -webkit-box-shadow: 2px 2px 2px rgba(102, 102, 102, .4);
+  width: 300px;
+}
+
+.ac-row {
+  z-index: 25;
+  cursor: pointer;
+  padding: .4em;
+}
+
+.ac-highlighted {
+  z-index: 25;
+  font-weight: bold;
+}
+
+.ac-active {
+  z-index: 25;
+  background-color: #b2b4bf;
 }

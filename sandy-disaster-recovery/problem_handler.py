@@ -10,8 +10,7 @@ import base
 import site_db
 
 def ProblemSeverity(s):
-  distance = math.sqrt(math.pow(s.latitude - 39.5, 2) + math.pow(s.longitude + 75, 2))
-  return -distance
+  return s.case_number
 
 class ProblemHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org):
@@ -20,5 +19,5 @@ class ProblemHandler(base.AuthenticatedHandler):
     for s in ordered:
       self.response.out.write('<a href="/edit?id=%d">Edit</a> - ' %
                               s.key().id())
-      self.response.out.write("%s - %s<br />" %
-                              (s.name, s.address))
+      self.response.out.write("%s: %s - %s<br />" %
+                              (s.case_number, s.name, s.address))

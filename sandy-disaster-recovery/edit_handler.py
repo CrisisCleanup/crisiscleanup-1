@@ -1,5 +1,6 @@
 # System libraries.
 import jinja2
+import logging
 import os
 from google.appengine.ext import db
 
@@ -37,9 +38,18 @@ class EditHandler(base.AuthenticatedHandler):
       return
     site = site_db.Site.get(db.Key.from_path('Site', id))
     data = site_db.SiteForm(self.request.POST, site)
+    case_number = site.case_number
     if data.validate():
       # Save the data, and redirect to the view page
-      data.populate_obj(site);
+      for f in data:
+        # In order to avoid overriding fields that didn't appear
+        # in this form, we have to only set those that were explicitly
+        # set in the post request.
+        in_post = self.request.get(f.name, default_value = None)
+        if not in_post:
+          continue
+        logging.critical(type(getattr(site, f.name)))
+        setattr(site, f.name, f.data)
       site.put()
       self.redirect('/map')
     else:

@@ -56,6 +56,8 @@ class Site(db.Model):
   time_to_call = db.StringProperty()
   rent_or_own = db.StringProperty(choices=["Rent", "Own"])
   work_without_resident = db.BooleanProperty()
+  member_of_assessing_organization = db.BooleanProperty()
+  first_responder = db.BooleanProperty()
   older_than_60 = db.BooleanProperty()
   disabled = db.BooleanProperty()
   special_needs = db.StringProperty(multiline=True)
@@ -63,7 +65,7 @@ class Site(db.Model):
   standing_water = db.BooleanProperty()
   tree_damage = db.BooleanProperty()
   tree_damage_details = db.StringProperty(multiline=True)
-  habitable = db.BooleanProperty()
+  habitable = db.BooleanProperty(default = True)
   work_requested = db.StringProperty(multiline=True)
   others_help = db.StringProperty(multiline=True)
   debris_removal_only = db.BooleanProperty()
@@ -75,9 +77,12 @@ class Site(db.Model):
       "Basement and Ground Floor",
       "Ground Floor Only"])
   carpet_removal = db.BooleanProperty()
+  hardwood_floor_removal = db.BooleanProperty()
   drywall_removal = db.BooleanProperty()
   heavy_item_removal = db.BooleanProperty()
+  appliance_removal = db.BooleanProperty()
   standing_water = db.BooleanProperty()
+  mold_remediation = db.BooleanProperty()
   pump_needed = db.BooleanProperty()
   num_trees_down = db.IntegerProperty(
       choices = [0, 1, 2, 3, 4, 5], default = 0)
@@ -100,6 +105,10 @@ class Site(db.Model):
   priority = db.IntegerProperty(choices=[1, 2, 3, 4, 5], default = 3)
   # Name of org. rep (e.g. "Jill Smith")
   inspected_by = db.StringProperty()
+  # Name of org. rep (e.g. "Jill Smith")
+  prepared_by = db.StringProperty()
+  # Do not work before
+  do_not_work_before = db.StringProperty()
 
   # Metadata
   status = db.StringProperty(choices=[
@@ -119,12 +128,14 @@ class Site(db.Model):
 
   date_closed = db.DateTimeProperty()
   # Number of volunteers who helped.
-  total_volunteers = db.FloatProperty()
+  total_volunteers = db.FloatProperty(default = 0)
   # Number of hours that each volunteer worked.
   # There's apparently an assumption that all volunteers worked the same amount
   # of time, since total time for the project is calculated as
   # total_volunteers * hours_worked_per_volunteer.
-  hours_worked_per_volunteer = db.FloatProperty()
+  hours_worked_per_volunteer = db.FloatProperty(default = 0)
+  # The initials of the resident who was present for the work.
+  initials_of_resident_present = db.StringProperty()
 
   # Defines the order of fields for CSV output.
   CSV_FIELDS = [
@@ -185,6 +196,14 @@ class Site(db.Model):
       'total_volunteers',
       'hours_worked_per_volunteer',
       'event',
+      'initials_of_resident_present',
+      'member_of_assessing_organization',
+      'first_responder',
+      'hardwood_floor_removal',
+      'mold_remediation',
+      'appliance_removal',
+      'do_not_work_before',
+      'prepared_by',
       ]
 
   _CSV_ACCESSORS = {
@@ -228,7 +247,7 @@ def _ChoicesWithBlank(choices):
   Prepends a blank value to the list to ensure that a user has to purposefully
   choose all values.
   """
-  return [('', '')] + [(choice, choice) for choice in choices]
+  return [('', '--Choose One--')] + [(choice, choice) for choice in choices]
 
 class SiteForm(SiteForm2):
   priority = wtforms.fields.RadioField(
@@ -250,9 +269,11 @@ class SiteForm(SiteForm2):
       choices=_ChoicesWithBlank(Site.floors_affected.choices))
   rent_or_own = wtforms.fields.SelectField(
       choices=_ChoicesWithBlank(Site.rent_or_own.choices))
-  work_type = wtforms.fields.SelectField(
-      choices=_ChoicesWithBlank(Site.work_type.choices))
-
+  work_type_choices = _ChoicesWithBlank(Site.work_type.choices)
+  for i in range(len(work_type_choices)):
+    if work_type_choices[i][0] == "Trees":
+      work_type_choices[i] = ("Trees", "Trees or Wind")
+  work_type = wtforms.fields.SelectField(choices=work_type_choices)
 
 def GetCached(site_id):
   one_hour_in_seconds = 3600

@@ -23,7 +23,8 @@ class FormHandler(base.AuthenticatedHandler):
       message = None
     form = site_db.SiteForm()
     single_site = single_site_template.render(
-        { "form": form })
+        { "form": form,
+          "org": org})
     event_name = self.request.get(
         "event_name", default_value = event_db.DefaultEventName())
     event = event_db.Event.get_by_key_name(event_name)
@@ -72,7 +73,8 @@ class FormHandler(base.AuthenticatedHandler):
       else:
         message = "Failed to add site to event: " + event_name
     single_site = single_site_template.render(
-        { "form": data })
+        { "form": data,
+          "org": org})
     self.response.out.write(template.render(
         {"message": message,
          "errors": data.errors,

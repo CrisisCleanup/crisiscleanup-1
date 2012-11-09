@@ -23,7 +23,8 @@ class EditHandler(base.AuthenticatedHandler):
     site = site_db.Site.get(db.Key.from_path('Site', id))
     form = site_db.SiteForm(self.request.POST, site)
     single_site = single_site_template.render(
-        { "form": form })
+        { "form": form,
+          "org": org})
 
     self.response.out.write(template.render(
           {"single_site": single_site,
@@ -39,6 +40,8 @@ class EditHandler(base.AuthenticatedHandler):
     site = site_db.Site.get(db.Key.from_path('Site', id))
     data = site_db.SiteForm(self.request.POST, site)
     case_number = site.case_number
+    claim_for_org = self.request.get("claim_for_org") == "y"
+
     if data.validate():
       # Save the data, and redirect to the view page
       for f in data:
@@ -48,16 +51,19 @@ class EditHandler(base.AuthenticatedHandler):
         in_post = self.request.get(f.name, default_value = None)
         if not in_post:
           continue
-        logging.critical(type(getattr(site, f.name)))
         setattr(site, f.name, f.data)
+      if claim_for_org:
+        site.claimed_by = org
       site.put()
       self.redirect('/map')
     else:
       single_site = single_site_template.render(
-          { "form": form })
+          { "form": data,
+            "org": org})
 
       self.response.out.write(template.render(
           {"errors": data.errors,
            "form": data,
+           "single_site": single_site,
            "id": id,
            "page": "/edit"}))

@@ -30,19 +30,14 @@ sandy.form.Initialize = function() {
   goog.dom.getElement('state').onblur = validate;
   goog.dom.getElement('county').onblur = validate;
   goog.dom.getElement('city').onblur = validate;
-
-
-    data = tcMovies;
-    input = goog.dom.getElement("txtInput1");
-  /*var matcher = new goog.ui.ac.ArrayMatcher(data, false);
-    var renderer = new goog.ui.ac.Renderer();
-    var inputHandler = new goog.ui.ac.InputHandler(null, null, false);
-
-    autoComplete = new goog.ui.ac.AutoComplete(
-    matcher, renderer, inputHandler);
-    inputHandler.attachAutoComplete(autoComplete);
-    inputHandler.attachInputs(input);*/
-
+  var setToZero = [
+      goog.dom.getElement('hours_worked_per_volunteer'),
+      goog.dom.getElement('total_volunteers')];
+  for (var i = 0; i < setToZero.length; ++i) {
+    if (setToZero[i].value == "" || !setToZero[i].value) {
+      setToZero[i].value = "0";
+    }
+  }
 }
 
 

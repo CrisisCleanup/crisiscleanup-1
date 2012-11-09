@@ -45,20 +45,22 @@
 <td class="answer"> {{with_errors(form.phone1) }}{{with_errors(form.phone2)}}</td></tr>
 <tr><td class=question>Best time to call:</td>
 <td class="answer"> {{with_errors(form.time_to_call)}}</td></tr>
+<tr><td class=question>Primary work type:</td>
+<td class="answer"> {{with_errors(form.work_type)}}</td></tr>
 <tr><td class=question>Rent/Own</td>
 <td class="answer"> {{with_errors(form.rent_or_own)}}</td></tr>
 <tr><td class=question>Work without resident present?</td>
 <td class="answer"> {{with_errors(form.work_without_resident)}}</td></tr>
+<tr><td class=question>Member of assessing organization:</td>
+<td class="answer"> {{with_errors(form.member_of_assessing_organization)}}</td></tr>
+<tr><td class=question>First Responder:</td>
+<td class="answer"> {{with_errors(form.first_responder)}}</td></tr>
 <tr><td class=question>Older than 60:</td>
 <td class="answer"> {{with_errors(form.older_than_60)}}</td></tr>
 <tr><td class=question>Disabled:</td>
 <td class="answer"> {{with_errors(form.disabled)}}</td></tr>
 <tr><td class=question>Special needs:</td>
 <td class="answer"> {{with_errors(form.special_needs)}}</td></tr>
-<tr><td class=question>Work requested:</td>
-<td class="answer"> {{with_errors(form.work_requested)}}</td></tr>
-<tr><td class=question>Notes:</td>
-<td class="answer"> {{with_errors(form.notes)}}</td></tr>
 <tr><td class=question>Priority:</td>
 <td class="answer">
 {% if readonly %}
@@ -75,10 +77,6 @@
 
 </table>
 <h2 style="page-break-before:always;">Work</h2>
-<table>
-<tr><td class=question>Primary work type:</td>
-<td class="answer"> {{with_errors(form.work_type)}}</td></tr>
-</table>
 <h3>Flood-Related Damage and Needs</h3>
 <table>
 <tr><td class=question>Height of Flood (feet):</td>
@@ -87,14 +85,24 @@
 <td class="answer"> {{with_errors(form.floors_affected)}}</td></tr>
 <tr><td class=question>Carpet Removal:</td>
 <td class="answer"> {{with_errors(form.carpet_removal)}}</td></tr>
+<tr><td class=question>Hardwood Floor Removal:</td>
+<td class="answer"> {{with_errors(form.hardwood_floor_removal)}}</td></tr>
 <tr><td class=question>Drywall Removal:</td>
 <td class="answer"> {{with_errors(form.drywall_removal)}}</td></tr>
 <tr><td class=question>Heavy Item Removal:</td>
 <td class="answer"> {{with_errors(form.heavy_item_removal)}}</td></tr>
-<tr><td class=question>Standing water:</td>
+<tr><td class=question>Appliance Removal:</td>
+<td class="answer"> {{with_errors(form.appliance_removal)}}</td></tr>
+<tr><td class=question>Standing Water:</td>
 <td class="answer"> {{with_errors(form.standing_water)}}</td></tr>
+<tr><td class=question>Mold Remediation:</td>
+<td class="answer"> {{with_errors(form.mold_remediation)}}</td></tr>
 <tr><td class=question>Pump Needed:</td>
 <td class="answer"> {{with_errors(form.pump_needed)}}</td></tr>
+<tr><td class=question>Other Work Requested:</td>
+<td class="answer"> {{with_errors(form.work_requested)}}</td></tr>
+<tr><td class=question>Notes:</td>
+<td class="answer"> {{with_errors(form.notes)}}</td></tr>
 </table>
 
 <h3>Tree-Related Damage and Needs</h3>
@@ -115,7 +123,7 @@
 
 <h3>Goods and Services Requested</h3>
 <table>
-<tr><td class=question>Requesting Only Debris Removal?</td>
+<tr><td class=question>Only Outside Debris Removal</td>
 <td class="answer"> {{with_errors(form.debris_removal_only)}}</td></tr>
 <tr><td class=question>Requests for Goods and Services:</td>
 <td class="answer"> {{with_errors(form.goods_and_services)}}</td></tr>
@@ -128,7 +136,37 @@
 <tr><td class=question>Power on:</td>
 <td class="answer"> {{with_errors(form.electricity)}}</td></tr>
 <tr><td class=question>Downed Wires:</td>
-<td class="answer"> {{with_errors(form.electrical_lines)}}</td></tr>
+<td class="answer"> {{with_errors(form.electrical_lines)}}</td></tr><
 <tr><td class=question>Other Hazards:</td>
 <td class="answer"> {{with_errors(form.other_hazards)}}</td></tr>
 </table>
+
+{% if not readonly %}
+<h2>Check Out</h2>
+<table>
+<tr><td class=question>Check-Out to {{org.name}}:</td>
+<td class="answer"><input type=checkbox id="claim_for_org" name="claim_for_org" value="y" /></td></tr>
+<tr><td class=question>Current Status:</td>
+<td class="answer"> {{with_errors(form.status)}}</td></tr>
+</table>
+
+
+<h2>Completion Report</h2>
+<table>
+<tr><td class=question>Volunteers:</td>
+<td class="answer"> {{with_errors(form.total_volunteers)}}</td></tr>
+<tr><td class=question>Hours per volunteer:</td>
+<td class="answer"> {{with_errors(form.hours_worked_per_volunteer)}}</td></tr>
+<tr><td class=question>Initials of resident present during work:</td>
+<td class="answer"> {{with_errors(form.initials_of_resident_present)}}</td></tr>
+</table>
+
+
+<h2>Other Information</h2>
+<table>
+<tr><td class=question>Prepared by:</td>
+<td class="answer"> {{with_errors(form.prepared_by)}}</td></tr>
+<tr><td class=question>Do not work before:</td>
+<td class="answer"> {{with_errors(form.do_not_work_before)}}</td></tr>
+</table>
+{% endif %}

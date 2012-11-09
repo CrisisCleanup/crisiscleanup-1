@@ -91,7 +91,7 @@ class SiteApiHandler(base.AuthenticatedHandler):
     else:
       self.HandleBadRequest('Sorry, this site has already been claimed by %s' %
                             site.claimed_by.name, status=FORBIDDEN)
-      
+
   def CheckRequiredKeys(self, json_request, required_keys):
     """Ensures that json_request contains the given keys.
     If it does, returns True.

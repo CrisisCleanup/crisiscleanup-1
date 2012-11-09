@@ -27,7 +27,8 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
         output = json.dumps(
             [map_handler.SiteToDict(s)
              for s in site_db.GetAllCached()], default=dthandler)
-        memcache.set(cache_key, output, 600)
+        # Only cache for two minutes.
+        memcache.set(cache_key, output, 120)
       self.response.out.write(output)
       return
     try:

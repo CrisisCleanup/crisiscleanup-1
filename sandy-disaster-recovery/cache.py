@@ -1,3 +1,5 @@
+import logging
+
 from google.appengine.api import memcache
 
 empty_item = "empty"

@@ -3,8 +3,12 @@ import datetime
 import logging
 import wtforms.ext.dateutil.fields
 import wtforms.fields
+from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
+from google.appengine.api import memcache
+import json
+from google.appengine.ext.db import Query
 
 # Local libraries.
 import cache
@@ -31,6 +35,7 @@ def _GetField(site, field):
     logging.warn('site %s is missing attribute' % (site.key().id(), field))
     return None
 
+logging.critical(dir(event_db))
 class Site(db.Model):
   # The list of fields that will be included in the CSV output.
   CSV_FIELDS = []
@@ -275,10 +280,68 @@ class SiteForm(SiteForm2):
       work_type_choices[i] = ("Trees", "Trees or Wind")
   work_type = wtforms.fields.SelectField(choices=work_type_choices)
 
-def GetCached(site_id):
-  one_hour_in_seconds = 3600
-  return cache.GetCachedById(Site, one_hour_in_seconds, site_id)
+def SiteToDict(site):
+  site_dict = to_dict(site)
+  site_dict["id"] = site.key().id()
+  claimed_by = None
+  try:
+    claimed_by = site.claimed_by
+  except db.ReferencePropertyResolveError:
+    pass
+  if claimed_by:
+    site_dict["claimed_by"] = {"name": claimed_by.name}
+  reported_by = None
+  try:
+    reported_by = site.reported_by
+  except db.ReferencePropertyResolveError:
+    pass
+  if reported_by:
+    site_dict["reported_by"] = {"name": reported_by.name}
+  return site_dict
 
-def GetAllCached():
-  one_hour_in_seconds = 3600
-  return cache.GetAllCachedBy(Site, one_hour_in_seconds)
+# We cache each site together with the AJAX necessary to
+# serve it, since it is expensive to generate.
+cache_prefix = Site.__name__ + "-d:"
+cache_time = 3600
+def GetCached(site_id):
+  result = memcache.get(site_id, key_prefix = cache_prefix)
+  if result:
+    return result
+  site = Site.get_by_id(site_id)
+  cache_entry = (site, SiteToDict(site))
+  memcache.set(cache_prefix + str(site_id), cache_entry,
+               time = cache_time)
+  return cache_entry
+
+def PutAndCache(site):
+  site.put()
+  return memcache.set(cache_prefix + str(site.key().id()),
+                      (site, SiteToDict(site)),
+                      time = cache_time)
+
+def GetAndCache(site_d):
+  site = Site.get_by_id(site_d)
+  if site:
+    memcache.set(cache_prefix + str(site.key().id()),
+                 (site, SiteToDict(site)),
+                 time = cache_time)
+  return site
+
+def GetAllCached(event):
+  # First, retrieve all matching keys. As a keys_only scan,
+  # This should be more efficient than a full data scan.
+  q = Query(model_class = Site, keys_only = True)
+  q.filter("event =", event)
+  ids = [key.id() for key in q]
+  logging.critical(ids)
+  logging.critical(event.name)
+  # keys = ["%s:%d" % (Site.__name__, id) for id in ids]
+
+  cache_results = memcache.get_multi([str(id) for id in ids], key_prefix = cache_prefix)
+  not_found = [id for id in ids if not str(id) in cache_results.keys()]
+  data_store_results = [(site, SiteToDict(site)) for site in Site.get_by_id(not_found)]
+  memcache.set_multi(dict([(str(site[0].key().id()), site)
+                            for site in data_store_results]),
+                     key_prefix = cache_prefix,
+                     time = cache_time)
+  return cache_results.values() + data_store_results

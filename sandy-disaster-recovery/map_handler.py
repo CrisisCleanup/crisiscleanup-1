@@ -3,12 +3,12 @@ import datetime
 import jinja2
 import json
 import os
-from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
 # Local libraries.
 import base
+import event_db
 import key
 import site_db
 
@@ -32,7 +32,7 @@ class MapHandler(base.RequestHandler):
               ["NJ", "New Jersey"],
               ["NY", "New York"]]
 
-    org = key.CheckAuthorization(self.request)
+    org, event = key.CheckAuthorization(self.request)
     if org:
       filters = [["claimed", "Claimed by " + org.name],
                  ["unclaimed", "Unclaimed"],
@@ -44,15 +44,18 @@ class MapHandler(base.RequestHandler):
           "org" : org,
           "logout" : logout_template.render({"org": org,
                                              "include_search": True}),
-          #"sites" :
-          #  [json.dumps(SiteToDict(s), default=dthandler)
-          #   for s in site_db.GetAllCached()],
           "status_choices" : [json.dumps(c) for c in
                               site_db.Site.status.choices],
           "filters" : filters,
           "demo" : False,
         }
     else:
+      # Allow people to bookmark an unauthenticated event map,
+      # by setting the event ID.
+      event = event_db.GetEventFromParam(self.request.get("event_id"))
+      if not event:
+        self.response.set_status(404)
+        return
       template_values = {
           "sites" :
              [json.dumps({
@@ -68,27 +71,8 @@ class MapHandler(base.RequestHandler):
                  "cutting_cause_harm": s.cutting_cause_harm,
                  "work_type": s.work_type,
                  "state": s.state,
-                 }) for s in site_db.GetAllCached()],
+                 }) for s in [p[0] for p in site_db.GetAllCached(event)]],
           "filters" : filters,
           "demo" : True,
         }
     self.response.out.write(template.render(template_values))
-
-def SiteToDict(site):
-  site_dict = to_dict(site)
-  site_dict["id"] = site.key().id()
-  claimed_by = None
-  try:
-    claimed_by = site.claimed_by
-  except db.ReferencePropertyResolveError:
-    pass
-  if claimed_by:
-    site_dict["claimed_by"] = {"name": claimed_by.name}
-  reported_by = None
-  try:
-    reported_by = site.reported_by
-  except db.ReferencePropertyResolveError:
-    pass
-  if reported_by:
-    site_dict["reported_by"] = {"name": reported_by.name}
-  return site_dict

@@ -10,7 +10,7 @@ import organization
 import site_db
 
 class ImportHandler(base.AuthenticatedHandler):
-  def AuthenticatedGet(self, org):
+  def AuthenticatedGet(self, org, event):
     os = organization.Organization.gql("WHERE name = :1", "cheese")
     org_name = "cheese"
     orgs = [org for org in organization.Organization.gql("WHERE name = :name", name = org_name)]
@@ -81,4 +81,4 @@ class ImportHandler(base.AuthenticatedHandler):
           site.latitude = float(lls[0].strip())
           site.longitude = float(lls[1].strip())
         #logging.critical('No lat/lng: ' + site.name + " " + s["Lat,  Long"])
-        site.put()
+        site_db.PutAndCache(site)

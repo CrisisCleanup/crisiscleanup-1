@@ -12,7 +12,7 @@ jinja_environment = jinja2.Environment(
 
 class DeleteHandler(base.AuthenticatedHandler):
   """Handler to confirm and then actually delete a site."""
-  def AuthenticatedGet(self, org):
+  def AuthenticatedGet(self, org, event):
     try:
       id = int(self.request.get('id'))
     except:
@@ -24,7 +24,7 @@ class DeleteHandler(base.AuthenticatedHandler):
     template = jinja_environment.get_template('form.html')
     self.response.out.write(template.render(template_values))
 
-  def AuthenticatedPost(self):
+  def AuthenticatedPost(self, org, event):
     try:
       id = int(self.request.get('_id'))
     except:

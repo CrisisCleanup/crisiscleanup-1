@@ -9,7 +9,7 @@ import base
 import site_db
 
 class SitesHandler(base.AuthenticatedHandler):
-  def AuthenticatedGet(self, org):
+  def AuthenticatedGet(self, org, event):
     query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
     for s in query:
       self.response.out.write(

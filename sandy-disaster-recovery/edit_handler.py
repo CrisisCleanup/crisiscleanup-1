@@ -15,12 +15,16 @@ single_site_template = jinja_environment.get_template('single_site.html')
 logout_template = jinja_environment.get_template('logout.html')
 
 class EditHandler(base.AuthenticatedHandler):
-  def AuthenticatedGet(self, org):
+  def AuthenticatedGet(self, org, event):
     try:
       id = int(self.request.get('id'))
     except:
+      self.response.set_status(404)
       return
-    site = site_db.Site.get(db.Key.from_path('Site', id))
+    site = site_db.GetAndCache(id)
+    if not site:
+      self.response.set_status(404)
+      return
     form = site_db.SiteForm(self.request.POST, site)
     single_site = single_site_template.render(
         { "form": form,
@@ -32,12 +36,12 @@ class EditHandler(base.AuthenticatedHandler):
            "id": id,
            "page": "/edit"}))
 
-  def AuthenticatedPost(self, org):
+  def AuthenticatedPost(self, org, event):
     try:
       id = int(self.request.get('_id'))
     except:
       return
-    site = site_db.Site.get(db.Key.from_path('Site', id))
+    site = site_db.Site.get_by_id(id)
     data = site_db.SiteForm(self.request.POST, site)
     case_number = site.case_number
     claim_for_org = self.request.get("claim_for_org") == "y"
@@ -54,7 +58,7 @@ class EditHandler(base.AuthenticatedHandler):
         setattr(site, f.name, f.data)
       if claim_for_org:
         site.claimed_by = org
-      site.put()
+      site_db.PutAndCache(site)
       self.redirect('/map')
     else:
       single_site = single_site_template.render(

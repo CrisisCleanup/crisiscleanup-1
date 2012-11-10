@@ -17,7 +17,7 @@ single_site_template = jinja_environment.get_template('single_site.html')
 logout_template = jinja_environment.get_template('logout.html')
 
 class FormHandler(base.AuthenticatedHandler):
-  def AuthenticatedGet(self, org):
+  def AuthenticatedGet(self, org, event):
     message = cgi.escape(self.request.get("message"))
     if len(message) == 0:
       message = None
@@ -25,11 +25,6 @@ class FormHandler(base.AuthenticatedHandler):
     single_site = single_site_template.render(
         { "form": form,
           "org": org})
-    event_name = self.request.get(
-        "event_name", default_value = event_db.DefaultEventName())
-    event = event_db.Event.get_by_key_name(event_name)
-    if event:
-      event_name = event.name
     self.response.out.write(template.render(
         {"message" : message,
          "logout" : logout_template.render({"org": org}),
@@ -37,14 +32,11 @@ class FormHandler(base.AuthenticatedHandler):
          "form": site_db.SiteForm(),
          "id": None,
          "page": "/",
-         "event_name": event_name}))
+         "event_name": event.name}))
 
-  def AuthenticatedPost(self, org):
+  def AuthenticatedPost(self, org, event):
     data = site_db.SiteForm(self.request.POST)
     message = ""
-    event_name = self.request.get("event_name",
-                                  default_value = event_db.DefaultEventName())
-
     if data.validate():
       lookup = site_db.Site.gql(
         "WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
@@ -55,7 +47,7 @@ class FormHandler(base.AuthenticatedHandler):
       for l in lookup:
         # See if this same site is for a different event.
         # If so, we'll make a new one.
-        if not site.event or site.event.name != event_name:
+        if not site.event or site.event.name != event.name:
           site = l
 
       if not site:
@@ -67,11 +59,11 @@ class FormHandler(base.AuthenticatedHandler):
                             phone2 = data.phone2.data)
       data.populate_obj(site)
       site.reported_by = org
-      if not site.event and event_db.AddSiteToEvent(site, event_name):
+      if not site.event and event_db.AddSiteToEvent(site, event.key().id()):
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
         return
       else:
-        message = "Failed to add site to event: " + event_name
+        message = "Failed to add site to event: " + event.name
     single_site = single_site_template.render(
         { "form": data,
           "org": org})
@@ -83,4 +75,4 @@ class FormHandler(base.AuthenticatedHandler):
          "form": data,
          "id": None,
          "page": "/",
-         "event_name": event_name}))
+         "event_name": event.name}))

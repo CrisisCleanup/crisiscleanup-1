@@ -10,7 +10,6 @@ from google.appengine.api import memcache
 # Local libraries.
 import base
 import key
-import map_handler
 import site_db
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
@@ -18,17 +17,12 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) el
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 class SiteAjaxHandler(base.AuthenticatedHandler):
-  def AuthenticatedGet(self, org):
+  def AuthenticatedGet(self, org, event):
     id_param = self.request.get('id')
     if id_param == "all":
-      cache_key = "site_ajax_all"
-      output = memcache.get(cache_key)
-      if not output:
-        output = json.dumps(
-            [map_handler.SiteToDict(s)
-             for s in site_db.GetAllCached()], default=dthandler)
-        # Only cache for two minutes.
-        memcache.set(cache_key, output, 120)
+      output = json.dumps(
+        [s[1] for s in site_db.GetAllCached(event)],
+        default=dthandler)
       self.response.out.write(output)
       return
     try:
@@ -36,7 +30,7 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
     except:
       self.response.set_status(404)
       return
-    site = site_db.Site.get_by_id(id)
+    site = site_db.GetAndCache(id)
     if not site:
       self.response.set_status(404)
       return
@@ -46,4 +40,4 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
     # and prepending the proper garbage strings.
     # Javascript security is really a pain.
     self.response.out.write(
-        json.dumps(map_handler.SiteToDict(site), default = dthandler))
+        json.dumps(site_db.SiteToDict(site), default = dthandler))

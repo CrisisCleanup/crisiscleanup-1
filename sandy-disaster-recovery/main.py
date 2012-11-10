@@ -15,7 +15,6 @@ import export_handler
 import form_handler
 import import_handler
 import key
-import initialize_handler
 import map_handler
 import print_handler
 import problem_handler
@@ -60,7 +59,6 @@ app = webapp2.WSGIApplication([
     Route(r'/maps', redirect_to_name='map', name='maps_redirect'),
     Route(r'/edit', edit_handler.EditHandler, 'edit'),
     Route(r'/import', import_handler.ImportHandler, 'import'),
-    Route(r'/initialize', initialize_handler.InitializeHandler, 'initialize'),
     Route(r'/old/map', redirect_to=MAP_URL, name='external_map_redirect'),
     Route(r'/old/maps', redirect_to_name=MAP_URL, name='external_maps_redirect'),
     Route(r'/print', print_handler.PrintHandler, 'print'),

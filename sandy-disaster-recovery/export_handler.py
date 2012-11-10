@@ -7,7 +7,7 @@ import site_db
 import site_util
 
 class ExportHandler(base.AuthenticatedHandler):
-  def AuthenticatedGet(self, org):
+  def AuthenticatedGet(self, org, event):
     sites = site_util.SitesFromIds(self.request.get('id'))
 
     filename = 'work_sites.csv'

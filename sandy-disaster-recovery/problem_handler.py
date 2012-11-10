@@ -13,7 +13,7 @@ def ProblemSeverity(s):
   return s.case_number
 
 class ProblemHandler(base.AuthenticatedHandler):
-  def AuthenticatedGet(self, org):
+  def AuthenticatedGet(self, org, event):
     query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
     ordered = sorted(query, key = lambda s: ProblemSeverity(s))
     for s in ordered:

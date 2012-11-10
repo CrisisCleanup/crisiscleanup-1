@@ -1,6 +1,8 @@
 # Local libraries.
 import site_db
 
+# TODO(Jeremy): Deprecate this once we move to server-side
+# filter generation.
 def SitesFromIds(comma_separated_ids):
   """Given a string of ids, like "1,2,3", returns corresponding Site objects.
   If comma_separated_ids is empty, returns all sites.

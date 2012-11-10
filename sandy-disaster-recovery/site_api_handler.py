@@ -13,7 +13,7 @@ BAD_REQUEST = 400
 FORBIDDEN = 403
 
 class SiteApiHandler(base.AuthenticatedHandler):
-  def AuthenticatedPut(self, org):
+  def AuthenticatedPut(self, org, event):
     """Handles updating site fields."""
     # raw_data = '{"id": 1, "update": {"status": "Open, unassigned"}}'
     json_request = json.loads(cgi.escape(self.request.body))
@@ -61,8 +61,7 @@ class SiteApiHandler(base.AuthenticatedHandler):
 
     for field, value in json_request['update'].iteritems():
       setattr(site, field, value)
-
-    site.put()
+    site_db.PutAndCache(site)
     logging.debug('updated site')
 
   def HandleClaim(self, json_request, org):
@@ -82,7 +81,7 @@ class SiteApiHandler(base.AuthenticatedHandler):
 
     if not claimed_by:
       site.claimed_by = org
-      site.put()
+      site_db.PutAndCache(site)
       return
 
     if site.claimed_by.key().id() == org.key().id():
@@ -105,7 +104,7 @@ class SiteApiHandler(base.AuthenticatedHandler):
     return True
 
   def GetSite(self, id):
-    site = site_db.Site.get(db.Key.from_path('Site', id))
+    site = site_db.Site.get_by_id(id)
     if not site:
       self.HandleBadRequest('no site with id %s' % id)
       return None

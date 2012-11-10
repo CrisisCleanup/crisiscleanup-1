@@ -15,10 +15,12 @@ class Organization(db.Model):
   # will expire in 1 week.
   only_session_authentication = db.BooleanProperty(default = True)
 
+ten_minutes = 600
 def GetCached(org_id):
-  one_hour_in_seconds = 3600
-  return cache.GetCachedById(Organization, one_hour_in_seconds, org_id)
+  return cache.GetCachedById(Organization, ten_minutes, org_id)
+
+def GetAndCache(org_id):
+  return cache.GetAndCache(Organization, ten_minutes, org_id)
 
 def GetAllCached():
-  two_minutes = 120
-  return cache.GetAllCachedBy(Organization, two_minutes)
+  return cache.GetAllCachedBy(Organization, ten_minutes)

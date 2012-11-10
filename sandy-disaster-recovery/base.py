@@ -7,6 +7,7 @@ import urllib
 import webapp2
 
 # For authentication
+
 import key
 
 class RequestHandler(webapp2.RequestHandler):
@@ -30,27 +31,27 @@ class RequestHandler(webapp2.RequestHandler):
 
 class AuthenticatedHandler(RequestHandler):
   def post(self):
-    org = key.CheckAuthorization(self.request)
+    org, event = key.CheckAuthorization(self.request)
     if not org:
       self.HandleAuthenticationFailure('post')
       return
     for i in self.request.POST.keys():
       self.request.POST[i] = cgi.escape(self.request.POST[i])
-    self.AuthenticatedPost(org)
+    self.AuthenticatedPost(org, event)
 
   def get(self):
-    org = key.CheckAuthorization(self.request)
+    org, event = key.CheckAuthorization(self.request)
     if not org:
       self.HandleAuthenticationFailure('get')
       return
-    self.AuthenticatedGet(org)
+    self.AuthenticatedGet(org, event)
 
   def put(self):
-    org = key.CheckAuthorization(self.request)
+    org, event = key.CheckAuthorization(self.request)
     if not org:
       self.HandleAuthenticationFailure('put')
       return
-    self.AuthenticatedPut(org)
+    self.AuthenticatedPut(org, event)
 
   def HandleAuthenticationFailure(self, method):
     """Takes some action when authentication fails.

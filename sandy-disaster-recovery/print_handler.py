@@ -23,7 +23,7 @@ print_single_template = jinja_environment.get_template('print_single.html')
 
 class PrintHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
-    sites = site_util.SitesFromIds(self.request.get('id'))
+    sites = site_util.SitesFromIds(self.request.get('id'), event)
     content_chunks = []
     first_time = True
     for site in sites:

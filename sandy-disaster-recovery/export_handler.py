@@ -8,7 +8,7 @@ import site_util
 
 class ExportHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
-    sites = site_util.SitesFromIds(self.request.get('id'))
+    sites = site_util.SitesFromIds(self.request.get('id'), event)
 
     filename = 'work_sites.csv'
     self.response.headers['Content-Type'] = 'text/csv'

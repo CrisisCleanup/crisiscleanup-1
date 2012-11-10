@@ -1,3 +1,5 @@
+# System libraries
+from google.appengine.ext.db import Query
 # Local libraries.
 import site_db
 
@@ -8,7 +10,7 @@ def SitesFromIds(comma_separated_ids, event):
   If comma_separated_ids is empty, returns all sites.
   """
   if not comma_separated_ids:
-    q = Query(model_class = Site)
+    q = Query(model_class = site_db.Site)
     q.filter("event =", event)
     return [site for site in q]
   else:

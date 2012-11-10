@@ -23,7 +23,6 @@ class Key(db.Model):
     return h.hexdigest()
 
   def getCookie(self, org, event):
-    logging.critical(event.key().id())
     cookie = Cookie.SimpleCookie("")
     cookie["sandy-recovery-auth"] = (
         ":".join([self.hashOrganization(org),
@@ -35,7 +34,6 @@ class Key(db.Model):
       expires = datetime.datetime.now() + datetime.timedelta(days = 7)
       cookie["sandy-recovery-auth"]["expires"] = (
           expires.strftime('%a, %d %b %Y %H:%M:%S'))
-    logging.critical(str(cookie))
     return str(cookie)
 
 one_week_in_seconds = 604800

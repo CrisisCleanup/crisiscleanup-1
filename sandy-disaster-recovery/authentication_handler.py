@@ -94,13 +94,9 @@ class AuthenticationHandler(base.RequestHandler):
         "WHERE name = :name LIMIT 1", name = form.name.data):
       org = l
     event = None
-    logging.critical("Event: " + form.event.data)
     for e in event_db.Event.gql(
       "WHERE name = :name LIMIT 1", name = form.event.data):
       event = e
-      logging.critical(event.name)
-      logging.critical(event.key())
-      logging.critical(event.key().id())
     if event and org and org.password == form.password.data:
       keys = key.Key.all()
       keys.order("date")
@@ -119,7 +115,6 @@ class AuthenticationHandler(base.RequestHandler):
                 string.ascii_uppercase + string.digits)
                                   for x in range(20)))
         selected_key.put()
-      logging.critical('Cookie: ' + event.name + org.name)
       self.response.headers.add_header("Set-Cookie",
                                        selected_key.getCookie(org, event))
       self.redirect(urllib.unquote(self.request.get('destination', default_value='/').encode('ascii')))

@@ -35,7 +35,6 @@ def _GetField(site, field):
     logging.warn('site %s is missing attribute' % (site.key().id(), field))
     return None
 
-logging.critical(dir(event_db))
 class Site(db.Model):
   # The list of fields that will be included in the CSV output.
   CSV_FIELDS = []
@@ -327,21 +326,37 @@ def GetAndCache(site_d):
                  time = cache_time)
   return site
 
+cache_ids = False
 def GetAllCached(event):
-  # First, retrieve all matching keys. As a keys_only scan,
-  # This should be more efficient than a full data scan.
-  q = Query(model_class = Site, keys_only = True)
-  q.filter("event =", event)
-  ids = [key.id() for key in q]
-  logging.critical(ids)
-  logging.critical(event.name)
-  # keys = ["%s:%d" % (Site.__name__, id) for id in ids]
-
-  cache_results = memcache.get_multi([str(id) for id in ids], key_prefix = cache_prefix)
+  if cache_ids:
+    cache_key_for_ids = "SiteDictIds:" + event.key().id() 
+    ids = memcache.get(cache_key_for_ids)
+    if not ids:
+      # Retrieve all matching keys. As a keys_only scan,
+      # This should be more efficient than a full data scan.
+      q = Query(model_class = Site, keys_only = True)
+      q.filter("event =", event)
+      ids = [key.id() for key in q]
+      # Cache these for up to six minutes.
+      # TODO(Jeremy): This may do more harm than
+      # good, depending on how often
+      # people reload the map.
+      memcache.set(cache_key_for_ids, ids,
+                   time = 360)
+  else:
+    q = Query(model_class = Site, keys_only = True)
+    q.filter("event =", event)
+    ids = [key.id() for key in q]
+    
+  lookup_ids = [str(id) for id in ids]
+  cache_results = memcache.get_multi(lookup_ids, key_prefix = cache_prefix)
   not_found = [id for id in ids if not str(id) in cache_results.keys()]
-  data_store_results = [(site, SiteToDict(site)) for site in Site.get_by_id(not_found)]
-  memcache.set_multi(dict([(str(site[0].key().id()), site)
-                            for site in data_store_results]),
-                     key_prefix = cache_prefix,
-                     time = cache_time)
+  data_store_results = []
+
+  if len(not_found):
+    data_store_results = [(site, SiteToDict(site)) for site in Site.get_by_id(not_found)]
+    memcache.set_multi(dict([(str(site[0].key().id()), site)
+                             for site in data_store_results]),
+                       key_prefix = cache_prefix,
+                       time = cache_time)
   return cache_results.values() + data_store_results

@@ -47,8 +47,9 @@ class FormHandler(base.AuthenticatedHandler):
       for l in lookup:
         # See if this same site is for a different event.
         # If so, we'll make a new one.
-        if not site.event or site.event.name != event.name:
+        if l.event and l.event.name == event.name:
           site = l
+          break
 
       if not site:
         # Save the data, and redirect to the view page
@@ -59,7 +60,7 @@ class FormHandler(base.AuthenticatedHandler):
                             phone2 = data.phone2.data)
       data.populate_obj(site)
       site.reported_by = org
-      if not site.event and event_db.AddSiteToEvent(site, event.key().id()):
+      if site.event or event_db.AddSiteToEvent(site, event.key().id()):
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
         return
       else:

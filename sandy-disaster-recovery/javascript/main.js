@@ -9,9 +9,12 @@ goog.require('goog.ui.Dialog.ButtonSet');
 goog.require('goog.ui.Option');
 goog.require('goog.ui.Select');
 goog.require('goog.style');
+goog.require('goog.dom.forms');
 goog.require('sandy.map');
+goog.require('sandy.form');
 
 goog.provide('sandy.main');
+
 var siteMap = {};
 var autoComplete;
 var dialog;
@@ -75,7 +78,11 @@ var createStatusSelect = function(site) {
           setMessageHtml('Successfully changed status.');
           site["status"] = select.value;
 	  site["tags"] = sandy.map.ClassifySite(site, my_organization);
-	  sandy.map.Refilter();
+	  var marker = site["marker"];
+          if (marker) {
+	    marker.icon = getMarkerIcon(site);
+	  }
+	  sandy.map.RefilterSingle(site);
         } else {
           setMessageHtml('Failure: ' + response_text);
         }
@@ -85,6 +92,52 @@ var createStatusSelect = function(site) {
   return status_select;
 };
 
+var currentEditSite;
+
+sandy.main.SaveEdit = function() {
+  var content = goog.dom.forms.getFormDataString(goog.dom.getElement("edit_form"));
+  var site = currentEditSite;
+  var onFormSubmit = function(e) {
+    var xhr = e.target;
+    var status = xhr.getStatus();
+    if (status == 200) {
+      sandy.main.CloseEdit();
+    } else if (status == 400) {
+      goog.dom.getElement("single_site").innerHTML = xhr.getResponseText();
+    }
+  }
+  goog.net.XhrIo.send("/edit?mode=js&id=" + currentEditSite["id"],
+		      onFormSubmit,
+		      "POST",
+                      content);
+
+}
+
+sandy.main.CloseEdit = function() {
+  goog.style.showElement(goog.dom.getElement('form_background'), false);
+  if (currentEditSite)
+    sandy.main.SelectSite(currentEditSite);
+  goog.style.showElement(goog.dom.getElement("legend_div"), true);
+}
+
+sandy.main.OpenEdit = function(site) {
+  currentEditSite = site;
+  goog.net.XhrIo.send('/edit?mode=js&id=' + site["id"],
+		      function(e)
+  {
+    var xhr = e.target;
+    var status = xhr.getStatus();
+    if (status != 200) {
+	return;
+    }
+    goog.style.showElement(goog.dom.getElement("legend_div"), false);
+    goog.dom.getElement("single_site").innerHTML = xhr.getResponseText();
+    var formBackground = goog.dom.getElement("form_background");
+    dialog.setVisible(false);
+    goog.style.showElement(formBackground, true);
+    sandy.form.SetUpValidation();
+  })
+}
 
 var kCompletionStatusColors = {
   "Open, unassigned" : "red",
@@ -131,7 +184,7 @@ var updateSite = function(site) {
 	if (dialog_site == site) {
           updateDialogForSite(dialog, site);
 	  site["tags"] = sandy.map.ClassifySite(site, my_organization);
-	  sandy.map.Refilter();
+	  sandy.map.RefilterSingle(site);
           var marker_icon = getMarkerIcon(site);
           if (marker) {
             if (marker_icon) {
@@ -184,7 +237,7 @@ var updateDialogForSite = function(dialog, site) {
     window.open("/print?id=" + site["id"], '_blank');
   });
   addButton('Edit', function(e) {
-    window.location = "/edit?id=" + site["id"];
+    sandy.main.OpenEdit(site);
   });
 
   if (site.claimed_by === null) {
@@ -211,10 +264,6 @@ var updateDialogForSite = function(dialog, site) {
   dialog.setContent('');
   goog.dom.appendChild(dialog.getContentElement(), main_div);
 };
-
-function selectSite(site) {
-
-}
 
 function AddMarker(lat, lng, site, map, infowindow) {
   site["tags"] = sandy.map.ClassifySite(site, my_organization);
@@ -250,6 +299,12 @@ sandy.main.SelectSite = function(site) {
   dialog.getElement().style.right = "10px";
   dialog.getElement().style.bottom = "10px";
   updateSite(site);
+  if (site["marker"]) {
+    var location = site["marker"].getPosition();
+    if (!map.getBounds().contains(location)) {
+      map.panTo(location);
+    }
+  }
 }
 
 sandy.main.initialize = function() {

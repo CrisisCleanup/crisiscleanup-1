@@ -31,7 +31,8 @@ class EditHandler(base.AuthenticatedHandler):
           "org": org})
 
     self.response.out.write(template.render(
-          {"single_site": single_site,
+          {"mode_js": self.request.get("mode") == "js",
+           "single_site": single_site,
            "form": form,
            "id": id,
            "page": "/edit"}))
@@ -46,6 +47,7 @@ class EditHandler(base.AuthenticatedHandler):
     case_number = site.case_number
     claim_for_org = self.request.get("claim_for_org") == "y"
 
+    mode_js = self.request.get("mode") == "js"
     if data.validate():
       # Save the data, and redirect to the view page
       for f in data:
@@ -59,14 +61,20 @@ class EditHandler(base.AuthenticatedHandler):
       if claim_for_org:
         site.claimed_by = org
       site_db.PutAndCache(site)
-      self.redirect('/map')
+      if mode_js:
+        # returning a 200 is sufficient here.
+        return
+      else:
+        self.redirect('/map')
     else:
       single_site = single_site_template.render(
           { "form": data,
             "org": org})
-
+      if mode_js:
+        self.response.set_status(400)
       self.response.out.write(template.render(
-          {"errors": data.errors,
+          {"mode_js": mode_js,
+           "errors": data.errors,
            "form": data,
            "single_site": single_site,
            "id": id,

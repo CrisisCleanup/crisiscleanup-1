@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <title>Sandy Disaster Response -- Request Map</title>
     <link href="/stylesheets/default.css" rel="stylesheet">
+    <link href="/stylesheets/form.css" rel="stylesheet">
     <link href="/closure/css/dialog.css" rel="stylesheet">
 {% if uncompiled %}
     <script src="/closure/goog/base.js"></script>
@@ -54,5 +55,18 @@ var counties = [
 <img id="legend_img" src="/icons/Legend.png" />
 </div>
 </div>
+
+<div id="form_background" style="display: none; z-index: 12;">
+<div id="form">
+<form id="edit_form" method="POST" action="{{page}}">
+<input type="button" value="Save changes" onclick="sandy.main.SaveEdit()" />
+<input type="button" value="Cancel" onclick="sandy.main.CloseEdit()" />
+<div id="single_site">
+</div>
+<input type="button" value="Save changes" onclick="sandy.main.SaveEdit()" />
+<input type="button" value="Cancel" onclick="sandy.main.CloseEdit()" />
+</form>
+</div>
+</div>  {# form_background #}
  </body>
 </html>

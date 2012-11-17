@@ -46,6 +46,30 @@ sandy.map.ClassifySite = function(site, my_organization) {
   return tags;
 }
 
+sandy.map.RefilterSingle = function(site) {
+  var marker = site["marker"];
+  if (!marker) return;
+  var els = document.getElementsByName("filter");
+  var filters = [];
+  for (var el = 0; el < els.length; ++el) {
+    if (els[el].checked) filters.push(els[el].id);
+  }
+  var include = true;
+  for (var f = 0; f < filters.length; ++f) {
+    if (site["tags"] &&
+	site["tags"].indexOf(filters[f]) === -1) {
+      include = false;
+      break;
+    }
+  }
+
+  clusterer.removeMarker(marker);
+  marker.setVisible(include);
+  if (include) {
+    clusterer.addMarker(marker);
+  }
+}
+
 sandy.map.Refilter = function(only_new) {
   if (!only_new)
     clusterer.clearMarkers();

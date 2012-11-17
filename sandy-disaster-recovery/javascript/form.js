@@ -14,7 +14,6 @@ var map;
 var geocoder;
 var autocomplete;
 sandy.form.Initialize = function() {
-  geocoder = new google.maps.Geocoder();
   var myLatlng = new google.maps.LatLng(40.7697, -73.5735);
   var mapOptions = {
     zoom: 11,
@@ -23,7 +22,11 @@ sandy.form.Initialize = function() {
   };
 
   map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+  sandy.form.SetUpValidation();
+}
 
+sandy.form.SetUpValidation = function() {
+  geocoder = new google.maps.Geocoder();
   // Set up validation events.
   goog.dom.getElement('address').onblur = validate;
   goog.dom.getElement('zip_code').onblur = validate;

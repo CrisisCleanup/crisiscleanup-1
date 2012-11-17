@@ -1,3 +1,4 @@
+{% if not mode_js %}
 <!DOCTYPE html>
 <html>
 
@@ -36,6 +37,7 @@ goog.require("sandy.form");
 </div>{# end delete_form #}
 {% endif %}
 <form method="POST" action="{{page}}">
+{% endif %} {# not mode_js #}
 <input type="hidden" name="event_name" value="{{event_name}}" />
 {% if message %}
 <div class="form_message">{{message}}</div>
@@ -65,8 +67,11 @@ The Hurricane Sandy Waiting List will alert volunteer organizations in your area
 {% if id %}
 <input type="hidden" name="_id" value="{{id}}">
 {% endif %}
+{% if not mode_js %}
+
 {% if not delete %}
 {% if id %}
+
 <input type=submit value="Save changes">
 {% else %}
 <input type=submit value="Submit request">
@@ -79,3 +84,4 @@ The Hurricane Sandy Waiting List will alert volunteer organizations in your area
 <div id="map_canvas"></div>
 </body>
 </html>
+{% endif %} {# not mode_js #}

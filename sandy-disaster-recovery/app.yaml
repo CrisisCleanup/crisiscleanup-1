@@ -30,3 +30,4 @@ libraries:
   version: latest
 builtins:
   - appstats: on
+  - remote_api: on

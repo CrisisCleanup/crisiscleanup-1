@@ -327,15 +327,17 @@ def GetAndCache(site_d):
   return site
 
 cache_ids = False
-def GetAllCached(event):
+def GetAllCached(event, county):
   if cache_ids:
-    cache_key_for_ids = "SiteDictIds:" + event.key().id() 
+    cache_key_for_ids = "SiteDictIds:" + event.key().id() + ":" + county 
     ids = memcache.get(cache_key_for_ids)
     if not ids:
       # Retrieve all matching keys. As a keys_only scan,
       # This should be more efficient than a full data scan.
       q = Query(model_class = Site, keys_only = True)
       q.filter("event =", event)
+      if len(county):
+        q.filter("county =", county)
       ids = [key.id() for key in q]
       # Cache these for up to six minutes.
       # TODO(Jeremy): This may do more harm than
@@ -346,8 +348,7 @@ def GetAllCached(event):
   else:
     q = Query(model_class = Site, keys_only = True)
     q.filter("event =", event)
-    ids = [key.id() for key in q]
-    
+    ids = [key.id() for key in q.run(batch_size = 2000)]
   lookup_ids = [str(id) for id in ids]
   cache_results = memcache.get_multi(lookup_ids, key_prefix = cache_prefix)
   not_found = [id for id in ids if not str(id) in cache_results.keys()]

@@ -20,8 +20,9 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
     id_param = self.request.get('id')
     if id_param == "all":
+      county = self.request.get("county", default_value = "")
       output = json.dumps(
-        [s[1] for s in site_db.GetAllCached(event)],
+        [s[1] for s in site_db.GetAllCached(event, county)],
         default=dthandler)
       self.response.out.write(output)
       return

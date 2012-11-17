@@ -54,7 +54,8 @@ def GetOrganizationForm(post_data):
     for s in site_db.Site.all():
       event_db.AddSiteToEvent(s, e.key().id(), force = True)
     events = [e]
-
+  organizations.sort(key=lambda org: org.name)
+  events.sort(key=lambda event: event.name)
   class OrganizationForm(wtforms.form.Form):
     name = wtforms.fields.SelectField(
         'Name',

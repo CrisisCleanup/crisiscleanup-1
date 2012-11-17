@@ -46,8 +46,9 @@ sandy.map.ClassifySite = function(site, my_organization) {
   return tags;
 }
 
-sandy.map.Refilter = function() {
-  clusterer.clearMarkers();
+sandy.map.Refilter = function(only_new) {
+  if (!only_new)
+    clusterer.clearMarkers();
   var site_ids = [];
   var els = document.getElementsByName("filter");
   var filters = [];
@@ -65,7 +66,14 @@ sandy.map.Refilter = function() {
     }
     if (mapSites[i]["marker"]) {
       if (include) {
-        clusterer.addMarker(mapSites[i]["marker"]);
+	if (only_new) {
+	  if (!mapSites[i]["clustered"]) {              
+	    mapSites[i]["clustered"] = true;
+	    clusterer.addMarker(mapSites[i]["marker"]);
+          }
+	} else {
+	  clusterer.addMarker(mapSites[i]["marker"]);
+	}
       }
 
       mapSites[i]["marker"].setVisible(include);
@@ -122,7 +130,7 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
       }
     }
   }
-  sandy.map.Refilter();
+  sandy.map.Refilter(true);
   if (firstTime) {
     if (markers.length > 0) {
       var min_lat = markers[0].getPosition().lat();
@@ -141,6 +149,7 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
       map.fitBounds(new google.maps.LatLngBounds(
           new google.maps.LatLng(min_lat - .001, min_lng - .001), 
           new google.maps.LatLng(max_lat + .001, max_lng + .001)));
+      map.setZoom(8);
     }
   }
   if (markers.length > 0) myLatlng = markers[0].getPosition();

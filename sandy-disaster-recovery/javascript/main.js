@@ -264,6 +264,34 @@ sandy.main.initialize = function() {
   map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
   // TODO(Jeremy): Set myLatLng to the location of the highest
   // priority current site.
+  var terms = [];
+  var searchBox = goog.dom.getElement('search_box');
+  autoComplete = goog.ui.ac.createSimpleAutoComplete(terms, searchBox, false);
+  var selectFunction = function(e) {
+    if (siteMap[e.row]) {
+      var site = siteMap[e.row];
+      sandy.main.SelectSite(site);
+      searchBox.value = "";
+      if (largeMarker) {
+        largeMarker.setZIndex(0);
+      }
+      largeMarker = site["marker"];
+      if (largeMarker) {
+        largeMarker.setZIndex(5);
+        largeMarker.setAnimation(google.maps.Animation.DROP);
+        if (map.getZoom() < 8) {
+            map.setZoom(8);
+        }
+        if (!map.getBounds().contains(largeMarker.getPosition())) {
+            map.panTo(largeMarker.getPosition());
+        }
+      }
+    }
+  }
+  searchBox.onchange = selectFunction;
+  goog.events.listen(autoComplete,
+		     goog.ui.ac.AutoComplete.EventType.UPDATE,
+		     selectFunction);
   for (var i = 0; i < counties.length; ++i) {
   goog.net.XhrIo.send('/api/site_ajax?id=all&county=' + counties[i],
 		      function(e) {
@@ -274,7 +302,7 @@ sandy.main.initialize = function() {
       sandy.map.InitializeMap(sites, AddMarker, map);
       var filters = goog.dom.getElement('filtersbackground');
       goog.style.showElement(filters, true);
-      var terms = [];
+
       for (var i = 0; i < sites.length; ++i) {
         if (sites[i].case_number && sites[i].name) {
           var term = sites[i].case_number + ": <" + sites[i].name + ">";
@@ -294,35 +322,6 @@ sandy.main.initialize = function() {
           siteMap[term] = sites[i];
         }
       }
-      var searchBox = goog.dom.getElement('search_box');
-      autoComplete = goog.ui.ac.createSimpleAutoComplete(
-          terms, searchBox, false);
-      var selectFunction = function(e) {
-        if (siteMap[e.row]) {
-          var site = siteMap[e.row];
-          sandy.main.SelectSite(site);
-          searchBox.value = "";
-          if (largeMarker) {
-            largeMarker.setZIndex(0);
-          }
-          largeMarker = site["marker"];
-          if (largeMarker) {
-            largeMarker.setZIndex(5);
-            largeMarker.setAnimation(google.maps.Animation.DROP);
-            if (map.getZoom() < 8) {
-              map.setZoom(8);
-            }
-            if (!map.getBounds().contains(largeMarker.getPosition())) {
-              map.panTo(largeMarker.getPosition());
-            }
-          }
-        }
-      }
-      searchBox.onchange = selectFunction;
-      goog.events.listen(
-          autoComplete,
-          goog.ui.ac.AutoComplete.EventType.UPDATE,
-          selectFunction);
     }
   })
   }

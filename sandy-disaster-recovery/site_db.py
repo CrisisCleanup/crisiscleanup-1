@@ -326,25 +326,22 @@ def GetAndCache(site_d):
                  time = cache_time)
   return site
 
+def GetReference(obj, prop, values):
+  try:
+    key = prop.get_value_for_datastore(obj)
+    if key:
+      return values[key]
+    return None
+  except db.ReferencePropertyResolveError:
+    return None
+
 cache_ids = False
 def GetSitesAndSetReferences(ids, events, organizations):
   sites = Site.get_by_id(ids)
   for site in sites:
-    if site.event:
-      try:
-        site.event = events[Site.event.get_value_for_datastore(site)]
-      except db.ReferencePropertyResolveError:
-        site.event = None
-    if site.claimed_by:
-      try:
-        site.claimed_by = organizations[Site.claimed_by.get_value_for_datastore(site)]
-      except db.ReferencePropertyResolveError:
-        site.claimed_by = None
-    if site.reported_by:
-      try:
-        site.reported_by = organizations[Site.reported_by.get_value_for_datastore(site)]
-      except db.ReferencePropertyResolveError:
-        site.reported_by = None
+    site.event = GetReference(site, Site.event, events)
+    site.claimed_by = GetReference(site, Site.claimed_by, organizations)
+    site.reported_by = GetReference(site, Site.reported_by, organizations)
   return sites
 
 def GetAllCached(event, county = "all", ids = None):

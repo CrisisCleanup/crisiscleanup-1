@@ -46,8 +46,14 @@ var counties = [
 <label for="{{f[0]}}">{{f[1]}}</label><br />
 {% endfor %}
 <br />
-<a href="/print?" id="filtered_print" target="_blank">Get Printable Version</a><br />
-<a href="/export?" id="filtered_export">Download as Spreadsheet (CSV)</a><br />
+<form method="POST" action="/print" target="_blank">
+<input name="id_list" type="hidden" value="" />
+<input type="submit" id="filtered_print" value="Get Printable Version"></input><br />
+</form>
+<form method="POST" action="/export" target="_blank">
+<input name="id_list" type="hidden" value="" />
+<input type="submit" id="filtered_export" value="Download as Spreadsheet (CSV)"></input><br />
+</form>
 </div></div>
 <div id="info">
 </div>

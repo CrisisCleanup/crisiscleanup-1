@@ -336,7 +336,7 @@ def GetAllCached(event, county):
       # This should be more efficient than a full data scan.
       q = Query(model_class = Site, keys_only = True)
       q.filter("event =", event)
-      if len(county):
+      if county != all:
         q.filter("county =", county)
       ids = [key.id() for key in q]
       # Cache these for up to six minutes.
@@ -348,6 +348,9 @@ def GetAllCached(event, county):
   else:
     q = Query(model_class = Site, keys_only = True)
     q.filter("event =", event)
+    if county != "all":
+      q.filter("county =", county)
+  
     ids = [key.id() for key in q.run(batch_size = 2000)]
   lookup_ids = [str(id) for id in ids]
   cache_results = memcache.get_multi(lookup_ids, key_prefix = cache_prefix)
@@ -360,4 +363,22 @@ def GetAllCached(event, county):
                              for site in data_store_results]),
                        key_prefix = cache_prefix,
                        time = cache_time)
-  return cache_results.values() + data_store_results
+
+  sites = cache_results.values() + data_store_results
+  if county == "all":
+    counties = {}
+    for s in sites:
+      current_county = s[0].county
+      if not county in counties:
+        counties[current_county] = (1, s[0].latitude, s[0].longitude)
+      else:
+        counties[current_county] = (counties[current_county][0] + 1,
+                                    counties[current_county][1] + s[0].latitude,
+                                    counties[current_county][2] + s[0].longitude)
+    county_positions = {}
+    for current_county in counties.keys():
+      county_positions[current_county] = (counties[current_county][1] / counties[current_county][0],
+                                          counties[current_county][2] / counties[current_county][0])
+    event_db.SetCountiesForEvent(event.key().id(), county_positions)
+
+  return sites

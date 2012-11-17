@@ -11,8 +11,8 @@ goog.provide('sandy.map');
 var markers = [];
 var panorama;
 var layerObjects = [];
-var mapSites;
-
+var mapSites = [];
+var clusterer;
 var layers = [
     { kml: "https://www.google.com/maps/ms?authuser=0&vps=3&ie=UTF8&msa=0&output=kml&msid=210988455284977221384.0004cdd5426e591f0780f",
       description: "Command Centers" },
@@ -47,6 +47,7 @@ sandy.map.ClassifySite = function(site, my_organization) {
 }
 
 sandy.map.Refilter = function() {
+  clusterer.clearMarkers();
   var site_ids = [];
   var els = document.getElementsByName("filter");
   var filters = [];
@@ -62,8 +63,13 @@ sandy.map.Refilter = function() {
         break;
       }
     }
-    if (mapSites[i]["marker"])
+    if (mapSites[i]["marker"]) {
+      if (include) {
+        clusterer.addMarker(mapSites[i]["marker"]);
+      }
+
       mapSites[i]["marker"].setVisible(include);
+    }
     if (include) {
       site_ids.push(mapSites[i]["id"]);
     }
@@ -78,25 +84,31 @@ sandy.map.Refilter = function() {
   }
 }
 
+var firstTime = true;
 sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
-  mapSites = currentMapSites;
+  mapSites = mapSites.concat(currentMapSites);
   // Initialize KML layers
-  for (var i = 0; i < layers.length; ++i) {
-    var layer = new google.maps.KmlLayer({
+  if (firstTime) {
+    clusterer = new MarkerClusterer(map);
+    clusterer.setGridSize(40);
+    clusterer.setMaxZoom(12);
+    for (var i = 0; i < layers.length; ++i) {
+      var layer = new google.maps.KmlLayer({
        clickable: true,
        map: map,
        preserveViewport: true,
        suprressInfoWindows: false,
        url: layers[i].kml
         });
-    layerObjects.push(layer);
+      layerObjects.push(layer);
+    }
   }
 
   var infowindow = new google.maps.InfoWindow({
     content: ""
   });
-  for (var i = 0; i < mapSites.length; ++i) {
-    var site = mapSites[i];
+  for (var i = 0; i < currentMapSites.length; ++i) {
+    var site = currentMapSites[i];
     var lat = site["latitude"];
     var lng = site["longitude"];
     var good_ll = true;
@@ -105,27 +117,32 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
     }
     if (good_ll) {
       var marker = AddMarker(lat, lng, site, map, infowindow);
-      if (marker)
+      if (marker) {
         markers.push(marker);
+      }
     }
   }
-  if (markers.length > 0) {
-    var min_lat = markers[0].getPosition().lat();
-    var max_lat = min_lat;
-    var min_lng = markers[0].getPosition().lng();
-    var max_lng = min_lng;
-    // Note that this code may completely break for those
-    // hurricane victims near the international date line.
-    for (var i = 1; i < markers.length; ++i) {
-      var ll = markers[i].getPosition();
-      min_lat = Math.min(min_lat, ll.lat());
-      min_lng = Math.min(min_lng, ll.lng());
-      max_lat = Math.max(max_lat, ll.lat());
-      max_lng = Math.max(max_lng, ll.lng());
+  sandy.map.Refilter();
+  if (firstTime) {
+    if (markers.length > 0) {
+      var min_lat = markers[0].getPosition().lat();
+      var max_lat = min_lat;
+      var min_lng = markers[0].getPosition().lng();
+      var max_lng = min_lng;
+      // Note that this code may completely break for those
+      // hurricane victims near the international date line.
+      for (var i = 1; i < markers.length; ++i) {
+        var ll = markers[i].getPosition();
+        min_lat = Math.min(min_lat, ll.lat());
+        min_lng = Math.min(min_lng, ll.lng());
+        max_lat = Math.max(max_lat, ll.lat());
+        max_lng = Math.max(max_lng, ll.lng());
+      }
+      map.fitBounds(new google.maps.LatLngBounds(
+          new google.maps.LatLng(min_lat - .001, min_lng - .001), 
+          new google.maps.LatLng(max_lat + .001, max_lng + .001)));
     }
-    map.fitBounds(new google.maps.LatLngBounds(
-        new google.maps.LatLng(min_lat - .001, min_lng - .001), 
-        new google.maps.LatLng(max_lat + .001, max_lng + .001)));
   }
   if (markers.length > 0) myLatlng = markers[0].getPosition();
+  firstTime = false;
 }

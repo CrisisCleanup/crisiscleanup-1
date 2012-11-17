@@ -264,7 +264,8 @@ sandy.main.initialize = function() {
   map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
   // TODO(Jeremy): Set myLatLng to the location of the highest
   // priority current site.
-  goog.net.XhrIo.send('/api/site_ajax?id=all',
+  for (var i = 0; i < counties.length; ++i) {
+  goog.net.XhrIo.send('/api/site_ajax?id=all&county=' + counties[i],
 		      function(e) {
     var xhr = e.target;
     var status = xhr.getStatus();
@@ -324,6 +325,5 @@ sandy.main.initialize = function() {
           selectFunction);
     }
   })
-
-
+  }
 }

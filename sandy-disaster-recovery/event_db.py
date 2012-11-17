@@ -14,9 +14,11 @@ class Event(db.Model):
   start_date = db.DateProperty()
   num_sites = db.IntegerProperty(default = 0)
   case_label = db.StringProperty(required = True)
+  counties = db.StringListProperty()
+  latitudes = db.ListProperty(float)
+  longitudes = db.ListProperty(float)
 
 import site_db
-
 
 def DefaultEventName():
   return "Hurricane Sandy Recovery"
@@ -30,11 +32,25 @@ def AddSiteToEvent(site, event_id, force = False):
   site.event = event
   site.case_number = event.case_label + str(event.num_sites)
   event.num_sites += 1
-  event.put()
+  cache.PutAndCache(event, ten_minutes)
+  
   site.put()
   return True
 
 ten_minutes = 600
+@db.transactional(xg=True)
+def SetCountiesForEvent(event_id, county_positions):
+  event = Event.get_by_id(event_id)
+  event.counties = []
+  event.latitudes = []
+  event.longitudes = []
+  for county in county_positions.keys():
+    event.counties.append(county)
+    event.latitudes.append(county_positions[county][0])
+    event.longitudes.append(county_positions[county][1])
+  cache.PutAndCache(event, ten_minutes)
+  return True
+
 def GetDefaultEvent():
   cache_key = 'Event:default'
   event = memcache.get(cache_key)

@@ -1,0 +1,4 @@
+cron:
+- description: Cache latest sites
+  url: /api/site_ajax?id=all&county=all
+  schedule: every 10 minutes

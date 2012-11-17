@@ -51,7 +51,7 @@ def GetOrganizationForm(post_data):
                        case_label = "A")
     e.put()
     # TODO(Jeremy): This could be dangerous if we reset events.
-    for s in site_db.Site.all():
+    for s in site_db.Site.all(batch_size = 1000):
       event_db.AddSiteToEvent(s, e.key().id(), force = True)
     events = [e]
   organizations.sort(key=lambda org: org.name)

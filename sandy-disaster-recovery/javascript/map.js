@@ -171,8 +171,8 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
         max_lng = Math.max(max_lng, ll.lng());
       }
       map.fitBounds(new google.maps.LatLngBounds(
-          new google.maps.LatLng(min_lat - .001, min_lng - .001), 
-          new google.maps.LatLng(max_lat + .001, max_lng + .001)));
+          new google.maps.LatLng(min_lat - .01, min_lng - .01), 
+          new google.maps.LatLng(max_lat + .01, max_lng + .01)));
       map.setZoom(8);
     }
   }

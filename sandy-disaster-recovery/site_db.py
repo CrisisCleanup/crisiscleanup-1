@@ -327,44 +327,68 @@ def GetAndCache(site_d):
   return site
 
 cache_ids = False
-def GetAllCached(event, county):
-  if cache_ids:
-    cache_key_for_ids = "SiteDictIds:" + event.key().id() + ":" + county 
-    ids = memcache.get(cache_key_for_ids)
-    if not ids:
-      # Retrieve all matching keys. As a keys_only scan,
-      # This should be more efficient than a full data scan.
+def GetSitesAndSetReferences(ids, events, organizations):
+  sites = Site.get_by_id(ids)
+  for site in sites:
+    if site.event:
+      try:
+        site.event = events[Site.event.get_value_for_datastore(site)]
+      except db.ReferencePropertyResolveError:
+        site.event = None
+    if site.claimed_by:
+      try:
+        site.claimed_by = organizations[Site.claimed_by.get_value_for_datastore(site)]
+      except db.ReferencePropertyResolveError:
+        site.claimed_by = None
+    if site.reported_by:
+      try:
+        site.reported_by = organizations[Site.reported_by.get_value_for_datastore(site)]
+      except db.ReferencePropertyResolveError:
+        site.reported_by = None
+  return sites
+
+def GetAllCached(event, county = "all", ids = None):
+  if not ids:
+    if cache_ids:
+      cache_key_for_ids = "SiteDictIds:" + event.key().id() + ":" + county 
+      ids = memcache.get(cache_key_for_ids)
+      if not ids:
+        # Retrieve all matching keys. As a keys_only scan,
+        # This should be more efficient than a full data scan.
+        q = Query(model_class = Site, keys_only = True)
+        q.filter("event =", event)
+        if county != all:
+          q.filter("county =", county)
+        ids = [key.id() for key in q]
+        # Cache these for up to six minutes.
+        # TODO(Jeremy): This may do more harm than
+        # good, depending on how often
+        # people reload the map.
+        memcache.set(cache_key_for_ids, ids,
+                     time = 360)
+    else:
       q = Query(model_class = Site, keys_only = True)
       q.filter("event =", event)
-      if county != all:
+      if county != "all":
         q.filter("county =", county)
-      ids = [key.id() for key in q]
-      # Cache these for up to six minutes.
-      # TODO(Jeremy): This may do more harm than
-      # good, depending on how often
-      # people reload the map.
-      memcache.set(cache_key_for_ids, ids,
-                   time = 360)
-  else:
-    q = Query(model_class = Site, keys_only = True)
-    q.filter("event =", event)
-    if county != "all":
-      q.filter("county =", county)
-  
-    ids = [key.id() for key in q.run(batch_size = 2000)]
+    
+      ids = [key.id() for key in q.run(batch_size = 2000)]
   lookup_ids = [str(id) for id in ids]
   cache_results = memcache.get_multi(lookup_ids, key_prefix = cache_prefix)
   not_found = [id for id in ids if not str(id) in cache_results.keys()]
   data_store_results = []
-
+  orgs = dict([(o.key(), o) for o in organization.GetAllCached()])
+  events = dict([(e.key(), e) for e in event_db.GetAllCached()])
   if len(not_found):
-    data_store_results = [(site, SiteToDict(site)) for site in Site.get_by_id(not_found)]
+    data_store_results = [(site, SiteToDict(site)) for site in
+                          GetSitesAndSetReferences(not_found, events, orgs)]
     memcache.set_multi(dict([(str(site[0].key().id()), site)
                              for site in data_store_results]),
                        key_prefix = cache_prefix,
                        time = cache_time)
 
   sites = cache_results.values() + data_store_results
+  
   if county == "all":
     counties = {}
     for s in sites:

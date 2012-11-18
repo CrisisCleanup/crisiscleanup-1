@@ -17,7 +17,7 @@
 {% endif %}
 <h2>Personal Information</h2>
 <table>
-<tr><td class=question>Resident name:</td>
+<tr><td class=question>Resident name: <span class=required-asterisk>*</span></td>
 <td class="answer">{{ with_errors(form.name) }}</td></tr>
 <tr><td class=question>Date of Request:</td>
 {% if readonly %}
@@ -27,13 +27,13 @@
 {% endif %}
 <tr><td class=question>Zip Code:</td>
 <td class="answer"> {{with_errors(form.zip_code) }}<div id=zipCodeSuggestion></td></tr>
-<tr><td class=question>Street Address:</td>
+<tr><td class=question>Street Address:<span class=required-asterisk>*</span></td>
 <td class="answer"> {{with_errors(form.address) }}</div></td></tr>
-<tr><td class=question>City:</td>
+<tr><td class=question>City:<span class=required-asterisk>*</span></td>
 <td class="answer"> {{with_errors(form.city)}}<div id=citySuggestion></div></td></tr>
 <tr><td class=question>County:</td>
 <td class="answer"> {{with_errors(form.county)}}<div id=countySuggestion></div></td></tr>
-<tr><td class=question>State:</td>
+<tr><td class=question>State:<span class=required-asterisk>*</span></td>
 <td class="answer"> {{with_errors(form.state)}}<div id=stateSuggestion></div></td></tr>
 <tr><td class=question>Latitude:</td>
 <td class="answer"> {{with_errors(form.latitude)}}</td></tr>
@@ -41,11 +41,11 @@
 <td class="answer"> {{with_errors(form.longitude)}}</td></tr>
 <tr><td class=question>Cross Street or Nearby Landmark:</td>
 <td class="answer"> {{with_errors(form.cross_street) }}</td></tr>
-<tr><td class=question>Phone Numbers:</td>
+<tr><td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>
 <td class="answer"> {{with_errors(form.phone1) }}{{with_errors(form.phone2)}}</td></tr>
 <tr><td class=question>Best time to call:</td>
 <td class="answer"> {{with_errors(form.time_to_call)}}</td></tr>
-<tr><td class=question>Primary work type:</td>
+<tr><td class=question>Primary work type:<span class=required-asterisk>*</span></td>
 <td class="answer"> {{with_errors(form.work_type)}}</td></tr>
 <tr><td class=question>Rent/Own</td>
 <td class="answer"> {{with_errors(form.rent_or_own)}}</td></tr>

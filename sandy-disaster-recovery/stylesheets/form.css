@@ -78,3 +78,6 @@ section#errors li {
 .error_field input, .error_field select, .error_field textarea {
   border: #f00 2px solid;
 }
+.required-asterisk {
+  color: #C43B1D;
+}

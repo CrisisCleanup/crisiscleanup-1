@@ -7,6 +7,9 @@ import site_db
 import site_util
 
 class ExportHandler(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
+    self.AuthenticatedPost(org, event)
+
   def AuthenticatedPost(self, org, event):
     sites = site_util.SitesFromIds(self.request.get('id'), event)
 

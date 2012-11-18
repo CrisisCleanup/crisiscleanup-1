@@ -244,8 +244,6 @@ def _ValidateCsvFields():
 _ValidateCsvFields()
 del _ValidateCsvFields
 
-SiteForm2 = model_form(Site)
-
 def _ChoicesWithBlank(choices):
   """Converts a list items into choices suitable for a wtforms choices list.
   Prepends a blank value to the list to ensure that a user has to purposefully
@@ -253,7 +251,7 @@ def _ChoicesWithBlank(choices):
   """
   return [('', '--Choose One--')] + [(choice, choice) for choice in choices]
 
-class SiteForm(SiteForm2):
+class SiteForm(model_form(Site)):
   priority = wtforms.fields.RadioField(
       choices = [(5, ""), (4, ""), (3, ""), (2, ""), (1, "")],
       coerce = int,

@@ -4,6 +4,7 @@ import jinja2
 import logging
 import os
 import urllib2
+import wtforms.validators
 
 # Local libraries.
 import base
@@ -37,7 +38,29 @@ class FormHandler(base.AuthenticatedHandler):
 
   def AuthenticatedPost(self, org, event):
     data = site_db.SiteForm(self.request.POST)
-    message = ""
+    extra_validators = {
+      "name": wtforms.validators.Length(min = 1, max = 100),
+      "city": wtforms.validators.Length(min = 1, max = 100),
+      "state": wtforms.validators.Length(min = 1, max = 100),
+      "phone1": wtforms.validators.Length(min = 1, max = 100,
+                                          message = "Please provide a primary phone number"),
+      "primary_work_type": wtforms.validators.Length(min = 1, max = 100,
+                                                     message = "Please select the primary work type."),      
+    }
+    data.name.validators += (wtforms.validators.Length(min = 1, max = 100,
+                             message = "Name must be between 1 and 100 characters"),)
+    data.phone1.validators += (wtforms.validators.Length(
+        min = 1, max = 100,
+        message = "Please enter a primary phone number"),)
+    data.city.validators += (wtforms.validators.Length(
+        min = 1, max = 100,
+        message = "Please enter a city name"),)
+    data.state.validators += (wtforms.validators.Length(
+        min = 1, max = 100,
+        message = "Please enter a state name"),)
+    data.work_type.validators += (wtforms.validators.Length(
+        min = 1, max = 100,
+        message = "Please set a primary work type"),)
     if data.validate():
       lookup = site_db.Site.gql(
         "WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
@@ -66,6 +89,8 @@ class FormHandler(base.AuthenticatedHandler):
         return
       else:
         message = "Failed to add site to event: " + event.name
+    else:
+      message = "Failed to validate"
     single_site = single_site_template.render(
         { "form": data,
           "org": org})

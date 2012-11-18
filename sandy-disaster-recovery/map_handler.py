@@ -53,6 +53,9 @@ class MapHandler(base.RequestHandler):
           "demo" : False,
         }
     else:
+      # TODO(Jeremy): Temporary code until this handler scales.
+      self.redirect("/authentication?destination=/map")
+      return
       # Allow people to bookmark an unauthenticated event map,
       # by setting the event ID.
       event = event_db.GetEventFromParam(self.request.get("event_id"))

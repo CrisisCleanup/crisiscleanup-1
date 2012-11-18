@@ -390,7 +390,7 @@ def GetAllCached(event, county = "all", ids = None):
     counties = {}
     for s in sites:
       current_county = s[0].county
-      if not county in counties:
+      if not current_county in counties:
         counties[current_county] = (1, s[0].latitude, s[0].longitude)
       else:
         counties[current_county] = (counties[current_county][0] + 1,
@@ -400,6 +400,10 @@ def GetAllCached(event, county = "all", ids = None):
     for current_county in counties.keys():
       county_positions[current_county] = (counties[current_county][1] / counties[current_county][0],
                                           counties[current_county][2] / counties[current_county][0])
+    if len(county_positions) < 20:
+      for i in range(len(event.counties)):
+        if not event.counties[i] in county_positions.keys():
+          county_positions[event.counties[i]] = (event.latitudes[i], event.longitudes[i])
     event_db.SetCountiesForEvent(event.key().id(), county_positions)
 
   return sites

@@ -47,11 +47,11 @@ var counties = [
 {% endfor %}
 <br />
 <form method="POST" action="/print" target="_blank">
-<input name="id_list" type="hidden" value="" />
+<input name="id" class="id_list" type="hidden" value="" />
 <input type="submit" id="filtered_print" value="Get Printable Version"></input><br />
 </form>
 <form method="POST" action="/export" target="_blank">
-<input name="id_list" type="hidden" value="" />
+<input name="id" class="id_list" type="hidden" value="" />
 <input type="submit" id="filtered_export" value="Download as Spreadsheet (CSV)"></input><br />
 </form>
 </div></div>

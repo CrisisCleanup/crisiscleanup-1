@@ -106,13 +106,9 @@ sandy.map.Refilter = function(only_new) {
       site_ids.push(mapSites[i]["id"]);
     }
   }
-  var print_el = goog.dom.getElement('filtered_print');
-  if (print_el) {
-    print_el.href = "/print?id=" + site_ids.join(",");
-  }
-  var export_el = goog.dom.getElement('filtered_export');
-  if (export_el) {
-    export_el.href = "/export?id=" + site_ids.join(",");
+  var id_lists = goog.dom.getElementsByClass("id_list");
+  for (var i = 0; i < id_lists.length; ++i) {
+    id_lists[i].value = site_ids.join(",");
   }
 }
 

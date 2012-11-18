@@ -10,7 +10,7 @@
 {% if uncompiled %}
     <script src="/closure/goog/base.js?v={{version}}"></script>
     <script src="/javascript/deps.js?v={{version}}"></script>
-    <script type="text/javascript?v={{version}}">
+    <script type="text/javascript">
     goog.require("sandy.{% if demo %}demo{% else %}main{% endif %}");
     </script>
 {% else %}

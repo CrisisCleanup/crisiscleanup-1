@@ -228,7 +228,67 @@ var updateDialogForSite = function(dialog, site) {
 
   addField("Name", site["name"]);
   addField("Requests", site["work_requested"]);
+  var address_components = [site["address"], site["city"], site["county"], site["state"], site["zip_code"]];
+  var full_address = "";
+  for (var i = 0; i < address_components.length; ++i) {
+    if (address_components[i].length) {
+      if (full_address.length) {
+        full_address += ", ";
+      }
+      full_address += address_components[i];
+    }
+  }
+  addField("Address", full_address);
+  if (site["phone1"].length) {
+    addField("Phone", site["phone1"]);
+  }
+  if (site["phone2"].length) {
+    addField("Phone", site["phone2"]);
+  }
+  var details = "";
+  var special_messages = {
+      "electricity" : "Live electrical wires. ",
+  };
+  for (var i in site) {
+    if (details.length > 500) break;
+    if (i == "initials of resident present",
+        i == "address" ||
+	i == "city" ||
+	i == "status" ||
+	i == "clustered" ||
+	i == "zip_code" ||
+	i == "case_number" ||
+	i == "name" ||
+	i == "request_date" ||
+	i == "prepared_by" ||
+	i == "state" ||
+	i == "county" ||
+        i == "cross_street" ||
+        i == "rent_or_own" ||
+	i == "time_to_call" ||
+	i == "phone1" ||
+	i == "phone2") continue;
+    var label = i.replace(/_/g, " ");
+    label = label[0].toUpperCase() + label.slice(1);
+    if (i == "habitable") {
+      if (!site[i]) {
+        details += "House is not habitable. ";
+      }
+    } else if (site[i] === true) {
+      if (special_messages[i]) {
+        details += special_messages[i];
+      } else {
+        details += label + ". ";
+      }
+    } else if (typeof site[i] == "string" && site[i].length > 0) {
+      details += label + ": " + site[i];
+      if (details[details.length - 1] != ".") details += ". ";
+    }
+  }
+  addField("Details", details);
   addField("Status", createStatusSelect(site));
+
+  
   if (site.claimed_by !== null) {
     addField("Claimed by", site["claimed_by"]["name"]);
   }

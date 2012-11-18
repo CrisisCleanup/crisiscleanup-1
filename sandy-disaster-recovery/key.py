@@ -74,9 +74,17 @@ def CheckAuthorization(request):
             org_key = cache.GetKey(organization.Organization, org_id)
             key_key = cache.GetKey(Key, key_id)
             event_key = cache.GetKey(event_db.Event, event_id)
-            org = organization.GetCached(org_id)
-            key = GetCached(key_id)
-            event = event_db.GetCached(event_id)
+
+            results = memcache.get_multi([org_key, key_key, event_key])
+            org = results.get(org_key)
+            key = results.get(key_key)
+            event = results.get(event_key)
+            if not org:
+              org = organization.GetAndCache(org_id)
+            if not key:
+              key = GetAndCache(key_id)
+            if not event:
+              event = event_db.GetAndCache(event_id)
             # Check the age of the key, and delete it
             # if it is too old.
             if key:

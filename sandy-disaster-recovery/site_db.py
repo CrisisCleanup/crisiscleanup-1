@@ -303,26 +303,33 @@ def SiteToDict(site):
 cache_prefix = Site.__name__ + "-d:"
 cache_time = 3600
 def GetCached(site_id):
-  result = memcache.get(site_id, key_prefix = cache_prefix)
-  if result:
-    return result
-  site = Site.get_by_id(site_id)
-  cache_entry = (site, SiteToDict(site))
-  memcache.set(cache_prefix + str(site_id), cache_entry,
-               time = cache_time)
-  return cache_entry
+  result = cache.GetLocal(cache_prefix + site_id)
+  if not result:
+    result = memcache.get(site_id, key_prefix = cache_prefix)
+    if not result:
+      site = Site.get_by_id(site_id)
+      result = (site, SiteToDict(site))
+      memcache.set(cache_prefix + str(site_id), result,
+                   time = cache_time)
+    SetLocal(cache_prefix + site_id, result, cache_time)
+  return result
 
 def PutAndCache(site):
   site.put()
-  return memcache.set(cache_prefix + str(site.key().id()),
-                      (site, SiteToDict(site)),
+  cache_key = cache_prefix + str(site.key().id())
+  cache_entry = (site, SiteToDict(site))
+  cache.SetLocal(cache_key, cache_entry, cache_time)
+  return memcache.set(cache_key, cache_entry,
                       time = cache_time)
 
 def GetAndCache(site_d):
   site = Site.get_by_id(site_d)
   if site:
-    memcache.set(cache_prefix + str(site.key().id()),
-                 (site, SiteToDict(site)),
+    cache_key = cache_prefix + str(site.key().id())
+    cache_entry = (site, SiteToDict(site))
+    cache.SetLocal(cache_key, cache_entry, cache_time)
+    memcache.set(cache_key,
+                 cache_entry,
                  time = cache_time)
   return site
 
@@ -345,6 +352,7 @@ def GetSitesAndSetReferences(ids, events, organizations):
   return sites
 
 def GetAllCached(event, county = "all", ids = None):
+  refresh_counties = (county == "all" and ids == None)
   if not ids:
     if cache_ids:
       cache_key_for_ids = "SiteDictIds:" + event.key().id() + ":" + county 
@@ -371,7 +379,7 @@ def GetAllCached(event, county = "all", ids = None):
     
       ids = [key.id() for key in q.run(batch_size = 2000)]
   lookup_ids = [str(id) for id in ids]
-  cache_results = memcache.get_multi(lookup_ids, key_prefix = cache_prefix)
+  cache_results = cache.GetMulti(lookup_ids, key_prefix = cache_prefix, time_sec = cache_time)
   not_found = [id for id in ids if not str(id) in cache_results.keys()]
   data_store_results = []
   orgs = dict([(o.key(), o) for o in organization.GetAllCached()])
@@ -379,14 +387,14 @@ def GetAllCached(event, county = "all", ids = None):
   if len(not_found):
     data_store_results = [(site, SiteToDict(site)) for site in
                           GetSitesAndSetReferences(not_found, events, orgs)]
-    memcache.set_multi(dict([(str(site[0].key().id()), site)
-                             for site in data_store_results]),
-                       key_prefix = cache_prefix,
-                       time = cache_time)
+    cache.SetMulti(dict([(str(site[0].key().id()), site)
+                         for site in data_store_results]),
+                   cache_prefix,
+                   cache_time)
 
   sites = cache_results.values() + data_store_results
   
-  if county == "all":
+  if refresh_counties:
     counties = {}
     for s in sites:
       current_county = s[0].county

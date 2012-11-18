@@ -4,22 +4,22 @@
 
 <head>
 <title>Collaborative Disaster Recovery Work Order System: Enter a Work Order.</title>
-<link href="/stylesheets/form.css" rel="stylesheet">
-<link href="/stylesheets/default.css" rel="stylesheet">
-  <link rel="stylesheet" href="/closure/css/autocomplete.css">
+<link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
+<link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
+  <link rel="stylesheet" href="/closure/css/autocomplete.css?v={{version}}">
 {% if in_prod %}
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&v=3.exp&sensor=false"></script>
 {% else %}
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 {% endif %}
 {% if not_compiled %}
-<script src="/closure/goog/base.js"></script>
-<script src="/javascript/deps.js"></script>
+<script src="/closure/goog/base.js?v={{version}}"></script>
+<script src="/javascript/deps.js?v={{version}}"></script>
 <script type="text/javascript">
 goog.require("sandy.form");
 </script>
 {% else %}
-<script src="/javascript/compiled_form.js">
+<script src="/javascript/compiled_form.js?v={{version}}">
 {% endif %}
 </script>
 </head>

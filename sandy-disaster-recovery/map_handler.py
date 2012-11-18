@@ -41,6 +41,7 @@ class MapHandler(base.RequestHandler):
                  ["reported", "Reported by " + org.name],
                  ] + filters
       template_values = {
+          "version" : os.environ['CURRENT_VERSION_ID'],
           # "uncompiled" : True,
           "counties" : event.counties,
           "org" : org,

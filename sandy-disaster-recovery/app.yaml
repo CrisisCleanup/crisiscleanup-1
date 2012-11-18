@@ -11,14 +11,19 @@ handlers:
 
 - url: /stylesheets
   static_dir: stylesheets
+  expiration: "7d"
 - url: /icons
   static_dir: icons
+  expiration: "7d"
 - url: /javascript
   static_dir: javascript
+  expiration: "7d"
 - url: /closure/goog
   static_dir: closure_lib/closure/goog
+  expiration: "7d"
 - url: /closure/css
   static_dir: closure_lib/closure/goog/css
+  expiration: "7d"
 
 - url: .*
   script: main.app

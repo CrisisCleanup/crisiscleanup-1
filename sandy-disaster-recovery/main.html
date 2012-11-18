@@ -4,19 +4,19 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Sandy Disaster Response -- Request Map</title>
-    <link href="/stylesheets/default.css" rel="stylesheet">
-    <link href="/stylesheets/form.css" rel="stylesheet">
-    <link href="/closure/css/dialog.css" rel="stylesheet">
+    <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
+    <link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
+    <link href="/closure/css/dialog.css?v={{version}}" rel="stylesheet">
 {% if uncompiled %}
-    <script src="/closure/goog/base.js"></script>
-    <script src="/javascript/deps.js"></script>
-    <script type="text/javascript">
+    <script src="/closure/goog/base.js?v={{version}}"></script>
+    <script src="/javascript/deps.js?v={{version}}"></script>
+    <script type="text/javascript?v={{version}}">
     goog.require("sandy.{% if demo %}demo{% else %}main{% endif %}");
     </script>
 {% else %}
-    <script src="/javascript/compiled_{% if demo %}demo{% else %}main{% endif %}.js?1"></script>
+    <script src="/javascript/compiled_{% if demo %}demo{% else %}main{% endif %}.js?v={{version}}"></script>
 {% endif %}
-<script src="/javascript/markerclusterer_packed.js"></script>
+<script src="/javascript/markerclusterer_packed.js?v={{version}}"></script>
 {% if in_prod %}
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&v=3.exp&sensor=false"></script>
 {% else %}

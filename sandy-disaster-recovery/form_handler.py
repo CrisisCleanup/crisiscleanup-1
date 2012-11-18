@@ -26,7 +26,8 @@ class FormHandler(base.AuthenticatedHandler):
         { "form": form,
           "org": org})
     self.response.out.write(template.render(
-        {"message" : message,
+        {"version" : os.environ['CURRENT_VERSION_ID'],
+         "message" : message,
          "logout" : logout_template.render({"org": org}),
          "single_site" : single_site,
          "form": site_db.SiteForm(),
@@ -70,6 +71,7 @@ class FormHandler(base.AuthenticatedHandler):
           "org": org})
     self.response.out.write(template.render(
         {"message": message,
+         "version" : os.environ['CURRENT_VERSION_ID'],
          "errors": data.errors,
          "logout" : logout_template.render({"org": org}),
          "single_site": single_site,

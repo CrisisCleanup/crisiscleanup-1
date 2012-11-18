@@ -41,6 +41,7 @@ class MapHandler(base.RequestHandler):
                  ["reported", "Reported by " + org.name],
                  ] + filters
       template_values = {
+          # "uncompiled" : True,
           "counties" : event.counties,
           "org" : org,
           "logout" : logout_template.render({"org": org,

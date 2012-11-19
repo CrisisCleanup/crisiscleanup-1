@@ -354,7 +354,8 @@ function AddMarker(lat, lng, site, map, infowindow) {
     position: new google.maps.LatLng(lat, lng),
     map: map,
     title: site.name,
-    icon: icon
+    icon: icon,
+    zIndex: 0
   });
   site["marker"] = marker;
   google.maps.event.addListener(marker, 'click', function() {
@@ -414,13 +415,11 @@ sandy.main.initialize = function() {
       largeMarker = site["marker"];
       if (largeMarker) {
         largeMarker.setZIndex(5);
+        if (map.getZoom() < 13) {
+            map.setZoom(13);
+        }
+        map.panTo(largeMarker.getPosition());
         largeMarker.setAnimation(google.maps.Animation.DROP);
-        if (map.getZoom() < 8) {
-            map.setZoom(8);
-        }
-        if (!map.getBounds().contains(largeMarker.getPosition())) {
-            map.panTo(largeMarker.getPosition());
-        }
       }
     }
   }

@@ -42,7 +42,7 @@ class MapHandler(base.RequestHandler):
                  ] + filters
       template_values = {
           "version" : os.environ['CURRENT_VERSION_ID'],
-          "uncompiled" : True,
+          # "uncompiled" : True,
           "counties" : event.counties,
           "org" : org,
           "logout" : logout_template.render({"org": org,

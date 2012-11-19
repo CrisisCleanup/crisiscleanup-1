@@ -117,6 +117,7 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
   mapSites = mapSites.concat(currentMapSites);
   // Initialize KML layers
   if (firstTime) {
+    MarkerClusterer.IMAGE_PATH = "/icons/m";
     clusterer = new MarkerClusterer(map);
     clusterer.setGridSize(40);
     clusterer.setMaxZoom(12);

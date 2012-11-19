@@ -35,6 +35,11 @@ var claimSite = function(site_id, response_handler) {
   runSiteRpc(request, response_handler);
 };
 
+var releaseSite = function(site_id, response_handler) {
+  var request = {id: site_id, action: 'release'}
+  runSiteRpc(request, response_handler);
+};
+
 // fields is a field => value mapping.
 var updateSiteFields = function(site_id, fields, response_handler) {
   var request = {id: site_id, action: 'update', update: fields};
@@ -231,7 +236,7 @@ var updateDialogForSite = function(dialog, site) {
   var address_components = [site["address"], site["city"], site["county"], site["state"], site["zip_code"]];
   var full_address = "";
   for (var i = 0; i < address_components.length; ++i) {
-    if (address_components[i].length) {
+    if (address_components[i]) {
       if (full_address.length) {
         full_address += ", ";
       }
@@ -239,10 +244,10 @@ var updateDialogForSite = function(dialog, site) {
     }
   }
   addField("Address", full_address);
-  if (site["phone1"].length) {
+  if (site["phone1"]) {
     addField("Phone", site["phone1"]);
   }
-  if (site["phone2"].length) {
+  if (site["phone2"]) {
     addField("Phone", site["phone2"]);
   }
   var details = "";
@@ -306,6 +311,22 @@ var updateDialogForSite = function(dialog, site) {
       claimSite(site['id'], function(status, response_text, xhr) {
         if (status == 200) {
           setMessageHtml('Succesfully claimed.');
+	  updateSite(site);
+        } else {
+          if (response_text) {
+            setMessageHtml('Failure: ' + response_text);
+          } else {
+            setMessageHtml('Failure: an unknown error occurred.');
+          }
+        }
+      });
+    });
+  } else if (site.claimed_by.name == my_organization) {
+    addButton('Release', function(e) {
+      setMessageHtml('working...');
+      releaseSite(site['id'], function(status, response_text, xhr) {
+        if (status == 200) {
+          setMessageHtml('Succesfully released.');
 	  updateSite(site);
         } else {
           if (response_text) {

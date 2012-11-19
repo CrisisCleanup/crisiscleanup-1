@@ -26,6 +26,8 @@ class SiteApiHandler(base.AuthenticatedHandler):
       self.HandleUpdate(json_request)
     elif json_request['action'] == 'claim':
       self.HandleClaim(json_request, org)
+    elif json_request['action'] == 'release':
+      self.HandleRelease(json_request, org)
     else:
       self.HandleBadRequest('invalid action: %s' % json_request['action'])
 
@@ -63,6 +65,33 @@ class SiteApiHandler(base.AuthenticatedHandler):
       setattr(site, field, value)
     site_db.PutAndCache(site)
     logging.debug('updated site')
+
+  def HandleRelease(self, json_request, org):
+    """Releases a site for an organization, if it was claimed by the organization."""
+    site = self.GetSite(json_request['id'])
+    if not site:
+      return
+
+    claimed_by = None
+    try:
+      claimed_by = site.claimed_by
+    except db.ReferencePropertyResolveError:
+      # Treat the site as if it has no organization.
+      logging.warning('failed to find organization for site %s' %
+                      json_request['id'])
+      pass
+    if claimed_by and claimed_by.key().id() == org.key().id():
+      site.claimed_by = None
+      site_db.PutAndCache(site)
+      return
+
+    if claimed_by:
+      self.HandleBadRequest(
+          'This site is claimed by ' + claimed_by.name + '.',
+          status=FORBIDDEN)
+    else:
+      self.HandleBadRequest('This site is currently unclaimed.',
+                            status=FORBIDDEN)
 
   def HandleClaim(self, json_request, org):
     """Claims a site for an organization, if it's not already taken."""

@@ -85,7 +85,13 @@ var createStatusSelect = function(site) {
 	  site["tags"] = sandy.map.ClassifySite(site, my_organization);
 	  var marker = site["marker"];
           if (marker) {
-	    marker.icon = getMarkerIcon(site);
+            var marker_icon = getMarkerIcon(site);
+            if (marker_icon) {
+              marker.setIcon(marker_icon);
+              marker.setVisible(true);
+            } else {
+              marker.setVisible(false);
+            }
 	  }
 	  sandy.map.RefilterSingle(site);
         } else {
@@ -147,18 +153,20 @@ sandy.main.OpenEdit = function(site) {
 var kCompletionStatusColors = {
   "Open, unassigned" : "red",
   "Open, assigned": "yellow",
-  "Open, partially Completed": "yellow",
+  "Open, partially completed": "yellow",
   "Closed, completed": "green",
   "Closed, incomplete": "green",
-  "Closed, out of Scope": "gray",
-  "Closed, done by Others": "darkgreen",
+  "Closed, out of scope": "gray",
+  "Closed, done by others": "green",
   "Closed, rejected": "xgray",
   "Open, needs follow-up": "yellow",
-  "Closed, duplicate": "invisible",
-  "Closed, no help wanted": "invisible"
+  "Closed, duplicate": "xgray",
+  "Closed, no help wanted": "xgray"
 };
 
 var getMarkerIcon = function(site) {
+  // TODO(Jeremy): Do we really want them invisible? Wouldn't it be better to
+  // Just remove them from the database in this case?
   if (kCompletionStatusColors[site["status"]] == "invisible") {
     return null;
   }

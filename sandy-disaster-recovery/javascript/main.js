@@ -252,11 +252,11 @@ var updateDialogForSite = function(dialog, site) {
   }
   var details = "";
   var special_messages = {
-      "electricity" : "Live electrical wires. ",
+      "electricity" : "Live electrical wires. "
   };
   for (var i in site) {
     if (details.length > 500) break;
-    if (i == "initials of resident present",
+    if (i == "initials of resident present" ||
         i == "address" ||
 	i == "city" ||
 	i == "status" ||

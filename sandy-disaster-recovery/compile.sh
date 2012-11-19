@@ -1,4 +1,4 @@
-set +e
+set -e
 closure_lib/closure/bin/build/closurebuilder.py \
   --root=closure_lib/ \
   --root=javascript/ \

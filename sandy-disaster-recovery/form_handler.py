@@ -37,30 +37,22 @@ class FormHandler(base.AuthenticatedHandler):
          "event_name": event.name}))
 
   def AuthenticatedPost(self, org, event):
+    claim_for_org = self.request.get("claim_for_org") == "y"
     data = site_db.SiteForm(self.request.POST)
-    extra_validators = {
-      "name": wtforms.validators.Length(min = 1, max = 100),
-      "city": wtforms.validators.Length(min = 1, max = 100),
-      "state": wtforms.validators.Length(min = 1, max = 100),
-      "phone1": wtforms.validators.Length(min = 1, max = 100,
-                                          message = "Please provide a primary phone number"),
-      "primary_work_type": wtforms.validators.Length(min = 1, max = 100,
-                                                     message = "Please select the primary work type."),      
-    }
-    data.name.validators += (wtforms.validators.Length(min = 1, max = 100,
-                             message = "Name must be between 1 and 100 characters"),)
-    data.phone1.validators += (wtforms.validators.Length(
+    data.name.validators = data.name.validators + [wtforms.validators.Length(min = 1, max = 100,
+                             message = "Name must be between 1 and 100 characters")]
+    data.phone1.validators = data.phone1.validators + [wtforms.validators.Length(
         min = 1, max = 100,
-        message = "Please enter a primary phone number"),)
-    data.city.validators += (wtforms.validators.Length(
+        message = "Please enter a primary phone number")]
+    data.city.validators = data.city.validators + [wtforms.validators.Length(
         min = 1, max = 100,
-        message = "Please enter a city name"),)
-    data.state.validators += (wtforms.validators.Length(
+        message = "Please enter a city name")]
+    data.state.validators = data.state.validators + [wtforms.validators.Length(
         min = 1, max = 100,
-        message = "Please enter a state name"),)
-    data.work_type.validators += (wtforms.validators.Length(
+        message = "Please enter a state name")]
+    data.work_type.validators = data.work_type.validators + [wtforms.validators.Length(
         min = 1, max = 100,
-        message = "Please set a primary work type"),)
+        message = "Please set a primary work type")]
     if data.validate():
       lookup = site_db.Site.gql(
         "WHERE name = :name and address = :address and zip_code = :zip_code LIMIT 1",
@@ -84,6 +76,9 @@ class FormHandler(base.AuthenticatedHandler):
                             phone2 = data.phone2.data)
       data.populate_obj(site)
       site.reported_by = org
+      if claim_for_org:
+        site.claimed_by = org
+
       if site.event or event_db.AddSiteToEvent(site, event.key().id()):
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
         return
@@ -98,7 +93,7 @@ class FormHandler(base.AuthenticatedHandler):
         {"message": message,
          "version" : os.environ['CURRENT_VERSION_ID'],
          "errors": data.errors,
-         "logout" : logout_template.render({"org": org}),
+         "logout" : logout_template.render({"org": org, "event": event}),
          "single_site": single_site,
          "form": data,
          "id": None,

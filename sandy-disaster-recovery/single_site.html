@@ -25,8 +25,6 @@
 {% else %}
 <td class="answer"> {{with_errors(form.request_date) }}</td></tr>
 {% endif %}
-<tr><td class=question>Zip Code:</td>
-<td class="answer"> {{with_errors(form.zip_code) }}<div id=zipCodeSuggestion></td></tr>
 <tr><td class=question>Street Address:<span class=required-asterisk>*</span></td>
 <td class="answer"> {{with_errors(form.address) }}</div></td></tr>
 <tr><td class=question>City:<span class=required-asterisk>*</span></td>
@@ -35,6 +33,8 @@
 <td class="answer"> {{with_errors(form.county)}}<div id=countySuggestion></div></td></tr>
 <tr><td class=question>State:<span class=required-asterisk>*</span></td>
 <td class="answer"> {{with_errors(form.state)}}<div id=stateSuggestion></div></td></tr>
+<tr><td class=question>Zip Code:</td>
+<td class="answer"> {{with_errors(form.zip_code) }}<div id=zipCodeSuggestion></td></tr>
 <tr><td class=question>Latitude:</td>
 <td class="answer"> {{with_errors(form.latitude)}}</td></tr>
 <tr><td class=question>Longitude:</td>
@@ -45,13 +45,13 @@
 <td class="answer"> {{with_errors(form.phone1) }}{{with_errors(form.phone2)}}</td></tr>
 <tr><td class=question>Best time to call:</td>
 <td class="answer"> {{with_errors(form.time_to_call)}}</td></tr>
-<tr><td class=question>Primary work type:<span class=required-asterisk>*</span></td>
+<tr><td class=question>Primary help needed:<span class=required-asterisk>*</span></td>
 <td class="answer"> {{with_errors(form.work_type)}}</td></tr>
-<tr><td class=question>Rent/Own</td>
+<tr><td class=question>Rent/Own/Public</td>
 <td class="answer"> {{with_errors(form.rent_or_own)}}</td></tr>
 <tr><td class=question>Work without resident present?</td>
 <td class="answer"> {{with_errors(form.work_without_resident)}}</td></tr>
-<tr><td class=question>Member of assessing organization:</td>
+<tr><td class=question>Member of your organization:</td>
 <td class="answer"> {{with_errors(form.member_of_assessing_organization)}}</td></tr>
 <tr><td class=question>First Responder:</td>
 <td class="answer"> {{with_errors(form.first_responder)}}</td></tr>
@@ -67,11 +67,11 @@
 {{form.priority}}
 {% else %}
 <table>
-<tr><td>Low</td>
+<tr><td>Low (5)</td>
 {% for f in form.priority %}
 <td>{{ f }}</td>
 {% endfor %}
-<td>High</td></tr></table>
+<td>(1) High</td></tr></table>
 {% endif %}
 </td></tr>
 
@@ -117,7 +117,7 @@
 <table>
 <tr><td class=question>Roof Damage:</td>
 <td class="answer"> {{with_errors(form.roof_damage)}}</td></tr>
-<tr><td class=question>Number of Tarps Needed:</td>
+<tr><td class=question>Number of 20' x 30'Tarps Needed:</td>
 <td class="answer"> {{with_errors(form.tarps_needed)}}</td></tr>
 </table>
 
@@ -125,7 +125,7 @@
 <table>
 <tr><td class=question>Only Outside Debris Removal</td>
 <td class="answer"> {{with_errors(form.debris_removal_only)}}</td></tr>
-<tr><td class=question>Requests for Goods and Services:</td>
+<tr><td class=question>Goods, Services, or Food Requested:</td>
 <td class="answer"> {{with_errors(form.goods_and_services)}}</td></tr>
 </table>
 
@@ -135,30 +135,27 @@
 <td class="answer"> {{with_errors(form.habitable)}}</td></tr>
 <tr><td class=question>Power on:</td>
 <td class="answer"> {{with_errors(form.electricity)}}</td></tr>
-<tr><td class=question>Downed Wires:</td>
+<tr><td class=question>Downed Wires on Property:</td>
 <td class="answer"> {{with_errors(form.electrical_lines)}}</td></tr>
 <tr><td class=question>Other Hazards:</td>
 <td class="answer"> {{with_errors(form.other_hazards)}}</td></tr>
 </table>
 
 {% if not readonly %}
-<h2>Check Out</h2>
+<h2>Claim, Status and Report</h2>
 <table>
-<tr><td class=question>Check-Out to {{org.name}}:</td>
+<tr><td class=question>Claim for {{org.name}}:</td>
 <td class="answer"><input type=checkbox id="claim_for_org" name="claim_for_org" value="y" /></td></tr>
 <tr><td class=question>Current Status:</td>
 <td class="answer"> {{with_errors(form.status)}}</td></tr>
-</table>
-
-
-<h2>Completion Report</h2>
-<table>
 <tr><td class=question>Volunteers:</td>
 <td class="answer"> {{with_errors(form.total_volunteers)}}</td></tr>
 <tr><td class=question>Hours per volunteer:</td>
 <td class="answer"> {{with_errors(form.hours_worked_per_volunteer)}}</td></tr>
 <tr><td class=question>Initials of resident present during work:</td>
 <td class="answer"> {{with_errors(form.initials_of_resident_present)}}</td></tr>
+<tr><td class=question>Status notes:</td>
+<td class="answer"> {{with_errors(form.status_notes)}}</td></tr>
 </table>
 
 

@@ -29,7 +29,7 @@ class FormHandler(base.AuthenticatedHandler):
     self.response.out.write(template.render(
         {"version" : os.environ['CURRENT_VERSION_ID'],
          "message" : message,
-         "logout" : logout_template.render({"org": org}),
+         "logout" : logout_template.render({"org": org, "event": event}),
          "single_site" : single_site,
          "form": site_db.SiteForm(),
          "id": None,

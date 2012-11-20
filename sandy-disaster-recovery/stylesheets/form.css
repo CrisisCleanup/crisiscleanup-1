@@ -12,17 +12,17 @@ html {
   padding: 20px;
 }
 #form {
-  width: 600px;
+  width: 450px;
   opacity: 1.0;
   overflow: auto;
   height: 100%;
 }
 .question {
-  width: 280px;
+  width: 220px;
   float: left;
 }
 .answer {
-  width: 280px;
+  width: 220px;
   float: right;
 }
 hr {
@@ -30,14 +30,14 @@ hr {
 }
 .error {
   color: red;
-  width: 280px;
+  width: 220px;
 }
 .errors {
   color: red;
 }
 .error_detail {
   color: red;
-  width: 280px;
+  width: 220px;
 }
 .delete_form {
   border: 2px solid red;

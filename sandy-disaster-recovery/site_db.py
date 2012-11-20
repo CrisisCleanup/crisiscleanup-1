@@ -58,7 +58,7 @@ class Site(db.Model):
   phone1 = db.StringProperty()
   phone2 = db.StringProperty()
   time_to_call = db.StringProperty()
-  rent_or_own = db.StringProperty(choices=["Rent", "Own"])
+  rent_or_own = db.StringProperty(choices=["Rent", "Own", "Public Land", "Business"])
   work_without_resident = db.BooleanProperty()
   member_of_assessing_organization = db.BooleanProperty()
   first_responder = db.BooleanProperty()
@@ -74,7 +74,7 @@ class Site(db.Model):
   others_help = db.StringProperty(multiline=True)
   debris_removal_only = db.BooleanProperty()
   work_type = db.StringProperty(choices=["Flood", "Trees", "Other",
-                                         "Unknown", "Goods or Services"])
+                                         "Unknown", "Goods or Services", "Food"])
   flood_height = db.StringProperty()
   floors_affected = db.StringProperty(choices=[
       "Basement Only",
@@ -140,6 +140,9 @@ class Site(db.Model):
   hours_worked_per_volunteer = db.FloatProperty(default = 0.0)
   # The initials of the resident who was present for the work.
   initials_of_resident_present = db.StringProperty()
+  # After the status is changed, the status notes may be updated to
+  # explain the reason for the given status.
+  status_notes = db.StringProperty()
 
   # Defines the order of fields for CSV output.
   CSV_FIELDS = [
@@ -208,6 +211,7 @@ class Site(db.Model):
       'appliance_removal',
       'do_not_work_before',
       'prepared_by',
+      'status_notes',
       ]
 
   _CSV_ACCESSORS = {

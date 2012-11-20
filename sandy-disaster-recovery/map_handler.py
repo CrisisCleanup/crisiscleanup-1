@@ -46,6 +46,7 @@ class MapHandler(base.RequestHandler):
           "counties" : event.counties,
           "org" : org,
           "logout" : logout_template.render({"org": org,
+                                             "event": event,
                                              "include_search": True}),
           "status_choices" : [json.dumps(c) for c in
                               site_db.Site.status.choices],

@@ -32,6 +32,7 @@ class EditHandler(base.AuthenticatedHandler):
 
     self.response.out.write(template.render(
           {"mode_js": self.request.get("mode") == "js",
+           "logout" : logout_template.render({"org": org, "event": event}),
            "single_site": single_site,
            "form": form,
            "id": id,
@@ -74,6 +75,7 @@ class EditHandler(base.AuthenticatedHandler):
         self.response.set_status(400)
       self.response.out.write(template.render(
           {"mode_js": mode_js,
+           "logout" : logout_template.render({"org": org, "event": event}),
            "errors": data.errors,
            "form": data,
            "single_site": single_site,

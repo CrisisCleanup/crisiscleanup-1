@@ -63,11 +63,13 @@ sandy.map.RefilterSingle = function(site) {
     }
   }
 
-  clusterer.removeMarker(marker);
-  marker.setVisible(include);
-  if (include) {
+  if (!site["clustered"] && include) {
     clusterer.addMarker(marker);
+    site["clustered"] = true;
+  } else if (site["clustered"] && !include) {
+    clusterer.removeMarker(marker);
   }
+  marker.setVisible(include);
 }
 
 sandy.map.Refilter = function(only_new) {
@@ -96,6 +98,7 @@ sandy.map.Refilter = function(only_new) {
 	    clusterer.addMarker(mapSites[i]["marker"]);
           }
 	} else {
+          mapSites[i]["clustered"] = true;
 	  clusterer.addMarker(mapSites[i]["marker"]);
 	}
       }

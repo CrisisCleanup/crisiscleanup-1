@@ -330,7 +330,7 @@ var updateDialogForSite = function(dialog, site) {
       });
     });
   } else if (site.claimed_by.name == my_organization) {
-    addButton('Release', function(e) {
+    addButton('Unclaim', function(e) {
       setMessageHtml('working...');
       releaseSite(site['id'], function(status, response_text, xhr) {
         if (status == 200) {

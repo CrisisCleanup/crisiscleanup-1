@@ -142,7 +142,7 @@ class Site(db.Model):
   initials_of_resident_present = db.StringProperty()
   # After the status is changed, the status notes may be updated to
   # explain the reason for the given status.
-  status_notes = db.StringProperty()
+  status_notes = db.TextProperty()
 
   # Defines the order of fields for CSV output.
   CSV_FIELDS = [
@@ -346,9 +346,8 @@ def GetSitesAndSetReferences(ids, events, organizations):
     site.reported_by = GetReference(site, Site.reported_by, organizations)
   return sites
 
-def GetAllCached(event, county = "all", ids = None):
-  refresh_counties = (county == "all" and ids == None)
-  if not ids:
+def GetAllCached(event, ids = None):
+  if ids == None:
     if cache_ids:
       cache_key_for_ids = "SiteDictIds:" + event.key().id() + ":" + county 
       ids = memcache.get(cache_key_for_ids)
@@ -357,8 +356,6 @@ def GetAllCached(event, county = "all", ids = None):
         # This should be more efficient than a full data scan.
         q = Query(model_class = Site, keys_only = True)
         q.filter("event =", event)
-        if county != all:
-          q.filter("county =", county)
         ids = [key.id() for key in q]
         # Cache these for up to six minutes.
         # TODO(Jeremy): This may do more harm than
@@ -369,8 +366,6 @@ def GetAllCached(event, county = "all", ids = None):
     else:
       q = Query(model_class = Site, keys_only = True)
       q.filter("event =", event)
-      if county != "all":
-        q.filter("county =", county)
     
       ids = [key.id() for key in q.run(batch_size = 2000)]
   lookup_ids = [str(id) for id in ids]
@@ -388,25 +383,4 @@ def GetAllCached(event, county = "all", ids = None):
                        time = cache_time)
 
   sites = cache_results.values() + data_store_results
-  
-  if refresh_counties:
-    counties = {}
-    for s in sites:
-      current_county = s[0].county
-      if not current_county in counties:
-        counties[current_county] = (1, s[0].latitude, s[0].longitude)
-      else:
-        counties[current_county] = (counties[current_county][0] + 1,
-                                    counties[current_county][1] + s[0].latitude,
-                                    counties[current_county][2] + s[0].longitude)
-    county_positions = {}
-    for current_county in counties.keys():
-      county_positions[current_county] = (counties[current_county][1] / counties[current_county][0],
-                                          counties[current_county][2] / counties[current_county][0])
-    if len(county_positions) < 20:
-      for i in range(len(event.counties)):
-        if not event.counties[i] in county_positions.keys():
-          county_positions[event.counties[i]] = (event.latitudes[i], event.longitudes[i])
-    event_db.SetCountiesForEvent(event.key().id(), county_positions)
-
   return sites

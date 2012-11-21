@@ -2,17 +2,21 @@
 import datetime
 import jinja2
 import json
+import logging
 import os
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
 from google.appengine.api import memcache
-
+from google.appengine.ext.db import Query
 # Local libraries.
 import base
 import key
 import site_db
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
+
+open_statuses = [s for s in site_db.Site.status.choices if 'Open' in s]
+closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statuses]
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -21,8 +25,17 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
     id_param = self.request.get('id')
     if id_param == "all":
       county = self.request.get("county", default_value = "all")
+      status = self.request.get("status", default_value = "")
+      q = Query(model_class = site_db.Site, keys_only = True)
+      if status == "open":
+        q.filter("status >= ", "Open")
+      elif status == "closed":
+        q.filter("status < ", "Open")
+      if county != "all":
+        q.filter("county =", county)
+      ids = [key.id() for key in q.run(batch_size = 2000)]
       output = json.dumps(
-        [s[1] for s in site_db.GetAllCached(event, county)],
+        [s[1] for s in site_db.GetAllCached(event, ids)],
         default=dthandler)
       self.response.out.write(output)
       return

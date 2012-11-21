@@ -397,6 +397,50 @@ sandy.main.SelectSite = function(site) {
   }
 }
 
+var terms = [];
+var loadedCases = {};
+function loadSites(county, status) {
+  goog.net.XhrIo.send('/api/site_ajax?status=' + status +
+                      '&id=all&county=' + county,
+		      function(e) {
+    var xhr = e.target;
+    var status = xhr.getStatus();
+    if (status == 200) {
+      var newSites = xhr.getResponseJson();
+      if (newSites.length == 0) return;
+      var sites = [];
+      for (var i = 0; i < newSites.length; ++i) {
+	if (loadedCases[newSites[i]["case_number"]]) continue;
+        loadedCases[newSites[i]["case_number"]] = true;
+        sites.push(newSites[i]);
+      }
+      sandy.map.InitializeMap(sites, AddMarker, map);
+      var filters = goog.dom.getElement('filtersbackground');
+      goog.style.showElement(filters, true);
+
+      for (var i = 0; i < sites.length; ++i) {
+        if (sites[i].case_number && sites[i].name) {
+          var term = sites[i].case_number + ": <" + sites[i].name + ">";
+          if (sites[i].address) {
+            term += " " + sites[i].address;
+          }
+          if (sites[i].city) {
+            term += " " + sites[i].city;
+          }
+          if (sites[i].state) {
+            term += " " + sites[i].state;
+          }
+          if (sites[i].zip_code) {
+            term += " " + sites[i].zip_code;
+          }
+          terms.push(term);
+          siteMap[term] = sites[i];
+        }
+      }
+    }
+  })  
+}
+
 sandy.main.initialize = function() {
   var myLatlng = new google.maps.LatLng(39.483351, -74.999737);
   var mapOptions = {
@@ -409,7 +453,6 @@ sandy.main.initialize = function() {
   map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
   // TODO(Jeremy): Set myLatLng to the location of the highest
   // priority current site.
-  var terms = [];
   var searchBox = goog.dom.getElement('search_box');
   autoComplete = goog.ui.ac.createSimpleAutoComplete(terms, searchBox, false);
   var selectFunction = function(e) {
@@ -436,36 +479,13 @@ sandy.main.initialize = function() {
 		     goog.ui.ac.AutoComplete.EventType.UPDATE,
 		     selectFunction);
   for (var i = 0; i < counties.length; ++i) {
-  goog.net.XhrIo.send('/api/site_ajax?id=all&county=' + counties[i],
-		      function(e) {
-    var xhr = e.target;
-    var status = xhr.getStatus();
-    if (status == 200) {
-      var sites = xhr.getResponseJson();
-      sandy.map.InitializeMap(sites, AddMarker, map);
-      var filters = goog.dom.getElement('filtersbackground');
-      goog.style.showElement(filters, true);
-
-      for (var i = 0; i < sites.length; ++i) {
-        if (sites[i].case_number && sites[i].name) {
-          var term = sites[i].case_number + ": <" + sites[i].name + ">";
-          if (sites[i].address) {
-            term += " " + sites[i].address;
-          }
-          if (sites[i].city) {
-            term += " " + sites[i].city;
-          }
-          if (sites[i].state) {
-            term += " " + sites[i].state;
-          }
-          if (sites[i].zip_code) {
-            term += " " + sites[i].zip_code;
-          }
-          terms.push(term);
-          siteMap[term] = sites[i];
-        }
-      }
+    loadSites(counties[i], "open");
+  }
+  goog.dom.getElement("open").checked = true;
+  goog.dom.getElement("open").onclick = function() {
+    for (var i = 0; i < counties.length; ++i) {
+      loadSites(counties[i], "closed");
     }
-  })
+    sandy.map.Refilter();
   }
 }

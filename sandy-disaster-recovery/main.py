@@ -18,6 +18,7 @@ import key
 import map_handler
 import print_handler
 import problem_handler
+import refresh_handler
 import site_ajax_handler
 import site_api_handler
 import sites_handler
@@ -43,6 +44,7 @@ class Route(routes.RedirectRoute):
     routes.RedirectRoute.__init__(self, *args, **kwargs)
 
 app = webapp2.WSGIApplication([
+    Route(r'/refresh_counties', refresh_handler.RefreshHandler, name='refresh_counties'),
     Route(r'/old', redirect_to=SPREADSHEET_URL, name='spreadsheet_redirect'),
     Route(r'/api/site', site_api_handler.SiteApiHandler, 'site_api'),
     Route(r'/api/site_ajax', site_ajax_handler.SiteAjaxHandler, 'site_ajax'),

@@ -1,4 +1,4 @@
 cron:
 - description: Cache latest sites
-  url: /api/site_ajax?id=all&county=all
+  url: /refresh_counties
   schedule: every 20 minutes

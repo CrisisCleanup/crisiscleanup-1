@@ -39,15 +39,11 @@ def AddSiteToEvent(site, event_id, force = False):
 
 ten_minutes = 600
 @db.transactional(xg=True)
-def SetCountiesForEvent(event_id, county_positions):
+def SetCountiesForEvent(event_id, counties):
   event = Event.get_by_id(event_id)
-  event.counties = []
+  event.counties = [county for county in counties]
   event.latitudes = []
   event.longitudes = []
-  for county in county_positions.keys():
-    event.counties.append(county)
-    event.latitudes.append(county_positions[county][0])
-    event.longitudes.append(county_positions[county][1])
   cache.PutAndCache(event, ten_minutes)
   return True
 

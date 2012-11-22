@@ -18,11 +18,11 @@ html {
   height: 100%;
 }
 .question {
-  width: 220px;
+  width: 210px;
   float: left;
 }
 .answer {
-  width: 220px;
+  width: 210px;
   float: right;
 }
 hr {
@@ -30,14 +30,14 @@ hr {
 }
 .error {
   color: red;
-  width: 220px;
+  width: 210px;
 }
 .errors {
   color: red;
 }
 .error_detail {
   color: red;
-  width: 220px;
+  width: 210px;
 }
 .delete_form {
   border: 2px solid red;

@@ -22,6 +22,7 @@ from google.appengine.api.urlfetch import fetch
 
 # Local libraries.
 import base
+import event_db
 import organization
 import site_db
 
@@ -48,40 +49,46 @@ class ImportHandler(base.AuthenticatedHandler):
         site = None
         for l in lookup:
           site = l
+        def IfSet(c):
+          if s[c] != "":
+            return " " + c + ": " + s[c]
+          return ""
         if not site:
           # Save the data, and redirect to the view page
           logging.critical(s["Contact Name"])
           site = site_db.Site(
+              status = "Open, unassigned", 
               address = str(s["Street Address"]),
               name = s["Contact Name"],
               phone1 = str(s["Phone Number"]),
+              county = s["County"],
               city = s["City"],
               state = s["State"],
               latitude = float(s["Latitude"]),
               longitude = float(s["Longitude"]),
               zip_code = str(s["Zip Code"]),
-              notes = "Other needs: " + s["Other Needs"] +
-              " Tools or skills needed: " + s["Tools or Skills Needed"] +
-              " Other information: " + s["Other Information"] +
-              " Crew Size Needed: " + s["Crew Size Needed"] +
-              " Estimated Length of Job: " + s["Estimated Length of Job"] +
-              " Damaged appliances etc.: " + s["Damaged Appliance/Furniture/Flooring?"] +
-              " Functioning Utilities: " + s["Functioning Utilities"] +
-              " Primary Home? " + s["Primary Home?"] +
-              " Age of Other Residents: " + s["Age of Other Residents"] +
-              " Structural Damage to Home? " + s["Structural Damage to Home?"] +
-              " Mold Growing? " + s["Mold Growing?"] +
-              " Contacted Insurance? " + s["Contacted Insurance?"] +
-              " Water Level in Home: " + s["Water Level in Home"] +
-              " Contacted Landlord? " + s["Contacted Landlord?"] +
-              " Part of House Flooded: " + s["Part of House Flooded"] +
-              " Text: " + s["Text"] +
-              " Waiting for Insurance Company? " + s["Waiting for Insurance Company?"] +
-              " Email: " + s["Email"] +
-              " Source Name: " + s["Source Name"],
+              notes = IfSet("Other Needs") +
+              IfSet("Tools or Skills Needed") +
+              IfSet("Other Information") +
+              IfSet("Crew Size Needed") +
+              IfSet("Estimated Length of Job") +
+              IfSet("Damaged Appliance/Furniture/Flooring?") +
+              IfSet("Functioning Utilities") +
+              IfSet("Primary Home?") +
+              IfSet("Age of Other Residents") +
+              IfSet("Structural Damage to Home?") +
+              IfSet("Mold Growing?") +
+              IfSet("Contacted Insurance?") +
+              IfSet("Water Level in Home") +
+              IfSet("Contacted Landlord?") +
+              IfSet("Part of House Flooded") +
+              IfSet("Text") +
+              IfSet("Waiting for Insurance Company?") +
+              IfSet("Email") +
+              IfSet("Source Name"),
               
-              other_hazards = s["Hazards to Look Out For"] +
-                  " Hazardous materials: " + s["Hazardous Materials on Property?"],
+              other_hazards = IfSet("Hazards to Look Out For") +
+                  IfSet("Hazardous Materials on Property?"),
               electrical_lines = "yes" in s["Power Lines Down on Property?"].lower(),
               
 
@@ -101,6 +108,6 @@ class ImportHandler(base.AuthenticatedHandler):
         if 'yes' in s["Homeowner?"].lower():
           site.rent_or_own = "Own"
         site.claimed_by = org
-        
+        event_db.AddSiteToEvent(site, event.key().id())
         #logging.critical('No lat/lng: ' + site.name + " " + s["Lat,  Long"])
         site_db.PutAndCache(site)

@@ -6,3 +6,86 @@
   width: 280px;
   float: right;
 }
+
+@font-face { font-family: Calibri; panose-1: 2 15 5 2 2 2 4 3 2 4; }
+@font-face { font-family: Tahoma; panose-1: 2 11 6 4 3 5 4 4 2 4; }
+
+.mainTable {
+  border: 1px solid #333;
+  width: 728;
+  padding: 0;
+  border-collapse: collapse;
+  margin-left: 5pt;
+}  
+h1 {
+  text-align: center;
+  margin-bottom: 0;
+  line-height: normal;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+  color: black;
+  font-size: 24px;
+}
+.blackBackground {
+  background-color: black;
+  padding: 0;
+  border: 1px solid #333;
+}
+p {
+  padding: 1px;
+  line-height: normal;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9pt;
+}
+.whiteSubtitle {
+  text-align: center;
+  color: white;
+  font-weight: bold;
+}
+.white {
+  color: white;
+}
+.allBorders {
+  border: 1px solid #333;
+}
+.topThickBorder {
+  border-top: 4px solid #333;
+  padding: 0;
+}
+.sectionTitle {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  background-color: black;
+  padding: 2px;
+}
+.subSectionTitle {
+  font-weight: bold;
+  font-size: 16px;
+  padding: 2px;
+}
+.data {
+  font-weight: bold;
+}
+a:link {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: purple;
+  text-decoration: underline;
+}
+div.WorkOrderPage {
+  page: WorkOrderPage;
+}
+.statusLabel {
+  text-align: right;
+  padding-right: 0.5em;
+}
+tr {
+  vertical-align: baseline;
+}
+.sizing td {
+  height: 0;
+  padding: 0;
+}

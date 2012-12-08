@@ -90,11 +90,17 @@ def CheckAuthorization(request):
             org_key = cache.GetKey(organization.Organization, org_id)
             key_key = cache.GetKey(Key, key_id)
             event_key = cache.GetKey(event_db.Event, event_id)
-
-            results = memcache.get_multi([org_key, key_key, event_key])
-            org = results.get(org_key)
-            key = results.get(key_key)
-            event = results.get(event_key)
+            org = cache.local_cache.Get(org_key)
+            key = cache.local_cache.Get(key_key)
+            event = cache.local_cache.Get(event_key)
+            if not event or not key or not org:
+              results = memcache.get_multi([org_key, key_key, event_key])
+              org = results.get(org_key)
+              key = results.get(key_key)
+              event = results.get(event_key)
+              cache.local_cache.Set(org_key, org, 600)
+              cache.local_cache.Set(key_key, key, 600)
+              cache.local_cache.Set(event_key, event, 600)
             if not org:
               org = organization.GetAndCache(org_id)
             if not key:

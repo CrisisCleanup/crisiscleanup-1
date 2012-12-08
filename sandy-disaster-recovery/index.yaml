@@ -13,4 +13,9 @@ indexes:
 - kind: Site
   properties:
   - name: county
+  - name: name
+
+- kind: Site
+  properties:
+  - name: county
   - name: status

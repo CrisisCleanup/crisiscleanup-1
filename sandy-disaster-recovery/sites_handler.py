@@ -17,6 +17,7 @@
 # System libraries.
 import datetime
 import json
+import logging
 import os
 from google.appengine.ext import db
 
@@ -26,7 +27,14 @@ import site_db
 
 class SitesHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
-    query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
+    county = self.request.get("county", default_value = "NoCounty")
+    if county == "NoCounty":
+      query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
+    else:
+      logging.critical(county)
+      query = db.GqlQuery("SELECT * FROM Site WHERE county = :county "
+                          "ORDER BY name",
+                          county = county)
     for s in query:
       self.response.out.write(
           '<a href="/edit?id=%(id)s">Edit</a> '

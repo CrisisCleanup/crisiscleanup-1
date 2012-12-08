@@ -12,4 +12,6 @@ class RefreshHandler(base.AuthenticatedHandler):
     counties = set([proj.county for proj in q.run(batch_size = 2000)])
     counties.add("")
     event_db.SetCountiesForEvent(event.key().id(), counties)
-    self.response.out.write(counties)
+    self.response.out.write(
+        "<br />".join(["<a href='/sites?county=%s'>County: '%s'</a>" % (county, county)
+         for county in counties]))

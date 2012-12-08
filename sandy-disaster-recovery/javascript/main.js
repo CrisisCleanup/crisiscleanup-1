@@ -498,9 +498,9 @@ sandy.main.initialize = function() {
   }
   goog.dom.getElement("open").checked = true;
   goog.dom.getElement("open").onclick = function() {
+    goog.dom.getElement("open").onclick = null;
     for (var i = 0; i < counties.length; ++i) {
       loadSites(counties[i], "closed");
     }
-    sandy.map.Refilter();
   }
 }

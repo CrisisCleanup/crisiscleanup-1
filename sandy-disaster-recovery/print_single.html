@@ -1,3 +1,4 @@
+{% if show_all %}
 <h3 {% if page_break %}style="page-break-before:always;"{% endif %}>
 Case #{{site.case_number}}</h3>
 
@@ -21,12 +22,12 @@ Case #{{site.case_number}}</h3>
 </table>
 
 <hr style="page-break-after:always;">
-
+{% endif %}
 {% macro yesno(flag) %}
   {% if flag %} <b>X</b> {% else %} - {% endif %}
 {% endmacro %}
 
-<div class=WorkOrderPage>
+<div class=WorkOrderPage {% if page_break %}style="page-break-before:always;"{% endif %}>
 
 <table class="mainTable">
  <tr>

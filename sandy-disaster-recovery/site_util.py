@@ -33,3 +33,12 @@ def SitesFromIds(comma_separated_ids, event):
     except:
       return None
     return [site[0] for site in site_db.GetAllCached(event, ids = ids)]
+
+
+#  copied from http://wiki.python.org/moin/EscapingHtml
+def unescape(s):
+  s = s.replace("&lt;", "<")
+  s = s.replace("&gt;", ">")
+  # this has to be last:
+  s = s.replace("&amp;", "&")
+  return s

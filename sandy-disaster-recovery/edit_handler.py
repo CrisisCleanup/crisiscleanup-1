@@ -23,6 +23,7 @@ from google.appengine.ext import db
 # Local libraries.
 import base
 import site_db
+import site_util
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -61,6 +62,10 @@ class EditHandler(base.AuthenticatedHandler):
       return
     site = site_db.Site.get_by_id(id)
     data = site_db.SiteForm(self.request.POST, site)
+
+    # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
+    data.name.data = site_util.unescape(data.name.data)
+
     case_number = site.case_number
     claim_for_org = self.request.get("claim_for_org") == "y"
 

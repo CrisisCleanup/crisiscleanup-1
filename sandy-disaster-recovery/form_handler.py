@@ -26,6 +26,7 @@ import wtforms.validators
 import base
 import event_db
 import site_db
+import site_util
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -54,7 +55,12 @@ class FormHandler(base.AuthenticatedHandler):
 
   def AuthenticatedPost(self, org, event):
     claim_for_org = self.request.get("claim_for_org") == "y"
+
     data = site_db.SiteForm(self.request.POST)
+
+    # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
+    data.name.data = site_util.unescape(data.name.data)
+
     data.name.validators = data.name.validators + [wtforms.validators.Length(min = 1, max = 100,
                              message = "Name must be between 1 and 100 characters")]
     data.phone1.validators = data.phone1.validators + [wtforms.validators.Length(

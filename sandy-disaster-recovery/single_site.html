@@ -145,7 +145,7 @@
 <h2>Claim, Status and Report</h2>
 <table>
 <tr><td class=question>Claim for {{org.name}}:</td>
-<td class="answer"><input type=checkbox id="claim_for_org" name="claim_for_org" value="y" /></td></tr>
+<td class="answer"> {{with_errors(form.claimed_by_checkbox)}}</td></tr>
 <tr><td class=question>Current Status:</td>
 <td class="answer"> {{with_errors(form.status)}}</td></tr>
 <tr><td class=question>Volunteers:</td>

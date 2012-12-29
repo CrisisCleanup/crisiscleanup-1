@@ -272,6 +272,7 @@ def _ChoicesWithBlank(choices):
   return [('', '--Choose One--')] + [(choice, choice) for choice in choices]
 
 class SiteForm(model_form(Site)):
+  claimed_by_checkbox = wtforms.fields.BooleanField()
   priority = wtforms.fields.RadioField(
       choices = [(5, ""), (4, ""), (3, ""), (2, ""), (1, "")],
       coerce = int,

@@ -32,9 +32,14 @@ var counties = [
 {% for county in counties %}
   "{{county}}",{% endfor %}
 ];
+
+var site_id = {% if site_id %}{{site_id}}{% else %}null{% endif %};
+
+var zoom_level = {% if site_id %}{{zoom_level}}{% else %}null{% endif %};
+
 </script>
   </head>
-  <body onload="sandy.{% if demo %}demo{% else %}main{% endif %}.initialize()"><div id="container" style="width:100%;height:100%">
+  <body onload="sandy.{% if demo %}demo{% else %}main{% endif %}.initialize(site_id, zoom_level)"><div id="container" style="width:100%;height:100%">
 
 {{ logout }}
 <div id="map_canvas"></div>

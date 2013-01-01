@@ -30,8 +30,7 @@ import site_db
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('main.html')
 logout_template = jinja_environment.get_template('logout.html')
 class MapHandler(base.RequestHandler):
@@ -56,9 +55,14 @@ class MapHandler(base.RequestHandler):
                  ["closed", "Closed"],
                  ["reported", "Reported by " + org.name],
                  ] + filters
+
+      site_id = self.request.get("id")
+      # default to 15
+      zoom_level = self.request.get("z", default_value = "15")
+
       template_values = {
           "version" : os.environ['CURRENT_VERSION_ID'],
-          # "uncompiled" : True,
+          #"uncompiled" : True,
           "counties" : event.counties,
           "org" : org,
           "logout" : logout_template.render({"org": org,
@@ -68,6 +72,8 @@ class MapHandler(base.RequestHandler):
                               site_db.Site.status.choices],
           "filters" : filters,
           "demo" : False,
+          "zoom_level" : zoom_level,
+          "site_id" :  site_id
         }
     else:
       # TODO(Jeremy): Temporary code until this handler scales.

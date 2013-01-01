@@ -88,7 +88,7 @@ class EditHandler(base.AuthenticatedHandler):
         # returning a 200 is sufficient here.
         return
       else:
-        self.redirect('/map')
+        self.redirect('/map?id=%d' % id)
     else:
       single_site = single_site_template.render(
           { "form": data,

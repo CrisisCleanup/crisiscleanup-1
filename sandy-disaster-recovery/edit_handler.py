@@ -42,10 +42,7 @@ class EditHandler(base.AuthenticatedHandler):
     if not site:
       self.response.set_status(404)
       return
-
     form = site_db.SiteForm(self.request.POST, site)
-    # need to manually set since site.claimed_by is not boolean in the Model
-    form.claimed_by_checkbox.checked = True if site.claimed_by else False
 
     single_site = single_site_template.render(
         { "form": form,
@@ -71,7 +68,7 @@ class EditHandler(base.AuthenticatedHandler):
     data.name.data = site_util.unescape(data.name.data)
 
     case_number = site.case_number
-    claimed_by_checkbox = self.request.get("claimed_by_checkbox") == "y"
+    claim_for_org = self.request.get("claim_for_org") == "y"
 
     mode_js = self.request.get("mode") == "js"
     if data.validate():
@@ -84,10 +81,8 @@ class EditHandler(base.AuthenticatedHandler):
         if not in_post:
           continue
         setattr(site, f.name, f.data)
-      if claimed_by_checkbox:
+      if claim_for_org:
         site.claimed_by = org
-      else:
-        site.claimed_by = None
       site_db.PutAndCache(site)
       if mode_js:
         # returning a 200 is sufficient here.

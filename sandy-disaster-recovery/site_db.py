@@ -74,7 +74,7 @@ class Site(db.Model):
   phone1 = db.StringProperty()
   phone2 = db.StringProperty()
   time_to_call = db.StringProperty()
-  rent_or_own = db.StringProperty(choices=["Rent", "Own", "Public Land", "Business"])
+  rent_or_own = db.StringProperty(choices=["Rent", "Own", "Public Land", "Non-Profit", "Business"])
   work_without_resident = db.BooleanProperty()
   member_of_assessing_organization = db.BooleanProperty()
   first_responder = db.BooleanProperty()

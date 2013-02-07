@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Create New Incident</h1>
+<form method="POST" action="/new_incident">
+    <div>{{ form.name.label }}: {{ form.name}}</div>
+    <div>{{ form.location.label }}: {{ form.location }}</div>
+    <br/>
+<input type=submit value="Submit request">
+
+</form>
+
+</body>
+</html>

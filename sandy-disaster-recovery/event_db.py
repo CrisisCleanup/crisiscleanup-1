@@ -27,12 +27,17 @@ import cache
 
 class Event(db.Model):
   name = db.StringProperty(required = True)
-  start_date = db.DateProperty()
+  short_name = db.StringProperty()
+  created_date = db.DateProperty(auto_now_add=True)
+  start_date = db.DateProperty(auto_now_add=True)
+  end_date = db.DateProperty()
   num_sites = db.IntegerProperty(default = 0)
   case_label = db.StringProperty(required = True)
   counties = db.StringListProperty()
   latitudes = db.ListProperty(float)
   longitudes = db.ListProperty(float)
+  reminder_days = db.IntegerProperty()
+  reminder_contents = db.TextProperty()
 
 import site_db
 
@@ -90,3 +95,9 @@ def GetAllCached():
 
 def GetAndCache(event_id):
   return cache.GetAndCache(Event, ten_minutes, event_id)
+
+def ReduceNumberOfSitesFromEvent(event_id):
+  event = Event.get_by_id(event_id)
+  event.num_sites -= 1
+  cache.PutAndCache(event, ten_minutes)
+    

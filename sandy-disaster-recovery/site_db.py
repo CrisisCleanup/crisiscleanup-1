@@ -147,6 +147,7 @@ class Site(db.Model):
       default="Open, unassigned")
 
   date_closed = db.DateTimeProperty()
+  assigned_to = db.StringProperty()
   # Number of volunteers who helped.
   total_volunteers = db.FloatProperty(default = 0.0)
   # Number of hours that each volunteer worked.
@@ -215,6 +216,7 @@ class Site(db.Model):
       'priority',
       'inspected_by',
       'status',
+      'assigned_to',
       'date_closed',
       'total_volunteers',
       'hours_worked_per_volunteer',

@@ -22,6 +22,7 @@ from google.appengine.ext import db
 # Local libraries.
 import base
 import site_db
+import event_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -48,4 +49,6 @@ class DeleteHandler(base.AuthenticatedHandler):
     site = site_db.Site.get(db.Key.from_path('Site', id))
     if site:
       site.delete()
-    self.redirect('/sites')
+      event_id = event.key().id()
+      event_db.ReduceNumberOfSitesFromEvent(event_id)
+    self.redirect('/sites?message=Site Deleted')

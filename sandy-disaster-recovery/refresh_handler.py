@@ -8,7 +8,7 @@ import site_db
 
 class RefreshHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
-    q = db.Query(site_db.Site, projection=('county',))
+    q = db.Query(site_db.Site)
     counties = set([proj.county for proj in q.run(batch_size = 2000)])
     counties.add("")
     event_db.SetCountiesForEvent(event.key().id(), counties)

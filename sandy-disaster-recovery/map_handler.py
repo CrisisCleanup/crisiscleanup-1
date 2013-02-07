@@ -36,16 +36,16 @@ logout_template = jinja_environment.get_template('logout.html')
 class MapHandler(base.RequestHandler):
   def get(self):
     filters = [
-              ["debris_only", "Remove Debris Only"],
-              ["electricity", "Has Electricity"],
-              ["no_standing_water", "No Standing Water"],
-              ["not_habitable", "Home is not habitable"],
+              #["debris_only", "Remove Debris Only"],
+              #["electricity", "Has Electricity"],
+              #["no_standing_water", "No Standing Water"],
+              #["not_habitable", "Home is not habitable"],
               ["Flood", "Primary problem is flood damage"],
               ["Trees", "Primary problem is trees"],
-              ["Goods or Services", "Primary need is goods and services"],
-              ["CT", "Connecticut"],
-              ["NJ", "New Jersey"],
-              ["NY", "New York"]]
+              ["Goods or Services", "Primary need is goods and services"]]
+              #["CT", "Connecticut"],
+              #["NJ", "New Jersey"],
+              #["NY", "New York"]]
 
     org, event = key.CheckAuthorization(self.request)
     if org:

@@ -100,6 +100,10 @@ class FormHandler(base.AuthenticatedHandler):
       site.reported_by = org
       if claim_for_org:
         site.claimed_by = org
+        
+      # clear assigned_to if status is unassigned
+      if data.status.data == 'Open, unassigned':
+        site.assigned_to = ''
 
       if site.event or event_db.AddSiteToEvent(site, event.key().id()):
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))

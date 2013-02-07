@@ -13,9 +13,30 @@ indexes:
 - kind: Site
   properties:
   - name: county
+  - name: event
+  - name: status
+
+- kind: Site
+  properties:
+  - name: county
   - name: name
 
 - kind: Site
   properties:
   - name: county
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: county
   - name: status
+
+- kind: Site
+  properties:
+  - name: event
+  - name: name
+
+- kind: Site
+  properties:
+  - name: event
+  - name: request_date

@@ -1,4 +1,4 @@
-!#/usr/bin/env python
+#!/usr/bin/env python
 #
 # Copyright 2012 Jeremy Pack
 #
@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# System libraries
+# System libraries.
 import Cookie
 import datetime
 import jinja2
@@ -28,7 +28,7 @@ import wtforms.form
 import wtforms.validators
 import logging
 
-# Local libraries
+# Local libraries.
 import base
 import event_db
 import key
@@ -43,14 +43,15 @@ def GetOrganizationForm(post_data):
   organizations = organization.GetAllCached()
   events = event_db.GetAllCached()
   dirty = False
-  if not len(organizations):
+  
+  if len(organizations) == 0:
     # This is to initially populate the database the first time.
     # TODO(oryol): Add a regular Google login-authenticated handler
     # to add users and passwords, whitelisted to the set of e-mail
     # addresses we want to allow.
-    default = organization.Organization(name = "Administrator",
+    default = organization.Organization(name = "Admin",
                                         password = "temporary_password")
-    default.put()
+    organization.PutAndCache(default, 600)
     organizations.append(default)
   elif len(organizations) >= 2:
     modified = []

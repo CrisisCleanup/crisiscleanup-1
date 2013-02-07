@@ -432,6 +432,7 @@ function loadSites(url, callBack) {
                 loadedCases[newSites[i]["case_number"]] = true;
                 sites.push(newSites[i]);
             }
+            
             sandy.map.InitializeMap(sites, AddMarker, map);
             var filters = goog.dom.getElement('filtersbackground');
             goog.style.showElement(filters, true);

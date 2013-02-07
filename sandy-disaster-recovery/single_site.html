@@ -148,6 +148,10 @@
 <td class="answer"><input type=checkbox id="claim_for_org" name="claim_for_org" value="y" /></td></tr>
 <tr><td class=question>Current Status:</td>
 <td class="answer"> {{with_errors(form.status)}}</td></tr>
+<tr id="assigned_to_row" class="{% if not form.assigned_to.data %}hide{% endif %}">
+  <td class="question">Assigned To:</td>
+  <td class="answer"> {{with_errors(form.assigned_to)}}</td>
+</tr>
 <tr><td class=question>Volunteers:</td>
 <td class="answer"> {{with_errors(form.total_volunteers)}}</td></tr>
 <tr><td class=question>Hours per volunteer:</td>

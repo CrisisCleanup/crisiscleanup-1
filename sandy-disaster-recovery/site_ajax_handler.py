@@ -36,19 +36,44 @@ closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statu
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-class SiteAjaxHandler(base.AuthenticatedHandler):
+class SiteAjaxHandler(base.AuthenticatedHandler):      
   def AuthenticatedGet(self, org, event):
     id_param = self.request.get('id')
+    latitude_param = self.request.get("latitude")
+    longitude_param = self.request.get("longitude")
+    
+    if latitude_param and longitude_param:
+      try:
+        latitude = float(latitude_param)
+        longitude = float(longitude_param)
+      except:
+        self.response.set_status(404)
+      json_array = []
+      for site in site_db.Site.gql(
+           'Where latitude = :1 and longitude = :2 and event = :3', latitude, longitude, event.key()):
+        json_string = json.dumps({
+            "id": site.key().id(),
+            "address": site.address,
+        })
+        json_array.append(json_string)
+      self.response.out.write(
+            json.dumps(json_array, default = dthandler))      
+      return
+      
     if id_param == "all":
       county = self.request.get("county", default_value = "all")
       status = self.request.get("status", default_value = "")
       q = Query(model_class = site_db.Site, keys_only = True)
+      
+      # filter by event
+      #q.filter("event =", event.key())
       if status == "open":
         q.filter("status >= ", "Open")
       elif status == "closed":
         q.filter("status < ", "Open")
       if county != "all":
         q.filter("county =", county)
+
       ids = [key.id() for key in q.run(batch_size = 2000)]
       output = json.dumps(
         [s[1] for s in site_db.GetAllCached(event, ids)],

@@ -83,6 +83,10 @@ class EditHandler(base.AuthenticatedHandler):
         setattr(site, f.name, f.data)
       if claim_for_org:
         site.claimed_by = org
+      # clear assigned_to if status is unassigned
+      if data.status.data == 'Open, unassigned':
+        site.assigned_to = ''
+        
       site_db.PutAndCache(site)
       if mode_js:
         # returning a 200 is sufficient here.

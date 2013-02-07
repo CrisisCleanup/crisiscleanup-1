@@ -6,7 +6,10 @@
 <title>Collaborative Disaster Recovery Work Order System: Enter a Work Order.</title>
 <link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
 <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
+<!-- <link href="/stylesheets/popup_radio_form.css" rel="stylesheet"> -->
+
   <link rel="stylesheet" href="/closure/css/autocomplete.css?v={{version}}">
+
 {% if in_prod %}
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&v=3.exp&sensor=false"></script>
 {% else %}
@@ -25,6 +28,7 @@ goog.require("sandy.form");
 </head>
 
 <body onload="sandy.form.Initialize()">
+
 <div id="form_background">
 <div id="form">
 {% if delete %}
@@ -81,7 +85,10 @@ The Hurricane Sandy Waiting List will alert volunteer organizations in your area
 </div>
 </div>
 {{ logout }}
+
 <div id="map_canvas"></div>
+<div id="wrapper"></div>
+
 </body>
 </html>
 {% endif %} {# not mode_js #}

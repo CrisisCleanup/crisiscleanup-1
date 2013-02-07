@@ -32,12 +32,19 @@ import form_handler
 import import_handler
 import key
 import map_handler
-import print_handler
+import print_handler 
 import problem_handler
 import refresh_handler
 import site_ajax_handler
 import site_api_handler
 import sites_handler
+import new_organization_handler
+import new_incident_handler
+import admin_handler
+import update_handler
+import update_event_handler
+import welcome_handler
+import organization_ajax_handler
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -81,5 +88,18 @@ app = webapp2.WSGIApplication([
     Route(r'/old/maps', redirect_to_name=MAP_URL, name='external_maps_redirect'),
     Route(r'/print', print_handler.PrintHandler, 'print'),
     Route(r'/problems', problem_handler.ProblemHandler, 'problems'),
-    Route(r'/sites', sites_handler.SitesHandler, 'sites')
+    Route(r'/sites', sites_handler.SitesHandler, 'sites'),
+    Route(r'/new_organization', new_organization_handler.NewOrganizationHandler, 'new_organization'),
+    #Route(r'/new_incident', new_incident_handler.NewIncidentHandler, 'new_incident'),
+    Route(r'/admin', admin_handler.AdminHandler, 'admin_handler'),
+    Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
+    Route(r'/update_event_handler', update_event_handler.UpdateHandler, 'update_event_handler'),
+    Route(r'/welcome', welcome_handler.WelcomeHandler, 'welcome_handler'),
+    Route(r'/organization_ajax_handler', organization_ajax_handler.OrganizationAjaxHandler, 'organization_ajax_handler'),
+    
+    
+    
+    
+    
+    
 ], debug=True)

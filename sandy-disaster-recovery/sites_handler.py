@@ -24,17 +24,48 @@ from google.appengine.ext import db
 # Local libraries.
 import base
 import site_db
+import cgi
+import key
 
 class SitesHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
+    message = cgi.escape(self.request.get("message"))
+    order = cgi.escape(self.request.get("order", "name"))
+    if message:
+      self.response.out.write(message + "<br /><br />")
+      
+    self.response.out.write("<a href='/sites?order=request_date'>Order by date created</a><br />")
+    self.response.out.write("<a href='/sites?order=name'>Order by name</a><br /><br/>")
+    
+    
     county = self.request.get("county", default_value = "NoCounty")
+    
+    # GQL query string builder
+    # escapes WHERE clause with :where_variable
+    # system is throwing errors when I try to escape ORDER BY
+    # so instead I'm curating with an if/else statement
+    # GQL can't do anything destructive (like delete an entity)
+    # but I still feel more comfortable with protecting this against future changes to GQL
+    
+    select_string = "SELECT * FROM Site "
+    where_string = "WHERE county = :where_variable" # and event = :event_key"
+    where_event = "WHERE event = :event_key "
+
+    if order == "name":  
+      order_string = "ORDER BY name"
+    elif order == "request_date":
+      order_string = "ORDER BY request_date"
+    # end query string
+    
     if county == "NoCounty":
-      query = db.GqlQuery("SELECT * FROM Site ORDER BY name")
+      query_string = select_string + order_string
+      query = db.GqlQuery(query_string, event_key = event.key())
+        
     else:
       logging.critical(county)
-      query = db.GqlQuery("SELECT * FROM Site WHERE county = :county "
-                          "ORDER BY name",
-                          county = county)
+      query_string = select_string + where_string + order_string + order
+      query = db.GqlQuery(query_string, where_variable = county, event_key = event.key())
+      
     for s in query:
       self.response.out.write(
           '<a href="/edit?id=%(id)s">Edit</a> '

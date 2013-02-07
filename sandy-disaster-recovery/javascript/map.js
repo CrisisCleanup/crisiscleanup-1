@@ -23,6 +23,7 @@ goog.require('goog.ui.Select');
 
 goog.provide('sandy.map');
 
+
 var markers = [];
 var panorama;
 var layerObjects = [];
@@ -164,7 +165,7 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
     }
     if (good_ll) {
       var marker = AddMarker(lat, lng, site, map, infowindow);
-      if (marker) {
+      if (marker) {     
         markers.push(marker);
       }
     }

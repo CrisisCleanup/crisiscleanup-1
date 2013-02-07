@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+!#/usr/bin/env python
 #
 # Copyright 2012 Jeremy Pack
 #
@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# System libraries.
+# System libraries
 import Cookie
 import datetime
 import jinja2
@@ -28,7 +28,7 @@ import wtforms.form
 import wtforms.validators
 import logging
 
-# Local libraries.
+# Local libraries
 import base
 import event_db
 import key

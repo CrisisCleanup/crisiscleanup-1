@@ -25,8 +25,6 @@ from google.appengine.api import memcache
 # Local libraries.
 import cache
 
-default_list = []
-default_list.append("Middlesex")
 class Event(db.Model):
   name = db.StringProperty(required = True)
   short_name = db.StringProperty()
@@ -35,7 +33,7 @@ class Event(db.Model):
   end_date = db.DateProperty()
   num_sites = db.IntegerProperty(default = 0)
   case_label = db.StringProperty(required = True)
-  counties = db.StringListProperty(default_list)
+  counties = db.StringListProperty()
   latitudes = db.ListProperty(float)
   longitudes = db.ListProperty(float)
   reminder_days = db.IntegerProperty()

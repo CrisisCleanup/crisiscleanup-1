@@ -27,8 +27,16 @@ import site_db
 import cgi
 import key
 
+PAGE_OFFSET = 200
 class SitesHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
+    page = cgi.escape(self.request.get("page"))  
+    if not page:
+        page = "0"
+    try:
+        page = int(page)
+    except:
+        print "error"
     message = cgi.escape(self.request.get("message"))
     order = cgi.escape(self.request.get("order", "name"))
     if message:
@@ -36,6 +44,14 @@ class SitesHandler(base.AuthenticatedHandler):
       
     self.response.out.write("<a href='/sites?order=request_date'>Order by date created</a><br />")
     self.response.out.write("<a href='/sites?order=name'>Order by name</a><br /><br/>")
+    next_page =  page + 1
+    page_link = "<a href='/sites?page=%d'>Next Page</a><br /><br/>" % next_page
+    self.response.out.write(page_link)
+    self.response.out.write("200 shown per page")
+    self.response.out.write(message + "<br /><br />")
+    
+    
+    
     
     
     county = self.request.get("county", default_value = "NoCounty")
@@ -46,23 +62,19 @@ class SitesHandler(base.AuthenticatedHandler):
     # so instead I'm curating with an if/else statement
     # GQL can't do anything destructive (like delete an entity)
     # but I still feel more comfortable with protecting this against future changes to GQL
-    
-    select_string = "SELECT * FROM Site "
-    where_string = "WHERE county = :where_variable and event = :event_key" # and event = :event_key"
-    where_event = "WHERE event = :event_key "
     if order == "name":  
-      order_string = "ORDER BY name"
+      order_string = " ORDER BY name"
     elif order == "request_date":
-      order_string = "ORDER BY request_date"
+      order_string = " ORDER BY request_date"
     # end query string
     
     if county == "NoCounty":
-      query_string = select_string + where_event + order_string
+      query_string = "SELECT * FROM Site WHERE event = :event_key" + order_string +" LIMIT %s OFFSET %s" % (PAGE_OFFSET, page * PAGE_OFFSET)      
       query = db.GqlQuery(query_string, event_key = event.key())
         
     else:
       logging.critical(county)
-      query_string = select_string + where_string + order_string + order
+      query_string = "SELECT * FROM Site WHERE county = :county and event = :event_key " + order_string + " LIMIT %s OFFSET %s" % (PAGE_OFFSET, page * PAGE_OFFSET)
       query = db.GqlQuery(query_string, where_variable = county, event_key = event.key())
       
     for s in query:

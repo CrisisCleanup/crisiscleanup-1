@@ -66,7 +66,7 @@ class AdminHandler(base.AuthenticatedHandler):
                 contact = primary_contact_db.Contact(first_name = data.first_name.data,
                     last_name = data.last_name.data,
                     phone = data.phone.data,
-                    email = data.phone.data,
+                    email = data.email.data,
                     is_primary = bool(data.is_primary.data),
                     organization = this_organization.key(),
                     )
@@ -227,6 +227,7 @@ class AdminHandler(base.AuthenticatedHandler):
                 return
             org = organization.Organization.get_by_id(id)
             form = organization.OrganizationEditForm(name = org.name,
+                password = org.password,
                 email = org.email,
                 phone = org.phone,
                 address= org.address,

@@ -111,7 +111,10 @@ def PutAndCacheOrganizationAndContact(organization, contact):
 
 
 class OrganizationAdminForm(model_form(Organization)):
-    contact_name = TextField('Your Name', [wtforms.validators.Length(min = 1, max = 100,
+    contact_first_name = TextField('First Name', [wtforms.validators.Length(min = 1, max = 100,
+                              message = "Your name must be between 1 and 100 characters")])
+                              
+    contact_last_name = TextField('Last Name', [wtforms.validators.Length(min = 1, max = 100,
                               message = "Your name must be between 1 and 100 characters")])
     contact_email = TextField('Your Email', [wtforms.validators.Length(min = 1, max = 100,
                               message = "Your email must be between 1 and 100 characters"),
@@ -268,6 +271,8 @@ class OrganizationForm(model_form(Organization)):
 class OrganizationEditForm(model_form(Organization)):
     name = TextField('Organization Name', [wtforms.validators.Length(min = 1, max = 100,
     message = "Organization Name must be between 1 and 100 characters")])
+    password = TextField('Organization Password', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Organization password must be between 1 and 100 characters")])
     email = TextField('Organization Email', [wtforms.validators.Length(min = 1, max = 100,
     message = "Name must be between 1 and 100 characters"),
     validators.Email(message="That's not a valid email address.")])

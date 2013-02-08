@@ -55,7 +55,8 @@
 </select>
 {% endif %}
 <h2>Personal Information</h2>
-  <div>{{ form.contact_name.label }}: {{ form.contact_name }}</div>
+  <div>{{ form.contact_first_name.label }}: {{ form.contact_first_name }}</div>
+  <div>{{ form.contact_last_name.label }}: {{ form.contact_last_name }}</div>
   <div>{{ form.contact_email.label }}: {{ form.contact_email }}</div>
   <div>{{ form.contact_phone.label }}: {{ form.contact_phone }}</div>
 <h2>Organization Information</h2>
@@ -78,7 +79,7 @@
 {% endif %}
 
 {% if single_contact %}
-<p>Contact Name: {{ single_contact.name }}</p>
+<p>Contact Name: {{ single_contact.first_name }} {{ single_contact.last_name }}</p>
 <p>Phone: {{ single_contact.phone }}</p>
 <p>Email: {{ single_contact.email }}</p>
 {% if single_contact.organization %}
@@ -369,6 +370,7 @@
 </section>
 {% endif %}
   <div>{{ form.name.label }}: {{ form.name }}</div>
+  <div>{{ form.password.label }}: {{ form.password }}</div>
   <div>{{ form.email.label }}: {{ form.email }}</div>
   <div>{{ form.phone.label }}: {{ form.phone }}</div>
   <div>{{ form.address.label }}: {{ form.address }}</div>

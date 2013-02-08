@@ -42,6 +42,10 @@ template = jinja_environment.get_template('authentication.html')
 
 def GetOrganizationForm(post_data):
   #organizations = organization.GetAllCached()
+  e = event_db.Event(name = "Test Incident",
+  case_label = "B",
+  counties = ["Kings"])
+  #e.put()
   organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True")# WHERE organization = :1 LIMIT 1", obj.key())
   events = event_db.GetAllCached()
   events = db.GqlQuery("SELECT * From Event")

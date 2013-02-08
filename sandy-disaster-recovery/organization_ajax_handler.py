@@ -47,7 +47,7 @@ class OrganizationAjaxHandler(base.RequestHandler):
         for e in event_db.Event.gql("Where name = :1", self.request.get("event_name")):
             event = e
         for org in organization.Organization.gql(
-            'Where incident = :1', event.key()):
+            'Where incident = :1 and is_active = :2', event.key(), True):
             data[org.name] = org.name
         
         self.response.out.write(json.dumps(data))

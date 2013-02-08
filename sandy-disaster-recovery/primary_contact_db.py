@@ -35,7 +35,8 @@ import cache
 
 
 class Contact(db.Model):
-    name = db.StringProperty(required=True)
+    first_name = db.StringProperty(required=True)
+    last_name = db.StringProperty(required=True)
     phone = db.StringProperty(required=True)
     email = db.StringProperty(required=True)
     organization = db.ReferenceProperty()
@@ -81,7 +82,9 @@ def RemoveOrgFromContacts(org):
     # putandcache
     
 class ContactForm(model_form(Contact)):
-    name = TextField('Name', [wtforms.validators.Length(min = 1, max = 100,
+    first_name = TextField('First Name', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Name must be between 1 and 100 characters")])
+    last_name = TextField('Last Name', [wtforms.validators.Length(min = 1, max = 100,
     message = "Name must be between 1 and 100 characters")])
     phone = TextField('Phone', [wtforms.validators.Length(min = 1, max = 15,
     message = "Phone must be between 1 and 15 characters")])
@@ -89,7 +92,9 @@ class ContactForm(model_form(Contact)):
     message = "Email must be between 1 and 100 characters"), validators.Email(message="That's not a valid email address.")])
     
 class ContactFormFull(model_form(Contact)):
-    name = TextField('Name', [wtforms.validators.Length(min = 1, max = 100,
+    first_name = TextField('First Name', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Name must be between 1 and 100 characters")])
+    last_name = TextField('Last Name', [wtforms.validators.Length(min = 1, max = 100,
     message = "Name must be between 1 and 100 characters")])
     phone = TextField('Phone', [wtforms.validators.Length(min = 1, max = 15,
     message = "Phone must be between 1 and 15 characters")])

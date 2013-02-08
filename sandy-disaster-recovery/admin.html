@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
+
 <body>
 <a href="/admin?org_requests=True">Requests for new organizations.</a>
 <a href="/admin?create_org=True">Create Organization.</a>
@@ -15,9 +17,11 @@
 {% endif %}
 
 {% if display_contacts %}
+<br/><br/>
+<br/>
 {% if contacts %}
 {% for result in contacts %}
-<p>Name: <a href="/admin?contact={{result.key().id()}}">{{result.name}}</a> Organization: {% if result.organization %}<a href="/admin?org={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
+<p>Name: <a href="/admin?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/admin?org={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
 
 {% endfor %}
 {% endif %}
@@ -69,7 +73,7 @@
   <p><strong>Please keep for your records</strong></p>
   <input type=hidden name=password value={{auto_password}}>
   <input type=hidden name=create_admin value="True">
-  <input type=submit value="Create Local Admin" class=delete_button>
+  <input type=submit value="Create Local Admin">
   </form>
 {% endif %}
 
@@ -86,7 +90,7 @@
 
   <form method=POST action="/admin">
   <input type=hidden name=edit_contact_id value={{single_contact.key().id()}}>
-  <input type=submit value="Edit Contact" class=delete_button>
+  <input type=submit value="Edit Contact" >
   </form>
 {% endif %}
 {% if org_query %}
@@ -98,15 +102,8 @@
 
 {% if new_organization %}
 <hr>
-{% if contacts %}
-<p>Contacts</p>
-{% for result in contacts %}
-<p><a href="/admin?contact={{ result.key().id()}}">{{ result.name }}</a></p>
-{% endfor %}
-<hr>
-{% endif%}
 {% if contact %}
-<p>Applicant Name: {{ contact.name }}</p>
+<p>Applicant Name: {{ contact.first_name }} {{ contact.last_name }}</p>
 <p>Applicant Phone: {{ contact.phone }}</p>
 <p>Applicant Email: {{ contact.email }}</p>
 <hr>
@@ -141,12 +138,12 @@
   (this cannot be undone)
 <form method=POST action="/admin">
   <input type=hidden name=save_org_id value={{new_organization.key().id()}}>
-  <input type=submit value="Verify Organization" class=delete_button>
+  <input type=submit value="Verify Organization">
   </form>
 {% else %}
   <form method=POST action="/admin">
   <input type=hidden name=edit_org_id value={{new_organization.key().id()}}>
-  <input type=submit value="Edit Organization" class=delete_button>
+  <input type=submit value="Edit Organization">
   </form>
 {% endif %}
       
@@ -155,7 +152,7 @@
     <br/>
 
   <input type=hidden name=delete_org_id value={{new_organization.key().id()}}>
-  <input type=submit value="Permanently delete this organization" class=delete_button>
+  <input type=submit value="Permanently delete this organization">
   </form>
 {% endif %}
 
@@ -170,6 +167,8 @@
     <li>Each volunteer using the system must watch the <a href="#">Training Video</a>.</li>
 </ol>
 <p><strong>Filling out this application carefully, correctly, and completely will save you hours and save your volunteers dozens or hundreds of hours in productivity (we promise).</strong></p>
+
+<form method="POST" action="/admin">
 {% if errors %}
 <section id="errors">
   <header>The submission had errors</header>
@@ -186,8 +185,6 @@
   <article>
 </section>
 {% endif %}
-<form method="POST" action="/admin">
-<p>Want to let us know about a new incident? Click <a href="/new_incident">here</a> and fill out a short pop up form.</p>
 <div name="select_div" id="select_div">
 {% if events_list %}
 <h1>Choose an incident: </h1>
@@ -198,10 +195,6 @@
 {% endfor %}
 </select>
 {% endif %}
-<h2>Personal Information</h2>
-  <div>{{ form.contact_name.label }}: {{ form.contact_name }}</div>
-  <div>{{ form.contact_email.label }}: {{ form.contact_email }}</div>
-  <div>{{ form.contact_phone.label }}: {{ form.contact_phone }}</div>
 <h2>Organization Information</h2>
   <div>{{ form.name.label }}: {{ form.name }}</div>
   <div>{{ form.email.label }}: {{ form.email }}</div>
@@ -329,7 +322,8 @@
 </section>
 {% endif %}
 
-  <div>{{ form.name.label }}: {{ form.name }}</div>
+  <div>{{ form.first_name.label }}: {{ form.first_name }}</div>
+  <div>{{ form.last_name.label }}: {{ form.last_name }}</div>
   <div>{{ form.email.label }}: {{ form.email }}</div>
   <div>{{ form.phone.label }}: {{ form.phone }}</div>
   <p>Organization: {{ organization_name }}</p>
@@ -356,7 +350,105 @@
 {% if edit_org %}
 <br/>
 <h1>Put Form Here, Then Populate It</h1>
+<h2>Organization Information</h2>
+<form method="POST" action="/admin">
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
 {% endif %}
+  <div>{{ form.name.label }}: {{ form.name }}</div>
+  <div>{{ form.email.label }}: {{ form.email }}</div>
+  <div>{{ form.phone.label }}: {{ form.phone }}</div>
+  <div>{{ form.address.label }}: {{ form.address }}</div>
+  <div>{{ form.city.label }}: {{ form.city }}</div>
+  <div>{{ form.state.label }}: {{ form.state }}</div>
+  <div>{{ form.zip_code.label }}: {{ form.zip_code }}</div>
+  <div>{{ form.twitter.label }}: {{ form.twitter }}</div>
+  <div>{{ form.facebook.label }}: {{ form.facebook }}</div>
+  <div>{{ form.url.label }}: {{ form.url }}</div>
+
+    
+  {% if form.physical_presence %}
+  <tr>
+    <td class="question">{{ form.physical_presence.label }}</td>
+    <td class="answer">{{ form.physical_presence }}</td>
+  </tr>
+  <br/>
+  {% endif %}
+  <div>{{ form.work_area.label }}: {{ form.work_area }}</div>
+  <div>{{ form.number_volunteers.label }}: {{ form.number_volunteers }}</div>
+  {% if form.voad_member %}
+  <tr>
+    <td>{{ form.voad_member.label }}</td>
+    <td>{{ form.voad_member }}</td>
+  </tr>
+  <br/>
+  {% endif %}
+  <div>{{ form.voad_member_url.label }}: {{ form.voad_member_url }}</div>
+  <div>{{ form.voad_referral.label }}: {{ form.voad_referral }}</div>
+
+<h3>Operations</h3>
+<p>Please take the time to carefully and correctly indicate the work your organization will <strong>normally perform</strong> during this Incident.</p><p>You will save yourself, staff, volunteers, and other volunteers <em>hundreds</em> of hours if you fill this form out <em>accurately</em>.</p><p>It will significantly un-clutter the map, and ensure that work orders are not lost or forgotten.</p>
+
+  <tr>
+    <td>{{ form.canvass.label }}</td>
+    <td>{{ form.canvass }}</td>
+  </tr>
+  <br/>
+
+  <tr>
+    <td>{{ form.assessment.label }}</td>
+    <td>{{ form.assessment }}</td>
+  </tr>
+  <br/>
+ 
+  <tr>
+    <td>{{ form.clean_up.label }}</td>
+    <td>{{ form.clean_up }}</td>
+  </tr>
+  <br/>
+  
+  <tr>
+    <td>{{ form.mold_abatement.label }}</td>
+    <td>{{ form.mold_abatement }}</td>
+  </tr>
+  <br/>
+  
+  <tr>
+    <td>{{ form.rebuilding.label }}</td>
+    <td>{{ form.rebuilding }}</td>
+  </tr>
+  
+    <tr>
+    <td>{{ form.refurbishing.label }}</td>
+    <td>{{ form.refurbishing }}</td>
+  </tr>
+  <tr>
+    <td>{{ form.org_verified.label }}</td>
+    <td>{{ form.org_verified }}</td>
+  </tr>
+      <tr>
+    <td>{{ form.is_active.label }}</td>
+    <td>{{ form.is_active }}</td>
+  </tr>
+   <input type=hidden name=edit_org value={{org_id}}>
+
+  <input type=submit value="Submit Edit">
+</form>
+{% endif %}
+
 
 {% if create_contact %}
 <h1>Create Contact</h1>
@@ -384,7 +476,8 @@
 <option value="{{result.key().id()}}">{{result.name}}</option>
 {% endfor %}
 </select><br/><br/>
-<div>{{ form.name.label }}: {{ form.name }}</div>
+<div>{{ form.first_name.label }}: {{ form.first_name }}</div>
+<div>{{ form.last_name.label }}: {{ form.last_name }}</div>
 <div>{{ form.email.label }}: {{ form.email }}</div>
 <div>{{ form.phone.label }}: {{ form.phone }}</div>
 <p>Applicant Is Primary Contact for Organization: {{ form.is_primary }}</p>

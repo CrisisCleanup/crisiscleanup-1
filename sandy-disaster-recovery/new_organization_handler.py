@@ -25,6 +25,8 @@ import os
 import urllib2
 import wtforms.validators
 import cache
+from google.appengine.ext import db
+
 
 # Local libraries.
 import base
@@ -42,7 +44,8 @@ template = jinja_environment.get_template('new_organization.html')
 class NewOrganizationHandler(base.RequestHandler):
     def get(self):
         form = organization.OrganizationForm()
-        events_list = event_db.GetAllCached()
+        #events_list = event_db.GetAllCached()
+        events_list = db.GqlQuery("SELECT * FROM Event")
         self.response.out.write(template.render(
         {
             "form": form,
@@ -79,6 +82,7 @@ class NewOrganizationHandler(base.RequestHandler):
                                 clean_up = bool(data.clean_up.data),
                                 mold_abatement = bool(data.mold_abatement.data),
                                 rebuilding = bool(data.rebuilding.data),
+                                refurbishing = bool(data.refurbishing.data),
                                 choose_event = event,
                                 org_verified=bool(0),
                                 twitter = data.twitter.data,
@@ -90,7 +94,8 @@ class NewOrganizationHandler(base.RequestHandler):
                                 incident = event.key(),
                                 )
                                 
-            new_contact = primary_contact_db.Contact(name = data.contact_name.data,
+            new_contact = primary_contact_db.Contact(first_name = data.contact_first_name.data,
+                                last_name = data.contact_last_name.data,
                                 email = data.contact_email.data,
                                 phone=data.contact_phone.data,
                                 is_primary=True)

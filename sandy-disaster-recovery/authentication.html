@@ -2,6 +2,9 @@
 <html>
 
 <head>
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
+  <script type="text/javascript" src="javascript/authentication_dropdown.js"></script>         
+
 <title>Report a Work Zone</title>
 <link href="/stylesheets/default.css" rel="stylesheet">
 </head>
@@ -9,13 +12,17 @@
 <form method="POST" action="{{page}}">
 <input type="hidden" value="{{destination}}" name="destination" />
 <table>
-<tr><td class=question>Organization:</td>
-<td class="answer">{{ form.name() }}</td></tr>
 <tr><td class=question>Work Event:</td>
 <td class="answer">{{ form.event }}</td></tr>
-<tr><td class=question>Password:</td>
+<tr class="toggle"><td class=question>Organization:</td>
+<td class="answer"><select id="organization" name="name">
+</select></td></tr>
+<tr class="toggle"><td class=question>Password:</td>
 <td class="answer">{{ form.password() }}</td></tr>
 </table>
-<input type="submit" />
+<input class="toggle" type="submit" />
+<br/>
+<p>New organization interested in joining crisiscleanup.org? Signup <a href="/new_organization">here</a>.</p>
+
 </body>
 </html>

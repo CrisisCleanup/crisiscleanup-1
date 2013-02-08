@@ -26,7 +26,7 @@ import update_schema
 
 class UpdateHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
-        if not org.name == "Administrator":
+        if not org.name == "Admin":
             return False  
         update_schema.UpdateSchema(self, event)
         

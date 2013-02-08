@@ -63,7 +63,8 @@ class AdminHandler(base.AuthenticatedHandler):
                 except:
                     return
                 this_organization = organization.Organization.get_by_id(id)
-                contact = primary_contact_db.Contact(name = data.name.data,
+                contact = primary_contact_db.Contact(first_name = data.first_name.data,
+                    last_name = data.last_name.data,
                     phone = data.phone.data,
                     email = data.phone.data,
                     is_primary = bool(data.is_primary.data),
@@ -123,7 +124,8 @@ class AdminHandler(base.AuthenticatedHandler):
                         is_admin = True,
                     )
 
-                    new_contact = primary_contact_db.Contact(name = data.contact_name.data,
+                    new_contact = primary_contact_db.Contact(first_name = data.contact_first_name.data,
+                        last_name = data.contact_last_name.data,
                         email = data.contact_email.data,
                         phone=data.contact_phone.data,
                         is_primary=True
@@ -170,7 +172,8 @@ class AdminHandler(base.AuthenticatedHandler):
             data = primary_contact_db.ContactFormFull(self.request.POST)
             if data.validate():
                 contact = primary_contact_db.Contact.get(db.Key.from_path('Contact', id))
-                contact.name=data.name.data
+                contact.first_name=data.first_name.data
+                contact.last_name = data.last_name.data
                 contact.phone=data.phone.data
                 contact.email = data.email.data
                 if org_key is not None:
@@ -186,7 +189,7 @@ class AdminHandler(base.AuthenticatedHandler):
                     self.response.set_status(400)
                     return
                 contact = primary_contact_db.Contact.get_by_id(id)
-                form = primary_contact_db.ContactFormFull(name = contact.name, phone = contact.phone, email = contact.email, is_primary=int(contact.is_primary))
+                form = primary_contact_db.ContactFormFull(first_name = contact.first_name, last_name = contact.last_name, phone = contact.phone, email = contact.email, is_primary=int(contact.is_primary))
                 self.response.out.write(template.render(
                 {
                     "edit_contact_id": id,
@@ -203,7 +206,7 @@ class AdminHandler(base.AuthenticatedHandler):
                 return
             organization_list = organization.GetAllCached()
             contact = primary_contact_db.Contact.get_by_id(id)
-            form = primary_contact_db.ContactFormFull(name = contact.name, phone = contact.phone, email = contact.email, is_primary=int(contact.is_primary))
+            form = primary_contact_db.ContactFormFull(first_name = contact.first_name, last_name=contact.last_name, phone = contact.phone, email = contact.email, is_primary=int(contact.is_primary))
             organization_name = None
             if contact.organization:
                 organization_name = contact.organization.name
@@ -223,16 +226,41 @@ class AdminHandler(base.AuthenticatedHandler):
                 self.response.set_status(400)
                 return
             org = organization.Organization.get_by_id(id)
-            form = organization.OrganizationForm()
+            form = organization.OrganizationEditForm(name = org.name,
+                email = org.email,
+                phone = org.phone,
+                address= org.address,
+                city = org.city,
+                state = org.state,
+                zip_code = org.zip_code,
+                twitter = org.twitter,
+                facebook = org.facebook,
+                url = org.url,
+                physical_presence = org.physical_presence,
+                work_area = org.work_area,
+                number_volunteers = org.number_volunteers,
+                voad_member = org.voad_membership,
+                voad_member_url = org.voad_member_url,
+                voad_referral = org.voad_referral,
+                canvass = org.canvassing,
+                assessment = org.assessment,
+                clean_up = org.clean_up,
+                mold_abatement = org.mold_abatement,
+                rebuilding = org.rebuilding,
+                refurbishing = org.refurbishing,
+                org_verified = org.org_verified,
+                is_active = org.is_active,
+                )
             self.response.out.write(template.render(
             {
                 "edit_org": True,
                 "form": form,
+                "org_id": org.key().id(),
             }))
             return
                         
         if self.request.get("create_org"):
-            data = organization.OrganizationForm(self.request.POST)
+            data = organization.OrganizationFormNoContact(self.request.POST)
             if data.validate():
                 new_org = organization.Organization(name = data.name.data,
                     email = data.email.data,
@@ -250,6 +278,7 @@ class AdminHandler(base.AuthenticatedHandler):
                     clean_up = bool(data.clean_up.data),
                     mold_abatement = bool(data.mold_abatement.data),
                     rebuilding = bool(data.rebuilding.data),
+                    refurbishing = bool(data.refurbishing.data),
                     choose_event = event,
                     org_verified=True,
                     twitter = data.twitter.data,
@@ -269,6 +298,7 @@ class AdminHandler(base.AuthenticatedHandler):
                     "form": data,
                     "errors": data.errors,
                     "events_list": events_list,
+                    "create_org": True,
                 }))
                 return
             self.redirect("/admin")
@@ -293,16 +323,62 @@ class AdminHandler(base.AuthenticatedHandler):
                 return
             org = organization.Organization.get(db.Key.from_path('Organization', id))
             org.org_verified=True
-            organization.PutAndCache(org)
+            organization.PutAndCache(org, 600)
             self.redirect("/admin")
             return
+            
+        if self.request.get("edit_org"):
+            data = organization.OrganizationEditForm(self.request.POST)
+            if data.validate():
+                try:
+                    id = int(self.request.get("edit_org"))
+                except:
+                    self.response.set_status(400)
+                    return
+            
+                org = organization.Organization.get(db.Key.from_path('Organization', id))
+                org.name = data.name.data
+                org.org_verified = bool(data.org_verified.data)
+                org.is_active = bool(data.is_active.data)
+                org.email = data.email.data
+                org.phone = data.phone.data
+                org.address = data.address.data
+                org.city = data.city.data
+                org.state = data.state.data
+                org.zip_code = data.zip_code.data
+                org.twitter = data.twitter.data
+                org.facebook = data.facebook.data
+                org.url = data.url.data
+                org.physical_presence = bool(data.physical_presence.data)
+                org.voad_membership = bool(data.voad_member.data)
+                org.voad_referral = data.voad_referral.data
+                org.canvassing = bool(data.canvass.data)
+                org.assessment = bool(data.assessment.data)
+                org.clean_up = bool(data.clean_up.data)
+                org.mold_abatement = bool(data.mold_abatement.data)
+                org.refurbishing = bool(data.refurbishing.data)
+                org.rebuilding = bool(data.rebuilding.data)
+                organization.PutAndCache(org, 600)
+                self.redirect("/admin")
+                return
+            else:
+                events_list = event_db.GetAllCached()
+                self.response.out.write(template.render(
+                {
+                    "edit_org": True,
+                    "form": data,
+                    "errors": data.errors,
+                    "org_id": int(self.request.get("edit_org")),
+                }))
+                return
+            
         
     def AuthenticatedGet(self, org, event):
         if not org.name == GLOBAL_ADMIN_NAME:
             return
           
         if self.request.get("display_contacts"):
-            contacts = db.GqlQuery("SELECT * From Contact ORDER BY name")
+            contacts = db.GqlQuery("SELECT * From Contact")
             self.response.out.write(template.render(
             {
                 "contacts": contacts,
@@ -312,7 +388,7 @@ class AdminHandler(base.AuthenticatedHandler):
             
         if self.request.get("create_contact"):
             form = primary_contact_db.ContactFormFull()
-            organization_list = organization.GetAllCached()
+            organization_list = db.GqlQuery("SELECT * From Organization WHERE org_verified = :1", True)
             self.response.out.write(template.render(
             {
                 "form": form,
@@ -427,7 +503,7 @@ class AdminHandler(base.AuthenticatedHandler):
             return
 
         if self.request.get("create_org"):
-            form = organization.OrganizationForm()
+            form = organization.OrganizationFormNoContact()
             events_list = event_db.GetAllCached()
             auto_password = random_password.generate_password()
             self.response.out.write(template.render(

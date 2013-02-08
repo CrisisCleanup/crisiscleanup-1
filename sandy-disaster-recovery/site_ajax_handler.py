@@ -65,8 +65,8 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
       status = self.request.get("status", default_value = "")
       q = Query(model_class = site_db.Site, keys_only = True)
       
-      # filter by event
-      #q.filter("event =", event.key())
+      #filter by event
+      q.filter("event =", event.key())
       if status == "open":
         q.filter("status >= ", "Open")
       elif status == "closed":

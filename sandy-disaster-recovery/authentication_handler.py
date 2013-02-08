@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+    #!/usr/bin/env python
 #
 # Copyright 2012 Jeremy Pack
 #
@@ -27,6 +27,7 @@ import wtforms.fields
 import wtforms.form
 import wtforms.validators
 import logging
+import time
 
 # Local libraries.
 import base
@@ -40,44 +41,51 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('authentication.html')
 
 def GetOrganizationForm(post_data):
-  organizations = organization.GetAllCached()
+  #organizations = organization.GetAllCached()
+  organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True")# WHERE organization = :1 LIMIT 1", obj.key())
   events = event_db.GetAllCached()
+  events = db.GqlQuery("SELECT * From Event")
   dirty = False
-  
-  if len(organizations) == 0:
-    # This is to initially populate the database the first time.
-    # TODO(oryol): Add a regular Google login-authenticated handler
-    # to add users and passwords, whitelisted to the set of e-mail
-    # addresses we want to allow.
-    default = organization.Organization(name = "Admin",
-                                        password = "temporary_password")
-    organization.PutAndCache(default, 600)
-    organizations.append(default)
-  elif len(organizations) >= 2:
-    modified = []
-    for o in organizations:
-      if o.name == "Administrator":
-        o.delete()
-      else:
-        modified.append(o)
-    organizations = modified
-
-  if not len(events):
+  event_key = None
+  if events.count() == 0:
     logging.warning("Initialize called")
     e = event_db.Event(name = event_db.DefaultEventName(),
                        case_label = "A")
     e.put()
+    event_key = e.key()
     # TODO(Jeremy): This could be dangerous if we reset events.
     for s in site_db.Site.all().run(batch_size = 1000):
       event_db.AddSiteToEvent(s, e.key().id(), force = True)
     events = [e]
-  organizations.sort(key=lambda org: org.name)
-  events.sort(key=lambda event: event.name)
+
+  if organizations.count() == 0:
+    #time.sleep(5)
+    # This is to initially populate the database the first time.
+    # TODO(oryol): Add a regular Google login-authenticated handler
+    # to add users and passwords, whitelisted to the set of e-mail
+    # addresses we want to allow.
+    default = organization.Organization(name = "Admin", password = "temporary_password", org_verified=True, is_active=True, is_admin=True, incident = event_key)
+    default.put()
+    organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True")# WHERE organization = :1 LIMIT 1", obj.key())
+  elif organizations.count() >= 2:
+    modified = []
+    for o in organizations:
+      #if o.name == "Administrator":
+        #pass
+        ##o.delete()
+      #else:
+      modified.append(o)
+    organizations = modified
+
+
+  #organizations.sort(key=lambda org: org.name)
+  #events.sort(key=lambda event: event.name)
+  
   class OrganizationForm(wtforms.form.Form):
-    name = wtforms.fields.SelectField(
-        'Name',
-        choices = [(o.name, o.name) for o in organizations],
-        validators = [wtforms.validators.required()])
+    #name = wtforms.fields.SelectField(
+        #'Name',
+        #choices = [(o.name, o.name) for o in organizations],
+        #validators = [wtforms.validators.required()])
     event = wtforms.fields.SelectField(
         'Work Event',
         choices = [(e.name, e.name) for e in events],
@@ -107,14 +115,18 @@ class AuthenticationHandler(base.RequestHandler):
     form = GetOrganizationForm(self.request.POST)
     if not form.validate():
       self.redirect('/authentication')
-    org = None
-    for l in organization.Organization.gql(
-        "WHERE name = :name LIMIT 1", name = form.name.data):
-      org = l
     event = None
     for e in event_db.Event.gql(
-      "WHERE name = :name LIMIT 1", name = form.event.data):
-      event = e
+    "WHERE name = :name LIMIT 1", name = form.event.data):
+        event = e
+    org = None
+    for l in organization.Organization.gql(
+        "WHERE name = :name LIMIT 1", name = self.request.get("name")):
+    # when all orgs have incidents
+    #for l in organization.Organization.gql(
+            #"WHERE name = :name and incident = :event_key LIMIT 1", name = form.name.data, event_key = event.key()):
+      org = l
+
     if event and org and org.password == form.password.data:
       keys = key.Key.all()
       keys.order("date")

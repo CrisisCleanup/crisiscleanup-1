@@ -48,9 +48,8 @@ class SitesHandler(base.AuthenticatedHandler):
     # but I still feel more comfortable with protecting this against future changes to GQL
     
     select_string = "SELECT * FROM Site "
-    where_string = "WHERE county = :where_variable" # and event = :event_key"
+    where_string = "WHERE county = :where_variable and event = :event_key" # and event = :event_key"
     where_event = "WHERE event = :event_key "
-
     if order == "name":  
       order_string = "ORDER BY name"
     elif order == "request_date":
@@ -58,7 +57,7 @@ class SitesHandler(base.AuthenticatedHandler):
     # end query string
     
     if county == "NoCounty":
-      query_string = select_string + order_string
+      query_string = select_string + where_event + order_string
       query = db.GqlQuery(query_string, event_key = event.key())
         
     else:

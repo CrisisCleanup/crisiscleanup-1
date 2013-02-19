@@ -53,23 +53,36 @@ class Organization(db.Model):
   facebook = db.StringProperty(required=False)
   email = db.StringProperty(required=False)
   incident = db.ReferenceProperty()
+  publish = db.BooleanProperty(required=False)
   
   
   voad_referral = db.TextProperty(required=False)#|If your organization is not a member of VOAD, please provide the name and contact information for at least one (and preferably three or more) representatives from VOAD organizations or a government agency who can vouch for your work:
   physical_presence = db.BooleanProperty(required=False)#|Does your Organization have a physical presence in the disaster area?
   work_area = db.StringProperty(required=False)#|If so, in which areas are you primarily working?
   number_volunteers = db.StringProperty(required=False)#|Approximately how many volunteers will your organization utilize for cleanup efforts?
-  voad_membership = db.BooleanProperty(required=False)#|Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?
-  voad_member_url = db.TextProperty(required=False)#|If so, can you provide one or more URLs listing your organizations membership? (This will significantly speed up the process)
+  voad_member = db.BooleanProperty(required=False)#|Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?
+  voad_member_url = db.TextProperty(required=False)#|If so, can you provide one or more URLs listing your organizations membership? (This will significantly speed up approval)
   
   
   # PHASES. Note: Phases attach to an incident, not an organization. An organization may complete different phases, depending upon the incident.
   # Setting defaults to True for schema update. Otherwise all old organizations will have no phases in scope
-  canvassing = db.BooleanProperty(required=False, default=True)#|Canvassing
+  canvass = db.BooleanProperty(required=False, default=True)#|Canvass
   assessment = db.BooleanProperty(required=False, default=True)#|Assessment
   clean_up = db.BooleanProperty(required=False, default=True)#|Clean-up
+  water_pumping = db.BooleanProperty(required=False, default=True)#|Water Pumping
+  muck_out = db.BooleanProperty(required=False, default=True)#|Muck Out
+  interior_debris = db.BooleanProperty(required=False, default=True)#|Interior Debris
+  gutting = db.BooleanProperty(required=False, default=True)#|Gutting
+  tree_removal = db.BooleanProperty(required=False, default=True)#|Tree Removal
+  exterior_debris = db.BooleanProperty(required=False, default=True)#|Exterior Debris
+  sanitizing = db.BooleanProperty(required=False, default=True)#|Sanitizing
+  mold_treatment = db.BooleanProperty(required=False, default=True)#|Mold Treatment
+  design = db.BooleanProperty(required=False, default=True)#|Design
+  permits = db.BooleanProperty(required=False, default=True)#|Building Permits
+  reconstruction = db.BooleanProperty(required=False, default=True)#|Reconstruction
+  replace_appliances = db.BooleanProperty(required=False, default=True)#|Replace Appliances
+  replace_furniture = db.BooleanProperty(required=False, default=True)#|Replace Furniture
   mold_abatement = db.BooleanProperty(required=False, default=True)#|Mold Abatement
-  rebuilding = db.BooleanProperty(required=False, default=True)#|Rebuilding
   refurbishing = db.BooleanProperty(required=False, default=True)#|Refurbishing
   #OTHER
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
@@ -139,6 +152,12 @@ class OrganizationAdminForm(model_form(Organization)):
     facebook = TextField('Facebook link', [wtforms.validators.Length(min = 0, max = 100,
                               message = "Facebook link must be between 0 and 100 characters")])
 
+def always_often_rarely_never():
+    return RadioField(
+      choices = [(1, "Always/Often"), (0, "Rarely/Never")],
+      coerce = int
+    )
+
 class OrganizationFormNoContact(model_form(Organization)):
     name = TextField('Organization Name', [wtforms.validators.Length(min = 1, max = 100,
     message = "Organization Name must be between 1 and 100 characters")])
@@ -158,7 +177,7 @@ class OrganizationFormNoContact(model_form(Organization)):
     facebook = TextField('Facebook link', [wtforms.validators.Length(min = 0, max = 100,
     message = "Facebook link must be between 0 and 100 characters")])
     
-    
+    publish = BooleanField("Publish Organization Profile")
     physical_presence = RadioField("Does your organization have a physical presence in the affected area?",
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
@@ -168,29 +187,26 @@ class OrganizationFormNoContact(model_form(Organization)):
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
-    voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Membership urls must be between 0 and 100 characters")])
-    voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Referral urls must be between 0 and 100 characters")])
-    canvass = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    assessment = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    clean_up = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    mold_abatement = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    rebuilding = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    choose_event = TextField('Choose', [validators.Required()])
-    refurbishing = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
+    canvass = always_often_rarely_never()
+    assessment = always_often_rarely_never()
+    water_pumping = always_often_rarely_never()
+    muck_out = always_often_rarely_never()
+    interior_debris = always_often_rarely_never()
+    gutting = always_often_rarely_never()
+    tree_removal = always_often_rarely_never()
+    exterior_debris = always_often_rarely_never()
+    sanitizing = always_often_rarely_never()
+    mold_treatment = always_often_rarely_never()
+    design = always_often_rarely_never()
+    permits = always_often_rarely_never()
+    reconstruction = always_often_rarely_never()
+    replace_appliances = always_often_rarely_never()
+    replace_furniture = always_often_rarely_never()
+
     choose_event = TextField('Choose', [validators.Required()])
     
 class OrganizationForm(model_form(Organization)):
@@ -222,6 +238,7 @@ class OrganizationForm(model_form(Organization)):
                               message = "Facebook link must be between 0 and 100 characters")])
                              
                              
+    publish = BooleanField("Publish Organization Profile")
     physical_presence = RadioField("Does your organization have a physical presence in the affected area?",
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
@@ -231,29 +248,26 @@ class OrganizationForm(model_form(Organization)):
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
-    voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
                              message = "Voad Membership urls must be between 0 and 100 characters")])
-    voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
                              message = "Voad Referral urls must be between 0 and 100 characters")])
-    canvass = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    assessment = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    clean_up = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    mold_abatement = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    rebuilding = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    choose_event = TextField('Choose', [validators.Required()])
-    refurbishing = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
+    canvass = always_often_rarely_never()
+    assessment = always_often_rarely_never()
+    water_pumping = always_often_rarely_never()
+    muck_out = always_often_rarely_never()
+    interior_debris = always_often_rarely_never()
+    gutting = always_often_rarely_never()
+    tree_removal = always_often_rarely_never()
+    exterior_debris = always_often_rarely_never()
+    sanitizing = always_often_rarely_never()
+    mold_treatment = always_often_rarely_never()
+    design = always_often_rarely_never()
+    permits = always_often_rarely_never()
+    reconstruction = always_often_rarely_never()
+    replace_appliances = always_often_rarely_never()
+    replace_furniture = always_often_rarely_never()
+
     choose_event = TextField('Choose', [validators.Required()])
     
 class OrganizationEditForm(model_form(Organization)):
@@ -278,6 +292,7 @@ class OrganizationEditForm(model_form(Organization)):
     message = "Facebook link must be between 0 and 100 characters")])
     
     
+    publish = BooleanField("Publish Organization Profile")
     physical_presence = RadioField("Does your organization have a physical presence in the affected area?",
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
@@ -287,28 +302,26 @@ class OrganizationEditForm(model_form(Organization)):
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
-    voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Membership urls must be between 0 and 100 characters")])
-    voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Referral urls must be between 0 and 100 characters")])
-    canvass = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    assessment = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    clean_up = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    mold_abatement = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    rebuilding = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    refurbishing = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
+    canvass = always_often_rarely_never()
+    assessment = always_often_rarely_never()
+    water_pumping = always_often_rarely_never()
+    muck_out = always_often_rarely_never()
+    interior_debris = always_often_rarely_never()
+    gutting = always_often_rarely_never()
+    tree_removal = always_often_rarely_never()
+    exterior_debris = always_often_rarely_never()
+    sanitizing = always_often_rarely_never()
+    mold_treatment = always_often_rarely_never()
+    design = always_often_rarely_never()
+    permits = always_often_rarely_never()
+    reconstruction = always_often_rarely_never()
+    replace_appliances = always_often_rarely_never()
+    replace_furniture = always_often_rarely_never()
+
     org_verified = RadioField(
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
@@ -338,6 +351,7 @@ class OrganizationInfoEditForm(model_form(Organization)):
     message = "Facebook link must be between 0 and 100 characters")])
     
     
+    publish = BooleanField("Publish Organization Profile")
     physical_presence = RadioField("Does your organization have a physical presence in the affected area?",
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
@@ -347,25 +361,24 @@ class OrganizationInfoEditForm(model_form(Organization)):
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
-    voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Membership urls must be between 0 and 100 characters")])
-    voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Referral urls must be between 0 and 100 characters")])
-    canvass = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    assessment = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    clean_up = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    mold_abatement = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    rebuilding = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
-    refurbishing = RadioField(
-    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-    coerce = int)
+    canvass = always_often_rarely_never()
+    assessment = always_often_rarely_never()
+    water_pumping = always_often_rarely_never()
+    muck_out = always_often_rarely_never()
+    interior_debris = always_often_rarely_never()
+    gutting = always_often_rarely_never()
+    tree_removal = always_often_rarely_never()
+    exterior_debris = always_often_rarely_never()
+    sanitizing = always_often_rarely_never()
+    mold_treatment = always_often_rarely_never()
+    design = always_often_rarely_never()
+    permits = always_often_rarely_never()
+    reconstruction = always_often_rarely_never()
+    replace_appliances = always_often_rarely_never()
+    replace_furniture = always_often_rarely_never()
+
+

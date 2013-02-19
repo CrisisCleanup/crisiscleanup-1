@@ -39,7 +39,7 @@ import organization
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('new_organization.html')
+template = jinja_environment.get_template('new_new_organization.html')
 
 class NewOrganizationHandler(base.RequestHandler):
     def get(self):
@@ -76,13 +76,23 @@ class NewOrganizationHandler(base.RequestHandler):
                                 physical_presence = bool(data.physical_presence.data),
                                 number_volunteers = data.number_volunteers.data,
                                 voad_member = bool(data.voad_member.data),
-                                voad_membership = bool(data.voad_membership.data),
-                                canvassing = bool(data.canvass.data),
+
+                                canvass = bool(data.canvass.data),
                                 assessment = bool(data.assessment.data),
-                                clean_up = bool(data.clean_up.data),
-                                mold_abatement = bool(data.mold_abatement.data),
-                                rebuilding = bool(data.rebuilding.data),
-                                refurbishing = bool(data.refurbishing.data),
+                                water_pumping = bool(data.water_pumping.data),
+                                muck_out = bool(data.muck_out.data),
+                                interior_debris = bool(data.interior_debris.data),
+                                gutting = bool(data.gutting.data),
+                                tree_removal = bool(data.tree_removal.data),
+                                exterior_debris = bool(data.exterior_debris.data),
+                                sanitizing = bool(data.sanitizing.data),
+                                mold_treatment = bool(data.mold_treatment.data),
+                                design = bool(data.design.data),
+                                permits = bool(data.permits.data),
+                                reconstruction = bool(data.reconstruction.data),
+                                replace_appliances = bool(data.replace_appliances.data),
+                                replace_furniture = bool(data.replace_furniture.data),
+
                                 choose_event = event,
                                 org_verified=bool(0),
                                 twitter = data.twitter.data,
@@ -91,6 +101,7 @@ class NewOrganizationHandler(base.RequestHandler):
                                 work_area = data.work_area.data,
                                 voad_member_url = data.voad_member_url.data,
                                 facebook = data.facebook.data,  
+                                publish = data.publish.data,
                                 incident = event.key(),
                                 )
                                 

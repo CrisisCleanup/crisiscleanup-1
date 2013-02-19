@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+    <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
+    <link href="/stylesheets/new_org_form.css?v={{version}}" rel="stylesheet">
+    <link href="/closure/css/dialog.css?v={{version}}" rel="stylesheet">
+<body>
+
+<div id="form_background">
+<div id="form">
+<h1>Signup</h1>
+
+<p>Welcome! Organizations that clean up disasters may join <em>CrisisCleanup.org</em>, if they meet the following requirements:</p>
+<ol>
+    <li>Your organization must have a physical presence in the disaster area.</li>
+    <li>Your organization must either perform home assessments and/or gutting, mucking-out, debris removal, mold abatement, or rebuilding.</li>
+    <li>Your organization must be reputable. This generally means a non-profit member of National VOAD, a state VOAD, a County VOAD/COAD, a local government agency, or an organization recommended by a VOAD member or government agency.</li>
+    <!--<li>Your organization must agree to the <a href="#">Terms of Service</a>.</li>-->
+    <li>Each volunteer using the system must watch the <a href="https://vimeo.com/53689479" target="_blank">Training Video</a>.</li>
+</ol>
+
+<p><strong>Filling out this application carefully, correctly, and completely will save you hours and save your volunteers dozens or hundreds of hours in productivity (we promise).</strong></p>
+
+{# show errors #}
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+
+<form method="POST" action="/signup">
+<p>Want to let us know about a new incident? Click <a href="/new_incident">here</a> and fill out a short pop up form.</p>
+<div name="select_div" id="select_div">
+
+{% if events_list %}
+  <h1>Choose a Disaster:</h1>
+  <select name="choose_event">
+    <option value="">--Choose One--</option>
+    {% for result in events_list %}
+      <option value="{{result.key().id()}}">{{result.name}}</option>
+    {% endfor %}
+  </select>
+{% endif %}
+
+<a name="primary-contact"></a>
+<h2>Primary Contact<a href="#fn1"><sup>1</sup></a></h2>
+  <div>{{ form.contact_first_name.label }}: {{ form.contact_first_name }}</div>
+  <div>{{ form.contact_last_name.label }}: {{ form.contact_last_name }}</div>
+  <div>{{ form.contact_email.label }}: {{ form.contact_email }}</div>
+  <div>{{ form.contact_phone.label }}: {{ form.contact_phone }}</div>
+<h2>Organization Information<a href="#fn2"><sup>2</sup></a></h2>
+<a name="organization"></a>
+  <div>{{ form.name.label }}: {{ form.name }}</div>
+  <div>{{ form.email.label }}: {{ form.email }}</div>
+  <div>{{ form.phone.label }}: {{ form.phone }}</div>
+  <div>{{ form.address.label }}: {{ form.address }}</div>
+  <div>{{ form.city.label }}: {{ form.city }}</div>
+  <div>{{ form.state.label }}: {{ form.state }}</div>
+  <div>{{ form.zip_code.label }}: {{ form.zip_code }}</div>
+  <div>{{ form.url.label }}: {{ form.url }}</div>
+  <div>{{ form.twitter.label }}: {{ form.twitter }}</div>
+  <div>{{ form.facebook.label }}: {{ form.facebook }}</div>
+  <div>{{ form.publish.label }}<a href="#fn3"><sup>3</sup></a>: {{ form.publish }}</div>
+    
+<h2>Qualifications</h2>
+  {% if form.physical_presence %}
+  <tr>
+    <td class="question">{{ form.physical_presence.label }}</td>
+    <td class="answer">{{ form.physical_presence }}</td>
+  </tr>
+  <br/>
+  {% endif %}
+  <div>{{ form.work_area.label }}: {{ form.work_area }}</div>
+  <div>{{ form.number_volunteers.label }}: {{ form.number_volunteers }}</div>
+  {% if form.voad_member %}
+  <tr>
+    <td>{{ form.voad_member.label }}</td>
+    <td>{{ form.voad_member }}</td>
+  </tr>
+  <br/>
+  {% endif %}
+  <div>{{ form.voad_member_url.label }}: {{ form.voad_member_url }}</div>
+  <div>{{ form.voad_referral.label }}: {{ form.voad_referral }}</div>
+
+
+
+<a name="operations"></a>
+
+{%- macro do_radios(radio_field) %}
+  {% for radio_button in radio_field %}
+    <td>{{ radio_button }}</td>
+  {% endfor %}
+{%- endmacro %}
+
+<h2>Operations</h2>
+<p>Please take the time to carefully and correctly indicate the work your organization will <strong>normally perform</strong> during this Incident. It will significantly un-clutter the map, and ensure that work orders are not lost or forgotten.</p>
+<table>
+	<tr>
+    	<th colspan="2">Phase</th>
+        <th>Always/Often&nbsp;&nbsp;&nbsp;</th>
+        <th>Rarely/Never/NA</th>
+    </tr>
+	<tr>
+        <td class="question" colspan="2"><a href="#fn4"><strong><label for="canvass" title="Visiting the area affected by a disaster and noting damage visible from the street, such as flood levels or physical destruction. Scanning does not require interacting directly with residents or homeownersa and may be done in a vehicle or on foot.
+In contrast, a Survey is a brief intake of the name, address and contact information of a resident and how they were affected by the disaster. The primary difference between a Survey and a basic Assessment is that a Survey does NOT result in a work order, while an Assessment always results in a work order.">Canvassing</label>:</strong></a></td>
+        {{ do_radios(form.canvass) }}
+    </tr>
+	<tr>
+        <td class="question" colspan="2"><a href="#fn5"><strong><label for="assessment" title="An evaluation of a request for assistance that includes a written scope of work and enough information to estimate resources needed, safety concerns, and labor needed to accomplish it.">Assessment</label>:</strong></a></td>
+        {{ do_radios(form.assessment) }}
+    </tr>
+	<tr>
+        <td class="question" colspan="4"><a href="#fn6"><strong><label for="clean_up" title="All of the work necessary to prepare a site for rebuilding and refurbishing. Clean-up activities vary substantially based upon the type of disaster.">Clean Up</label>:</strong></a></td>
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn6-1"><label for="water_pumping" title="Removal of all excess water removed by pump, drain or shop vac. Pumping is complete when there is no standing water in the basement/crawl space. Typical during an incident that includes flooding.">Pumping of Water</label>:</a></td>
+        {{ do_radios(form.water_pumping) }}
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn6-2"><label for="muck_out" title="Removal of mud, muck, silt, and other typically semi-solid material from a home and basement. Typical during an incident that includes flooding.">Basic Muck-out</label>:</a></td>
+        {{ do_radios(form.muck_out) }}
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn6-3"><label for="interior_debris" title="Removal of damaged or flood-affected personal items, appliances, fixtures, and any other items that are not structural components of the home. Debris removal is complete when all damaged items are discarded and removed from the structure and any remaining undamaged items are in a safe location. Typical after an incident involving flooding, wind damage, or other minor building damage.">Interior Debris/Contents Removal</label>:</a></td>
+        {{ do_radios(form.interior_debris) }}
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn6-4"><label for="gutting" title="Tearing out and removal of damaged non-structural interior construction materials (e.g. dry wall, carpet, paneling, etc.). Gutting MAY include spraying for mold, but stops short of full mold abatement, described below. A complete gutting includes removal of protruding nails or screws in now-exposed studs and flooring. Typical after an incident involving flooding, roof damage, or other minor building damage.">Gutting/ Tear-Out</label>:</a></td>
+        {{ do_radios(form.gutting) }}
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn6-5"><label for="tree_removal" title="Cutting downed trees and limbs into four-foot sections or less, and disposing of the sections by removal from the site, moving to the curb, chipping, etc. Typical after an incident involving wind damage.">Tree Removal</label>:</a></td>
+        {{ do_radios(form.tree_removal) }}
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn6-6"><label for="exterior_debris" title="Removal of unwanted and damaged tree, vegetative or other disaster debris from house sites, lawns, fields and forests and placing it in containers or in piles for disposal. Typical after an incident involving wind or flood damage.">Exterior Debris Removal</label>:</a></td>
+        {{ do_radios(form.exterior_debris) }}
+    </tr>
+	<tr>
+        <td class="question" colspan="4"><a href="#fn7"><strong><label for="mold_abatement" title="Activities designed to abate and remediate mold beyond spraying for mold or gutting, typically requiring days, weeks, or longer.">Mold Abatement</label>:</strong></a></td>
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn7-1"><label for="sanitizing" title="Cleaning of the remaining structure after gutting to prepare for mold control and treatment activities. Cleaning is complete surfaces are cleaned and rinsed of any dirt, mud and contaminants, usually using a wire brush. Typical after an incident involving flooding or rain after roof damage.">Cleaning and Sanitizing</label>:</a></td>
+        {{ do_radios(form.sanitizing) }}
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn7-2"><label for="mold_treatment" title="The active and intentional process of using chemicals and other equipment such as dehumidifiers and fans to eradicate mold and mildew while controlling the humidity levels to prevent mold from growing and bring the moisture content to an acceptable level prior to rebuilding. Typical after an incident involving flooding or rain after roof damage.">Mold Control and Treatment</label>:</a></td>
+        {{ do_radios(form.mold_treatment) }}
+    </tr>
+	<tr>
+        <td class="question" colspan="4"><a href="#fn8"><strong><label for="rebuilding" title="Restoring the building with new, replacement materials that were damaged or destroyed in the disaster.">Rebuilding</label>:</strong></a></td>
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn8-1" title="DESCRIPTION"><label for="design" title="Designing and planning the restoration of a damaged property by reconstruction, e.g. using architectural or other plans.">Design</label>:</a></td>
+        {{ do_radios(form.design) }}
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn8-2" title="DESCRIPTION"><label for="permits" title="Obtaining requisite construction permits from the applicable Authorities Having Jurisdiction, such as a city or county municipality.">Building Permits</label>:</a></td>
+        {{ do_radios(form.permits) }}
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn8-3"><label for="reconstruction" title="Restoring the home to or near pre-disaster conditions through construction of fixed building element(s). Rebuilding may, but need not, include Refurbishing.">Reconstruction</label>:</a></td>
+        {{ do_radios(form.reconstruction) }}
+    </tr>
+	<tr>
+        <td class="question" colspan="4"><a href="#fn9"><strong><label for="refurbishing" title="Replacing appliances or furniture.">Refurbishing</label></strong></a></td>
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn9-1"><label for="replace_appliances" title="Replacement of damaged appliances.">Appliance Replacement</label>:</a></td>
+        {{ do_radios(form.replace_appliances) }}
+    </tr>
+	<tr>
+    	<td width="25"></td>
+        <td class="question"><a href="#fn9-2"><label for="replace_furniture" title="Replacement of damaged furniture.">Furniture Replacement</label>:</a></td>
+        {{ do_radios(form.replace_furniture) }}
+    </tr>
+
+</table>
+<br />
+
+
+
+<input type=submit value="Submit Application">
+
+</form>
+
+<hr>
+
+<h3>Explanations</h3>
+<a name="fn1"></a>
+<p><a href="#primary-contact"><sup>1</sup></a> <strong>Required</strong>. At least one Primary Contact is required for each organization.  Personal information will not be shared publicly, but will be shared with other organizations to assist with coordination in the your disaster(s).</p>
+<a name="fn2"></a>
+<p><a href="#organization"><sup>2</sup></a> <strong>Organization name and contact info is required</strong>. Please be as specific as possible. For example, rather than "Americorps," choose "Americorps Hudson County."  Your organization's name will be used internally and will have a public profile by default.</p>
+<a name="fn3"></a>
+<p><a href="#organization"><sup>3</sup></a> <strong>Organization profile information is optional</strong>. If you choose yes, your organization's address, phone number, website, and social media information you provide may be published on crisiscleanup.org as a way for volunteers and others to contact your organization.</p>
+<hr />
+<h3>Definitions</h3>
+<a name="fn4"></a>
+<p><a href="#operations">[^]</a> <strong>Canvassing</strong>: Visiting the area affected by a disaster and noting damage visible from the street, such as flood levels or physical destruction. Scanning does not require interacting directly with residents or homeownersa and may be done in a vehicle or on foot.<br />
+In contrast, a Survey is a brief intake of the name, address and contact information of a resident and how they were affected by the disaster. The primary difference between a Survey and a basic Assessment is that a Survey does NOT result in a work order, while an Assessment always results in a work order.</p>
+<a name="fn5"></a>
+<p><a href="#operations">[^]</a> <strong>Assessment</strong>: An evaluation of a request for assistance that includes a written scope of work and enough information to estimate resources needed, safety concerns, and labor needed to accomplish it.</p>
+<a name="fn6"></a>
+<p><a href="#operations">[^]</a> <strong>Clean Up</strong>: All of the work necessary to prepare a site for rebuilding and refurbishing. Clean-up activities vary substantially based upon the type of disaster.</p>
+    <a name="fn6-1"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Pumping of Water</strong>: Removal of all excess water removed by pump, drain or shop vac. Pumping is complete when there is no standing water in the basement/crawl space. Typical during an incident that includes flooding.</p>
+    <a name="fn6-2"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Basic Muck-out</strong>: Removal of mud, muck, silt, and other typically semi-solid material from a home and basement. Typical during an incident that includes flooding.</p>
+    <a name="fn6-3"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Interior Debris/Contents Removal</strong>: Removal of damaged or flood-affected personal items, appliances, fixtures, and any other items that are not structural components of the home. Debris removal is complete when all damaged items are discarded and removed from the structure and any remaining undamaged items are in a safe location. Typical after an incident involving flooding, wind damage, or other minor building damage.</p>
+    <a name="fn6-4"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Gutting/ Tear-Out</strong>: Tearing out and removal of damaged non-structural interior construction materials (e.g. dry wall, carpet, paneling, etc.). Gutting <em>MAY</em> include spraying for mold, but stops short of full mold abatement, described below. A complete gutting includes removal of protruding nails or screws in now-exposed studs and flooring. Typical after an incident involving flooding, roof damage, or other minor building damage.</p>
+    <a name="fn6-5"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Tree Removal</strong>: Cutting downed trees and limbs into four-foot sections or less, and disposing of the sections by removal from the site, moving to the curb, chipping, etc.  Typical after an incident involving wind damage.</p>
+    <a name="fn6-6"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Exterior Debris Removal</strong>: Removal of unwanted and damaged tree, vegetative or other disaster debris from house sites, lawns, fields and forests and placing it in containers or in piles for disposal. Typical after an incident involving wind or flood damage.</p>
+<a name="fn7"></a>
+<p><a href="#operations">[^]</a> <strong>Mold Abatement</strong>: Activities designed to abate and remediate mold beyond spraying for mold or gutting, typically requiring days, weeks, or longer.</p>
+    <a name="fn7-1"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Cleaning and Sanitizing</strong>: Cleaning of the remaining structure after gutting to prepare for mold control and treatment activities. Cleaning is complete surfaces are cleaned and rinsed of any dirt, mud and contaminants, usually using a wire brush.  Typical after an incident involving flooding or rain after roof damage.</p>
+    <a name="fn7-2"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Mold Control and Treatment</strong>: The active and intentional process of using chemicals and other equipment such as dehumidifiers and fans to eradicate mold and mildew while controlling the humidity levels to prevent mold from growing and bring the moisture content to an acceptable level prior to rebuilding. Typical after an incident involving flooding or rain after roof damage.</p>
+<a name="fn8"></a>
+<p><a href="#operations">[^]</a> <strong>Rebuilding</strong>: Restoring the building with new, replacement materials that were damaged or destroyed in the disaster.</p>
+    <a name="fn8-1"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Design</strong>: Designing and planning the restoration of a damaged property by reconstruction, e.g. using architectural or other plans.</p>
+    <a name="fn8-2"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Construction/Building Permits</strong>: Obtaining requisite construction permits from the applicable Authorities Having Jurisdiction, such as a city or county municipality.</p>
+    <a name="fn8-3"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Reconstruction</strong>: Restoring the home to or near pre-disaster conditions through construction of fixed building element(s).  Rebuilding may, but need not, include Refurbishing.</p>
+<a name="fn9"></a>
+<p><a href="#operations">[^]</a> <strong>Refurbishing</strong>: Replacing appliances or furniture.</p>
+    <a name="fn9-1"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Appliance Replacement</strong>: Replacement of damaged appliances.</p>
+    <a name="fn9-2"></a>
+    <p>&nbsp;&nbsp;&nbsp;<a href="#operations">[^]</a> <strong>Furniture Replacement</strong>: Replacement of damaged furniture</p>
+
+</div>
+</div>
+</body>
+<html>

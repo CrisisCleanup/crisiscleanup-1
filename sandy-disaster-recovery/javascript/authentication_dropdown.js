@@ -14,6 +14,8 @@ $(function(){
      });
      $("#organization").children().remove();
      temp.children().detach().appendTo($("#organization"));
+     $("#organization").prepend("<option value='Admin' selected='selected'>Admin</option>");
+     
      $(".toggle").show();
          })
      })

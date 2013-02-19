@@ -317,7 +317,11 @@ var updateDialogForSite = function (dialog, site) {
 
 
     if (site.claimed_by !== null) {
+        var claimed_string = "";
         addField("Claimed by", site["claimed_by"]["name"]);
+        addButton('Contact Organization', function (e) {
+            window.open("/organization-info?organization=" + site["claimed_by"]["name"], '_blank');
+        });
     }
 
     addButton('Printer Friendly', function (e) {
@@ -422,10 +426,11 @@ function loadSitesById(id, callBack) {
 function loadSites(url, callBack) {
     goog.net.XhrIo.send(url, function (e) {
         var xhr = e.target;
+        var empty = true;
         var status = xhr.getStatus();
         if (status == 200) {
             var newSites = xhr.getResponseJson();
-            if (newSites.length == 0) return;
+            if (newSites.length == 0) return false;
             var sites = [];
             for (var i = 0; i < newSites.length; ++i) {
                 if (loadedCases[newSites[i]["case_number"]]) continue;
@@ -437,6 +442,9 @@ function loadSites(url, callBack) {
             var filters = goog.dom.getElement('filtersbackground');
             goog.style.showElement(filters, true);
 
+            if (sites.length > 0) {
+                empty = true;
+            }
             for (var i = 0; i < sites.length; ++i) {
                 if (sites[i].case_number && sites[i].name) {
                     var term = sites[i].case_number + ": <" + sites[i].name + ">";
@@ -464,8 +472,65 @@ function loadSites(url, callBack) {
     })
 }
 
+function loadSitesBatch(sites_status, page, url, callBack) {
+    goog.net.XhrIo.send(url, function (e) {
+        var xhr = e.target;
+        var empty = true;
+        var status = xhr.getStatus();
+        if (status == 200) {
+            var newSites = xhr.getResponseJson();
+            if (newSites.length == 0) return false;
+                        var sites = [];
+            for (var i = 0; i < newSites.length; ++i) {
+                if (loadedCases[newSites[i]["case_number"]]) continue;
+                        loadedCases[newSites[i]["case_number"]] = true;
+                sites.push(newSites[i]);
+            }
+            
+            sandy.map.InitializeMap(sites, AddMarker, map);
+            var filters = goog.dom.getElement('filtersbackground');
+            goog.style.showElement(filters, true);
+            if (sites.length > 0) {
+                empty = false;
+            }
+            for (var i = 0; i < sites.length; ++i) {
+                if (sites[i].case_number && sites[i].name) {
+                    var term = sites[i].case_number + ": <" + sites[i].name + ">";
+                    if (sites[i].address) {
+                        term += " " + sites[i].address;
+                    }
+                    if (sites[i].city) {
+                        term += " " + sites[i].city;
+                    }
+                    if (sites[i].state) {
+                        term += " " + sites[i].state;
+                    }
+                    if (sites[i].zip_code) {
+                        term += " " + sites[i].zip_code;
+                    }
+                    terms.push(term);
+                    siteMap[term] = sites[i];
+                }
+            }
+            
+            if (callBack) {
+                callBack();
+            }
+        }
+        if (!empty) {
+            var new_page = page + 1;
+            var new_url = '/api/site_ajax?status=' + sites_status + '&id=all&page=' + new_page;
+            loadSitesBatch(sites_status, new_page, new_url);
+        }
+    })
+}
+
 function loadSitesForCounty(county, status) {
     loadSites('/api/site_ajax?status=' + status + '&id=all&county=' + county);
+}
+function batchLoadSites(status, page) {
+    var url = '/api/site_ajax?status=' + status + '&id=all&page=' + page;
+    loadSitesBatch(status, page, url);
 }
 
 sandy.main.initialize = function (siteId, zoomLevel) {
@@ -505,15 +570,11 @@ sandy.main.initialize = function (siteId, zoomLevel) {
     goog.events.listen(autoComplete,
         goog.ui.ac.AutoComplete.EventType.UPDATE,
         selectFunction);
-    for (var i = 0; i < counties.length; ++i) {
-        loadSitesForCounty(counties[i], "open");
-    }
+    batchLoadSites("open", 0);
     goog.dom.getElement("open").checked = true;
     goog.dom.getElement("open").onclick = function () {
         goog.dom.getElement("open").onclick = null;
-        for (var i = 0; i < counties.length; ++i) {
-            loadSitesForCounty(counties[i], "closed");
-        }
+        batchLoadSites("closed", 0);
     };
 
     if (siteId) {

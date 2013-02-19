@@ -387,10 +387,10 @@ Case #{{site.case_number}}</h3>
     <p>&nbsp;</p>
   </td>
   <td colspan=8 class="allBorders">
-    <p></p>
+    <p>Heavy Items</p>
   </td>
   <td class="allBorders">
-    <p class="data"></p>
+    <p class="data">{{yesno(site.heavy_item_removal)}}</p>
   </td>
   <td>
     <p>&nbsp;</p>
@@ -409,26 +409,6 @@ Case #{{site.case_number}}</h3>
   </td>
   <td class="allBorders">
     <p class="data">&nbsp;</p>
-  </td>
- </tr>
-
-
-
- <tr>
-  <td colspan=2 class="allBorders">
-    <p>Heavy Items</p>
-  </td>
-  <td class="allBorders">
-    <p class="data">{{yesno(site.heavy_item_removal)}}</p>
-  </td>
-  <td>
-    <p>&nbsp;</p>
-  </td>
-  <td colspan="8" class="allBorders">
-    <p>Floors Flooded</p>
-  </td>
-  <td colspan="16" class="allBorders">
-    <p class="data">{{site.floors_affected}}</p>
   </td>
  </tr>
 

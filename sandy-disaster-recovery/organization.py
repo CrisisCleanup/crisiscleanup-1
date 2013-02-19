@@ -128,14 +128,10 @@ class OrganizationAdminForm(model_form(Organization)):
                               validators.Email(message="That's not a valid email address.")])
     phone = TextField('Organization Phone Number', [wtforms.validators.Length(min = 1, max = 100,
                               message = "Organization phone must be between 1 and 100 characters")])
-    address = TextField('Address', [wtforms.validators.Length(min = 1, max = 100,
-                              message = "Address must be between 1 and 100 characters")])
-    city = TextField('City', [wtforms.validators.Length(min = 1, max = 100,
-                              message = "City must be between 1 and 100 characters")])
-    state = TextField('State', [wtforms.validators.Length(min = 1, max = 100,
-                              message = "State must be between 1 and 100 characters")])
-    zip_code = TextField('Zip Code', [wtforms.validators.Length(min = 1, max = 100,
-                              message = "Zip Code must be between 1 and 100 characters")])
+    address = TextField('Address')
+    city = TextField('City')
+    state = TextField('State')
+    zip_code = TextField('Zip Code')
     url = TextField('Organization URL', [wtforms.validators.Length(min = 0, max = 100,
                               message = "Organization URL must be between 0 and 100 characters")])
     twitter = TextField('Organization Twitter', [wtforms.validators.Length(min = 0, max = 16,
@@ -151,14 +147,10 @@ class OrganizationFormNoContact(model_form(Organization)):
     validators.Email(message="That's not a valid email address.")])
     phone = TextField('Organization Phone Number', [wtforms.validators.Length(min = 1, max = 100,
     message = "Organization phone must be between 1 and 100 characters")])
-    address = TextField('Address', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Address must be between 1 and 100 characters")])
-    city = TextField('City', [wtforms.validators.Length(min = 1, max = 100,
-    message = "City must be between 1 and 100 characters")])
-    state = TextField('State', [wtforms.validators.Length(min = 1, max = 100,
-    message = "State must be between 1 and 100 characters")])
-    zip_code = TextField('Zip Code', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Zip Code must be between 1 and 100 characters")])
+    address = TextField('Address')
+    city = TextField('City')
+    state = TextField('State')
+    zip_code = TextField('Zip Code')
     url = TextField('Organization URL', [wtforms.validators.Length(min = 0, max = 100,
     message = "Organization URL must be between 0 and 100 characters")])
     twitter = TextField('Organization Twitter', [wtforms.validators.Length(min = 0, max = 16,
@@ -218,14 +210,10 @@ class OrganizationForm(model_form(Organization)):
                               validators.Email(message="That's not a valid email address.")])
     phone = TextField('Organization Phone Number', [wtforms.validators.Length(min = 1, max = 100,
                               message = "Organization phone must be between 1 and 100 characters")])
-    address = TextField('Address', [wtforms.validators.Length(min = 1, max = 100,
-                              message = "Address must be between 1 and 100 characters")])
-    city = TextField('City', [wtforms.validators.Length(min = 1, max = 100,
-                              message = "City must be between 1 and 100 characters")])
-    state = TextField('State', [wtforms.validators.Length(min = 1, max = 100,
-                              message = "State must be between 1 and 100 characters")])
-    zip_code = TextField('Zip Code', [wtforms.validators.Length(min = 1, max = 100,
-                              message = "Zip Code must be between 1 and 100 characters")])
+    address = TextField('Address')
+    city = TextField('City')
+    state = TextField('State')
+    zip_code = TextField('Zip Code')
     url = TextField('Organization URL', [wtforms.validators.Length(min = 0, max = 100,
                               message = "Organization URL must be between 0 and 100 characters")])
     twitter = TextField('Organization Twitter', [wtforms.validators.Length(min = 0, max = 16,
@@ -338,14 +326,10 @@ class OrganizationInfoEditForm(model_form(Organization)):
     validators.Email(message="That's not a valid email address.")])
     phone = TextField('Organization Phone Number', [wtforms.validators.Length(min = 1, max = 100,
     message = "Organization phone must be between 1 and 100 characters")])
-    address = TextField('Address', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Address must be between 1 and 100 characters")])
-    city = TextField('City', [wtforms.validators.Length(min = 1, max = 100,
-    message = "City must be between 1 and 100 characters")])
-    state = TextField('State', [wtforms.validators.Length(min = 1, max = 100,
-    message = "State must be between 1 and 100 characters")])
-    zip_code = TextField('Zip Code', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Zip Code must be between 1 and 100 characters")])
+    address = TextField('Address')
+    city = TextField('City')
+    state = TextField('State')
+    zip_code = TextField('Zip Code')
     url = TextField('Organization URL', [wtforms.validators.Length(min = 0, max = 100,
     message = "Organization URL must be between 0 and 100 characters")])
     twitter = TextField('Organization Twitter', [wtforms.validators.Length(min = 0, max = 16,

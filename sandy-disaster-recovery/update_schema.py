@@ -30,10 +30,10 @@ def UpdateSchema(self, event, cursor=None, num_updated=0):
         p.physical_presence=True
         p.work_area="n/a"
         p.number_volunteers="n/a"
-        p.voad_membership=True
-        p.voad_membership_url="n/a"
+        p.voad_member=True
+        p.voad_member_url="n/a"
         p.voad_referral="n/a"
-        p.canvassing = True
+        p.canvass = True
         p.assessments = True
         p.clean_up = True
         p.mold_abatement = True

@@ -33,15 +33,15 @@
 <p>Physical Presence: {{ organization.physical_presence }}<p>
 <p>Work Area: {{ organization.work_area }}<p>
 <p>Number Of Volunteers: {{ organization.number_volunteers }}<p>
-<p>Voad Member: {{ organization.voad_membership }}<p>
+<p>Voad Member: {{ organization.voad_member }}<p>
 <p>Voad Member urls: {{ organization.voad_member_url }}</p>
 <p>Voad Referrals: {{ organization.voad_referral }}</p>
-<p>Canvass: {{ organization.canvassing }}<p>
-<p>Assessment: {{ organization.assessment }}<p>
-<p>Cleanup: {{ organization.clean_up }}<p>
-<p>Mold Abatement: {{ organization.mold_abatement }}<p>
-<p>Rebuilding: {{ organization.rebuilding }}<p>
-<p>Refurbishing: {{ organization.refurbishing }}<p>
+
+{# list booleans for phases #}
+{% for bool_field in organization.ACTIVE_PHASE_BOOLEANS %}
+  <p>{{ bool_field.name }}: {{ organization[bool_field.name] }}</p>
+{% endfor %}
+
 {% else %}
 <p>Show list of organizations</p>
 {% endif %}

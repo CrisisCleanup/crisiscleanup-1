@@ -28,15 +28,15 @@
 <p>Physical Presence: {{ organization.physical_presence }}<p>
 <p>Work Area: {{ organization.work_area }}<p>
 <p>Number Of Volunteers: {{ organization.number_volunteers }}<p>
-<p>Voad Member: {{ organization.voad_membership }}<p>
+<p>Voad Member: {{ organization.voad_member }}<p>
 <p>Voad Member urls: {{ organization.voad_member_url }}</p>
 <p>Voad Referrals: {{ organization.voad_referral }}</p>
-<p>Canvass: {{ organization.canvassing }}<p>
-<p>Assessment: {{ organization.assessment }}<p>
-<p>Cleanup: {{ organization.clean_up }}<p>
-<p>Mold Abatement: {{ organization.mold_abatement }}<p>
-<p>Rebuilding: {{ organization.rebuilding }}<p>
-<p>Refurbishing: {{ organization.refurbishing }}<p>
+
+{# phase fields #}
+{% for phase_field_name in organization.get_phase_boolean_names() %}
+  <p>{{ phase_field_name }}: {{ organization[phase_field_name] }}</p>
+{% endfor %}
+
 <p><strong>Password:  {{ organization.password }}</p>
   <form method=GET action="/admin-edit-organization">
   <input type=hidden name="organization" value={{organization.key().id()}}>

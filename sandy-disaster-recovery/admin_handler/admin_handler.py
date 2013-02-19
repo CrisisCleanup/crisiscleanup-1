@@ -125,12 +125,6 @@ class AdminHandler(base.AuthenticatedHandler):
                         physical_presence = True,
                         number_volunteers = "0",
                         voad_member = False,
-                        voad_membership = False,
-                        canvassing = True,
-                        assessment = True,
-                        clean_up = True,
-                        mold_abatement = True,
-                        rebuilding = True,
                         org_verified=True,
                         twitter = data.twitter.data,
                         url = data.url.data,
@@ -140,6 +134,10 @@ class AdminHandler(base.AuthenticatedHandler):
                         is_active = True,
                         is_admin = True,
                     )
+
+                    # set all phase fields true for admin
+                    for phase_name in new_org.get_phase_boolean_names():
+                        setattr(new_org, phase_name, True)
 
                     new_contact = primary_contact_db.Contact(first_name = data.contact_first_name.data,
                         last_name = data.contact_last_name.data,
@@ -226,68 +224,6 @@ class AdminHandler(base.AuthenticatedHandler):
                 }))
                 return
                 
-        #if self.request.get("edit_contact_id"):
-            #try:
-                #id = int(self.request.get("edit_contact_id"))
-            #except:
-                #self.response.set_status(400)
-                #return
-            #organization_list = organization.GetAllCached()
-            #contact = primary_contact_db.Contact.get_by_id(id)
-            #form = primary_contact_db.ContactFormFull(first_name = contact.first_name, last_name=contact.last_name, phone = contact.phone, email = contact.email, is_primary=int(contact.is_primary))
-            #organization_name = None
-            #if contact.organization:
-                #organization_name = contact.organization.name
-            #self.response.out.write(template.render(
-            #{
-                #"organization_list": organization_list,
-                #"edit_contact_id": id,
-                #"form": form,
-                #"organization_name": organization_name
-            #}))
-            #return
-                 
-        #if self.request.get("edit_org_id"):
-            #try:
-                #id = int(self.request.get("edit_org_id"))
-            #except:
-                #self.response.set_status(400)
-                #return
-            #org = organization.Organization.get_by_id(id)
-            #form = organization.OrganizationEditForm(name = org.name,
-                #password = org.password,
-                #email = org.email,
-                #phone = org.phone,
-                #address= org.address,
-                #city = org.city,
-                #state = org.state,
-                #zip_code = org.zip_code,
-                #twitter = org.twitter,
-                #facebook = org.facebook,
-                #url = org.url,
-                #physical_presence = org.physical_presence,
-                #work_area = org.work_area,
-                #number_volunteers = org.number_volunteers,
-                #voad_member = org.voad_membership,
-                #voad_member_url = org.voad_member_url,
-                #voad_referral = org.voad_referral,
-                #canvass = org.canvassing,
-                #assessment = org.assessment,
-                #clean_up = org.clean_up,
-                #mold_abatement = org.mold_abatement,
-                #rebuilding = org.rebuilding,
-                #refurbishing = org.refurbishing,
-                #org_verified = org.org_verified,
-                #is_active = org.is_active,
-                #)
-            #self.response.out.write(template.render(
-            #{
-                #"edit_org": True,
-                #"form": form,
-                #"org_id": org.key().id(),
-            #}))
-            #return
-                        
         if self.request.get("create_org"):
             data = organization.OrganizationFormNoContact(self.request.POST)
             is_active_bool = False
@@ -296,35 +232,8 @@ class AdminHandler(base.AuthenticatedHandler):
                 is_active_bool = True
             
             if data.validate():
-                new_org = organization.Organization(name = data.name.data,
-                    email = data.email.data,
-                    phone = data.phone.data,
-                    address = data.address.data,
-                    city = data.city.data,
-                    state = data.state.data,
-                    zip_code = data.zip_code.data,
-                    physical_presence = bool(data.physical_presence.data),
-                    number_volunteers = data.number_volunteers.data,
-                    voad_member = bool(data.voad_member.data),
-                    voad_membership = bool(data.voad_membership.data),
-                    canvassing = bool(data.canvass.data),
-                    assessment = bool(data.assessment.data),
-                    clean_up = bool(data.clean_up.data),
-                    mold_abatement = bool(data.mold_abatement.data),
-                    rebuilding = bool(data.rebuilding.data),
-                    refurbishing = bool(data.refurbishing.data),
-                    choose_event = event,
-                    org_verified=True,
-                    twitter = data.twitter.data,
-                    url = data.url.data,
-                    voad_referral = data.voad_referral.data,
-                    work_area = data.work_area.data,
-                    voad_member_url = data.voad_member_url.data,
-                    facebook = data.facebook.data,  
-                    incident = event.key(),
-                    password = self.request.get("password"),
-                    is_active = bool(is_active_bool)
-                )
+                logging.warn(data)
+                new_org = organization.Organization(**data.data)
                 organization.PutAndCache(new_org, ten_minutes)
             else:
                 self.response.out.write(template.render(
@@ -410,14 +319,16 @@ class AdminHandler(base.AuthenticatedHandler):
                 org_by_id.facebook = data.facebook.data
                 org_by_id.url = data.url.data
                 org_by_id.physical_presence = bool(data.physical_presence.data)
-                org_by_id.voad_membership = bool(data.voad_member.data)
+                org_by_id.number_volunteers = data.number_volunteers.data
+                org_by_id.voad_member = bool(data.voad_member.data)
                 org_by_id.voad_referral = data.voad_referral.data
-                org_by_id.canvassing = bool(data.canvass.data)
-                org_by_id.assessment = bool(data.assessment.data)
-                org_by_id.clean_up = bool(data.clean_up.data)
-                org_by_id.mold_abatement = bool(data.mold_abatement.data)
-                org_by_id.refurbishing = bool(data.refurbishing.data)
-                org_by_id.rebuilding = bool(data.rebuilding.data)
+                org_by_id.work_area = data.work_area.data
+                org_by_id.voad_member_url = data.voad_member_url.data
+
+                # phase fields
+                for phase_field_name in org_by_id.get_phase_boolean_names():
+                    setattr(org_by_id, phase_field_name, bool(data[phase_field_name].data))
+
                 organization.PutAndCache(org_by_id, 600)
                 self.redirect("/admin")
                 return

@@ -101,12 +101,6 @@ class AdminCreateIncidentHandler(base.AuthenticatedHandler):
             physical_presence = True,
             number_volunteers = "0",
             voad_member = False,
-            voad_membership = False,
-            canvassing = True,
-            assessment = True,
-            clean_up = True,
-            mold_abatement = True,
-            rebuilding = True,
             org_verified=True,
             twitter = "",
             url = "",
@@ -116,5 +110,8 @@ class AdminCreateIncidentHandler(base.AuthenticatedHandler):
             is_active = True,
             is_admin = True,
             )
+            # set all phase fields true for admin
+            for phase_name in new_admin.get_phase_boolean_names():
+                setattr(new_admin, phase_name, True)
             organization.PutAndCache(new_admin, ten_minutes)
             self.redirect("/admin")

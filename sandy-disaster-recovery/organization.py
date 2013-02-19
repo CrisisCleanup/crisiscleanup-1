@@ -84,6 +84,28 @@ class Organization(db.Model):
   replace_furniture = db.BooleanProperty(required=False, default=True)#|Replace Furniture
   mold_abatement = db.BooleanProperty(required=False, default=True)#|Mold Abatement
   refurbishing = db.BooleanProperty(required=False, default=True)#|Refurbishing
+
+  _ACTIVE_PHASE_BOOLEANS = [
+    canvass,
+    assessment,
+    water_pumping,
+    muck_out,
+    interior_debris,
+    gutting,
+    tree_removal,
+    exterior_debris,
+    sanitizing,
+    mold_treatment,
+    design,
+    permits,
+    reconstruction,
+    replace_appliances,
+    replace_furniture
+  ]
+
+  def get_phase_boolean_names(self):
+      return [pb.name for pb in self._ACTIVE_PHASE_BOOLEANS]
+
   #OTHER
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
   
@@ -152,13 +174,67 @@ class OrganizationAdminForm(model_form(Organization)):
     facebook = TextField('Facebook link', [wtforms.validators.Length(min = 0, max = 100,
                               message = "Facebook link must be between 0 and 100 characters")])
 
-def always_often_rarely_never():
+def coerce_int_str_to_bool(x):
+    """
+    >>> coerce_int_str_to_bool(1)
+    True
+    >>> coerce_int_str_to_bool("1")
+    True
+    >>> coerce_int_str_to_bool(0)
+    False
+    >>> coerce_int_str_to_bool("0")
+    False
+    """
+    if isinstance(x, int):
+        return bool(x)
+    elif isinstance(x, basestring):
+        return bool(int(x))
+
+def always_often_rarely_never(label):
     return RadioField(
-      choices = [(1, "Always/Often"), (0, "Rarely/Never")],
-      coerce = int
+      label,
+      choices=[(1, "Always/Often"), (0, "Rarely/Never")],
+      coerce=coerce_int_str_to_bool,
     )
 
-class OrganizationFormNoContact(model_form(Organization)):
+class OrganizationPhaseBooleanMixin(Form):
+    canvass = always_often_rarely_never('Canvass')
+    assessment = always_often_rarely_never('Assessment')
+    water_pumping = always_often_rarely_never('Water Pumping')
+    muck_out = always_often_rarely_never('Muck Out')
+    interior_debris = always_often_rarely_never('Interior Debris')
+    gutting = always_often_rarely_never('Gutting')
+    tree_removal = always_often_rarely_never('Tree Removal')
+    exterior_debris = always_often_rarely_never('Exterior Debris')
+    sanitizing = always_often_rarely_never('Sanitizing')
+    mold_treatment = always_often_rarely_never('Mold Treatment')
+    design = always_often_rarely_never('Design')
+    permits = always_often_rarely_never('Permits')
+    reconstruction = always_often_rarely_never('Reconstruction')
+    replace_appliances = always_often_rarely_never('Replace Appliances')
+    replace_furniture = always_often_rarely_never('Replace Furniture')
+
+    def get_phase_fields(self):
+        return [
+            self.canvass,
+            self.assessment,
+            self.water_pumping,
+            self.muck_out,
+            self.interior_debris,
+            self.gutting,
+            self.tree_removal,
+            self.exterior_debris,
+            self.sanitizing,
+            self.mold_treatment,
+            self.design,
+            self.permits,
+            self.reconstruction,
+            self.replace_appliances,
+            self.replace_furniture
+        ]
+
+
+class OrganizationFormNoContact(OrganizationPhaseBooleanMixin, model_form(Organization)):
     name = TextField('Organization Name', [wtforms.validators.Length(min = 1, max = 100,
     message = "Organization Name must be between 1 and 100 characters")])
     email = TextField('Organization Email', [wtforms.validators.Length(min = 1, max = 100,
@@ -180,36 +256,20 @@ class OrganizationFormNoContact(model_form(Organization)):
     publish = BooleanField("Publish Organization Profile")
     physical_presence = RadioField("Does your organization have a physical presence in the affected area?",
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
     work_area = TextField('If so, in which areas are you primarily working?', [wtforms.validators.Length(min = 0, max = 500,
     message = "Name must be between 0 and 500 characters")])
     number_volunteers = TextField('What is your approximate number of volunteers?')
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
     voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Membership urls must be between 0 and 100 characters")])
     voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Referral urls must be between 0 and 100 characters")])
-    canvass = always_often_rarely_never()
-    assessment = always_often_rarely_never()
-    water_pumping = always_often_rarely_never()
-    muck_out = always_often_rarely_never()
-    interior_debris = always_often_rarely_never()
-    gutting = always_often_rarely_never()
-    tree_removal = always_often_rarely_never()
-    exterior_debris = always_often_rarely_never()
-    sanitizing = always_often_rarely_never()
-    mold_treatment = always_often_rarely_never()
-    design = always_often_rarely_never()
-    permits = always_often_rarely_never()
-    reconstruction = always_often_rarely_never()
-    replace_appliances = always_often_rarely_never()
-    replace_furniture = always_often_rarely_never()
-
     choose_event = TextField('Choose', [validators.Required()])
     
-class OrganizationForm(model_form(Organization)):
+class OrganizationForm(OrganizationPhaseBooleanMixin, model_form(Organization)):
     contact_first_name = TextField('Your First Name', [wtforms.validators.Length(min = 1, max = 100,
                               message = "Your first name must be between 1 and 100 characters")])
     contact_last_name = TextField('Your Last Name', [wtforms.validators.Length(min = 1, max = 100,
@@ -241,36 +301,22 @@ class OrganizationForm(model_form(Organization)):
     publish = BooleanField("Publish Organization Profile")
     physical_presence = RadioField("Does your organization have a physical presence in the affected area?",
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
     work_area = TextField('If so, in which areas are you primarily working?', [wtforms.validators.Length(min = 0, max = 500,
                              message = "Name must be between 0 and 500 characters")])
     number_volunteers = TextField('What is your approximate number of volunteers?')
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
     voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
                              message = "Voad Membership urls must be between 0 and 100 characters")])
     voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
                              message = "Voad Referral urls must be between 0 and 100 characters")])
-    canvass = always_often_rarely_never()
-    assessment = always_often_rarely_never()
-    water_pumping = always_often_rarely_never()
-    muck_out = always_often_rarely_never()
-    interior_debris = always_often_rarely_never()
-    gutting = always_often_rarely_never()
-    tree_removal = always_often_rarely_never()
-    exterior_debris = always_often_rarely_never()
-    sanitizing = always_often_rarely_never()
-    mold_treatment = always_often_rarely_never()
-    design = always_often_rarely_never()
-    permits = always_often_rarely_never()
-    reconstruction = always_often_rarely_never()
-    replace_appliances = always_often_rarely_never()
-    replace_furniture = always_often_rarely_never()
 
     choose_event = TextField('Choose', [validators.Required()])
-    
-class OrganizationEditForm(model_form(Organization)):
+   
+
+class OrganizationEditForm(OrganizationPhaseBooleanMixin, model_form(Organization)):
     name = TextField('Organization Name', [wtforms.validators.Length(min = 1, max = 100,
     message = "Organization Name must be between 1 and 100 characters")])
     password = TextField('Organization Password', [wtforms.validators.Length(min = 1, max = 100,
@@ -295,41 +341,26 @@ class OrganizationEditForm(model_form(Organization)):
     publish = BooleanField("Publish Organization Profile")
     physical_presence = RadioField("Does your organization have a physical presence in the affected area?",
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
     work_area = TextField('If so, in which areas are you primarily working?', [wtforms.validators.Length(min = 0, max = 500,
     message = "Name must be between 0 and 500 characters")])
     number_volunteers = TextField('What is your approximate number of volunteers?')
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
     voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Membership urls must be between 0 and 100 characters")])
     voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Referral urls must be between 0 and 100 characters")])
-    canvass = always_often_rarely_never()
-    assessment = always_often_rarely_never()
-    water_pumping = always_often_rarely_never()
-    muck_out = always_often_rarely_never()
-    interior_debris = always_often_rarely_never()
-    gutting = always_often_rarely_never()
-    tree_removal = always_often_rarely_never()
-    exterior_debris = always_often_rarely_never()
-    sanitizing = always_often_rarely_never()
-    mold_treatment = always_often_rarely_never()
-    design = always_often_rarely_never()
-    permits = always_often_rarely_never()
-    reconstruction = always_often_rarely_never()
-    replace_appliances = always_often_rarely_never()
-    replace_furniture = always_often_rarely_never()
 
     org_verified = RadioField(
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
     is_active = RadioField(
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
 
-class OrganizationInfoEditForm(model_form(Organization)):
+class OrganizationInfoEditForm(OrganizationPhaseBooleanMixin, model_form(Organization)):
     name = TextField('Organization Name', [wtforms.validators.Length(min = 1, max = 100,
     message = "Organization Name must be between 1 and 100 characters")])
     password = TextField('Organization Password', [wtforms.validators.Length(min = 1, max = 100,
@@ -350,35 +381,18 @@ class OrganizationInfoEditForm(model_form(Organization)):
     facebook = TextField('Facebook link', [wtforms.validators.Length(min = 0, max = 100,
     message = "Facebook link must be between 0 and 100 characters")])
     
-    
     publish = BooleanField("Publish Organization Profile")
     physical_presence = RadioField("Does your organization have a physical presence in the affected area?",
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
     work_area = TextField('If so, in which areas are you primarily working?', [wtforms.validators.Length(min = 0, max = 500,
     message = "Name must be between 0 and 500 characters")])
     number_volunteers = TextField('What is your approximate number of volunteers?')
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
-    coerce = int)
+    coerce=coerce_int_str_to_bool)
     voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Membership urls must be between 0 and 100 characters")])
     voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up approval)", [wtforms.validators.Length(min = 0, max = 100,
     message = "Voad Referral urls must be between 0 and 100 characters")])
-    canvass = always_often_rarely_never()
-    assessment = always_often_rarely_never()
-    water_pumping = always_often_rarely_never()
-    muck_out = always_often_rarely_never()
-    interior_debris = always_often_rarely_never()
-    gutting = always_often_rarely_never()
-    tree_removal = always_often_rarely_never()
-    exterior_debris = always_often_rarely_never()
-    sanitizing = always_often_rarely_never()
-    mold_treatment = always_often_rarely_never()
-    design = always_often_rarely_never()
-    permits = always_often_rarely_never()
-    reconstruction = always_often_rarely_never()
-    replace_appliances = always_often_rarely_never()
-    replace_furniture = always_often_rarely_never()
-
 

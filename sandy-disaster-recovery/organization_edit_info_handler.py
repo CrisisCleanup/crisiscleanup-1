@@ -68,15 +68,15 @@ class OrganizationEditInfoHandler(base.AuthenticatedHandler):
             org_by_id.facebook = data.facebook.data
             org_by_id.url = data.url.data
             org_by_id.physical_presence = bool(data.physical_presence.data)
-            org_by_id.voad_membership = bool(data.voad_member.data)
+            org_by_id.voad_member = bool(data.voad_member.data)
             org_by_id.voad_referral = data.voad_referral.data
-            org_by_id.canvassing = bool(data.canvass.data)
-            org_by_id.assessment = bool(data.assessment.data)
-            org_by_id.clean_up = bool(data.clean_up.data)
-            org_by_id.mold_abatement = bool(data.mold_abatement.data)
-            org_by_id.refurbishing = bool(data.refurbishing.data)
-            org_by_id.rebuilding = bool(data.rebuilding.data)
             org_by_id.number_volunteers = data.number_volunteers.data
+
+            # phase fields
+            for phase_field_name in org_by_id.get_phase_boolean_names():
+                logging.warn("%s: %s" % (phase_field_name, bool(data[phase_field_name].data)))
+                logging.warn(data[phase_field_name].data)
+                setattr(org_by_id, phase_field_name, bool(data[phase_field_name].data))
             
             organization.PutAndCache(org_by_id, 600)
             self.redirect("/organization-settings")
@@ -110,33 +110,7 @@ class OrganizationEditInfoHandler(base.AuthenticatedHandler):
                     self.redirect("/")
                     return
                     
-            #print org_by_id.number_volunteers
-            form = organization.OrganizationInfoEditForm(name = org_by_id.name,
-            password = org_by_id.password,
-            email = org_by_id.email,
-            phone = org_by_id.phone,
-            address= org_by_id.address,
-            city = org_by_id.city,
-            state = org_by_id.state,
-            zip_code = org_by_id.zip_code,
-            twitter = org_by_id.twitter,
-            facebook = org_by_id.facebook,
-            url = org_by_id.url,
-            physical_presence = org_by_id.physical_presence,
-            work_area = org_by_id.work_area,
-            number_volunteers = org_by_id.number_volunteers,
-            voad_member = org_by_id.voad_membership,
-            voad_member_url = org_by_id.voad_member_url,
-            voad_referral = org_by_id.voad_referral,
-            canvass = org_by_id.canvassing,
-            assessment = org_by_id.assessment,
-            clean_up = org_by_id.clean_up,
-            mold_abatement = org_by_id.mold_abatement,
-            rebuilding = org_by_id.rebuilding,
-            refurbishing = org_by_id.refurbishing,
-            org_verified = org_by_id.org_verified,
-            is_active = org_by_id.is_active,
-            )
+            form = organization.OrganizationInfoEditForm(None, org_by_id)
             self.response.out.write(template.render(
             {
                 "edit_org": True,

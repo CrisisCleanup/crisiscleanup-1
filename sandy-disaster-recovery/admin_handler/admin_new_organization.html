@@ -22,15 +22,15 @@
 <p>Physical Presence: {{ new_organization.physical_presence }}<p>
 <p>Work Area: {{ new_organization.work_area }}<p>
 <p>Number Of Volunteers: {{ new_organization.number_volunteers }}<p>
-<p>Voad Member: {{ new_organization.voad_membership }}<p>
+<p>Voad Member: {{ new_organization.voad_member }}<p>
 <p>Voad Member urls: {{ new_organization.voad_member_url }}</p>
 <p>Voad Referrals: {{ new_organization.voad_referral }}</p>
-<p>Canvass: {{ new_organization.canvassing }}<p>
-<p>Assessment: {{ new_organization.assessment }}<p>
-<p>Cleanup: {{ new_organization.clean_up }}<p>
-<p>Mold Abatement: {{ new_organization.mold_abatement }}<p>
-<p>Rebuilding: {{ new_organization.rebuilding }}<p>
-<p>Refurbishing: {{ new_organization.refurbishing }}<p>
+
+{# phase fields #}
+{% for phase_field_name in new_organization.get_phase_boolean_names() %}
+  <p>{{ phase_field_name }}: {{ new_organization[phase_field_name] }}</p>
+{% endfor %}
+
 <p><strong>Password:  {{ new_organization.password }}</p>
 
 {% if form %}

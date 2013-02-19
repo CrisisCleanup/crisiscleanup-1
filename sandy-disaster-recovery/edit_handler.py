@@ -30,9 +30,13 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site.html')
 logout_template = jinja_environment.get_template('logout.html')
+DERECHOS_SHORT_NAME = "derechos"
 
 class EditHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
+    if event.short_name == "derechos":
+      single_site_template = jinja_environment.get_template('single_site_derechos.html')
+        
     try:
       id = int(self.request.get('id'))
     except:
@@ -43,7 +47,8 @@ class EditHandler(base.AuthenticatedHandler):
       self.response.set_status(404)
       return
     form = site_db.SiteForm(self.request.POST, site)
-
+    if event.short_name == "derechos":
+      form = site_db.DerechosSiteForm(self.request.POST, site)
     single_site = single_site_template.render(
         { "form": form,
           "org": org})
@@ -57,12 +62,16 @@ class EditHandler(base.AuthenticatedHandler):
            "page": "/edit"}))
 
   def AuthenticatedPost(self, org, event):
+    if event.short_name == "derechos":
+      single_site_template = jinja_environment.get_template('single_site_derechos.html')
     try:
       id = int(self.request.get('_id'))
     except:
       return
     site = site_db.Site.get_by_id(id)
     data = site_db.SiteForm(self.request.POST, site)
+    if event.short_name == "derechos":
+        form = site_db.DerechosSiteForm(self.request.POST, site)
 
     # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
     data.name.data = site_util.unescape(data.name.data)

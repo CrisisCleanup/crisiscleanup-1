@@ -33,32 +33,50 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site.html')
 logout_template = jinja_environment.get_template('logout.html')
+DERECHOS_SHORT_NAME = "derechos"
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
+    single_site_template = jinja_environment.get_template('single_site.html')
+      
+    if event.short_name == DERECHOS_SHORT_NAME:
+      single_site_template = jinja_environment.get_template('single_site_derechos.html')
+      
     message = cgi.escape(self.request.get("message"))
     if len(message) == 0:
       message = None
-    form = site_db.SiteForm()
+    form = None
+    if event.short_name == DERECHOS_SHORT_NAME:
+      form = site_db.DerechosSiteForm()
+    else:
+      form = site_db.SiteForm()
+    
     single_site = single_site_template.render(
         { "form": form,
           "org": org})
     self.response.out.write(template.render(
         {"version" : os.environ['CURRENT_VERSION_ID'],
          "message" : message,
-         "logout" : logout_template.render({
-           "org": org, "event": event, "admin": org.is_admin
-          }),
+         "logout" : logout_template.render({"org": org, "event": event, "admin": org.is_admin}),
          "single_site" : single_site,
-         "form": site_db.SiteForm(),
+         "form": form,
          "id": None,
          "page": "/",
          "event_name": event.name}))
 
   def AuthenticatedPost(self, org, event):
+    single_site_template = jinja_environment.get_template('single_site.html')
+      
+    if event.short_name == DERECHOS_SHORT_NAME:
+      single_site_template = jinja_environment.get_template('single_site_derechos.html')
+      
     claim_for_org = self.request.get("claim_for_org") == "y"
-
-    data = site_db.SiteForm(self.request.POST)
+    data = None
+    if event.short_name == DERECHOS_SHORT_NAME:
+        data = site_db.DerechosSiteForm(self.request.POST)
+    else:
+        data = site_db.SiteForm(self.request.POST)
+        
 
     # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
     data.name.data = site_util.unescape(data.name.data)

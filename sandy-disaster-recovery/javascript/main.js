@@ -193,6 +193,8 @@ var getMarkerIcon = function (site) {
     }
     site.work_type = site.work_type || "Unknown";
     var icon_type = site.work_type.replace(/ /g, "_");
+    
+
     return "/icons/" + icon_type + "_" + color + ".png";
 }
 

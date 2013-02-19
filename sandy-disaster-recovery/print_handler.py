@@ -28,6 +28,7 @@ import site_util
 
 # Only works for EST!
 LOCAL_TIME_OFFSET = datetime.timedelta(seconds=-5 * 3600)
+DERECHOS_SHORT_NAME = "derechos"
 
 def silent_none(value):
   if value is None:
@@ -45,6 +46,12 @@ class PrintHandler(base.AuthenticatedHandler):
     self.AuthenticatedPost(org, event)
 
   def AuthenticatedPost(self, org, event):
+    print_single_template = jinja_environment.get_template('print_single.html')
+    logging.debug("print_single")
+    if event.name == DERECHOS_SHORT_NAME:
+        logging.debug("print_single_derechos")
+        print_single_template = jinja_environment.get_template('print_single_derechos.html')
+        
     sites = site_util.SitesFromIds(self.request.get('id'), event)
     self.response.out.write(template.render({
       'content': ''.join(print_single_template.render({

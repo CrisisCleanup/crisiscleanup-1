@@ -193,6 +193,7 @@ var getMarkerIcon = function (site) {
     }
     site.work_type = site.work_type || "Unknown";
     var icon_type = site.work_type.replace(/ /g, "_");
+
     return "/icons/" + icon_type + "_" + color + ".png";
 }
 
@@ -520,7 +521,7 @@ function loadSitesBatch(sites_status, page, url, callBack) {
         if (!empty) {
             var new_page = page + 1;
             var new_url = '/api/site_ajax?status=' + sites_status + '&id=all&page=' + new_page;
-            loadSitesBatch(status, new_page, new_url);
+            loadSitesBatch(sites_status, new_page, new_url);
         }
     })
 }

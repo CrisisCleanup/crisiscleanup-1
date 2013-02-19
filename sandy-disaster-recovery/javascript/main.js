@@ -191,10 +191,15 @@ var getMarkerIcon = function (site) {
     } else {
         color = kCompletionStatusColors[site["status"]] || "red";
     }
-    site.work_type = site.work_type || "Unknown";
-    var icon_type = site.work_type.replace(/ /g, "_");
-    
 
+    var marker_work_type = "Unknown";
+    if (site.derechos_work_type && site.derechos_work_type != "None") {
+        marker_work_type = site.derechos_work_type;
+    } else if (site.work_type && site.work_type != "None") {
+        marker_work_type = site.work_type;
+    }
+    site.work_type = marker_work_type;
+    var icon_type = site.work_type.replace(/ /g, "_");
     return "/icons/" + icon_type + "_" + color + ".png";
 }
 

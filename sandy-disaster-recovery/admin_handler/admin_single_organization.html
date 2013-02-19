@@ -1,0 +1,52 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+{% if contacts %}
+<p>Contacts</p>
+{% if is_admin %}
+{% for contact in contacts %}
+<p><a href="/admin-single-contact?contact={{contact.contact.key().id()}}">{{contact.contact.first_name}}</a></p>
+{% endfor %}
+{% else %}
+{% for contact in contacts %}
+<p><a href="/admin-single-contact?contact={{contact.key().id()}}">{{contact.first_name}}</a></p>
+{% endfor %}
+{% endif %}
+{% endif %}
+<hr>
+<p>Incident: {{ organization.incident.name }}<p>
+<p>Name: {{ organization.name }}<p>
+<p>Email: {{ organization.email }}<p>
+<p>Phone: {{ organization.phone }}<p>
+<p>URL: {{ organization.url }}<p>
+<p>Twitter: {{ organization.twitter }}<p>
+<p>Facebook: {{ organization.facebook }}<p>
+<p>Organization: {{ organization.name }}<p>
+<p>Address: {{ organization.address }}<p>
+<p>City: {{ organization.city }}<p>
+<p>State: {{ organization.state }}<p>
+<p>Zip Code: {{ organization.zip_code }}<p>
+<p>Physical Presence: {{ organization.physical_presence }}<p>
+<p>Work Area: {{ organization.work_area }}<p>
+<p>Number Of Volunteers: {{ organization.number_volunteers }}<p>
+<p>Voad Member: {{ organization.voad_membership }}<p>
+<p>Voad Member urls: {{ organization.voad_member_url }}</p>
+<p>Voad Referrals: {{ organization.voad_referral }}</p>
+<p>Canvass: {{ organization.canvassing }}<p>
+<p>Assessment: {{ organization.assessment }}<p>
+<p>Cleanup: {{ organization.clean_up }}<p>
+<p>Mold Abatement: {{ organization.mold_abatement }}<p>
+<p>Rebuilding: {{ organization.rebuilding }}<p>
+<p>Refurbishing: {{ organization.refurbishing }}<p>
+<p><strong>Password:  {{ organization.password }}</p>
+  <form method=GET action="/admin-edit-organization">
+  <input type=hidden name="organization" value={{organization.key().id()}}>
+  <input type=submit value="Edit Organization">
+  </form>
+    <form method=POST action="/admin">
+    (This cannot be undone. All Contacts will be retained in the system, but their References to this Organization will be removed.)
+    <br/>
+
+  <input type=hidden name=delete_org_id value={{organization.key().id()}}>
+  <input type=submit value="Permanently delete this organization">
+  </form>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+
+
+<p>Contact Name: {{ single_contact.first_name }} {{ single_contact.last_name }}</p>
+<p>Phone: {{ single_contact.phone }}</p>
+<p>Email: {{ single_contact.email }}</p>
+{% if single_contact.organization %}
+<p>Organization: <a href="/admin?org={{ single_contact.organization.key().id() }}">{{ single_contact.organization.name }}</a></p>
+{% else %}
+<p>Organization: None</p>
+{% endif %}
+<p>Applicant Is Primary Contact for Organization: {{ single_contact.is_primary }}</p>
+
+  <form method=GET action="/admin-edit-contact">
+  <input type=hidden name=contact value={{single_contact.key().id()}}>
+  <input type=submit value="Edit Contact" >
+  </form>
+{% endblock %}

@@ -33,6 +33,7 @@ class SitesHandler(base.AuthenticatedHandler):
     page = cgi.escape(self.request.get("page"))  
     if not page:
         page = "0"
+    logging.debug("page = " + page)
     try:
         page = int(page)
     except:
@@ -70,6 +71,7 @@ class SitesHandler(base.AuthenticatedHandler):
     
     if county == "NoCounty":
       query_string = "SELECT * FROM Site WHERE event = :event_key" + order_string +" LIMIT %s OFFSET %s" % (PAGE_OFFSET, page * PAGE_OFFSET)      
+      
       query = db.GqlQuery(query_string, event_key = event.key())
         
     else:

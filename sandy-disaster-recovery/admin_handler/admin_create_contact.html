@@ -1,0 +1,38 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+
+<h1>Create Contact</h1>
+
+<form method="POST" action="/admin">
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<p>Choose organization</p>
+<select name="choose_organization">
+{% for result in organization_list %}
+<option value="{{result.key().id()}}">{{result.name}}</option>
+{% endfor %}
+</select><br/><br/>
+<div>{{ form.first_name.label }}: {{ form.first_name }}</div>
+<div>{{ form.last_name.label }}: {{ form.last_name }}</div>
+<div>{{ form.email.label }}: {{ form.email }}</div>
+<div>{{ form.phone.label }}: {{ form.phone }}</div>
+<p>Applicant Is Primary Contact for Organization: {{ form.is_primary }}</p>
+ <input type=hidden name=create_contact value=True>
+<input type=submit value="Submit Edit">
+</form>
+
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+{% for result in org_query %}
+
+<p><a href="{{url}}{{ result.key().id()}}">{{ result.name }}</a></p>
+{% endfor %}
+{% endblock %}

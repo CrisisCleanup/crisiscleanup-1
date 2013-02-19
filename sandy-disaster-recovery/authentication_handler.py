@@ -41,14 +41,13 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('authentication.html')
 
 def GetOrganizationForm(post_data):
-  #organizations = organization.GetAllCached()
   e = event_db.Event(name = "Test Incident",
   case_label = "B",
   counties = ["Kings"])
-  #e.put()
-  organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True")# WHERE organization = :1 LIMIT 1", obj.key())
+  query_string = "SELECT * FROM Organization WHERE is_active = True ORDER BY name"
+  organizations = db.GqlQuery(query_string)
   events = event_db.GetAllCached()
-  events = db.GqlQuery("SELECT * From Event")
+  events = db.GqlQuery("SELECT * From Event ORDER BY created_date DESC")
   dirty = False
   event_key = None
   if events.count() == 0:
@@ -70,7 +69,7 @@ def GetOrganizationForm(post_data):
     # addresses we want to allow.
     default = organization.Organization(name = "Admin", password = "temporary_password", org_verified=True, is_active=True, is_admin=True, incident = event_key)
     default.put()
-    organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True")# WHERE organization = :1 LIMIT 1", obj.key())
+    organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True ORDER BY name")# WHERE organization = :1 LIMIT 1", obj.key())
   elif organizations.count() >= 2:
     modified = []
     for o in organizations:

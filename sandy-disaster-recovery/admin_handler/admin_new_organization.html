@@ -1,0 +1,64 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+<hr>
+{% if contact %}
+<p>Applicant Name: <a href="/admin-single-contact?contact={{contact.key().id()}}">{{ contact.first_name }} {{ contact.last_name }}</a></p>
+<p>Applicant Phone: {{ contact.phone }}</p>
+<p>Applicant Email: {{ contact.email }}</p>
+<hr>
+{% endif %}
+<p>Incident: {{ new_organization.incident.name }}<p>
+<p>Name: {{ new_organization.name }}<p>
+<p>Email: {{ new_organization.email }}<p>
+<p>Phone: {{ new_organization.phone }}<p>
+<p>URL: {{ new_organization.url }}<p>
+<p>Twitter: {{ new_organization.twitter }}<p>
+<p>Facebook: {{ new_organization.facebook }}<p>
+<p>Organization: {{ new_organization.name }}<p>
+<p>Address: {{ new_organization.address }}<p>
+<p>City: {{ new_organization.city }}<p>
+<p>State: {{ new_organization.state }}<p>
+<p>Zip Code: {{ new_organization.zip_code }}<p>
+<p>Physical Presence: {{ new_organization.physical_presence }}<p>
+<p>Work Area: {{ new_organization.work_area }}<p>
+<p>Number Of Volunteers: {{ new_organization.number_volunteers }}<p>
+<p>Voad Member: {{ new_organization.voad_membership }}<p>
+<p>Voad Member urls: {{ new_organization.voad_member_url }}</p>
+<p>Voad Referrals: {{ new_organization.voad_referral }}</p>
+<p>Canvass: {{ new_organization.canvassing }}<p>
+<p>Assessment: {{ new_organization.assessment }}<p>
+<p>Cleanup: {{ new_organization.clean_up }}<p>
+<p>Mold Abatement: {{ new_organization.mold_abatement }}<p>
+<p>Rebuilding: {{ new_organization.rebuilding }}<p>
+<p>Refurbishing: {{ new_organization.refurbishing }}<p>
+<p><strong>Password:  {{ new_organization.password }}</p>
+
+{% if form %}
+  (this cannot be undone)
+  <form method=POST action="/admin">
+  <input type=hidden name=activate_organization value={{new_organization.key().id()}}>
+  <input type=submit value="Verify And Activate Organization">
+  </form>
+{% else %}
+  <form method=POST action="/admin">
+  <input type=hidden name=edit_org_id value={{new_organization.key().id()}}>
+  <input type=submit value="Edit Organization">
+  </form>
+{% endif %}
+
+  <form method=GET action="/admin-edit-organization">
+  <input type=hidden name="organization" value={{new_organization.key().id()}}>
+  <input type=submit value="Edit Organization">
+  </form>
+    <form method=POST action="/admin">
+      
+  <form method=POST action="/admin">
+    (This cannot be undone. All Contacts will be retained in the system, but their References to this Organization will be removed.)
+    <br/>
+
+  <input type=hidden name=delete_org_id value={{new_organization.key().id()}}>
+  <input type=submit value="Permanently delete this organization">
+  </form>
+
+
+{% endblock %}

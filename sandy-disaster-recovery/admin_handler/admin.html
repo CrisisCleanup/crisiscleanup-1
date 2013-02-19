@@ -1,0 +1,477 @@
+
+{% extends "admin_base.html" %}
+{% block bodycontent%}
+{% if display_contacts %}
+<br/><br/>
+<br/>
+{% if contacts %}
+{% for result in contacts %}
+<p>Name: <a href="/admin?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/admin?org={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
+
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% if create_admin %}
+{% if events_list %}
+<h1>Create a local admin</h1>
+<h1>Choose an incident: </h1>
+  <form method=POST action="/admin">
+  {% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<select name="choose_event">
+{% for result in events_list %}
+<option value="{{result.key().id()}}">{{result.name}}</option>
+{% endfor %}
+</select>
+{% endif %}
+<h2>Personal Information</h2>
+  <div>{{ form.contact_first_name.label }}: {{ form.contact_first_name }}</div>
+  <div>{{ form.contact_last_name.label }}: {{ form.contact_last_name }}</div>
+  <div>{{ form.contact_email.label }}: {{ form.contact_email }}</div>
+  <div>{{ form.contact_phone.label }}: {{ form.contact_phone }}</div>
+<h2>Organization Information</h2>
+  <div>{{ form.name.label }}: {{ form.name }}</div>
+  <div>{{ form.email.label }}: {{ form.email }}</div>
+  <div>{{ form.phone.label }}: {{ form.phone }}</div>
+  <div>{{ form.address.label }}: {{ form.address }}</div>
+  <div>{{ form.city.label }}: {{ form.city }}</div>
+  <div>{{ form.state.label }}: {{ form.state }}</div>
+  <div>{{ form.zip_code.label }}: {{ form.zip_code }}</div>
+  <div>{{ form.twitter.label }}: {{ form.twitter }}</div>
+  <div>{{ form.facebook.label }}: {{ form.facebook }}</div>
+  <div>{{ form.url.label }}: {{ form.url }}</div>
+  <p><strong>Auto generated password = {{auto_password}}</strong></p>
+  <p><strong>Please keep for your records</strong></p>
+  <input type=hidden name=password value={{auto_password}}>
+  <input type=hidden name=create_admin value="True">
+  <input type=submit value="Create Local Admin">
+  </form>
+{% endif %}
+
+{% if single_contact %}
+<p>Contact Name: {{ single_contact.first_name }} {{ single_contact.last_name }}</p>
+<p>Phone: {{ single_contact.phone }}</p>
+<p>Email: {{ single_contact.email }}</p>
+{% if single_contact.organization %}
+<p>Organization: <a href="/admin?org={{ single_contact.organization.key().id() }}">{{ single_contact.organization.name }}</a></p>
+{% else %}
+<p>Organization: None</p>
+{% endif %}
+<p>Applicant Is Primary Contact for Organization: {{ single_contact.is_primary }}</p>
+
+  <form method=POST action="/admin">
+  <input type=hidden name=edit_contact_id value={{single_contact.key().id()}}>
+  <input type=submit value="Edit Contact" >
+  </form>
+{% endif %}
+{% if org_query %}
+{% for result in org_query %}
+
+<p><a href="{{url}}{{ result.key().id()}}">{{ result.name }}</a></p>
+{% endfor %}
+{% endif%}
+
+{% if new_organization %}
+<hr>
+{% if contact %}
+<p>Applicant Name: {{ contact.first_name }} {{ contact.last_name }}</p>
+<p>Applicant Phone: {{ contact.phone }}</p>
+<p>Applicant Email: {{ contact.email }}</p>
+<hr>
+{% endif %}
+<p>Incident: {{ new_organization.incident.name }}<p>
+<p>Name: {{ new_organization.name }}<p>
+<p>Email: {{ new_organization.email }}<p>
+<p>Phone: {{ new_organization.phone }}<p>
+<p>URL: {{ new_organization.url }}<p>
+<p>Twitter: {{ new_organization.twitter }}<p>
+<p>Facebook: {{ new_organization.facebook }}<p>
+<p>Organization: {{ new_organization.name }}<p>
+<p>Address: {{ new_organization.address }}<p>
+<p>City: {{ new_organization.city }}<p>
+<p>State: {{ new_organization.state }}<p>
+<p>Zip Code: {{ new_organization.zip_code }}<p>
+<p>Physical Presence: {{ new_organization.physical_presence }}<p>
+<p>Work Area: {{ new_organization.work_area }}<p>
+<p>Number Of Volunteers: {{ new_organization.number_volunteers }}<p>
+<p>Voad Member: {{ new_organization.voad_membership }}<p>
+<p>Voad Member urls: {{ new_organization.voad_member_url }}</p>
+<p>Voad Referrals: {{ new_organization.voad_referral }}</p>
+<p>Canvass: {{ new_organization.canvassing }}<p>
+<p>Assessment: {{ new_organization.assessment }}<p>
+<p>Cleanup: {{ new_organization.clean_up }}<p>
+<p>Mold Abatement: {{ new_organization.mold_abatement }}<p>
+<p>Rebuilding: {{ new_organization.rebuilding }}<p>
+<p>Refurbishing: {{ new_organization.refurbishing }}<p>
+<p><strong>Password:  {{ new_organization.password }}</p>
+
+{% if form %}
+  (this cannot be undone)
+<form method=POST action="/admin">
+  <input type=hidden name=save_org_id value={{new_organization.key().id()}}>
+  <input type=submit value="Verify Organization">
+  </form>
+{% else %}
+  <form method=POST action="/admin">
+  <input type=hidden name=edit_org_id value={{new_organization.key().id()}}>
+  <input type=submit value="Edit Organization">
+  </form>
+{% endif %}
+      
+  <form method=POST action="/admin">
+    (This cannot be undone. All Contacts will be retained in the system, but their References to this Organization will be removed.)
+    <br/>
+
+  <input type=hidden name=delete_org_id value={{new_organization.key().id()}}>
+  <input type=submit value="Permanently delete this organization">
+  </form>
+{% endif %}
+
+{% if create_org %}
+<h1>Create An Organization</h1>
+<p>There are four requirements for an organization to participate in the system:</p>
+<ol>
+    <li>The organization must have a physical presence in the disaster area.</li>
+    <li>The organization must either perform home assessments and/or perform gutting, mucking-out, debris removal, mold abatement, or rebuilding.</li>
+    <li>The organization must be reputable. This generally means a member of National VOAD, a state VOAD, a County VOAD/COAD, a local government agency, or come recommended by a VOAD member or government agency.</li>
+    <li>The organization must agree to adhere to the <a href="#">Terms of Service</a>.</li>
+    <li>Each volunteer using the system must watch the <a href="#">Training Video</a>.</li>
+</ol>
+<p><strong>Filling out this application carefully, correctly, and completely will save you hours and save your volunteers dozens or hundreds of hours in productivity (we promise).</strong></p>
+
+<form method="POST" action="/admin">
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<div name="select_div" id="select_div">
+{% if events_list %}
+<h1>Choose an incident: </h1>
+
+<select name="choose_event">
+{% for result in events_list %}
+<option value="{{result.key().id()}}">{{result.name}}</option>
+{% endfor %}
+</select>
+{% endif %}
+<h2>Organization Information</h2>
+  <div>{{ form.name.label }}: {{ form.name }}</div>
+  <div>{{ form.email.label }}: {{ form.email }}</div>
+  <div>{{ form.phone.label }}: {{ form.phone }}</div>
+  <div>{{ form.address.label }}: {{ form.address }}</div>
+  <div>{{ form.city.label }}: {{ form.city }}</div>
+  <div>{{ form.state.label }}: {{ form.state }}</div>
+  <div>{{ form.zip_code.label }}: {{ form.zip_code }}</div>
+  <div>{{ form.twitter.label }}: {{ form.twitter }}</div>
+  <div>{{ form.facebook.label }}: {{ form.facebook }}</div>
+  <div>{{ form.url.label }}: {{ form.url }}</div>
+
+    
+  {% if form.physical_presence %}
+  <tr>
+    <td class="question">{{ form.physical_presence.label }}</td>
+    <td class="answer">{{ form.physical_presence }}</td>
+  </tr>
+  <br/>
+  {% endif %}
+  <div>{{ form.work_area.label }}: {{ form.work_area }}</div>
+  <div>{{ form.number_volunteers.label }}: {{ form.number_volunteers }}</div>
+  {% if form.voad_member %}
+  <tr>
+    <td>{{ form.voad_member.label }}</td>
+    <td>{{ form.voad_member }}</td>
+  </tr>
+  <br/>
+  {% endif %}
+  <div>{{ form.voad_member_url.label }}: {{ form.voad_member_url }}</div>
+  <div>{{ form.voad_referral.label }}: {{ form.voad_referral }}</div>
+
+<h3>Operations</h3>
+<p>Please take the time to carefully and correctly indicate the work your organization will <strong>normally perform</strong> during this Incident.</p><p>You will save yourself, staff, volunteers, and other volunteers <em>hundreds</em> of hours if you fill this form out <em>accurately</em>.</p><p>It will significantly un-clutter the map, and ensure that work orders are not lost or forgotten.</p>
+
+  <tr>
+    <td>{{ form.canvass.label }}</td>
+    <td>{{ form.canvass }}</td>
+  </tr>
+  <br/>
+
+  <tr>
+    <td>{{ form.assessment.label }}</td>
+    <td>{{ form.assessment }}</td>
+  </tr>
+  <br/>
+ 
+  <tr>
+    <td>{{ form.clean_up.label }}</td>
+    <td>{{ form.clean_up }}</td>
+  </tr>
+  <br/>
+  
+  <tr>
+    <td>{{ form.mold_abatement.label }}</td>
+    <td>{{ form.mold_abatement }}</td>
+  </tr>
+  <br/>
+  
+  <tr>
+    <td>{{ form.rebuilding.label }}</td>
+    <td>{{ form.rebuilding }}</td>
+  </tr>
+  
+    <tr>
+    <td>{{ form.refurbishing.label }}</td>
+    <td>{{ form.refurbishing }}</td>
+  </tr>
+  <br/>
+  <p><strong>Auto generated password = {{auto_password}}</strong></p>
+  <p><strong>Please keep for your records</strong></p>
+  <input type=hidden name=password value={{auto_password}}>
+
+  <input type=hidden name=create_org value="true">
+
+  <br/>
+<input type=submit value="Submit request">
+
+</form>
+{% endif %}
+
+{% if create_incident %}
+<form method="POST" action="/admin">
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+    <div>{{ form.name.label }}: {{ form.name}}</div>
+    <div>{{ form.location.label }}: {{ form.location }}</div>
+    <br/>
+      <input type=hidden name=create_incident value="true">
+
+<input type=submit value="Submit request">
+</form>
+{% endif %}
+
+{% if edit_contact_id %}
+<form method="POST" action="/admin">
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+
+  <div>{{ form.first_name.label }}: {{ form.first_name }}</div>
+  <div>{{ form.last_name.label }}: {{ form.last_name }}</div>
+  <div>{{ form.email.label }}: {{ form.email }}</div>
+  <div>{{ form.phone.label }}: {{ form.phone }}</div>
+  <p>Organization: {{ organization_name }}</p>
+    {% if organization_list %}
+    Edit Organization: 
+  <select name="organization">
+  <option value="None">Choose From Below To Edit</option>
+  {% for result in organization_list %}
+<option value="{{result.key().id()}}">{{result.name}}</option>
+{% endfor %}
+</select><br/><br/>
+{% endif %}
+  <tr>
+    <td>{{ form.is_primary.label }}</td>
+    <td>{{ form.is_primary }}</td>
+  </tr>
+  <p>This cannot be undone</p>
+ <input type=hidden name=edit_contact_final value={{edit_contact_id}}>
+
+  <input type=submit value="Submit Edit">
+</form>
+  {% endif %}
+  
+{% if edit_org %}
+<br/>
+<h1>Put Form Here, Then Populate It</h1>
+<h2>Organization Information</h2>
+<form method="POST" action="/admin">
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+  <div>{{ form.name.label }}: {{ form.name }}</div>
+  <div>{{ form.password.label }}: {{ form.password }}</div>
+  <div>{{ form.email.label }}: {{ form.email }}</div>
+  <div>{{ form.phone.label }}: {{ form.phone }}</div>
+  <div>{{ form.address.label }}: {{ form.address }}</div>
+  <div>{{ form.city.label }}: {{ form.city }}</div>
+  <div>{{ form.state.label }}: {{ form.state }}</div>
+  <div>{{ form.zip_code.label }}: {{ form.zip_code }}</div>
+  <div>{{ form.twitter.label }}: {{ form.twitter }}</div>
+  <div>{{ form.facebook.label }}: {{ form.facebook }}</div>
+  <div>{{ form.url.label }}: {{ form.url }}</div>
+
+    
+  {% if form.physical_presence %}
+  <tr>
+    <td class="question">{{ form.physical_presence.label }}</td>
+    <td class="answer">{{ form.physical_presence }}</td>
+  </tr>
+  <br/>
+  {% endif %}
+  <div>{{ form.work_area.label }}: {{ form.work_area }}</div>
+  <div>{{ form.number_volunteers.label }}: {{ form.number_volunteers }}</div>
+  {% if form.voad_member %}
+  <tr>
+    <td>{{ form.voad_member.label }}</td>
+    <td>{{ form.voad_member }}</td>
+  </tr>
+  <br/>
+  {% endif %}
+  <div>{{ form.voad_member_url.label }}: {{ form.voad_member_url }}</div>
+  <div>{{ form.voad_referral.label }}: {{ form.voad_referral }}</div>
+
+<h3>Operations</h3>
+<p>Please take the time to carefully and correctly indicate the work your organization will <strong>normally perform</strong> during this Incident.</p><p>You will save yourself, staff, volunteers, and other volunteers <em>hundreds</em> of hours if you fill this form out <em>accurately</em>.</p><p>It will significantly un-clutter the map, and ensure that work orders are not lost or forgotten.</p>
+
+  <tr>
+    <td>{{ form.canvass.label }}</td>
+    <td>{{ form.canvass }}</td>
+  </tr>
+  <br/>
+
+  <tr>
+    <td>{{ form.assessment.label }}</td>
+    <td>{{ form.assessment }}</td>
+  </tr>
+  <br/>
+ 
+  <tr>
+    <td>{{ form.clean_up.label }}</td>
+    <td>{{ form.clean_up }}</td>
+  </tr>
+  <br/>
+  
+  <tr>
+    <td>{{ form.mold_abatement.label }}</td>
+    <td>{{ form.mold_abatement }}</td>
+  </tr>
+  <br/>
+  
+  <tr>
+    <td>{{ form.rebuilding.label }}</td>
+    <td>{{ form.rebuilding }}</td>
+  </tr>
+  
+    <tr>
+    <td>{{ form.refurbishing.label }}</td>
+    <td>{{ form.refurbishing }}</td>
+  </tr>
+  <tr>
+    <td>{{ form.org_verified.label }}</td>
+    <td>{{ form.org_verified }}</td>
+  </tr>
+      <tr>
+    <td>{{ form.is_active.label }}</td>
+    <td>{{ form.is_active }}</td>
+  </tr>
+   <input type=hidden name=edit_org value={{org_id}}>
+
+  <input type=submit value="Submit Edit">
+</form>
+{% endif %}
+
+
+{% if create_contact %}
+<h1>Create Contact</h1>
+
+<form method="POST" action="/admin">
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<p>Choose organization</p>
+<select name="choose_organization">
+{% for result in organization_list %}
+<option value="{{result.key().id()}}">{{result.name}}</option>
+{% endfor %}
+</select><br/><br/>
+<div>{{ form.first_name.label }}: {{ form.first_name }}</div>
+<div>{{ form.last_name.label }}: {{ form.last_name }}</div>
+<div>{{ form.email.label }}: {{ form.email }}</div>
+<div>{{ form.phone.label }}: {{ form.phone }}</div>
+<p>Applicant Is Primary Contact for Organization: {{ form.is_primary }}</p>
+ <input type=hidden name=create_contact value=True>
+<input type=submit value="Submit Edit">
+</form>
+
+
+{% endif %}
+{% endblock %}

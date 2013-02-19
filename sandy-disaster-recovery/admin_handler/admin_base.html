@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
+
+<body>
+<a href="/">Home.</a>
+<a href="/admin-organization-requests">Requests for new organizations.</a>
+<a href="/admin-create-organization">Create Organization.</a>
+<a href="/admin-all-organizations">See All Organizations.</a>
+<a href="/admin-inactive-organizations">Inactive Organizations.</a>
+<a href="/admin-create-contact">Create Contact.</a>
+<a href="/admin-display-contacts">Display Contacts.</a>
+{% if global_admin %}
+<a href="/admin-see-admins">See Local Admins.</a>
+<a href="/admin-create-incident">Create Incident.</a>
+{% endif %}
+<a href="/logout">Logout. </a>
+
+
+
+{% if message %}
+<p>{{ message }}</p>
+{% endif %}
+
+{% block bodycontent %}
+{% endblock %}
+</body>
+</html>

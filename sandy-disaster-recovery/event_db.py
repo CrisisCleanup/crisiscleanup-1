@@ -21,9 +21,14 @@ from google.appengine.ext import db
 import logging
 
 from google.appengine.api import memcache
+from wtforms.ext.appengine.db import model_form
+
 
 # Local libraries.
 import cache
+import wtforms
+from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
+
 
 class Event(db.Model):
   name = db.StringProperty(required = True)
@@ -32,11 +37,11 @@ class Event(db.Model):
   start_date = db.DateProperty(auto_now_add=True)
   end_date = db.DateProperty()
   num_sites = db.IntegerProperty(default = 0)
-  case_label = db.StringProperty(required = True)
+  case_label = db.StringProperty()
   counties = db.StringListProperty()
   latitudes = db.ListProperty(float)
   longitudes = db.ListProperty(float)
-  reminder_days = db.IntegerProperty()
+  reminder_days = db.IntegerProperty(default=15)
   reminder_contents = db.TextProperty()
 
 import site_db
@@ -100,4 +105,9 @@ def ReduceNumberOfSitesFromEvent(event_id):
   event = Event.get_by_id(event_id)
   event.num_sites -= 1
   cache.PutAndCache(event, ten_minutes)
-    
+
+class NewEventForm(model_form(Event)):
+    name = TextField('Name', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Name must be between 1 and 100 characters")])
+    short_name = TextField('Short Name', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Name must be between 1 and 100 characters")])

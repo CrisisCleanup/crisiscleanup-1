@@ -1,0 +1,30 @@
+$(function(){
+     $(".toggle").hide();
+//      var event = $("#event").val()
+//      $.getJSON("/organization_ajax_handler",{event, ajax: 'true'}, function(data){
+//          var options = '';
+//          var temp = $('<select></select>');
+//          
+//          $.each(data, function(key, val) {
+//              $('<option></option>').attr('value', key).text(val).appendTo(temp);
+//          });
+//              $("#organization").children().remove();
+//              temp.children().detach().appendTo($("#organization"));
+//      })
+//      $(".toggle").show();
+     $("#event").prepend("<option value='' selected='selected'>Choose From Below</option>");
+     $("#event").change(function(){
+      
+         $.getJSON("/organization_ajax_handler",{event_name: $(this).val(), ajax: 'true'}, function(data){
+             var options = '';
+             var temp = $('<select></select>');
+     
+     $.each(data, function(key, val) {
+         $('<option></option>').attr('value', key).text(val).appendTo(temp);
+     });
+     $("#organization").children().remove();
+     temp.children().detach().appendTo($("#organization"));
+     $(".toggle").show();
+         })
+     })
+ })

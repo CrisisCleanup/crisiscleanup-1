@@ -1,0 +1,40 @@
+{% extends "nav_base.html" %}
+{% block bodycontent%}
+{% if contacts %}
+<p>Contacts</p>
+<a href="/organization-add-contact">Add Contact</a>
+<a href="/export_contacts_handler?organization={{organization.name}}">Export my contacts to CSV</a>
+<a href="/export_contacts_handler">Export all contacts to CSV</a>
+
+{% if message %}
+<br/>
+<p>{{message}}</p>
+<br/>
+{% endif %}
+
+{% if is_admin %} 
+{% for contact in contacts %}
+<p>{{contact.contact.first_name}} {{contact.contact.last_name}} | {{contact.contact.email}} <a href="/organization-edit-contact?contact={{contact.contact.key().id()}}">Edit</a></p>
+{% endfor %}
+{% else %}
+{% for contact in contacts %}
+<p>{{contact.first_name}} {{contact.last_name}} | {{contact.email}} <a href="/organization-edit-contact?contact={{contact.key().id()}}">Edit</a></p>
+{% endfor %}
+{% endif %}
+{% endif %}
+<hr>
+<a href="organization-edit-info?organization={{organization.key().id()}}">Edit Organization Info</a>
+<p>Incident: {{ organization.incident.name }}<p>
+<p>Name: {{ organization.name }}<p>
+<p>Email: {{ organization.email }}<p>
+<p>Phone: {{ organization.phone }}<p>
+<p>URL: {{ organization.url }}<p>
+<p>Twitter: {{ organization.twitter }}<p>
+<p>Facebook: {{ organization.facebook }}<p>
+<p>Organization: {{ organization.name }}<p>
+<p>Address: {{ organization.address }}<p>
+<p>City: {{ organization.city }}<p>
+<p>State: {{ organization.state }}<p>
+<p>Zip Code: {{ organization.zip_code }}<p>
+
+{% endblock %}

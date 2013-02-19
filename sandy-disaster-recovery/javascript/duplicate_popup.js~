@@ -1,0 +1,68 @@
+<script language="javascript" type="text/javascript"> 
+
+    function report(data) {
+        var form = document.createElement("form", "report_form");
+        form.id = "report_form";
+        form.method = "post";
+        form.action = "index.php?mode=post_comment";
+        
+        var reply_place = document.createElement("div");
+        reply_place.id = "overlay";
+        var inner_div = document.createElement("div"), button_close = document.createElement("button");
+        button_close.id = "upprev_close";
+        button_close.innerHTML = "x";
+        button_close.onclick = function () {
+            var element = document.getElementById('overlay');
+            element.parentNode.removeChild(element);
+            document.getElementById('map_canvas').style.display = '';
+        };
+        inner_div.appendChild(button_close);
+        
+        var legend = document.createElement("legend");
+        legend.innerHTML = "There are other sites with this address already loaded. There is a list of them below. If you see an identical address, click on the address and hit submit.";
+        form.appendChild(legend);
+        
+        for (var i = 0; i < data.length; i++) {
+            obj = JSON.parse(data[i]);            
+            var input1 = document.createElement("input");
+            input1.type = "radio";
+            input1.id = obj['id'];
+            input1.value = obj['id'];
+            input1.name = "options";
+            var radio_label1 = document.createElement("label");
+            radio_label1.htmlFor = obj['id'];
+            radio_label1_text = obj['address'];
+            radio_label1.appendChild(document.createTextNode(radio_label1_text));
+            form.appendChild(input1);
+            form.appendChild(radio_label1);
+            
+        }
+        var submit_btn = document.createElement("input", "the_submit");
+        submit_btn.type = "submit";
+        submit_btn.className = "submit";
+        submit_btn.value = "Report";
+        form.appendChild(submit_btn);
+        
+        submit_btn.onclick = function () {
+            var checked = false, formElems = this.parentNode.getElementsByTagName('input');
+            for (var i = 0; i < formElems.length; i++) {
+                if (formElems[i].type == 'radio' && formElems[i].checked == true) {
+                    checked = true;
+                    var el = formElems[i];
+                    break;
+                }
+            }
+            if (!checked) return false;
+            var location_string = "/edit?id=" + el.value;
+            window.location=location_string
+            return false;
+        }
+        
+        inner_div.appendChild(form);
+        reply_place.appendChild(inner_div);
+        document.getElementById('map_canvas').style.display = 'none';
+        
+        var attach_to = document.getElementById("wrapper"), parentDiv = attach_to.parentNode;
+        
+        parentDiv.insertBefore(reply_place, attach_to);
+    }

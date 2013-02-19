@@ -45,7 +45,7 @@ class NewOrganizationHandler(base.RequestHandler):
     def get(self):
         form = organization.OrganizationForm()
         #events_list = event_db.GetAllCached()
-        events_list = db.GqlQuery("SELECT * FROM Event")
+        events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
         self.response.out.write(template.render(
         {
             "form": form,

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
+
+<body>
+<a href="/">Home.</a>
+<a href="/map">Map.</a>
+<a href="/sites">Browse Cases.</a>
+<a href="/organization-settings">See My Organizations.</a>
+<a href="/organization-info">See All Organizations.</a>
+<a href="/see-all-contacts">See All Contacts.</a>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a>
+
+
+
+{% if message %}
+<p>{{ message }}</p>
+{% endif %}
+
+{% block bodycontent %}
+{% endblock %}
+</body>
+</html>

@@ -14,42 +14,59 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+# System libraries.
 from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
-# System libraries.
 import cgi
 import jinja2
 import logging
 import os
 import urllib2
 import wtforms.validators
-import cache
-from collections import OrderedDict
 
 # Local libraries.
 import base
 import event_db
 import site_db
 import site_util
-import event_db
-import json
+import cache
+
+from datetime import datetime
+import settings
+
+from google.appengine.ext import db
 import organization
+import primary_contact_db
+import random_password
+
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+template = jinja_environment.get_template('admin_see_admins.html')
+#CASE_LABELS = settings.CASE_LABELS
+#COUNT = 26
+GLOBAL_ADMIN_NAME = "Admin"
+ten_minutes = 600
 
-
-class OrganizationAjaxHandler(base.RequestHandler):
-    def get(self):
-        data = {}
-        event = None
-        for e in event_db.Event.gql("Where name = :1", self.request.get("event_name")):
-            event = e
-        for org in organization.Organization.gql(
-            'Where incident = :1 and is_active = :2 ORDER BY name', event.key(), True):
-            data[org.name] = org.name
-            
-        d_sorted_by_value = OrderedDict(sorted(data.items(), key=lambda x: x[1]))
+class AdminHandler(base.AuthenticatedHandler):
+    def AuthenticatedGet(self, org, event):
+        global_admin = False
         
-        self.response.out.write(json.dumps(d_sorted_by_value))
- 
+        if org.name == GLOBAL_ADMIN_NAME:
+            global_admin = True
+        if global_admin == False:
+            self.redirect("/")
+            return
+            
+        query_string = None
+        query = None
+        
+        query_string = "SELECT * FROM Organization WHERE is_admin = True"
+        query = db.GqlQuery(query_string)
+
+        self.response.out.write(template.render(
+        {
+            "global_admin": global_admin,
+            "org_query": query,
+            "url": "/admin-single-organization?organization=",
+        }))
+        return

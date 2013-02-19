@@ -32,7 +32,26 @@ from wtforms import Form, BooleanField, TextField, validators, PasswordField, Va
 import cache
 
 
+ten_minutes = 600
+def _GetOrganizationName(contact, field):
+  """Returns the name of the organization in the given field, if possible.
+  """
+  if hasattr(contact, field):
+    try:
+      org = getattr(contact, field)
+    except db.ReferencePropertyResolveError:
+      return None
+    if org:
+      return org.name
+    return None
 
+def _GetField(contact, field):
+  """Simple field accessor, with a bit of logging."""
+  try:
+    return getattr(contact, field)
+  except AttributeError:
+    logging.warn('contact %s is missing attribute' % (contact.key().id(), field))
+    return None
 
 class Contact(db.Model):
     first_name = db.StringProperty(required=True)
@@ -41,6 +60,35 @@ class Contact(db.Model):
     email = db.StringProperty(required=True)
     organization = db.ReferenceProperty()
     is_primary = db.BooleanProperty()
+    
+    CSV_FIELDS = [
+        'first_name',
+        'last_name',
+        'phone',
+        'email',
+        'organization',
+        'is_primary',
+    ]
+    
+    _CSV_ACCESSORS = {
+        'organization': _GetOrganizationName,
+    }
+    
+    def ToCsvLine(self):
+      """Returns the site as a list of string values, one per field in
+      CSV_FIELDS."""
+      csv_row = []
+      for field in self.CSV_FIELDS:
+        accessor = self._CSV_ACCESSORS.get(field, _GetField)
+        value = accessor(self, field)
+        if value is None:
+          csv_row.append('')
+        else:
+          try:
+            csv_row.append(unicode(value).encode("utf-8"))
+          except:
+            logging.critical("Failed to parse: " + value + " " + str(self.key().id()))
+      return csv_row
     
 cache_prefix = Contact.__name__ + "-d:"
     
@@ -52,7 +100,7 @@ def PutAndCache(contact, cache_time):
         
   
 def GetAllCached():
-    pass
+    return cache.GetAllCachedBy(Contact, ten_minutes)
 
 def GetAndCache(contact_id):
     contact = Contact.get_by_id(contact_id)

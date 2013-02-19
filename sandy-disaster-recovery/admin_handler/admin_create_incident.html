@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Create New Incident</h1>
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+
+<form method="POST" action="/admin-create-incident">
+    <div>{{ form.name.label }}: {{ form.name}}</div>
+    <div>{{ form.short_name.label }}: {{ form.short_name }}</div>
+    <p>Case Label: {{ case_label }}</p>
+    <br/>
+     <input type=hidden name=password value={{auto_password}}>
+
+<input type=submit value="Submit request">
+
+</form>
+
+</body>
+</html>

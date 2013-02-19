@@ -10,6 +10,22 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: Organization
+  properties:
+  - name: incident
+  - name: is_active
+  - name: name
+
+- kind: Organization
+  properties:
+  - name: incident
+  - name: name
+
+- kind: Organization
+  properties:
+  - name: is_active
+  - name: name
+
 - kind: Site
   properties:
   - name: county
@@ -40,3 +56,8 @@ indexes:
   properties:
   - name: event
   - name: request_date
+
+- kind: Site
+  properties:
+  - name: event
+  - name: status

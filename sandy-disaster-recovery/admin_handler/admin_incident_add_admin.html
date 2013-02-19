@@ -1,0 +1,14 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+<br/>
+<br/>
+<a href="/admin-display-contacts?order=first_name">Order by first name. </a>
+<a href="/admin-display-contacts?order=last_name">Order by last name. </a>
+
+{% if contacts %}
+{% for result in contacts %}
+<p><a href="/admin-make-admin?contact={{result.key().id()}}&organization={{org_id}}">Add As Admin</a> - Name: <a href="/admin-single-contact?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/admin-single-organization?organization={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
+
+{% endfor %}
+{% endif %}
+{% endblock %}

@@ -39,12 +39,42 @@ import site_ajax_handler
 import site_api_handler
 import sites_handler
 import new_organization_handler
-import new_incident_handler
-import admin_handler
+#import admin_handler
 import update_handler
 import update_event_handler
 import welcome_handler
 import organization_ajax_handler
+from admin_handler import admin_handler
+import organization_info_handler
+import organization_settings_handler
+import export_contacts_handler
+import organization_add_contacts_handler
+import organization_edit_contacts_handler
+import organization_edit_info_handler
+import see_all_contacts_handler
+
+
+#import * from admin_handler
+from admin_handler import admin_create_organization_handler
+from admin_handler import admin_new_organization_handler
+from admin_handler import admin_organization_requests_handler
+from admin_handler import admin_all_organizations_handler
+from admin_handler import admin_all_organizations_handler
+from admin_handler import admin_inactive_organizations_handler
+from admin_handler import admin_create_admin_handler
+from admin_handler import admin_create_contact_handler
+from admin_handler import admin_display_contacts_handler
+from admin_handler import admin_single_contact_handler
+from admin_handler import admin_create_incident_handler
+from admin_handler import admin_see_admins_handler
+from admin_handler import admin_incident_add_admin_handler
+from admin_handler import admin_make_admin_handler
+
+
+from admin_handler import admin_single_organization_handler as admin_single_organization_handler
+from admin_handler import admin_edit_organization_handler as admin_edit_organization_handler
+from admin_handler import admin_edit_contact_handler as admin_edit_contact_handler
+
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -89,17 +119,37 @@ app = webapp2.WSGIApplication([
     Route(r'/print', print_handler.PrintHandler, 'print'),
     Route(r'/problems', problem_handler.ProblemHandler, 'problems'),
     Route(r'/sites', sites_handler.SitesHandler, 'sites'),
-    Route(r'/new_organization', new_organization_handler.NewOrganizationHandler, 'new_organization'),
-    #Route(r'/new_incident', new_incident_handler.NewIncidentHandler, 'new_incident'),
+    Route(r'/signup', new_organization_handler.NewOrganizationHandler, 'new_organization'),
+    Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'),
     Route(r'/admin', admin_handler.AdminHandler, 'admin_handler'),
+    Route(r'/admin-create-organization', admin_create_organization_handler.AdminHandler, 'admin_create_organization_handler'),
+    Route(r'/admin-new-organization', admin_new_organization_handler.AdminHandler, 'admin_new_organization_handler'),
+    Route(r'/admin-organization-requests', admin_organization_requests_handler.AdminHandler, 'admin_organization_requests_handler'),
+    Route(r'/admin-all-organizations', admin_all_organizations_handler.AdminHandler, 'admin_all_organizations_handler'),
+    Route(r'/admin-all-organizations', admin_all_organizations_handler.AdminHandler, 'admin_all_organizations_handler'),
+    Route(r'/admin-inactive-organizations', admin_inactive_organizations_handler.AdminHandler, 'admin_all_organizations_handler'),
+    Route(r'/admin-create-admin', admin_create_admin_handler.AdminHandler, 'admin_create_admin_handler'),
+    Route(r'/admin-create-contact', admin_create_contact_handler.AdminHandler, 'admin_create_contact_handler'),
+    Route(r'/admin-display-contacts', admin_display_contacts_handler.AdminHandler, 'admin_display_contacts_handler'),
+    Route(r'/admin-single-contact', admin_single_contact_handler.AdminHandler, 'admin_single_contact_handler'),
+    Route(r'/admin-single-organization', admin_single_organization_handler.AdminHandler, 'admin_single_organization_handler'),
+    Route(r'/admin-edit-organization', admin_edit_organization_handler.AdminHandler, 'admin_edit_organization_handler'),
+    Route(r'/admin-edit-contact', admin_edit_contact_handler.AdminHandler, 'admin_edit_contact_handler'),
+    Route(r'/admin-see-admins', admin_see_admins_handler.AdminHandler, 'admin_see_admins_handler'),
+    Route(r'/admin-incident-add-admin', admin_incident_add_admin_handler.AdminHandler, 'admin_incident_add_admin_handler'),
+    Route(r'/admin-make-admin', admin_make_admin_handler.AdminHandler, 'admin_make_admin_handler'),
+    
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
+    Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),
+    Route(r'/organization-settings', organization_settings_handler.OrganizationSettingsHandler, 'organization_settings_handler'),
+    Route(r'/export_contacts_handler', export_contacts_handler.ExportContactsHandler, 'export_contacts_handler'),
+    Route(r'/organization-add-contact', organization_add_contacts_handler.OrganizationAddContactsHandler, 'organization_add_contacts_handler'),   
+    Route(r'/organization-edit-contact', organization_edit_contacts_handler.OrganizationEditContactsHandler, 'organization_edit_contacts_handler'),   
     Route(r'/update_event_handler', update_event_handler.UpdateHandler, 'update_event_handler'),
     Route(r'/welcome', welcome_handler.WelcomeHandler, 'welcome_handler'),
     Route(r'/organization_ajax_handler', organization_ajax_handler.OrganizationAjaxHandler, 'organization_ajax_handler'),
-    
-    
-    
-    
+    Route(r'/organization-edit-info', organization_edit_info_handler.OrganizationEditInfoHandler, 'new_organization'),
+    Route(r'/see-all-contacts', see_all_contacts_handler.SeeAllContactsHandler, 'see_all_contacts_handler'),
     
     
 ], debug=True)

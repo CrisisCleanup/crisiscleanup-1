@@ -1,23 +1,8 @@
-<!DOCTYPE html>
-<html>
-    <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
-    <link href="/stylesheets/new_org_form.css?v={{version}}" rel="stylesheet">
-    <link href="/closure/css/dialog.css?v={{version}}" rel="stylesheet">
-<body>
-<div id="map_canvas"></div>
-
-<div id="form_background">
-<div id="form">
-<h1>Signup</h1>
-<p>There are four requirements for an organization to participate in the system:</p>
-<ol>
-    <li>The organization must have a physical presence in the disaster area.</li>
-    <li>The organization must either perform home assessments and/or perform gutting, mucking-out, debris removal, mold abatement, or rebuilding.</li>
-    <li>The organization must be reputable. This generally means a member of National VOAD, a state VOAD, a County VOAD/COAD, a local government agency, or come recommended by a VOAD member or government agency.</li>
-    <li>The organization must agree to adhere to the <a href="#">Terms of Service</a>.</li>
-    <li>Each volunteer using the system must watch the <a href="#">Training Video</a>.</li>
-</ol>
-<p><strong>Filling out this application carefully, correctly, and completely will save you hours and save your volunteers dozens or hundreds of hours in productivity (we promise).</strong></p>
+{% extends "nav_base.html" %}
+{% block bodycontent%}
+<h1>Put Form Here, Then Populate It</h1>
+<h2>Organization Information</h2>
+<form method="POST" action="/organization-edit-info">
 {% if errors %}
 <section id="errors">
   <header>The submission had errors</header>
@@ -34,25 +19,8 @@
   <article>
 </section>
 {% endif %}
-
-<form method="POST" action="/signup">
-<p>Want to let us know about a new incident? Click <a href="/new_incident">here</a> and fill out a short pop up form.</p>
-<div name="select_div" id="select_div">
-{% if events_list %}
-<h1>Choose an incident: </h1>
-<select name="choose_event">
-{% for result in events_list %}
-<option value="{{result.key().id()}}">{{result.name}}</option>
-{% endfor %}
-</select>
-{% endif %}
-<h2>Personal Information</h2>
-  <div>{{ form.contact_first_name.label }}: {{ form.contact_first_name }}</div>
-  <div>{{ form.contact_last_name.label }}: {{ form.contact_last_name }}</div>
-  <div>{{ form.contact_email.label }}: {{ form.contact_email }}</div>
-  <div>{{ form.contact_phone.label }}: {{ form.contact_phone }}</div>
-<h2>Organization Information</h2>
   <div>{{ form.name.label }}: {{ form.name }}</div>
+  <div>{{ form.password.label }}: {{ form.password }}</div>
   <div>{{ form.email.label }}: {{ form.email }}</div>
   <div>{{ form.phone.label }}: {{ form.phone }}</div>
   <div>{{ form.address.label }}: {{ form.address }}</div>
@@ -119,13 +87,9 @@
     <td>{{ form.refurbishing.label }}</td>
     <td>{{ form.refurbishing }}</td>
   </tr>
-  <br/>
 
-  <br/>
-<input type=submit value="Submit request">
+   <input type=hidden name=edit_org value={{org_id}}>
 
+  <input type=submit value="Submit Edit">
 </form>
-</div>
-</div>
-</body>
-<html>
+{% endblock %}

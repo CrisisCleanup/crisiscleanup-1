@@ -1,0 +1,48 @@
+{% extends "nav_base.html" %}
+{% block bodycontent%}
+{% if contacts %}
+<p>Contacts</p>
+{% if is_admin %}
+{% for contact in contacts %}
+<p>{{contact.contact.first_name}} {{contact.contact.last_name}} | {{contact.contact.email}}</p>
+{% endfor %}
+{% else %}
+{% for contact in contacts %}
+<p>{{contact.first_name}} {{contact.last_name}} | {{contact.email}}</p>
+{% endfor %}
+
+{% endif %}
+<a href="/export_contacts_handler?organization={{organization.name}}">Export contacts to CSV</a>
+<a href="/export_contacts_handler">Export all contacts to CSV</a>
+    <form method=POST action="/admin">
+{% endif %}
+<hr>
+{% if organization %}
+<p>Incident: {{ organization.incident.name }}<p>
+<p>Name: {{ organization.name }}<p>
+<p>Email: {{ organization.email }}<p>
+<p>Phone: {{ organization.phone }}<p>
+<p>URL: {{ organization.url }}<p>
+<p>Twitter: {{ organization.twitter }}<p>
+<p>Facebook: {{ organization.facebook }}<p>
+<p>Organization: {{ organization.name }}<p>
+<p>Address: {{ organization.address }}<p>
+<p>City: {{ organization.city }}<p>
+<p>State: {{ organization.state }}<p>
+<p>Zip Code: {{ organization.zip_code }}<p>
+<p>Physical Presence: {{ organization.physical_presence }}<p>
+<p>Work Area: {{ organization.work_area }}<p>
+<p>Number Of Volunteers: {{ organization.number_volunteers }}<p>
+<p>Voad Member: {{ organization.voad_membership }}<p>
+<p>Voad Member urls: {{ organization.voad_member_url }}</p>
+<p>Voad Referrals: {{ organization.voad_referral }}</p>
+<p>Canvass: {{ organization.canvassing }}<p>
+<p>Assessment: {{ organization.assessment }}<p>
+<p>Cleanup: {{ organization.clean_up }}<p>
+<p>Mold Abatement: {{ organization.mold_abatement }}<p>
+<p>Rebuilding: {{ organization.rebuilding }}<p>
+<p>Refurbishing: {{ organization.refurbishing }}<p>
+{% else %}
+<p>Show list of organizations</p>
+{% endif %}
+{% endblock %}

@@ -67,7 +67,9 @@ class MapHandler(base.RequestHandler):
           "org" : org,
           "logout" : logout_template.render({"org": org,
                                              "event": event,
-                                             "include_search": True}),
+                                             "include_search": True,
+                                             "admin": org.is_admin,
+                                             }),
           "status_choices" : [json.dumps(c) for c in
                               site_db.Site.status.choices],
           "filters" : filters,

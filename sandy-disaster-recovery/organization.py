@@ -172,7 +172,7 @@ class OrganizationFormNoContact(model_form(Organization)):
     coerce = int)
     work_area = TextField('If so, in which areas are you primarily working?', [wtforms.validators.Length(min = 0, max = 500,
     message = "Name must be between 0 and 500 characters")])
-    number_volunteers = TextField('What is your approximate number of volunteers?', [validators.Required()])
+    number_volunteers = TextField('What is your approximate number of volunteers?')
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
@@ -239,7 +239,7 @@ class OrganizationForm(model_form(Organization)):
     coerce = int)
     work_area = TextField('If so, in which areas are you primarily working?', [wtforms.validators.Length(min = 0, max = 500,
                              message = "Name must be between 0 and 500 characters")])
-    number_volunteers = TextField('What is your approximate number of volunteers?', [validators.Required()])
+    number_volunteers = TextField('What is your approximate number of volunteers?')
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
@@ -278,14 +278,10 @@ class OrganizationEditForm(model_form(Organization)):
     validators.Email(message="That's not a valid email address.")])
     phone = TextField('Organization Phone Number', [wtforms.validators.Length(min = 1, max = 100,
     message = "Organization phone must be between 1 and 100 characters")])
-    address = TextField('Address', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Address must be between 1 and 100 characters")])
-    city = TextField('City', [wtforms.validators.Length(min = 1, max = 100,
-    message = "City must be between 1 and 100 characters")])
-    state = TextField('State', [wtforms.validators.Length(min = 1, max = 100,
-    message = "State must be between 1 and 100 characters")])
-    zip_code = TextField('Zip Code', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Zip Code must be between 1 and 100 characters")])
+    address = TextField('Address')
+    city = TextField('City')
+    state = TextField('State')
+    zip_code = TextField('Zip Code')
     url = TextField('Organization URL', [wtforms.validators.Length(min = 0, max = 100,
     message = "Organization URL must be between 0 and 100 characters")])
     twitter = TextField('Organization Twitter', [wtforms.validators.Length(min = 0, max = 16,
@@ -299,7 +295,7 @@ class OrganizationEditForm(model_form(Organization)):
     coerce = int)
     work_area = TextField('If so, in which areas are you primarily working?', [wtforms.validators.Length(min = 0, max = 500,
     message = "Name must be between 0 and 500 characters")])
-    number_volunteers = TextField('What is your approximate number of volunteers?', [validators.Required()])
+    number_volunteers = TextField('What is your approximate number of volunteers?')
     voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
     choices = [(1, "Yes"), (0, "No")],
     coerce = int)
@@ -330,4 +326,62 @@ class OrganizationEditForm(model_form(Organization)):
     coerce = int)
     is_active = RadioField(
     choices = [(1, "Yes"), (0, "No")],
+    coerce = int)
+
+class OrganizationInfoEditForm(model_form(Organization)):
+    name = TextField('Organization Name', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Organization Name must be between 1 and 100 characters")])
+    password = TextField('Organization Password', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Organization password must be between 1 and 100 characters")])
+    email = TextField('Organization Email', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Name must be between 1 and 100 characters"),
+    validators.Email(message="That's not a valid email address.")])
+    phone = TextField('Organization Phone Number', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Organization phone must be between 1 and 100 characters")])
+    address = TextField('Address', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Address must be between 1 and 100 characters")])
+    city = TextField('City', [wtforms.validators.Length(min = 1, max = 100,
+    message = "City must be between 1 and 100 characters")])
+    state = TextField('State', [wtforms.validators.Length(min = 1, max = 100,
+    message = "State must be between 1 and 100 characters")])
+    zip_code = TextField('Zip Code', [wtforms.validators.Length(min = 1, max = 100,
+    message = "Zip Code must be between 1 and 100 characters")])
+    url = TextField('Organization URL', [wtforms.validators.Length(min = 0, max = 100,
+    message = "Organization URL must be between 0 and 100 characters")])
+    twitter = TextField('Organization Twitter', [wtforms.validators.Length(min = 0, max = 16,
+    message = "Twitter handle must be between 0 and 16 characters")])
+    facebook = TextField('Facebook link', [wtforms.validators.Length(min = 0, max = 100,
+    message = "Facebook link must be between 0 and 100 characters")])
+    
+    
+    physical_presence = RadioField("Does your organization have a physical presence in the affected area?",
+    choices = [(1, "Yes"), (0, "No")],
+    coerce = int)
+    work_area = TextField('If so, in which areas are you primarily working?', [wtforms.validators.Length(min = 0, max = 500,
+    message = "Name must be between 0 and 500 characters")])
+    number_volunteers = TextField('What is your approximate number of volunteers?')
+    voad_member = RadioField('Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?',
+    choices = [(1, "Yes"), (0, "No")],
+    coerce = int)
+    voad_member_url = TextField("If so, can you provide one or more URLs listing your organization's membership? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    message = "Voad Membership urls must be between 0 and 100 characters")])
+    voad_referral= TextField("If you are not a national voad, can you provide the name of a voad that will vouch for you? (This will greatly speed up the process)", [wtforms.validators.Length(min = 0, max = 100,
+    message = "Voad Referral urls must be between 0 and 100 characters")])
+    canvass = RadioField(
+    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
+    coerce = int)
+    assessment = RadioField(
+    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
+    coerce = int)
+    clean_up = RadioField(
+    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
+    coerce = int)
+    mold_abatement = RadioField(
+    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
+    coerce = int)
+    rebuilding = RadioField(
+    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
+    coerce = int)
+    refurbishing = RadioField(
+    choices = [(1, "Always/Often"), (0, "Rarely/Never")],
     coerce = int)

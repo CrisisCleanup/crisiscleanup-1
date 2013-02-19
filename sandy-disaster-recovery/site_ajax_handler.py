@@ -29,6 +29,9 @@ import base
 import key
 import site_db
 
+PAGE_OFFSET = 100
+
+
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
 open_statuses = [s for s in site_db.Site.status.choices if 'Open' in s]
@@ -61,25 +64,67 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
       return
       
     if id_param == "all":
-      county = self.request.get("county", default_value = "all")
-      status = self.request.get("status", default_value = "")
-      q = Query(model_class = site_db.Site, keys_only = True)
-      
+        status = self.request.get("status", default_value = "")
+        page = self.request.get("page", default_value = "0")
+        page_int = int(page)
+        logging.debug("page = " + page)
+        
+        #query_string = "SELECT * FROM Site WHERE event = :event_key LIMIT %s OFFSET %s" % (PAGE_OFFSET, page_int * PAGE_OFFSET)   
+        ##logging.debug("OFFSET = " + PAGE_OFFSET)
+        ##logging.debug("page * OFFSET = " + page_int * PAGE_OFFSET)
+        
+        #query = db.GqlQuery(query_string, event_key = event.key())
+        q = Query(model_class = site_db.Site)
+       
+        ids = []
       #filter by event
-      q.filter("event =", event.key())
-      if status == "open":
-        q.filter("status >= ", "Open")
-      elif status == "closed":
-        q.filter("status < ", "Open")
-      if county != "all":
-        q.filter("county =", county)
+        q.filter("event =", event.key())
+        q.is_keys_only()
+        if status == "open":
+            logging.debug("status == open")
+            q.filter("status >= ", "Open")
+        elif status == "closed":
+            q.filter("status < ", "Open")
+            logging.debug("status == closed")
+        logging.debug("status = " + status)
+            
+        #query = q.fetch(PAGE_OFFSET, offset = page_int * PAGE_OFFSET)
+        #for q in query:
+            #ids.append(q.key().id())
+            
+        this_offset = page_int * PAGE_OFFSET
+        logging.debug("this_offset = " + str(this_offset))
+            
+        ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
+        logging.debug("ids len = " + str(len(ids)))
+           
+        output = json.dumps(
+            [s[1] for s in site_db.GetAllCached(event, ids)],
+            default=dthandler)
+        self.response.out.write(output)
+        return
+        
+        
+    #if id_param == "all":
+      #county = self.request.get("county", default_value = "all")
+      #status = self.request.get("status", default_value = "")
+      #q = Query(model_class = site_db.Site, keys_only = True)
+      
+      ##filter by event
+      #q.filter("event =", event.key())
+      #if status == "open":
+        #q.filter("status >= ", "Open")
+      #elif status == "closed":
+        #q.filter("status < ", "Open")
+      #if county != "all":
+        #q.filter("county =", county)
 
-      ids = [key.id() for key in q.run(batch_size = 2000)]
-      output = json.dumps(
-        [s[1] for s in site_db.GetAllCached(event, ids)],
-        default=dthandler)
-      self.response.out.write(output)
-      return
+      #ids = [key.id() for key in q.run(batch_size = 2000)]
+      #output = json.dumps(
+        #[s[1] for s in site_db.GetAllCached(event, ids)],
+        #default=dthandler)
+      #self.response.out.write(output)
+      #return
     try:
       id = int(id_param)
     except:

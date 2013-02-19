@@ -1,0 +1,44 @@
+{% extends "nav_base.html" %}
+{% block bodycontent%}
+<form method="POST" action="/organization-edit-contact">
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+
+  <div>{{ form.first_name.label }}: {{ form.first_name }}</div>
+  <div>{{ form.last_name.label }}: {{ form.last_name }}</div>
+  <div>{{ form.email.label }}: {{ form.email }}</div>
+  <div>{{ form.phone.label }}: {{ form.phone }}</div>
+  <p>Organization: {{ organization_name }}</p>
+    {% if organization_list %}
+    Edit Organization: 
+  <select name="organization">
+  <option value="None">Choose From Below To Edit</option>
+  {% for result in organization_list %}
+<option value="{{result.key().id()}}">{{result.name}}</option>
+{% endfor %}
+</select><br/><br/>
+{% endif %}
+  <tr>
+    <td>{{ form.is_primary.label }}</td>
+    <td>{{ form.is_primary }}</td>
+  </tr>
+  <p>This cannot be undone</p>
+ <input type=hidden name=edit_contact_final value={{edit_contact_id}}>
+
+  <input type=submit value="Submit Edit">
+</form>
+{% endblock %}

@@ -32,7 +32,7 @@ class Organization(db.Model):
   # set the passwords ourselves, and may need to be able
   # to retrieve them for an organization.
   password = db.StringProperty(default=random_password.generate_password())
-  primary_contact_email = db.StringProperty(default = '')
+  primary_contact_email = db.StringProperty(default = '') # DEPRECATED - to be removed
   # If set, then only session cookies are sent to the
   # user's browser. Otherwise, they'll receive cookies that
   # will expire in 1 week.

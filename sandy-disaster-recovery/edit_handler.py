@@ -34,6 +34,7 @@ DERECHOS_SHORT_NAME = "derechos"
 
 class EditHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
+    single_site_template = jinja_environment.get_template('single_site.html')
     if event.short_name == "derechos":
       single_site_template = jinja_environment.get_template('single_site_derechos.html')
         

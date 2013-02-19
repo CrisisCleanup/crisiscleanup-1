@@ -90,12 +90,19 @@ class Site(db.Model):
   others_help = db.StringProperty(multiline=True)
   debris_removal_only = db.BooleanProperty()
   work_type = db.StringProperty(choices=["Flood", "Trees", "Other",
-                                         "Unknown", "Goods or Services", "Food"])
+                                         "Unknown", "Goods or Services", "Food", "None"])
+  derechos_work_type = db.StringProperty(choices=[
+        "Tornado", "Trees", "Flood", "Other", "Unknown", "Goods or Services", "Food", "None"
+  ])
+  ceiling_removal= db.BooleanProperty()
+  debris_removal = db.BooleanProperty()
+  broken_glass = db.BooleanProperty()
   flood_height = db.StringProperty()
   floors_affected = db.StringProperty(choices=[
       "Basement Only",
       "Basement and Ground Floor",
-      "Ground Floor Only"])
+      "Ground Floor Only",
+      "None"])
   carpet_removal = db.BooleanProperty()
   hardwood_floor_removal = db.BooleanProperty()
   drywall_removal = db.BooleanProperty()
@@ -195,6 +202,9 @@ class Site(db.Model):
       'flood_height',
       'floors_affected',
       'carpet_removal',
+      'ceiling_removal',
+      'debris_removal',
+      'broken_glass',
       'drywall_removal',
       'heavy_item_removal',
       'standing_water',
@@ -230,6 +240,7 @@ class Site(db.Model):
       'do_not_work_before',
       'prepared_by',
       'status_notes',
+      'derechos_work_type',
       ]
 
   _CSV_ACCESSORS = {
@@ -273,6 +284,28 @@ def _ChoicesWithBlank(choices):
   """
   return [('', '--Choose One--')] + [(choice, choice) for choice in choices]
 
+class DerechosSiteForm(model_form(Site)):
+    priority = wtforms.fields.RadioField(
+    choices = [(5, ""), (4, ""), (3, ""), (2, ""), (1, "")],
+    coerce = int,
+    default = 3)
+    num_trees_down = wtforms.fields.SelectField(
+    choices = [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, "5+")],
+    coerce = int,
+    default = 0)
+    num_wide_trees = wtforms.fields.SelectField(
+    choices = [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, "5+")],
+    coerce = int,
+    default = 0)
+    request_date = wtforms.ext.dateutil.fields.DateTimeField(
+    default = datetime.datetime.now())
+
+    rent_or_own = wtforms.fields.SelectField(
+    choices=_ChoicesWithBlank(Site.rent_or_own.choices))
+    work_type_choices = _ChoicesWithBlank(Site.derechos_work_type.choices)
+    work_type = wtforms.fields.SelectField(choices=work_type_choices)
+            
+    
 class SiteForm(model_form(Site)):
   priority = wtforms.fields.RadioField(
       choices = [(5, ""), (4, ""), (3, ""), (2, ""), (1, "")],

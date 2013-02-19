@@ -1,0 +1,694 @@
+{% if show_all %}
+<h3 {% if page_break %}style="page-break-before:always;"{% endif %}>
+Case #{{site.case_number}}</h3>
+
+{% if show_map %}
+<h4>City Level View</h4>
+<img src="http://maps.googleapis.com/maps/api/staticmap?center={{site.latitude}},{{site.longitude}}&zoom=13&size=600x300&key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&sensor=true&markers=|{{site.latitude}},{{site.longitude}}" width=600 height=300>
+<h4>Local View</h4>
+<img src="http://maps.googleapis.com/maps/api/staticmap?center={{site.latitude}},{{site.longitude}}&zoom=16&size=600x300&key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&sensor=true&markers=|{{site.latitude}},{{site.longitude}}" width=600 height=300>
+{% endif %}
+
+<h2>Status</h2>
+<table>
+{% if site.date_closed %}
+<tr><td class="question">Date Closed:</td>
+<td class="answer">{{site.date_closed}}</td></tr>
+<tr><td class="question">Total Volunteers:</td>
+<td class="answer">{{site.total_volunteers}}</td></tr>
+<tr><td class="question">Hours worked per volunteer:</td>
+<td class="answer">{{site.hours_worked_per_volunteer}}</td></tr>
+{% endif %}
+</table>
+
+<hr style="page-break-after:always;">
+{% endif %}
+{% macro yesno(flag) %}
+  {% if flag %} <b>X</b> {% else %} - {% endif %}
+{% endmacro %}
+
+<div class=WorkOrderPage {% if page_break %}style="page-break-before:always;"{% endif %}>
+
+<table class="mainTable">
+ <tr>
+  <td colspan=28>
+  <h1>Work Order and Assessment: {{site.case_number}}</h1>
+  </td>
+ </tr>
+ <tr>
+  <td colspan=28 class="blackBackground">
+  <p class="whiteSubtitle">When finished, report the case #, volunteers, hours worked, and initials of resident present during work</p>
+  </td>
+ </tr>
+ <tr>
+  <td class="allBorders">
+    <p>Case #</span></p>
+  </td>
+  <td colspan=3 class="blackBackground">
+    <p class="whiteSubtitle">{{site.case_number}}</p>
+  </td>
+  <td colspan=2>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=15 class="allBorders">
+    <p>Entered by: {{site.reported_by.name}} </p>
+  </td>
+  <td colspan=2>
+    <p>&nbsp;</p>
+  </td>
+  <td class="allBorders" colspan=5>
+    <p>Claimed by: {{site.claimed_by.name}}</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan="28">
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+ <tr >
+  <td colspan=8 class="topThickBorder">
+    <p class="sectionTitle">Personal Information</p>
+  </td>
+  <td colspan=22 class="topThickBorder">
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Today's Date</p>
+  </td>
+  <td colspan=16 class="allBorders">
+    <p class="data">{{current_local_time.strftime('%Y-%m-%d')}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p>Requested Date</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p class="data">{{request_local_time.strftime('%Y-%m-%d')}}</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan="28">
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Resident Name</p>
+  </td>
+  <td colspan=16 class="allBorders">
+    <p class="data">{{site.name}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p>Primary Work Type</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p class="data">{{site.derechos_work_type}}</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td rowspan="2" colspan=2 class="allBorders">
+    <p>Address<br>
+      {% if site.rent_or_own %}
+        &nbsp;&nbsp;&nbsp;<em>({{site.rent_or_own}})</em>
+      {% endif %}
+    </p>
+  </td>
+  <td rowspan="2" colspan=16 class="allBorders">
+    <p class="data">{{site.address}}<br>
+    {{site.city}}, {{site.state}} {{site.zip_code}}
+    {% if site.county %} ({{site.county}} County) {% endif %}
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p>Cross Street</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p class="data">{{site.cross_street}}</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p>Priority (1=high)</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p class="data">{{site.priority}}</p>
+  </td>
+ </tr>
+
+
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Phone Number</p>
+  </td>
+  <td colspan=16 class="allBorders">
+    <p class="data">{{site.phone1}}{% if site.phone1 and site.phone2 %}, {% endif %}{{site.phone2}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p>Member</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p class="data">{{yesno(site.member_of_assessing_organization)}}</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Best Time to Call</p>
+  </td>
+  <td colspan=16 class="allBorders">
+    <p class="data">{{site.time_to_call}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p>First Responder</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p class="data">{{yesno(site.first_responder)}}</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Disabled</p>
+  </td>
+  <td colspan=16 class="allBorders">
+    <p class="data">{{yesno(site.disabled)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p>Over 60 Years Old</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p class="data">{{yesno(site.older_than_60)}}</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Special Needs</p>
+  </td>
+  <td colspan=26 class="allBorders">
+    <p class="data">{{site.special_needs}}</p>
+  </td>
+ </tr>
+
+ 
+ <tr>
+  <td colspan=28>
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=8 class="topThickBorder">
+    <p class="sectionTitle">Description of Work</p>
+  </td>
+  <td colspan="20" class="topThickBorder">
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+ <tr>
+   <td colspan="2" class="allBorders"><p>Roof Damage</p></td>
+   <td class="allBorders">
+     <p class="data">{{yesno(site.roof_damage)}}</p>
+   </td>
+
+   <td>&nbsp;</td>
+
+   <td colspan="8" class="allBorders"><p>Tarps Needed</p></td>
+   <td colspan="1" class="allBorders">
+     <p class="data">{{site.tarps_needed}}</p>
+   </td>
+
+   <td>&nbsp;</td>
+
+   <td colspan="7" class="allBorders"><p>Debris Removal</p></td>
+   <td colspan="1" class="allBorders">
+     <p class="data">{{yesno(site.debris_removal)}}</p>
+   </td>
+
+   <td>&nbsp;</td>
+
+   <td colspan="4" class="allBorders"><p>Broken Glass</p></td>
+   <td colspan="1" class="allBorders">
+     <p class="data">{{yesno(site.broken_glass)}}</p>
+   </td>
+ </tr>
+
+ <tr>
+  <td colspan=2 class="allBorders">
+   <p>Ceiling Removal</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.ceiling_removal)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=8 class="allBorders">
+    <p>Appliance Removal</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.appliance_removal)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=7 class="allBorders">
+    <p>Trees Down</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{site.num_trees_down}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="allBorders">
+    <p>Outside Debris Removal</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.debris_removal_only)}}</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=2 class="allBorders">
+   <p>Carpet Removal</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.carpet_removal)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=8 class="allBorders">
+    <p>Standing Water</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.standing_water)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=7 class="allBorders">
+    <p>Large Trees Down (>18")</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{site.num_wide_trees}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">&nbsp;</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=2 class="allBorders">
+   <p>Hardwood Floor</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.hardwood_floor_removal)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=8 class="allBorders">
+    <p>Mold Remediation</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.mold_remediation)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=7 class="allBorders">
+    <p>Roof Damage</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.roof_damage)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">&nbsp;</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=2 class="allBorders">
+   <p>Drywall Removal</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.drywall_removal)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=8 class="allBorders">
+    <p></p>
+  </td>
+  <td class="allBorders">
+    <p class="data"></p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=7 class="allBorders">
+    <p></p>
+  </td>
+  <td class="allBorders">
+    <p class="data"></p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">&nbsp;</p>
+  </td>
+ </tr>
+
+
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Heavy Items</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.heavy_item_removal)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan="8" class="allBorders">
+    <p>Floors Flooded</p>
+  </td>
+  <td colspan="16" class="allBorders">
+    <p class="data">{{site.floors_affected}}</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Other Work</p>
+  </td>
+  <td colspan=26 class="allBorders">
+    <p class="data">{{site.work_requested}}{% if site.work_requested and site.goods_and_services %}, {% endif %}{{site.goods_and_services}}</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Notes</p>
+  </td>
+  <td colspan=26 class="allBorders">
+    <p class="data">{{site.notes}}</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=28>
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+ <tr>
+  <td colspan=28><p class="subSectionTitle">Hazards</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=2 class="allBorders">
+   <p>Home Habitable</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.habitable)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=8 class="allBorders">
+    <p>Power on</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.electricity)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=7 class="allBorders">
+    <p>Downed Wires</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.electrical_lines)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="allBorders">
+    <p>Work Without Homeowner</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.work_without_resident)}}</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan=2 class="allBorders">
+    <p>Other Hazards</p>
+  </td>
+  <td colspan=26 class="allBorders">
+    <p class="data">{{site.other_hazards}}</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=28>
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+
+
+ <tr>
+  <td colspan=8 class="topThickBorder">
+    <p class="sectionTitle">Homeowner Release</p>
+  </td>
+  <td colspan=20 class="topThickBorder">
+    <p>&nbsp;</p>
+  </td>
+
+ </tr>
+ <tr>
+  <td colspan=28 class="allBorders">
+  <p>I hold the volunteers, including their representatives and agents, harmless from any damage or injury that may occur on my property, including personal injury.  Further, I understand that no warranty or guarantee, express or implied, is provided for work performed on my property.  I have taken any photos needed for insurance purposes and give permission for repairs, demolition and/or debris removal. Volunteers (circle one):&nbsp;&nbsp;&nbsp;<strong>May</strong>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<strong>May Not</strong>&nbsp;&nbsp;&nbsp;perform service in my absence.</p>
+  </td>
+ </tr>
+ <tr>
+  <td colspan=28>
+    <p><em>Signature of home owner (or home owner's representative):</em></p>
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+
+
+ <tr>
+  <td colspan=8 class="topThickBorder">
+    <p class="sectionTitle">Report</p>
+  </td>
+  <td colspan=6 class="topThickBorder">
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=9 class="topThickBorder">
+    <p><em>Initials of Resident Present</em></p>
+  </td>
+  <td class="topThickBorder">
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="topThickBorder">
+    <p><em>Status/Address/Type of Work/Notes</em></p>
+  </td>
+
+ </tr>
+
+ <tr>
+  <td colspan=2 class="allBorders">
+   <p>Hours Worked</p>
+  </td>
+  <td class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p># Volunteers</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=9 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=2 class="allBorders">
+   <p>Hours (Neighbor)</p>
+  </td>
+  <td class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p># Volunteers</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=9 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td colspan=2 class="allBorders">
+   <p>Hours (Neighbor)</p>
+  </td>
+  <td class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=6 class="allBorders">
+    <p># Volunteers</p>
+  </td>
+  <td colspan=3 class="allBorders">
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=9 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+ </tr>
+
+ <tr>
+  <td colspan=10  class="topThickBorder statusLabel">
+    <p>Status as of {{current_local_time.strftime('%Y-%m-%d %H:%M')}}:</p>
+  </td>
+  <td colspan=18 class="topThickBorder">
+    <p class="sectionTitle">{{site.status}}</p>
+  </td>
+ </tr>
+ <tr class="sizing">
+  <td width=50></td>
+  <td width=50></td>
+  <td width=10></td>
+  <td width=5></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=10></td>
+  <td width=5></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=19></td>
+  <td width=64></td>
+  <td width=10></td>
+  <td width=5></td>
+  <td width=5></td>
+  <td width=50></td>
+  <td width=94></td>
+  <td width=94></td>
+  <td width=10></td>
+ </tr>
+</table>
+</div>
+
+<hr>

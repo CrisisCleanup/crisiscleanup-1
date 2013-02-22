@@ -81,3 +81,57 @@ section#errors li {
 .required-asterisk {
   color: #C43B1D;
 }
+
+// popup_form
+#overlay {
+    overflow: auto;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width:100%;
+    min-height:100%;
+    z-index: 1000;
+    background:rgba(0,0,0,0.6);
+}
+
+#overlay div {
+    width:450px;
+    margin: 100px auto;
+    background-color: #fff;
+    border:1px solid #000;
+    padding:15px;
+    text-align:left;
+    box-shadow:0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    border-radius:6px;
+}
+
+#upprev_close{
+    background:  white;
+    border:0;
+    color: #929292;
+    float: right;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+    cursor:pointer;cursor:hand;
+}
+
+#report_form input[type="radio"] {
+    display:none;
+}
+
+#report_form  label {
+    display:block;
+    background-color:#ddd;
+    padding:4px 11px;
+    cursor:pointer;cursor:hand;
+    border-radius:3px 3px 3px 3px;
+    margin: 0.3em;
+}
+
+#report_form  input[type="radio"]:checked + label {
+    background-color:#bbb;
+    box-shadow: -1px 0 5px orange;
+}
+

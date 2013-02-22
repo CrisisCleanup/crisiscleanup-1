@@ -26,6 +26,7 @@ import base
 import site_db
 import cgi
 import key
+import random_password
 
 PAGE_OFFSET = 200
 class SitesHandler(base.AuthenticatedHandler):

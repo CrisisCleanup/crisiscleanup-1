@@ -29,7 +29,7 @@ import site_util
 # Only works for EST!
 LOCAL_TIME_OFFSET = datetime.timedelta(seconds=-5 * 3600)
 HATTIESBURG_SHORT_NAME = "hattiesburg"
-GEORGIA_SHORT_NAME = "gordon-barto-tornado"
+GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 def silent_none(value):
   if value is None:

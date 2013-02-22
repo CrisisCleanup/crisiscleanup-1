@@ -34,7 +34,7 @@ template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site.html')
 logout_template = jinja_environment.get_template('logout.html')
 HATTIESBURG_SHORT_NAME = "hattiesburg"
-GEORGIA_SHORT_NAME = "gordon-barto-tornado"
+GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):

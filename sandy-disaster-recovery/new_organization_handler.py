@@ -56,7 +56,7 @@ class NewOrganizationHandler(base.RequestHandler):
         choose_event = self.request.get("choose_event")
         data = organization.OrganizationForm(self.request.POST)
         if not data.validate():
-            events_list = event_db.GetAllCached()
+            events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
             self.response.out.write(template.render(
             {
                 "form": data,

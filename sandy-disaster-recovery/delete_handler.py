@@ -50,5 +50,4 @@ class DeleteHandler(base.AuthenticatedHandler):
     if site:
       site.delete()
       event_id = event.key().id()
-      event_db.ReduceNumberOfSitesFromEvent(event_id)
     self.redirect('/sites?message=Site Deleted')

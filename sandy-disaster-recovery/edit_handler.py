@@ -30,12 +30,13 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site.html')
 logout_template = jinja_environment.get_template('logout.html')
-DERECHOS_SHORT_NAME = "derechos"
+HATTIESBURG_SHORT_NAME = "hattiesburg"
+GEORGIA_SHORT_NAME = "georgia"
 
 class EditHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
     single_site_template = jinja_environment.get_template('single_site.html')
-    if event.short_name == "derechos":
+    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       single_site_template = jinja_environment.get_template('single_site_derechos.html')
         
     try:
@@ -47,8 +48,12 @@ class EditHandler(base.AuthenticatedHandler):
     if not site:
       self.response.set_status(404)
       return
+      
+    if not site.event.key() == event.key():
+        self.redirect("/sites?message=The site you are trying to edit doesn't belong to the event you are signed in to. If you think you are seeing this message in error, contact your administrator")
+        return
     form = site_db.SiteForm(self.request.POST, site)
-    if event.short_name == "derechos":
+    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       form = site_db.DerechosSiteForm(self.request.POST, site)
     single_site = single_site_template.render(
         { "form": form,
@@ -63,7 +68,7 @@ class EditHandler(base.AuthenticatedHandler):
            "page": "/edit"}))
 
   def AuthenticatedPost(self, org, event):
-    if event.short_name == "derechos":
+    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       single_site_template = jinja_environment.get_template('single_site_derechos.html')
     try:
       id = int(self.request.get('_id'))
@@ -71,7 +76,7 @@ class EditHandler(base.AuthenticatedHandler):
       return
     site = site_db.Site.get_by_id(id)
     data = site_db.SiteForm(self.request.POST, site)
-    if event.short_name == "derechos":
+    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
         form = site_db.DerechosSiteForm(self.request.POST, site)
 
     # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])

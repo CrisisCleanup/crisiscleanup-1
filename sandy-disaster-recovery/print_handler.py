@@ -28,7 +28,8 @@ import site_util
 
 # Only works for EST!
 LOCAL_TIME_OFFSET = datetime.timedelta(seconds=-5 * 3600)
-DERECHOS_SHORT_NAME = "derechos"
+HATTIESBURG_SHORT_NAME = "hattiesburg"
+GEORGIA_SHORT_NAME = "georgia"
 
 def silent_none(value):
   if value is None:
@@ -47,7 +48,7 @@ class PrintHandler(base.AuthenticatedHandler):
 
   def AuthenticatedPost(self, org, event):
     print_single_template = jinja_environment.get_template('print_single.html')
-    if event.short_name == DERECHOS_SHORT_NAME:
+    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       print_single_template = jinja_environment.get_template('print_single_derechos.html')
         
     sites = site_util.SitesFromIds(self.request.get('id'), event)

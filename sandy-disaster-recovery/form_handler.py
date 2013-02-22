@@ -33,23 +33,25 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site.html')
 logout_template = jinja_environment.get_template('logout.html')
-DERECHOS_SHORT_NAME = "derechos"
+HATTIESBURG_SHORT_NAME = "hattiesburg"
+GEORGIA_SHORT_NAME = "georgia"
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
     single_site_template = jinja_environment.get_template('single_site.html')
       
-    if event.short_name == DERECHOS_SHORT_NAME:
+    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       single_site_template = jinja_environment.get_template('single_site_derechos.html')
       
     message = cgi.escape(self.request.get("message"))
     if len(message) == 0:
       message = None
     form = None
-    if event.short_name == DERECHOS_SHORT_NAME:
+    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       form = site_db.DerechosSiteForm()
     else:
       form = site_db.SiteForm()
+      
     
     single_site = single_site_template.render(
         { "form": form,
@@ -67,12 +69,12 @@ class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedPost(self, org, event):
     single_site_template = jinja_environment.get_template('single_site.html')
       
-    if event.short_name == DERECHOS_SHORT_NAME:
+    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       single_site_template = jinja_environment.get_template('single_site_derechos.html')
       
     claim_for_org = self.request.get("claim_for_org") == "y"
     data = None
-    if event.short_name == DERECHOS_SHORT_NAME:
+    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
         data = site_db.DerechosSiteForm(self.request.POST)
     else:
         data = site_db.SiteForm(self.request.POST)

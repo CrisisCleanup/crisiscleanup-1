@@ -47,11 +47,13 @@ display_all_template = jinja_environment.get_template('organizations_display_all
 class OrganizationInfoHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
         name = self.request.get("organization")
+        message = self.request.get("message")
         if not name:
             query_string = "SELECT * FROM Organization WHERE incident = :1 ORDER BY name"
             organization_list = db.GqlQuery(query_string, event.key())
             self.response.out.write(display_all_template.render({
-                "org_query": organization_list
+                "org_query": organization_list,
+                "message": message,
             }))
             return
         query_string = "SELECT * FROM Organization WHERE name = :1"
@@ -60,6 +62,9 @@ class OrganizationInfoHandler(base.AuthenticatedHandler):
             id = o.key().id()
         
         org_by_id = organization.Organization.get_by_id(id)
+        if not org_by_id.incident.key() == event.key():
+            self.redirect("organization-info?message=The organization you are trying to view doesn't belong to the event that you are signed in to. If you think you are seeing this message in error, please contact your administrator.")
+            return
         org_key = org_by_id.key()
         
         contact_query = None
@@ -72,6 +77,7 @@ class OrganizationInfoHandler(base.AuthenticatedHandler):
             "organization": org_by_id,
             "contacts": contact_query,
             "is_admin": org_by_id.is_admin,
+            "message": message,
         }))
         return
         

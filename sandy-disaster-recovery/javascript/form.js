@@ -37,9 +37,9 @@ var map;
 var geocoder;
 var autocomplete;
 sandy.form.Initialize = function() {
-    var myLatlng = new google.maps.LatLng(40.7697, -73.5735);
+    var myLatlng = new google.maps.LatLng(39.50, -77.35);
     var mapOptions = {
-        zoom: 11,
+        zoom: 5,
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };

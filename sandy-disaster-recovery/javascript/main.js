@@ -449,7 +449,7 @@ function loadSites(url, callBack) {
             var filters = goog.dom.getElement('filtersbackground');
             goog.style.showElement(filters, true);
 
-            if (sites.length > 0) {
+            if (sites.length < 100) {
                 empty = true;
             }
             for (var i = 0; i < sites.length; ++i) {

@@ -449,9 +449,6 @@ function loadSites(url, callBack) {
             var filters = goog.dom.getElement('filtersbackground');
             goog.style.showElement(filters, true);
 
-            if (sites.length < 100) {
-                empty = true;
-            }
             for (var i = 0; i < sites.length; ++i) {
                 if (sites[i].case_number && sites[i].name) {
                     var term = sites[i].case_number + ": <" + sites[i].name + ">";
@@ -497,7 +494,7 @@ function loadSitesBatch(sites_status, page, url, callBack) {
             sandy.map.InitializeMap(sites, AddMarker, map);
             var filters = goog.dom.getElement('filtersbackground');
             goog.style.showElement(filters, true);
-            if (sites.length > 0) {
+            if (sites.length == 100) {
                 empty = false;
             }
             for (var i = 0; i < sites.length; ++i) {

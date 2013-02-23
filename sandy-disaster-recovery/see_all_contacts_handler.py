@@ -62,8 +62,9 @@ class SeeAllContactsHandler(base.AuthenticatedHandler):
         contacts = db.GqlQuery(query_string)    
         final_list = []
         for q in contacts:
-            if q.organization.incident.key() == event.key():
-                final_list.append(q)
+            if q.organization:
+                if q.organization.incident.key() == event.key():
+                    final_list.append(q)
             
         self.response.out.write(template.render(
         {

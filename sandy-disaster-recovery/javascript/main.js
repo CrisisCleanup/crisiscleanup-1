@@ -498,6 +498,7 @@ function loadSitesBatch(sites_status, page, url, callBack) {
                 empty = false;
             }
             for (var i = 0; i < sites.length; ++i) {
+                try {                
                 if (sites[i].case_number && sites[i].name) {
                     var term = sites[i].case_number + ": <" + sites[i].name + ">";
                     if (sites[i].address) {
@@ -515,6 +516,21 @@ function loadSitesBatch(sites_status, page, url, callBack) {
                     terms.push(term);
                     siteMap[term] = sites[i];
                 }
+                
+                
+                } catch (err) {
+                    txt="Error description: " + err.message + "\n\n";
+                    goog.net.XhrIo.send('/js-logs?message=' + txt,
+                    function (e) {
+                        var xhr = e.target;
+                        var status = xhr.getStatus();
+                        if (status != 200) {
+                            return;
+                        }
+                                            
+                    })
+                }
+                
             }
             
             if (callBack) {

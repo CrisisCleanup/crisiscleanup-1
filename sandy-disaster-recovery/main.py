@@ -52,7 +52,7 @@ import organization_add_contacts_handler
 import organization_edit_contacts_handler
 import organization_edit_info_handler
 import see_all_contacts_handler
-
+import js_logs_handler
 
 #import * from admin_handler
 from admin_handler import admin_create_organization_handler
@@ -150,6 +150,6 @@ app = webapp2.WSGIApplication([
     Route(r'/organization_ajax_handler', organization_ajax_handler.OrganizationAjaxHandler, 'organization_ajax_handler'),
     Route(r'/organization-edit-info', organization_edit_info_handler.OrganizationEditInfoHandler, 'new_organization'),
     Route(r'/see-all-contacts', see_all_contacts_handler.SeeAllContactsHandler, 'see_all_contacts_handler'),
-    
+    Route(r'/js-logs', js_logs_handler.JsLogsHandler, 'js_logs_handler'),
     
 ], debug=True)

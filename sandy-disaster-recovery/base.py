@@ -52,7 +52,8 @@ class AuthenticatedHandler(RequestHandler):
       self.HandleAuthenticationFailure('post')
       return
     for i in self.request.POST.keys():
-      self.request.POST[i] = cgi.escape(self.request.POST[i])
+      if hasattr(self.request.POST[i], 'replace'): # can be cgi-escaped?
+        self.request.POST[i] = cgi.escape(self.request.POST[i])
     self.AuthenticatedPost(org, event)
 
   def get(self):

@@ -70,10 +70,11 @@ from admin_handler import admin_see_admins_handler
 from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
 
-
 from admin_handler import admin_single_organization_handler as admin_single_organization_handler
 from admin_handler import admin_edit_organization_handler as admin_edit_organization_handler
 from admin_handler import admin_edit_contact_handler as admin_edit_contact_handler
+
+from admin_handler import admin_import_contacts_handler as admin_import_contacts_handler
 
 
 jinja_environment = jinja2.Environment(
@@ -138,6 +139,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-see-admins', admin_see_admins_handler.AdminHandler, 'admin_see_admins_handler'),
     Route(r'/admin-incident-add-admin', admin_incident_add_admin_handler.AdminHandler, 'admin_incident_add_admin_handler'),
     Route(r'/admin-make-admin', admin_make_admin_handler.AdminHandler, 'admin_make_admin_handler'),
+    Route(r'/admin-import-contacts', admin_import_contacts_handler.ImportContactsHandler, 'admin_import_contacts_handler'),
     
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),

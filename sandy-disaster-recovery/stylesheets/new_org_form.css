@@ -1,0 +1,140 @@
+html {
+    font-size: 14px;
+}
+#form_background {
+    z-index: 3;
+    position: absolute;
+    right: 10px;
+    top: 30px;
+    bottom: 10px;
+    background-color: #ffffff;
+    opacity: .8;
+    padding: 20px;
+}
+#form {
+    width: 100%;
+    opacity: 1.0;
+    overflow: auto;
+    height: 100%;
+}
+.question {
+    width: 210px;
+    float: left;
+}
+.answer {
+    width: 210px;
+    float: right;
+}
+hr {
+    width: 100%;
+}
+.error {
+    color: red;
+    width: 210px;
+}
+.errors {
+    color: red;
+}
+.error_detail {
+    color: red;
+    width: 210px;
+}
+.delete_form {
+    border: 2px solid red;
+    background-color: #ffc;
+    padding: 5px;
+}
+.delete_button {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+input[type="submit"] {
+    padding: 10px;
+}
+.form_message {
+    font-size: 18px;
+    color: green;
+    font-weight: bold;
+    margin-bottom: 35px;
+}
+section#errors {
+    border: #f00 2px solid;
+    background-color: pink;
+    padding: 5px;
+    margin-bottom: 30px;
+}
+section#errors header {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+section#errors li {
+    font-weight: bold;
+    color: #000;
+}
+
+.error_field input, .error_field select, .error_field textarea {
+    border: #f00 2px solid;
+}
+.required-asterisk {
+    color: #C43B1D;
+}
+
+/*Starting popup_form.css
+ * I can't add a file on google code, so I'm appending it here for now
+ * to illustrate it's function. Please move this to a new file, or allow me permission
+ * to make that change*/
+
+#overlay {
+    overflow: auto;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width:100%;
+    min-height:100%;
+    z-index: 1000;
+    background:rgba(0,0,0,0.6);
+}
+
+#overlay div {
+    width:450px;
+    margin: 100px auto;
+    background-color: #fff;
+    border:1px solid #000;
+    padding:15px;
+    text-align:left;
+    box-shadow:0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    border-radius:6px;
+}
+
+#upprev_close{
+    background:  white;
+    border:0;
+    color: #929292;
+    float: right;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+    cursor:pointer;cursor:hand;
+}
+
+#report_form input[type="radio"] {
+    display:none;
+}
+
+#report_form  label {
+    display:block;
+    background-color:#ddd;
+    padding:4px 11px;
+    cursor:pointer;cursor:hand;
+    border-radius:3px 3px 3px 3px;
+    margin: 0.3em;
+}
+
+#report_form  input[type="radio"]:checked + label {
+    background-color:#bbb;
+    box-shadow: -1px 0 5px orange;
+}

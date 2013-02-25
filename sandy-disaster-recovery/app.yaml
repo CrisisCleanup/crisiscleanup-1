@@ -1,5 +1,5 @@
 application: sandy-helping-hands
-version: 92
+version: 86
 runtime: python27
 api_version: 1
 threadsafe: yes

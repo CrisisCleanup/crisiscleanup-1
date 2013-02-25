@@ -1,0 +1,95 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+<style type="text/css">
+.row_number {
+  font-weight: bold;
+}
+.missing {
+  background-color: red;
+}
+.invalid {
+  background-color: red;
+}
+</style>
+
+<h1>Import Work Orders by CSV</h1>
+
+<p>Candidate CSV file contains {{ annotated_rows|length }} row(s) &ndash; {{ valid_row_count}} row(s) are valid; {{ invalid_row_count }} row(s) are invalid.</p>
+
+<h2>Save Options</h2>
+
+{% if valid_row_count %}
+  <form method="post">
+    <input type="hidden" name="blob_key" value="{{ blob_key }}">
+    <label>Disaster:
+      <select id="choose_event" name="choose_event">
+        <option value="">--Choose One--</option>
+        {% for result in events_list %}
+          <option value="{{result.key().id()}}">{{result.name}}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <br>
+    <button type="submit" name="action" value="write" onclick="if (document.getElementById('choose_event').value == '') {alert('Please select an event.'); return false}">Save valid rows</button>
+  </form>
+{% else %}
+  <p>There are no valid rows to save.</p>
+{% endif %}
+
+<h2>Download Options</h2>
+
+<form method="post" action="admin-import-csv/invalids.csv">
+  <input type="hidden" name="blob_key" value="{{ blob_key }}">
+  <button type="submit" name="action" value="download_invalid_csv">Download invalid rows as CSV</button>
+</form>
+
+<h2>Data Received</h2>
+
+{% for annotated_row in annotated_rows %}
+
+  {% set num = annotated_row['num'] %}
+  {% set row = annotated_row['row'] %}
+  {% set validation = annotated_row['validation'] %}
+  {% if not validation['row_length_ok'] %}
+    <p class="row_number">Row {{ num }}: <span style="color: red">error - wrong length</span></p>
+  {% else %}
+    <p class="row_number">Row {{ num}}: </p>
+    <table border="1">
+    {% if validation['contains_example_data'] %}
+      <tr>
+        <td class="invalid">Row contains example data</td>
+      </tr>
+    {% endif %}
+    {% for field_name in validation['missing_fields'] %}
+      <tr>
+        <td class="invalid">Missing</td>
+        <td>{{ field_name }}</td>
+      </tr>
+    {% endfor %}
+    {% for field_name, field_value in zip(field_names, row) %}
+      {% if field_value %}
+        {% set invalid = (field_name in validation['invalid_fields']) %}
+        <tr>
+          <th>{{ field_name }}</th>
+          <td class="{% if invalid %}invalid{% endif %}">
+            {{ field_value }}
+          </td>
+          {% if invalid %}
+            {% set msg = validation['invalid_fields'][field_name] %}
+            <td>{{ form[field_name] }}</td>
+            <td>{{ msg }}</td>
+          {% elif field_name == 'address' and validation['address_geocodes_ok'] == None %}
+            <td>(Did not geocode due to other errors)</td>
+          {% elif field_name == 'address' and validation['address_geocodes_ok'] %}
+            <td class="ok">Address geocodes ok</td>
+          {% elif field_name == 'address' and not validation['address_geocodes_ok'] %}
+            <td class="invalid">Address does not geocode</td>
+          {% endif %}
+        </tr>
+      {% endif %}
+    {% endfor %}
+    </table>
+  {% endif %}
+{% endfor %}
+
+{% endblock %}

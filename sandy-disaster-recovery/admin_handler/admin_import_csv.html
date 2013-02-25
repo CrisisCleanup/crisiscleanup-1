@@ -1,0 +1,18 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+
+<h1>Import Work Orders by CSV</h1>
+
+<form enctype="multipart/form-data" method="post">
+  <label>CSV file:
+    <input type="file" name="csv_file">
+  </label>
+  <br>
+  <button type="submit">Analyse</button>
+</form>
+
+<h2>Template</h2>
+
+<a href="/admin-import-csv/template.csv">Get CSV Template</a>
+
+{% endblock %}

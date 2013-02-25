@@ -54,7 +54,6 @@ import organization_edit_info_handler
 import see_all_contacts_handler
 import js_logs_handler
 
-#import * from admin_handler
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
@@ -69,6 +68,7 @@ from admin_handler import admin_create_incident_handler
 from admin_handler import admin_see_admins_handler
 from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
+from admin_handler import admin_import_csv_handler
 
 from admin_handler import admin_single_organization_handler as admin_single_organization_handler
 from admin_handler import admin_edit_organization_handler as admin_edit_organization_handler
@@ -139,6 +139,9 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-see-admins', admin_see_admins_handler.AdminHandler, 'admin_see_admins_handler'),
     Route(r'/admin-incident-add-admin', admin_incident_add_admin_handler.AdminHandler, 'admin_incident_add_admin_handler'),
     Route(r'/admin-make-admin', admin_make_admin_handler.AdminHandler, 'admin_make_admin_handler'),
+    Route(r'/admin-import-csv', admin_import_csv_handler.ImportCSVHandler, 'admin_import_csv_handler'),
+    Route(r'/admin-import-csv/template.csv', admin_import_csv_handler.GetCSVTemplateHandler, 'admin_import_csv_handler'),
+    Route(r'/admin-import-csv/invalids.csv', admin_import_csv_handler.ImportCSVHandler, 'admin_import_csv_handler'),
     Route(r'/admin-import-contacts', admin_import_contacts_handler.ImportContactsHandler, 'admin_import_contacts_handler'),
     
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),

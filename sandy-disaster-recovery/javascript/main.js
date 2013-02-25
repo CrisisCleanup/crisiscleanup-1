@@ -590,11 +590,35 @@ sandy.main.initialize = function (siteId, zoomLevel) {
     goog.events.listen(autoComplete,
         goog.ui.ac.AutoComplete.EventType.UPDATE,
         selectFunction);
+    try {      
     batchLoadSites("open", 0);
+    } catch (err) {
+        txt="Error description: " + err.message + "\n\n";
+        goog.net.XhrIo.send('/js-logs?message=' + txt,
+        function (e) {
+            var xhr = e.target;
+            var status = xhr.getStatus();
+            if (status != 200) {
+                return;
+            }
+        })
+    }
     goog.dom.getElement("open").checked = true;
     goog.dom.getElement("open").onclick = function () {
         goog.dom.getElement("open").onclick = null;
-        batchLoadSites("closed", 0);
+        try {
+            batchLoadSites("closed", 0);
+        }  catch (err) {
+            txt="Error description: " + err.message + "\n\n";
+            goog.net.XhrIo.send('/js-logs?message=' + txt,
+            function (e) {
+                var xhr = e.target;
+                var status = xhr.getStatus();
+                if (status != 200) {
+                    return;
+                }
+            })
+        }  
     };
 
     if (siteId) {

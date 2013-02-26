@@ -159,12 +159,9 @@ def row_to_dict(event, field_names, row):
 
         # handle org references
         if field_name in ('reported_by', 'claimed_by'):
-            logging.warn(field_value)
-            logging.warn(event.key())
             results = db.GqlQuery(
                 "SELECT * FROM Organization WHERE name=:1 AND incident=:2", field_value, event.key()
             )
-            logging.warn(results.count())
             if results and results.count() == 1:
                 d[field_name] = results[0]
             else:

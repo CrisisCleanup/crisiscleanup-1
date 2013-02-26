@@ -4,4 +4,4 @@ cron:
   schedule: every 20 minutes
 - description: Purge blobstore of old blobs
   url: /blobstore-delete
-  schedule: every 1 day
+  schedule: every 24 hours

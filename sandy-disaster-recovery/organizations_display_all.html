@@ -1,7 +1,6 @@
 {% extends "nav_base.html" %}
 {% block bodycontent%}
 {% for result in org_query %}
-
-<p><a href="/organization-info?organization={{ result.name}}">{{ result.name }}</a></p>
+  <p><a href="/organization-info?organization={{ result.key().id() }}">{{ result.name }}</a></p>
 {% endfor %}
 {% endblock %}

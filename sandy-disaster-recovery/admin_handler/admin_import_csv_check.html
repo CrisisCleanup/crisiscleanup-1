@@ -21,6 +21,7 @@
 {% if valid_row_count %}
   <form method="post">
     <input type="hidden" name="blob_key" value="{{ blob_key }}">
+    <input type="hidden" name="choose_event" value="{{ event.key().id() }}">
     <p>Event selected: {{ event.name }}</p>
     <button type="submit" name="action" value="write" onclick="if (document.getElementById('choose_event').value == '') {alert('Please select an event.'); return false}">Save valid rows</button>
   </form>
@@ -30,10 +31,15 @@
 
 <h2>Download Options</h2>
 
-<form method="post" action="admin-import-csv/invalids.csv">
-  <input type="hidden" name="blob_key" value="{{ blob_key }}">
-  <button type="submit" name="action" value="download_invalid_csv">Download invalid rows as CSV</button>
-</form>
+{% if invalid_row_count %}
+  <form method="post" action="admin-import-csv/invalids.csv">
+    <input type="hidden" name="blob_key" value="{{ blob_key }}">
+    <input type="hidden" name="choose_event" value="{{ event.key().id() }}">
+    <button type="submit" name="action" value="download_invalid_csv">Download invalid rows as CSV</button>
+  </form>
+{% else %}
+  <p>There are no invalid rows to download.</p>
+{% endif %}
 
 <h2>Data Received</h2>
 

@@ -5,10 +5,9 @@
 <a href="/see-all-contacts?order=last_name">Order by last name. </a>
 <!-- <a href="/see-all-contacts?order=organization">Order by Organization. </a> -->
 
-
 {% if contacts %}
 {% for result in contacts %}
-<p>Name: <a href="/admin-single-contact?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/organization-info?organization={{ result.organization.name }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
+  <p>Name: <a href="/admin-single-contact?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/organization-info?organization={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
 
 {% endfor %}
 {% endif %}

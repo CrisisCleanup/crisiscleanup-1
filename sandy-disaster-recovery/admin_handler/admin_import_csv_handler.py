@@ -51,7 +51,7 @@ FALSE_VALUES = ['n', 'no', 'false', '0', 'null']
 # construct lookups
 #
 
-FIELD_NAMES_TO_EXCLUDE = {'case_number', 'event', 'latitude', 'longitude'}
+FIELD_NAMES_TO_EXCLUDE = {'case_number', 'event', 'latitude', 'longitude', 'blurred_latitude', 'blurred_longitude'}
 
 FIELD_NAMES = [
     field_name for field_name in site_db.Site.CSV_FIELDS

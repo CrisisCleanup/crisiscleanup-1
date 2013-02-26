@@ -1,4 +1,4 @@
-#nno!/usr/bin/env python
+#!/usr/bin/env python
 #
 # Copyright 2013 Chris Wood
 #

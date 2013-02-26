@@ -21,15 +21,7 @@
 {% if valid_row_count %}
   <form method="post">
     <input type="hidden" name="blob_key" value="{{ blob_key }}">
-    <label>Disaster:
-      <select id="choose_event" name="choose_event">
-        <option value="">--Choose One--</option>
-        {% for result in events_list %}
-          <option value="{{result.key().id()}}">{{result.name}}</option>
-        {% endfor %}
-      </select>
-    </label>
-    <br>
+    <p>Event selected: {{ event.name }}</p>
     <button type="submit" name="action" value="write" onclick="if (document.getElementById('choose_event').value == '') {alert('Please select an event.'); return false}">Save valid rows</button>
   </form>
 {% else %}
@@ -76,7 +68,7 @@
           </td>
           {% if invalid %}
             {% set msg = validation['invalid_fields'][field_name] %}
-            <td>{{ form[field_name] }}</td>
+            {# currently disabled:: <td>{{ form[field_name] }}</td> #}
             <td>{{ msg }}</td>
           {% elif field_name == 'address' and validation['address_geocodes_ok'] == None %}
             <td>(Did not geocode due to other errors)</td>

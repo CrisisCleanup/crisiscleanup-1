@@ -23,8 +23,14 @@ import logging
 import math
 import os
 import csv
+from copy import copy
+
 from google.appengine.ext import db, blobstore
 from google.appengine.api import files
+from google.appengine.ext.db import (
+    BooleanProperty, StringProperty, IntegerProperty, FloatProperty, DateTimeProperty,
+    ReferenceProperty
+)
 
 # Local libraries.
 import base
@@ -37,15 +43,21 @@ from csv_utils import UnicodeReader, UnicodeWriter
 # constants
 GLOBAL_ADMIN_NAME = "Admin"
 
-TRUE_VALUES = ['yes', 'true', '1']
-FALSE_VALUES = ['no', 'false', '0', 'null']
+TRUE_VALUES = ['y', 'yes', 'true', '1']
+FALSE_VALUES = ['n', 'no', 'false', '0', 'null']
 
 
 #
 # construct lookups
 #
 
-FIELD_NAMES = site_db.Site.CSV_FIELDS
+FIELD_NAMES_TO_EXCLUDE = {'case_number', 'event', 'latitude', 'longitude'}
+
+FIELD_NAMES = [
+    field_name for field_name in site_db.Site.CSV_FIELDS
+    if field_name not in FIELD_NAMES_TO_EXCLUDE
+]
+
 
 FIELD_TYPES = {
     field_name: type(getattr(site_db.Site, field_name))
@@ -58,9 +70,21 @@ ADDITIONALLY_REQUIRED_FIELDS = [
 
 EXAMPLE_DATA = {
     'name': 'Mr Example',
-    'address': '1 Park Ave',
+    'address': '!!REMOVE THIS EXAMPLE ROW!!',
     'city': 'New York City',
+    'state': 'NY',
+    'work_type': 'ONE OF: %s' % ', '.join(site_db.Site.work_type.choices),
 }
+
+for field_name, field_type in FIELD_TYPES.items():
+    example_value = {
+        BooleanProperty: 'yes',
+        IntegerProperty: '0',
+        FloatProperty: '0.0',
+        DateTimeProperty: '28/2/2013'
+    }.get(field_type, None)
+    if example_value:
+        EXAMPLE_DATA[field_name] = example_value
 
 #
 # define CSV template rows
@@ -81,24 +105,32 @@ def write_csv_template(fd):
 
 
 
-from google.appengine.ext.db import BooleanProperty, StringProperty
+from dateutil.parser import parse as parse_date
 
-def parse_field(field_type, field_value):
+def parse_field(field_name, field_type, field_value):
     """
-    >>> parse_field(StringProperty, 'text')
+    >>> parse_field(None, StringProperty, 'text')
     'text'
-    >>> parse_field(StringProperty, '') # returns None
-    >>> parse_field(BooleanProperty, 'YES')
+    >>> parse_field(None, StringProperty, '') # returns None
+    >>> parse_field(None, IntegerProperty, u'1')
+    1
+    >>> parse_field(None, FloatProperty, u'1')
+    1.0
+    >>> parse_field(None, BooleanProperty, 'YES')
     True
-    >>> parse_field(BooleanProperty, 'no')
+    >>> parse_field(None, BooleanProperty, 'no')
     False
-    >>> parse_field(BooleanProperty, 'other')
-    Traceback (most recent call last):
-    ...
-    Exception
+    >>> parse_field(None, BooleanProperty, 'other')
+    'other'
+    >>> parse_field(None, DateTimeProperty, '2/17/2013')
+    datetime.datetime(2013, 2, 17, 0, 0)
     """
     if field_value == '':
         return None
+    elif field_type == IntegerProperty:
+        return int(field_value)
+    elif field_type == FloatProperty:
+        return float(field_value)
     elif field_type == BooleanProperty:
         if field_value.lower() in TRUE_VALUES:
             return True
@@ -106,19 +138,38 @@ def parse_field(field_type, field_value):
             return False
         else:
             return field_value # handle error later
+    elif field_type == DateTimeProperty:
+        try:
+            return parse_date(field_value, dayfirst=False) # assume American format
+        except ValueError:
+            return field_value # handle error later
+    elif field_type == ReferenceProperty:
+        # handle outside
+        return field_value
     else:
         return field_value
 
-def row_to_dict(field_names, row):
-    """
-    >>> row_to_dict(['name', 'disabled'], ['Mr A', 'no'])
-    {'disabled': 'no', 'name': 'Mr A'}
-    """
+def row_to_dict(event, field_names, row):
     d = {}
     for field_name, field_value in zip(field_names, row):
         field_type = FIELD_TYPES[field_name]
-        parsed_value = parse_field(field_type, field_value)
-        if parsed_value != None:
+
+        # parse
+        parsed_value = parse_field(field_name, field_type, field_value)
+
+        # handle org references
+        if field_name in ('reported_by', 'claimed_by'):
+            logging.warn(field_value)
+            logging.warn(event.key())
+            results = db.GqlQuery(
+                "SELECT * FROM Organization WHERE name=:1 AND incident=:2", field_value, event.key()
+            )
+            logging.warn(results.count())
+            if results and results.count() == 1:
+                d[field_name] = results[0]
+            else:
+                d[field_name] = parsed_value
+        elif parsed_value != None:
             d[field_name] = parsed_value
     return d
 
@@ -142,7 +193,7 @@ class AddressUnknownException(ImportException):
 
 from google.appengine.api.datastore_errors import BadValueError
 
-def validate_row(row):
+def validate_row(event, row):
     validation = {
         'row_length_ok': None,
         'contains_example_data': None,
@@ -160,8 +211,10 @@ def validate_row(row):
         validation['row_length_ok'] = True
 
     # validate does not contain example data
-    row_d = row_to_dict(FIELD_NAMES, row)
-    validation['contains_example_data'] = any('Example' in val for val in row_d.values())
+    row_d = row_to_dict(event, FIELD_NAMES, row)
+    validation['contains_example_data'] = any(
+        'example' in val.lower() for val in row_d.values() if isinstance(val, basestring)
+    )
     if validation['contains_example_data']:
         return validation
 
@@ -172,12 +225,20 @@ def validate_row(row):
     if validation['missing_fields']:
         return validation
 
+    # validate org ref fields are not strings
+    validation_row_copy = copy(row_d)
+    for field_name in ('reported_by', 'claimed_by'):
+        if isinstance(row_d[field_name], basestring):
+            validation['invalid_fields'][field_name] = 'Unknown organisation for this event'
+        if field_name in validation_row_copy:
+            del(validation_row_copy[field_name])
+
     # validate required fields and types
     # by attempting to construct Site multiple times
     error_encountered = False
     while True:
         try:
-            site = site_db.Site(**row_d)
+            site = site_db.Site(**validation_row_copy)
             if error_encountered:
                 return validation
             else:
@@ -187,7 +248,7 @@ def validate_row(row):
             if field_name in validation:
                 return validation
             validation['invalid_fields'][field_name] = e.message
-            del(row_d[field_name])
+            del(validation_row_copy[field_name])
             error_encountered = True
 
     # bail out if any errors so far
@@ -226,8 +287,10 @@ def validation_to_text(validation):
     if not s and not validation['address_geocodes_ok']:
         s += "Could not find address; "
     return "ERRORS: %s" % s
-        
-def read_csv(fd):
+
+class HeaderException(Exception): pass
+
+def read_csv(event, fd):
     """
     Read CSV @fd to dictionary of annotated rows.
     """
@@ -239,13 +302,18 @@ def read_csv(fd):
             if row_num == 0:
                 # check heading row present then skip
                 if row != HEADINGS_ROW:
-                    raise Exception("No header row")
+                    missing = set(HEADINGS_ROW) - set(row)
+                    unexpected = set(row) - set(HEADINGS_ROW)
+                    raise HeaderException(
+                        "Invalid header row detected: " +
+                        "missing %s; unexpected %s" % (list(missing), list(unexpected))
+                    )
                 else:
                     output['field_names'] = row
                     continue
         else:
-            validation = validate_row(row)
-            row_dict = {k:v for k,v in zip(HEADINGS_ROW, row) if k and v}
+            validation = validate_row(event, row)
+            row_dict = row_to_dict(event, FIELD_NAMES, row)
             output['rows'].append({
                 'num': row_num,
                 'row': row,
@@ -291,8 +359,11 @@ class ImportCSVHandler(base.AuthenticatedHandler):
             return
 
     # return upload form
+    events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
     self.response.out.write(import_template.render({
         'global_admin': global_admin,
+        'events_list': events_list,
+        'valid_work_types': site_db.Site.work_type.choices,
     }))
 
   def AuthenticatedPost(self, org, event):
@@ -301,17 +372,21 @@ class ImportCSVHandler(base.AuthenticatedHandler):
     local_admin = False
     
     if org.name == GLOBAL_ADMIN_NAME:
-            global_admin = True
+        global_admin = True
     if org.is_admin == True and global_admin == False:
-            local_admin = True
-            
+        local_admin = True    
     if global_admin == False and local_admin == False:
-            self.redirect("/")
-            return
+        self.redirect("/")
+        return
 
     # get params
     action = self.request.get('action')
     blob_key = self.request.get('blob_key')
+    event_id = self.request.get('choose_event')
+    if not event_id:
+      self.response.out.write('No event selected.')
+      return
+    event = event_db.GetEventFromParam(event_id)
 
     # no action => upload & analyse CSV
     if not action:
@@ -331,7 +406,11 @@ class ImportCSVHandler(base.AuthenticatedHandler):
 
       # analyse csv   
       blob_fd = blobstore.BlobReader(blob_key)
-      csv_dict = read_csv(blob_fd)
+      try:
+        csv_dict = read_csv(event, blob_fd)
+      except HeaderException, e:
+        self.response.out.write('Exception: ' + str(e))
+        return
       field_names = csv_dict['field_names']
       annotated_rows = csv_dict['rows']
       valid_row_count = len(
@@ -340,11 +419,10 @@ class ImportCSVHandler(base.AuthenticatedHandler):
           )
       )
       invalid_row_count = len(annotated_rows) - valid_row_count
-      events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
       self.response.out.write(check_template.render({
           'global_admin': global_admin,
+          'event': event,
           'form': site_db.SiteForm(),
-          'events_list': events_list,
           'field_names': field_names,
           'annotated_rows': annotated_rows,
           'valid_row_count': valid_row_count,
@@ -355,13 +433,8 @@ class ImportCSVHandler(base.AuthenticatedHandler):
 
     # action write valid rows
     if action == 'write':
-      event_id = self.request.get('choose_event')
-      if not event_id:
-        self.response.out.write('No event selected.')
-        return
-      event = event_db.GetEventFromParam(event_id)
       blob_fd = blobstore.BlobReader(blob_key)
-      csv_dict = read_csv(blob_fd)
+      csv_dict = read_csv(event, blob_fd)
       sites_written = 0
       for row in csv_dict['rows']:
         if row['validation'].get('validates', False):
@@ -376,7 +449,7 @@ class ImportCSVHandler(base.AuthenticatedHandler):
     # action download invalid CSV
     if action == 'download_invalid_csv':
       blob_fd = blobstore.BlobReader(blob_key)
-      csv_dict = read_csv(blob_fd)
+      csv_dict = read_csv(event, blob_fd)
       warning_row = [
         'WARNING: error messages', 'have been added',
         'at the far right', 'of each row. ',

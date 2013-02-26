@@ -4,15 +4,36 @@
 <h1>Import Work Orders by CSV</h1>
 
 <form enctype="multipart/form-data" method="post">
-  <label>CSV file:
-    <input type="file" name="csv_file">
+  <label>Disaster:
+    <select id="choose_event" name="choose_event">
+      <option value="">--Choose One--</option>
+      {% for result in events_list %}
+        <option value="{{result.key().id()}}">{{result.name}}</option>
+      {% endfor %}
+    </select>
   </label>
   <br>
-  <button type="submit">Analyse</button>
+  <label>CSV file:
+    <input type="file" id="csv_file" name="csv_file">
+  </label>
+  <br>
+  <button type="submit" onclick="if (document.getElementById('choose_event').value == '' || document.getElementById('csv_file').value == '') {alert('Please select a disaster and choose a file.'); return false;}">Analyse</button>
 </form>
 
 <h2>Template</h2>
 
 <a href="/admin-import-csv/template.csv">Get CSV Template</a>
+
+<h2>Instructions</h2>
+
+<p>Download the CSV template, complete and submit using the form above.</p>
+
+<h3>Notes</h3>
+<ul>
+  <li>'name' and 'address' are required fields; all others can be left blank if wished.</li>
+  <li>Valid work_types: {{ valid_work_types }}</li>
+  <li>Boolean fields may contain any of: 'y', 'n', 'yes', 'no', 'true', 'false' (case insensitive)</li>
+  <li>Dates are parsed as MM-DD-YYYY first (but other formats will be tried).</li>
+</ul>
 
 {% endblock %}

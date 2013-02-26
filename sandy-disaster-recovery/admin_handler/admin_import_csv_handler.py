@@ -390,12 +390,16 @@ class ImportCSVHandler(base.AuthenticatedHandler):
       # get param
       try:
         csv_file = self.request.params['csv_file'].file
+        csv_filename = self.request.params['csv_file'].filename
       except AttributeError:
         self.response.out.write('No file supplied.')
         return
     
       # store csv file to blobstore
-      blob_filename = files.blobstore.create(mime_type='application/octet-stream')
+      blob_filename = files.blobstore.create(
+        mime_type='application/octet-stream',
+        _blobinfo_uploaded_filename=csv_filename
+      )
       with files.open(blob_filename, 'a') as f:
         f.write(csv_file.read())
       files.finalize(blob_filename)

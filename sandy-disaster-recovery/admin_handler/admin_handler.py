@@ -60,6 +60,20 @@ class AdminHandler(base.AuthenticatedHandler):
         if global_admin == False and local_admin == False:
             self.redirect("/")
             return
+
+        events_list = None
+        if global_admin:
+            query_string = "SELECT * FROM Event"
+            events_list = db.GqlQuery(query_string)
+        
+        if local_admin:
+            events_list = []
+            query_string = "SELECT * FROM Event"
+            events = db.GqlQuery(query_string)
+            
+            for e in events:
+                if e.key() == org.incident.key():                    
+                    events_list.append(e)
             
         if self.request.get("create_contact"):
             data = primary_contact_db.ContactFormFull(self.request.POST)
@@ -232,14 +246,20 @@ class AdminHandler(base.AuthenticatedHandler):
                 is_active_bool = True
             
             if data.validate():
-                logging.warn(data)
-                new_org = organization.Organization(**data.data)
+                # create new org
+                new_org_data = data.data
+                event = event_db.Event.get_by_id(int(data.data['choose_event']))
+                new_org_data['incident'] = event.key()
+                new_org = organization.Organization(**new_org_data)
                 organization.PutAndCache(new_org, ten_minutes)
+
             else:
+                # show the form again
                 self.response.out.write(template.render(
                 {
                     "form": data,
                     "errors": data.errors,
+                    "events_list": events_list,
                     "create_org": True,
                 }))
                 return

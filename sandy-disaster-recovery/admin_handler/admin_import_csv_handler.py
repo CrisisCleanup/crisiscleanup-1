@@ -437,6 +437,17 @@ def write_valid_from_csv(csv_id):
     csv_file_obj.saving = False
     csv_file_obj.save()
 
+def delete_csv(csv_id):
+    csv_file_obj = CSVFile.get_by_id(int(csv_id))
+    csv_file_obj.deleting = True
+    csv_file_obj.save()
+    csv_rows = db.GqlQuery("SELECT * from CSVRow WHERE csv_file=:1", csv_file_obj.key())
+    for csv_row in csv_rows:
+        csv_row.delete()
+    blobstore.BlobInfo.get(csv_file_obj.blob.key()).delete() 
+    csv_file_obj.delete()
+
+
 def invalid_rows_to_csv(csv_file_obj):
     csv_rows = db.GqlQuery(
         "SELECT * from CSVRow WHERE csv_file=:1 and saved=False", csv_file_obj.key()
@@ -545,14 +556,7 @@ class ImportCSVHandler(base.AuthenticatedHandler):
     # delete csv file action
     if action == "delete":
         csv_id = self.request.get('csv_id')
-        csv_file_obj = CSVFile.get_by_id(int(csv_id))
-        csv_file_obj.deleting = True
-        csv_file_obj.save()
-        csv_rows = db.GqlQuery("SELECT * from CSVRow WHERE csv_file=:1", csv_file_obj.key())
-        for csv_row in csv_rows:
-            csv_row.delete()
-        blobstore.BlobInfo.get(csv_file_obj.blob.key()).delete() 
-        csv_file_obj.delete()
+        deferred.defer(delete_csv, csv_id)
         self.redirect('/admin-import-csv')
         return
 

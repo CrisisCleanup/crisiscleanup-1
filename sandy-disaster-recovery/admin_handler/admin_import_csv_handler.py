@@ -111,7 +111,9 @@ class CSVFile(db.Model):
     invalid_row_count = db.IntegerProperty(default=0, required=True)
     saved_count = db.IntegerProperty(default=0, required=True)
     header_present = db.BooleanProperty(default=True, required=True)
+    analysis_started = db.BooleanProperty(default=False, required=True)
     analysis_complete = db.BooleanProperty(default=False, required=True)
+    analysis_failed = db.BooleanProperty(default=False, required=True)
     saving = db.BooleanProperty(default=False, required=True)
     deleting = db.BooleanProperty(default=False, required=True)
 
@@ -368,6 +370,17 @@ def analyse_csv(csv_id):
     Analyse CSV file with @csv_id and save to CSVRow objects.
     """
     csv_file_obj = CSVFile.get_by_id(csv_id)
+
+    # don't allow retries
+    if csv_file_obj.analysis_started:
+        csv_file_obj.analysis_failed = True
+        csv_file_obj.save()
+        raise deferred.PermanentTaskFailure()
+    else:
+        csv_file_obj.analysis_started = True
+        csv_file_obj.save()
+
+    # read generated annotated rows
     event = event_db.Event.get(csv_file_obj.event.key())
     blob_key = csv_file_obj.blob
     blob_fd = blobstore.BlobReader(blob_key)

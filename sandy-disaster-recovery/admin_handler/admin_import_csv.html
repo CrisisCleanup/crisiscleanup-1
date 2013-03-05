@@ -18,7 +18,7 @@
       </tr>
     </thead>
   {% for ac in active_csvs %}
-    {% set ok_to_open = ac.header_present and not ac.saving and not ac.deleting and ac.analysis_complete %}
+    {% set ok_to_open = ac.header_present and not ac.saving and not ac.deleting and ac.analysis_complete and not ac.analysis_failed %}
     <tbody>
       <tr>
         <td>
@@ -30,7 +30,9 @@
         </td>
         <td>{{ ac.event['name'] }}</td>
         <td>
-          {% if not ac.header_present %}
+          {% if ac.analysis_failed %}
+            Error: Analysis failed - too large
+          {% elif not ac.header_present %}
             Error: invalid header row
           {% elif ac.saving %}
             Saving...

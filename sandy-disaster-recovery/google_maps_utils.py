@@ -2,6 +2,8 @@
 import json
 import urllib2
 
+from google.appengine.runtime.apiproxy_errors import OverQuotaError
+
 def geocode(address):
     """
     Geocode @address using the Google Maps API.

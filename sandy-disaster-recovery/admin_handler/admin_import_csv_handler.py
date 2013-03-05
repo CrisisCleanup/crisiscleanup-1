@@ -33,12 +33,14 @@ from google.appengine.ext.db import (
     BooleanProperty, StringProperty, IntegerProperty, FloatProperty, DateTimeProperty,
     ReferenceProperty
 )
+from google.appengine.runtime.apiproxy_errors import OverQuotaError
 
 # Local libraries.
 import base
 import site_util
 import site_db
 import event_db
+import organization
 
 from csv_utils import UnicodeReader, UnicodeWriter
 
@@ -189,7 +191,7 @@ def row_to_dict(event, field_names, row):
                 "SELECT * FROM Organization WHERE name=:1 AND incident=:2", field_value, event.key()
             )
             if results and results.count() == 1:
-                d[field_name] = results[0]
+                d[field_name] = results[0].key().id()
             else:
                 d[field_name] = parsed_value
         elif parsed_value != None:
@@ -289,8 +291,12 @@ def validate_row(event, row):
             row_d.get(name, None) for name in ['address', 'city', 'state']
         ])
     )
-    geocode_result = google_maps_utils.geocode(full_address)
-    validation['address_geocodes_ok'] = bool(geocode_result)
+    try:
+        geocode_result = google_maps_utils.geocode(full_address)
+        geocode_result = {}
+        validation['address_geocodes_ok'] = bool(geocode_result)
+    except OverQuotaError:
+        validation['address_geocodes_ok'] = False
     if not validation['address_geocodes_ok']:
         return validation, None
 
@@ -404,6 +410,11 @@ def write_valid_from_csv(csv_id):
             for gc_field_name, gc_field_value in annotated_row['geocoded_address'].items():
                 if not row_dict.get(gc_field_name, None):
                     row_dict[gc_field_name] = gc_field_value
+            for org_field_name in ['reported_by', 'claimed_by']:
+                if row_dict.get(org_field_name, None):
+                    row_dict[org_field_name] = (
+                        organization.Organization.get_by_id(row_dict[org_field_name])
+                    )
             new_site = site_db.Site(**row_dict)
             new_site.save()
             event_db.AddSiteToEvent(new_site, csv_file_obj.event.key().id())

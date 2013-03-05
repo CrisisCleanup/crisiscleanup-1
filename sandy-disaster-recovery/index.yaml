@@ -10,6 +10,11 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: CSVRow
+  properties:
+  - name: csv_file
+  - name: num
+
 - kind: Organization
   properties:
   - name: incident

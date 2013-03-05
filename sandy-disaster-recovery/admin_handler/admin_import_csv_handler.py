@@ -560,10 +560,6 @@ class ImportCSVHandler(base.AuthenticatedHandler):
         self.redirect('/admin-import-csv')
         return
 
-        
-
-
-
 
 class ActiveCSVImportHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
@@ -571,7 +567,9 @@ class ActiveCSVImportHandler(base.AuthenticatedHandler):
 
         # get csv rows & unpickle
         csv_file_obj = CSVFile.get_by_id(int(csv_id))
-        csv_rows = db.GqlQuery("SELECT * from CSVRow WHERE csv_file=:1", csv_file_obj.key())
+        csv_rows = db.GqlQuery(
+            "SELECT * from CSVRow WHERE csv_file=:1 ORDER BY num ASC", csv_file_obj.key()
+        )
         unpickled_rows = [{'num': cr.num, 'd': pickle.loads(cr.pickle)} for cr in csv_rows]
         annotated_rows = [{
             'num': ur['num'],

@@ -74,9 +74,6 @@ var last_zip_code = "";
 var last_geocode = "";
 var geocoding = false;
 var marker;
-sandy.form.SetUpAdditionalHandlers = function() {
-  goog.dom.getElement('status').onchange = handle_status_changed();
-}
 
 function handle_status_changed() {
   // show Assigned To field only if status is 'Open, unassigned'
@@ -88,6 +85,19 @@ function handle_status_changed() {
     assigned_to_row.style['display'] = 'block';
   }
 }
+
+sandy.form.SetUpAdditionalHandlers = function() {
+  // handle status changed
+  goog.dom.getElement('status').onchange = handle_status_changed();
+
+  // disable return key
+  document.onkeypress = function(e) {
+    if (e.which == '13') {
+      e.preventDefault();
+    }
+  }
+}
+
 
 function validate() {
     var zip_code = goog.dom.getElement('zip_code').value;

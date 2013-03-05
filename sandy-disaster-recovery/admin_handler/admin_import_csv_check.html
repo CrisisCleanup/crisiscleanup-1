@@ -14,15 +14,17 @@
 
 <h1>Import Work Orders by CSV</h1>
 
-<p>Candidate CSV file contains {{ annotated_rows|length }} row(s) &ndash; {{ valid_row_count}} row(s) are valid; {{ invalid_row_count }} row(s) are invalid.</p>
+<p>CSV file "{{ csv_file_obj.filename }}" contains {{ annotated_rows|length }} row(s) &ndash; {{ valid_row_count}} row(s) are valid; {{ invalid_row_count }} row(s) are invalid.</p>
+<p>Event selected: {{ event.name }}</p>
 
 <h2>Save Options</h2>
 
-{% if valid_row_count %}
+<p>Of {{ valid_row_count }} valid row(s), {{ csv_file_obj.saved_count }} have been saved.</p>
+
+{% if valid_row_count and valid_row_count > csv_file_obj.saved_count %}
   <form method="post">
-    <input type="hidden" name="blob_key" value="{{ blob_key }}">
+    <input type="hidden" name="csv_id" value="{{ csv_id }}">
     <input type="hidden" name="choose_event" value="{{ event.key().id() }}">
-    <p>Event selected: {{ event.name }}</p>
     <button type="submit" name="action" value="write" onclick="if (document.getElementById('choose_event').value == '') {alert('Please select an event.'); return false}">Save valid rows</button>
   </form>
 {% else %}
@@ -32,8 +34,9 @@
 <h2>Download Options</h2>
 
 {% if invalid_row_count %}
-  <form method="post" action="admin-import-csv/invalids.csv">
-    <input type="hidden" name="blob_key" value="{{ blob_key }}">
+  <p>There are {{ invalid_row_count }} invalid row(s) available to download.</p>
+  <form method="post" action="/admin-import-csv/active/invalids.csv">
+    <input type="hidden" name="csv_id" value="{{ csv_id }}">
     <input type="hidden" name="choose_event" value="{{ event.key().id() }}">
     <button type="submit" name="action" value="download_invalid_csv">Download invalid rows as CSV</button>
   </form>
@@ -48,6 +51,7 @@
   {% set num = annotated_row['num'] %}
   {% set row = annotated_row['row'] %}
   {% set validation = annotated_row['validation'] %}
+  {% set geocoded_address = annotated_row['geocoded_address']%}
   {% if not validation['row_length_ok'] %}
     <p class="row_number">Row {{ num }}: <span style="color: red">error - wrong length</span></p>
   {% else %}
@@ -65,12 +69,16 @@
       </tr>
     {% endfor %}
     {% for field_name, field_value in zip(field_names, row) %}
-      {% if field_value %}
+      {% if field_value or (geocoded_address and field_name in geocoded_address) %}
         {% set invalid = (field_name in validation['invalid_fields']) %}
         <tr>
-          <th>{{ field_name }}</th>
-          <td class="{% if invalid %}invalid{% endif %}">
-            {{ field_value }}
+          <th style="width: 10%">{{ field_name }}</th>
+          <td class="{% if invalid %}invalid{% endif %}" style="width:40%">
+            {% if field_value %}
+              {{ field_value }}
+            {% elif field_name in geocoded_address %}
+              <b>{{ geocoded_address[field_name] }}</b> <i>(geocoded)</i>
+            {% endif %}
           </td>
           {% if invalid %}
             {% set msg = validation['invalid_fields'][field_name] %}

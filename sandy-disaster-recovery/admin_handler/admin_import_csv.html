@@ -3,6 +3,72 @@
 
 <h1>Import Work Orders by CSV</h1>
 
+<h2>Active Imports</h2>
+
+{% if active_csvs.count() %}
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th>Event</th>
+        <th>Status</th>
+        <th>Valid rows</th>
+        <th>Invalid rows</th>
+        <th>Rows saved</th>
+      </tr>
+    </thead>
+  {% for ac in active_csvs %}
+    {% set ok_to_open = ac.header_present and not ac.saving and not ac.deleting and ac.analysis_complete %}
+    <tbody>
+      <tr>
+        <td>
+          {% if ok_to_open %}
+            <a href="/admin-import-csv/active?id={{ ac.key().id() }}">{{ ac.filename }}</a>
+          {% else %}
+            {{ ac.filename }}
+          {% endif %}
+        </td>
+        <td>{{ ac.event['name'] }}</td>
+        <td>
+          {% if not ac.header_present %}
+            Error: invalid header row
+          {% elif ac.saving %}
+            Saving...
+          {% elif ac.deleting %}
+            Deleting...
+          {% elif ac.saved_count > 0 and ac.saved_count == ac.valid_row_count %}
+            Saved all valid rows
+          {% elif ac.saved_count > 0 and ac.saved_count != ac.valid_row_count %}
+            Saving...
+          {% elif ac.analysis_complete %}
+            Analysis complete
+          {% else %}
+            Reading &amp; analysing...
+          {% endif %}
+        </td>
+        <td>{{ ac.valid_row_count }}</td>
+        <td>{{ ac.invalid_row_count }}</td>
+        <td>{{ ac.saved_count }}</td>
+        {% if not ac.deleting %}
+          <td>
+            <form method="post">
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="csv_id" value="{{ ac.key().id() }}">
+              <button type="submit" onclick="return confirm('Are you sure you want to delete {{ ac.filename }}?')">Delete</button>
+            </form>
+          </td>
+        {% endif %}
+      </tr>
+    </tbody>
+  {% endfor %}
+  </table>
+{% else %}
+  <p>There are no active imports.</p>
+{% endif %}
+<p><a href="#" onClick="window.location.reload();return false;">Refresh</a></p>
+
+<h2>New Import</h2>
+
 <form enctype="multipart/form-data" method="post">
   <label>Disaster:
     <select id="choose_event" name="choose_event">
@@ -17,7 +83,7 @@
     <input type="file" id="csv_file" name="csv_file">
   </label>
   <br>
-  <button type="submit" onclick="if (document.getElementById('choose_event').value == '' || document.getElementById('csv_file').value == '') {alert('Please select a disaster and choose a file.'); return false;}">Analyse</button>
+  <button type="submit" onclick="if (document.getElementById('choose_event').value == '' || document.getElementById('csv_file').value == '') {alert('Please select a disaster and choose a file.'); return false;}">Upload &amp; Analyse</button>
 </form>
 
 <h2>Template</h2>

@@ -142,7 +142,8 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-make-admin', admin_make_admin_handler.AdminHandler, 'admin_make_admin_handler'),
     Route(r'/admin-import-csv', admin_import_csv_handler.ImportCSVHandler, 'admin_import_csv_handler'),
     Route(r'/admin-import-csv/template.csv', admin_import_csv_handler.GetCSVTemplateHandler, 'admin_import_csv_handler'),
-    Route(r'/admin-import-csv/invalids.csv', admin_import_csv_handler.ImportCSVHandler, 'admin_import_csv_handler'),
+    Route(r'/admin-import-csv/active', admin_import_csv_handler.ActiveCSVImportHandler, 'admin_import_csv_handler'),
+    Route(r'/admin-import-csv/active/invalids.csv', admin_import_csv_handler.ActiveCSVImportHandler, 'admin_import_csv_handler'),
     Route(r'/admin-import-contacts', admin_import_contacts_handler.ImportContactsHandler, 'admin_import_contacts_handler'),
     
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),

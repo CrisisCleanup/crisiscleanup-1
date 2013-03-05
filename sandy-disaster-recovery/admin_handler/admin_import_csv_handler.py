@@ -17,6 +17,7 @@
 # System libraries.
 from __future__ import with_statement
 import cStringIO
+import time
 import datetime
 import jinja2
 import logging
@@ -25,6 +26,7 @@ import os
 import csv
 from copy import copy
 
+from google.appengine.ext import deferred
 from google.appengine.ext import db, blobstore
 from google.appengine.api import files
 from google.appengine.ext.db import (
@@ -92,6 +94,29 @@ for field_name, field_type in FIELD_TYPES.items():
 
 HEADINGS_ROW = FIELD_NAMES
 EXAMPLES_ROW = [EXAMPLE_DATA.get(name, '') for name in FIELD_NAMES]
+
+
+#
+# models
+# 
+
+class CSVFile(db.Model):
+    filename = db.StringProperty(required=True)
+    event = db.ReferenceProperty(event_db.Event, required=True)
+    blob = blobstore.BlobReferenceProperty(required=True)
+    valid_row_count = db.IntegerProperty(default=0, required=True)
+    invalid_row_count = db.IntegerProperty(default=0, required=True)
+    saved_count = db.IntegerProperty(default=0, required=True)
+    header_present = db.BooleanProperty(default=True, required=True)
+    analysis_complete = db.BooleanProperty(default=False, required=True)
+    saving = db.BooleanProperty(default=False, required=True)
+    deleting = db.BooleanProperty(default=False, required=True)
+
+class CSVRow(db.Model):
+    csv_file = db.ReferenceProperty(CSVFile, required=True)
+    num = db.IntegerProperty(required=True)
+    pickle = db.BlobProperty(required=True)
+    saved = db.BooleanProperty(default=False, required=True)
 
 
 #
@@ -191,6 +216,9 @@ class AddressUnknownException(ImportException):
 from google.appengine.api.datastore_errors import BadValueError
 
 def validate_row(event, row):
+    """
+    Validates @row for @event and returns (descriptive dict, geocoding) pair.
+    """
     validation = {
         'row_length_ok': None,
         'contains_example_data': None,
@@ -203,24 +231,25 @@ def validate_row(event, row):
     # validate row length
     if not len(row) == len(FIELD_NAMES):
         validation['row_length_ok'] = False
-        return validation
+        return validation, None
     else:
         validation['row_length_ok'] = True
 
     # validate does not contain example data
     row_d = row_to_dict(event, FIELD_NAMES, row)
     validation['contains_example_data'] = any(
-        'example' in val.lower() for val in row_d.values() if isinstance(val, basestring)
+        map(lambda s: 'example' in s or 'warning' in s,
+            [val.lower() for val in row_d.values() if isinstance(val, basestring)])
     )
     if validation['contains_example_data']:
-        return validation
+        return validation, None
 
     # validate specifically required fields (as form_handler does)
     for field_name in ADDITIONALLY_REQUIRED_FIELDS:
         if field_name not in row_d:
             validation['missing_fields'].append(field_name)
     if validation['missing_fields']:
-        return validation
+        return validation, None
 
     # validate org ref fields are not strings
     validation_row_copy = copy(row_d)
@@ -237,13 +266,13 @@ def validate_row(event, row):
         try:
             site = site_db.Site(**validation_row_copy)
             if error_encountered:
-                return validation
+                return validation, None
             else:
                 break
         except BadValueError, e:
             field_name = e.message.split(' ')[1]
             if field_name in validation:
-                return validation
+                return validation, None
             validation['invalid_fields'][field_name] = e.message
             del(validation_row_copy[field_name])
             error_encountered = True
@@ -251,7 +280,7 @@ def validate_row(event, row):
     # bail out if any errors so far
     v = validation
     if any((not v['row_length_ok'], v['invalid_fields'], v['missing_fields'])):
-        return validation
+        return validation, None
 
     # validate full address by geocoding
     full_address = ', '.join(
@@ -262,11 +291,11 @@ def validate_row(event, row):
     geocode_result = google_maps_utils.geocode(full_address)
     validation['address_geocodes_ok'] = bool(geocode_result)
     if not validation['address_geocodes_ok']:
-        return validation
+        return validation, None
 
     # fully validated
     validation['validates'] = True
-    return validation
+    return validation, geocode_result
 
 def validation_to_text(validation):
     """
@@ -276,7 +305,7 @@ def validation_to_text(validation):
     if not validation['row_length_ok']:
         s += "Row is incorrect length; "
     if validation['contains_example_data']:
-        s += "Row contains example data; "
+        s += "Row contains example or warning text; "
     if validation['missing_fields']:
         s += "Missing fields: %s; " % ', '.join(validation['missing_fields'])
     if validation['invalid_fields']:
@@ -287,12 +316,13 @@ def validation_to_text(validation):
 
 class HeaderException(Exception): pass
 
+from google_maps_utils import geocoding_to_address_dict
+
 def read_csv(event, fd):
     """
-    Read CSV @fd to dictionary of annotated rows.
+    Read CSV @fd to and generate annotated rows.
     """
     reader = UnicodeReader(fd)
-    output = {'rows': []}
     for row_num, row in enumerate(reader):
         if row_num == 0:
             # validate heading present
@@ -306,24 +336,97 @@ def read_csv(event, fd):
                         "missing %s; unexpected %s" % (list(missing), list(unexpected))
                     )
                 else:
-                    output['field_names'] = row
                     continue
         else:
-            validation = validate_row(event, row)
+            validation, geocoding = validate_row(event, row)
+            geocoded_address = geocoding_to_address_dict(geocoding) if geocoding else None
             row_dict = row_to_dict(event, FIELD_NAMES, row)
-            output['rows'].append({
+            yield {
                 'num': row_num,
                 'row': row,
                 'row_dict': row_dict,
                 'validation': validation,
-            })
-    return output
+                'geocoded_address': geocoded_address
+            }
 
 def write_csv(fd, rows):
     writer = UnicodeWriter(fd)
     writer.writerow(HEADINGS_ROW)
     for row in rows:
         writer.writerow(row)
+
+import pickle
+
+def analyse_csv(csv_id):
+    """
+    Analyse CSV file with @csv_id and save to CSVRow objects.
+    """
+    csv_file_obj = CSVFile.get_by_id(csv_id)
+    event = event_db.Event.get(csv_file_obj.event.key())
+    blob_key = csv_file_obj.blob
+    blob_fd = blobstore.BlobReader(blob_key)
+    try:
+        for annotated_row in read_csv(event, blob_fd):
+            csv_row_obj = CSVRow(
+                parent=csv_file_obj.key(),
+                csv_file=csv_file_obj.key(),
+                num=annotated_row['num'],
+                pickle=pickle.dumps(annotated_row)
+            )
+            csv_row_obj.save()
+            if annotated_row['validation']['validates']:
+                csv_file_obj.valid_row_count += 1
+            else:
+                csv_file_obj.invalid_row_count += 1
+            csv_file_obj.save()
+    except HeaderException:
+        csv_file_obj.header_present = False
+        csv_file_obj.save()
+        return
+    csv_file_obj.analysis_complete = True
+    csv_file_obj.save()
+
+def write_valid_from_csv(csv_id):
+    """
+    Save valid rows for CSV file with @csv_id to the database.
+    """
+    csv_file_obj = CSVFile.get_by_id(int(csv_id))
+    csv_file_obj.saving = True
+    csv_file_obj.save()
+    csv_rows = db.GqlQuery(
+        "SELECT * from CSVRow WHERE csv_file=:1 and saved=False", csv_file_obj.key()
+    )
+    for csv_row in csv_rows:
+        annotated_row = pickle.loads(csv_row.pickle)
+        if annotated_row['validation'].get('validates', None):
+            row_dict = annotated_row['row_dict']
+            for gc_field_name, gc_field_value in annotated_row['geocoded_address'].items():
+                if not row_dict.get(gc_field_name, None):
+                    row_dict[gc_field_name] = gc_field_value
+            new_site = site_db.Site(**row_dict)
+            new_site.save()
+            event_db.AddSiteToEvent(new_site, csv_file_obj.event.key().id())
+            csv_row.saved = True
+            csv_row.save()
+            csv_file_obj.saved_count += 1
+            csv_file_obj.save()
+    csv_file_obj.saving = False
+    csv_file_obj.save()
+
+def invalid_rows_to_csv(csv_file_obj):
+    csv_rows = db.GqlQuery(
+        "SELECT * from CSVRow WHERE csv_file=:1 and saved=False", csv_file_obj.key()
+    )
+    output_rows = []
+    for csv_row in csv_rows:
+        annotated_row = pickle.loads(csv_row.pickle)
+        if annotated_row['validation'].get('validates', None) == False:
+            output_rows.append(
+                annotated_row['row'] + [validation_to_text(annotated_row['validation'])]
+            )
+    return output_rows
+
+
 
 #
 # templates
@@ -355,12 +458,14 @@ class ImportCSVHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
 
-    # return upload form
+    # return form
+    active_csvs = db.GqlQuery("SELECT * FROM CSVFile")
     events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
     self.response.out.write(import_template.render({
         'global_admin': global_admin,
+        'active_csvs': active_csvs,
         'events_list': events_list,
-        'valid_work_types': site_db.Site.work_type.choices,
+        'valid_work_types': str(site_db.Site.work_type.choices)[1:-1],
     }))
 
   def AuthenticatedPost(self, org, event):
@@ -376,18 +481,17 @@ class ImportCSVHandler(base.AuthenticatedHandler):
         self.redirect("/")
         return
 
-    # get params
+    # get action param
     action = self.request.get('action')
-    blob_key = self.request.get('blob_key')
-    event_id = self.request.get('choose_event')
-    if not event_id:
-      self.response.out.write('No event selected.')
-      return
-    event = event_db.GetEventFromParam(event_id)
 
     # no action => upload & analyse CSV
     if not action:
-      # get param
+      # get params
+      event_id = self.request.get('choose_event')
+      if not event_id:
+        self.response.out.write('No event selected.')
+        return
+      event = event_db.GetEventFromParam(event_id)
       try:
         csv_file = self.request.params['csv_file'].file
         csv_filename = self.request.params['csv_file'].filename
@@ -405,69 +509,92 @@ class ImportCSVHandler(base.AuthenticatedHandler):
       files.finalize(blob_filename)
       blob_key = files.blobstore.get_blob_key(blob_filename)
 
-      # analyse csv   
-      blob_fd = blobstore.BlobReader(blob_key)
-      try:
-        csv_dict = read_csv(event, blob_fd)
-      except HeaderException, e:
-        self.response.out.write('Exception: ' + str(e))
+      # create csv file object
+      csv_file_obj = CSVFile(filename=csv_filename, event=event.key(), blob=blob_key)
+      csv_file_obj.save()
+
+      # perform analysis in background
+      deferred.defer(analyse_csv, csv_file_obj.key().id())
+      self.redirect('/admin-import-csv')
+      return
+
+    # delete csv file action
+    if action == "delete":
+        csv_id = self.request.get('csv_id')
+        csv_file_obj = CSVFile.get_by_id(int(csv_id))
+        csv_file_obj.deleting = True
+        csv_file_obj.save()
+        csv_rows = db.GqlQuery("SELECT * from CSVRow WHERE csv_file=:1", csv_file_obj.key())
+        for csv_row in csv_rows:
+            csv_row.delete()
+        blobstore.BlobInfo.get(csv_file_obj.blob.key()).delete() 
+        csv_file_obj.delete()
+        self.redirect('/admin-import-csv')
         return
-      field_names = csv_dict['field_names']
-      annotated_rows = csv_dict['rows']
-      valid_row_count = len(
-          filter(None, 
-            [row for row in annotated_rows if row['validation'].get('validates', None)]
-          )
-      )
-      invalid_row_count = len(annotated_rows) - valid_row_count
-      self.response.out.write(check_template.render({
-          'global_admin': global_admin,
-          'event': event,
-          'form': site_db.SiteForm(),
-          'field_names': field_names,
-          'annotated_rows': annotated_rows,
-          'valid_row_count': valid_row_count,
-          'invalid_row_count': invalid_row_count,
-          'blob_key': blob_key,
-      }))
-      return
 
-    # action write valid rows
-    if action == 'write':
-      blob_fd = blobstore.BlobReader(blob_key)
-      csv_dict = read_csv(event, blob_fd)
-      sites_written = 0
-      for row in csv_dict['rows']:
-        if row['validation'].get('validates', False):
-          row_dict = row['row_dict']
-          new_site = site_db.Site(**row_dict)
-          new_site.event = event
-          new_site.save()
-          sites_written += 1
-      self.response.out.write('Saved %d new site(s).' % sites_written)
-      return
+        
 
-    # action download invalid CSV
-    if action == 'download_invalid_csv':
-      blob_fd = blobstore.BlobReader(blob_key)
-      csv_dict = read_csv(event, blob_fd)
-      warning_row = [
-        'WARNING: error messages', 'have been added',
-        'at the far right', 'of each row. ',
-        'Remove them', 'and this row', 'before resubmitting.'
-      ]
-      rows_for_csv = [warning_row] + [
-        row['row'] + [validation_to_text(row['validation'])]
-        for row in csv_dict['rows'] if not row['validation'].get('validates', False)
-      ]
-      s = cStringIO.StringIO()
-      write_csv(s, rows_for_csv)
-      s.seek(0)
-      self.response.headers['Content-Type'] = 'text/csv'
-      self.response.out.write(s.read())
-      return
+
+
+
+class ActiveCSVImportHandler(base.AuthenticatedHandler):
+    def AuthenticatedGet(self, org, event):
+        csv_id = self.request.get('id', None)
+
+        # get csv rows & unpickle
+        csv_file_obj = CSVFile.get_by_id(int(csv_id))
+        csv_rows = db.GqlQuery("SELECT * from CSVRow WHERE csv_file=:1", csv_file_obj.key())
+        unpickled_rows = [{'num': cr.num, 'd': pickle.loads(cr.pickle)} for cr in csv_rows]
+        annotated_rows = [{
+            'num': ur['num'],
+            'row': ur['d']['row'],
+            'row_dict': ur['d']['row_dict'],
+            'validation': ur['d']['validation'],
+            'geocoded_address': ur['d']['geocoded_address'],
+        } for ur in unpickled_rows]
+
+        # write out page
+        self.response.out.write(check_template.render({
+            ##'global_admin': global_admin,
+            'event': event,
+            'form': site_db.SiteForm(),
+            'csv_file_obj': csv_file_obj,
+            'csv_id': csv_id, 
+            'field_names': FIELD_NAMES,
+            'annotated_rows': annotated_rows,
+            'valid_row_count': csv_file_obj.valid_row_count,
+            'invalid_row_count': csv_file_obj.invalid_row_count,
+        }))
+
+    def AuthenticatedPost(self, org, event):
+        action = self.request.get('action', None)
+        # action write valid rows
+        if action == 'write':
+            csv_id = int(self.request.get('csv_id'))
+            deferred.defer(write_valid_from_csv, csv_id)
+            self.redirect('/admin-import-csv')
+            return
+
+        # action download invalid CSV
+        if action == 'download_invalid_csv':
+            csv_id = int(self.request.get('csv_id'))
+            csv_file_obj = CSVFile.get_by_id(int(csv_id))
+            warning_row = [
+              'WARNING: error messages', 'have been added',
+              'at the far right', 'of each row. ',
+              'Remove them', 'and this row', 'before resubmitting.'
+            ]
+            rows_for_csv = [warning_row] + invalid_rows_to_csv(csv_file_obj)
+            s = cStringIO.StringIO()
+            write_csv(s, rows_for_csv)
+            s.seek(0)
+            self.response.headers['Content-Type'] = 'text/csv'
+            self.response.out.write(s.read())
+            return
+
+
 
 class GetCSVTemplateHandler(base.AuthenticatedHandler):
-  def AuthenticatedGet(self, org, event):
-    self.response.headers['Content-Type'] = 'text/csv'
-    write_csv_template(self.response.out)
+    def AuthenticatedGet(self, org, event):
+        self.response.headers['Content-Type'] = 'text/csv'
+        write_csv_template(self.response.out)

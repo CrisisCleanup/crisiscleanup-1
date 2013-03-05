@@ -293,7 +293,6 @@ def validate_row(event, row):
     )
     try:
         geocode_result = google_maps_utils.geocode(full_address)
-        geocode_result = {}
         validation['address_geocodes_ok'] = bool(geocode_result)
     except OverQuotaError:
         validation['address_geocodes_ok'] = False

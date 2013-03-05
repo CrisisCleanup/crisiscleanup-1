@@ -75,6 +75,7 @@ EXAMPLE_DATA = {
     'address': '!!REMOVE THIS EXAMPLE ROW!!',
     'city': 'New York City',
     'state': 'NY',
+    'phone1': '555-555-5555',
     'work_type': 'ONE OF: %s' % ', '.join(site_db.Site.work_type.choices),
 }
 

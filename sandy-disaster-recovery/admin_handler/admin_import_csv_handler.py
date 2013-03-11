@@ -405,8 +405,13 @@ def write_valid_from_csv(csv_id):
     csv_rows = db.GqlQuery(
         "SELECT * from CSVRow WHERE csv_file=:1 and saved=False", csv_file_obj.key()
     )
-    for csv_row_obj in csv_rows:
-        deferred.defer(write_valid_row, csv_file_obj.key(), csv_row_obj.key())
+    for i, csv_row_obj in enumerate(csv_rows):
+        deferred.defer(
+            write_valid_row,
+            csv_file_obj.key(),
+            csv_row_obj.key(),
+            _countdown=i
+        )
 
 def write_valid_row(csv_file_obj_key, csv_row_obj_key):
     csv_file_obj = CSVFile.get(csv_file_obj_key)

@@ -17,27 +17,18 @@
 # System libraries.
 from __future__ import with_statement
 import cStringIO
-import time
-import datetime
-import jinja2
 import logging
-import math
 import os
-import csv
+import pickle
 from copy import copy
 
 from google.appengine.ext import deferred
 from google.appengine.ext import db, blobstore
 from google.appengine.api import files
-from google.appengine.ext.db import (
-    BooleanProperty, StringProperty, IntegerProperty, FloatProperty, DateTimeProperty,
-    ReferenceProperty
-)
 from google.appengine.runtime.apiproxy_errors import OverQuotaError
 
 # Local libraries.
 import base
-import site_util
 import site_db
 import event_db
 import organization
@@ -83,10 +74,10 @@ EXAMPLE_DATA = {
 
 for field_name, field_type in FIELD_TYPES.items():
     example_value = {
-        BooleanProperty: 'yes',
-        IntegerProperty: '0',
-        FloatProperty: '0.0',
-        DateTimeProperty: '28/2/2013'
+        db.BooleanProperty: 'yes',
+        db.IntegerProperty: '0',
+        db.FloatProperty: '0.0',
+        db.DateTimeProperty: '28/2/2013'
     }.get(field_type, None)
     if example_value:
         EXAMPLE_DATA[field_name] = example_value
@@ -105,8 +96,11 @@ EXAMPLES_ROW = [EXAMPLE_DATA.get(name, '') for name in FIELD_NAMES]
 
 class CSVFile(db.Model):
     filename = db.StringProperty(required=True)
+    creation_timestamp = db.DateTimeProperty(auto_now_add=True, required=True)
     event = db.ReferenceProperty(event_db.Event, required=True)
     blob = blobstore.BlobReferenceProperty(required=True)
+    total_row_count = db.IntegerProperty(required=True)
+    analysed_row_count = db.IntegerProperty(default=0, required=True)
     valid_row_count = db.IntegerProperty(default=0, required=True)
     invalid_row_count = db.IntegerProperty(default=0, required=True)
     saved_count = db.IntegerProperty(default=0, required=True)
@@ -120,8 +114,11 @@ class CSVFile(db.Model):
 class CSVRow(db.Model):
     csv_file = db.ReferenceProperty(CSVFile, required=True)
     num = db.IntegerProperty(required=True)
-    pickle = db.BlobProperty(required=True)
     saved = db.BooleanProperty(default=False, required=True)
+    row = db.ListProperty(unicode, required=True)
+    row_dict = db.BlobProperty()
+    validation = db.BlobProperty()
+    geocoded_address = db.BlobProperty()
 
 
 #
@@ -157,23 +154,23 @@ def parse_field(field_name, field_type, field_value):
     """
     if field_value == '':
         return None
-    elif field_type == IntegerProperty:
+    elif field_type == db.IntegerProperty:
         return int(field_value)
-    elif field_type == FloatProperty:
+    elif field_type == db.FloatProperty:
         return float(field_value)
-    elif field_type == BooleanProperty:
+    elif field_type == db.BooleanProperty:
         if field_value.lower() in TRUE_VALUES:
             return True
         elif field_value.lower() in FALSE_VALUES:
             return False
         else:
             return field_value # handle error later
-    elif field_type == DateTimeProperty:
+    elif field_type == db.DateTimeProperty:
         try:
             return parse_date(field_value, dayfirst=False) # assume American format
         except ValueError:
             return field_value # handle error later
-    elif field_type == ReferenceProperty:
+    elif field_type == db.ReferenceProperty:
         # handle outside
         return field_value
     else:
@@ -269,7 +266,7 @@ def validate_row(event, row):
     error_encountered = False
     while True:
         try:
-            site = site_db.Site(**validation_row_copy)
+            site_db.Site(**validation_row_copy)
             if error_encountered:
                 return validation, None
             else:
@@ -328,7 +325,7 @@ from google_maps_utils import geocoding_to_address_dict
 
 def read_csv(event, fd):
     """
-    Read CSV @fd to and generate annotated rows.
+    Read CSV @fd to generate (row_num, row), checking for heading row first.
     """
     reader = UnicodeReader(fd)
     for row_num, row in enumerate(reader):
@@ -346,16 +343,7 @@ def read_csv(event, fd):
                 else:
                     continue
         else:
-            validation, geocoding = validate_row(event, row)
-            geocoded_address = geocoding_to_address_dict(geocoding) if geocoding else None
-            row_dict = row_to_dict(event, FIELD_NAMES, row)
-            yield {
-                'num': row_num,
-                'row': row,
-                'row_dict': row_dict,
-                'validation': validation,
-                'geocoded_address': geocoded_address
-            }
+            yield row_num, row
 
 def write_csv(fd, rows):
     writer = UnicodeWriter(fd)
@@ -363,47 +351,49 @@ def write_csv(fd, rows):
     for row in rows:
         writer.writerow(row)
 
-import pickle
+@db.transactional(retries=100)
+def increment_counter(obj_key, counter_field_name, amount):
+    obj = db.get(obj_key)
+    setattr(obj, counter_field_name, getattr(obj, counter_field_name) + amount)
+    obj.put()
 
-def analyse_csv(csv_id):
+@db.transactional(retries=100)
+def inc_counter_and_check(obj_key, counter_field, comparison_field, flag_field, flag_value=True, amount=1):
     """
-    Analyse CSV file with @csv_id and save to CSVRow objects.
-    """
-    csv_file_obj = CSVFile.get_by_id(csv_id)
+    Increment @counter_field of obj with @obj_key by @amount.
 
-    # don't allow retries
-    if csv_file_obj.analysis_started:
-        csv_file_obj.analysis_failed = True
-        csv_file_obj.save()
-        raise deferred.PermanentTaskFailure()
+    If @counter_field value matches value of @comparison_field,
+    set @flag_field to @flag_value.
+    """
+    obj = db.get(obj_key)
+    new_counter_val = getattr(obj, counter_field) + amount
+    setattr(obj, counter_field, new_counter_val)
+    if new_counter_val == getattr(obj, comparison_field):
+        setattr(obj, flag_field, flag_value)
+    obj.put()
+
+def analyse_row(csv_file_obj_key, csv_row_obj_key):
+    csv_file_obj = CSVFile.get(csv_file_obj_key)
+    csv_row_obj = CSVRow.get(csv_row_obj_key)
+    event = csv_file_obj.event
+    row = csv_row_obj.row
+    validation, geocoding = validate_row(event, row)
+    geocoded_address = geocoding_to_address_dict(geocoding) if geocoding else None
+    row_dict = row_to_dict(event, FIELD_NAMES, row)
+    csv_row_obj.row_dict = pickle.dumps(row_dict)
+    csv_row_obj.validation = pickle.dumps(validation)
+    csv_row_obj.geocoded_address = pickle.dumps(geocoded_address)
+    csv_row_obj.save()
+
+    # increment counters
+    inc_counter_and_check(
+        csv_file_obj.key(), 'analysed_row_count', 'total_row_count', 'analysis_complete'
+    )
+    if validation['validates']:
+        increment_counter(csv_file_obj.key(), 'valid_row_count', 1)
     else:
-        csv_file_obj.analysis_started = True
-        csv_file_obj.save()
+        increment_counter(csv_file_obj.key(), 'invalid_row_count', 1)
 
-    # read generated annotated rows
-    event = event_db.Event.get(csv_file_obj.event.key())
-    blob_key = csv_file_obj.blob
-    blob_fd = blobstore.BlobReader(blob_key)
-    try:
-        for annotated_row in read_csv(event, blob_fd):
-            csv_row_obj = CSVRow(
-                parent=csv_file_obj.key(),
-                csv_file=csv_file_obj.key(),
-                num=annotated_row['num'],
-                pickle=pickle.dumps(annotated_row)
-            )
-            csv_row_obj.save()
-            if annotated_row['validation']['validates']:
-                csv_file_obj.valid_row_count += 1
-            else:
-                csv_file_obj.invalid_row_count += 1
-            csv_file_obj.save()
-    except HeaderException:
-        csv_file_obj.header_present = False
-        csv_file_obj.save()
-        return
-    csv_file_obj.analysis_complete = True
-    csv_file_obj.save()
 
 def write_valid_from_csv(csv_id):
     """
@@ -415,27 +405,35 @@ def write_valid_from_csv(csv_id):
     csv_rows = db.GqlQuery(
         "SELECT * from CSVRow WHERE csv_file=:1 and saved=False", csv_file_obj.key()
     )
-    for csv_row in csv_rows:
-        annotated_row = pickle.loads(csv_row.pickle)
-        if annotated_row['validation'].get('validates', None):
-            row_dict = annotated_row['row_dict']
-            for gc_field_name, gc_field_value in annotated_row['geocoded_address'].items():
-                if not row_dict.get(gc_field_name, None):
-                    row_dict[gc_field_name] = gc_field_value
-            for org_field_name in ['reported_by', 'claimed_by']:
-                if row_dict.get(org_field_name, None):
-                    row_dict[org_field_name] = (
-                        organization.Organization.get_by_id(row_dict[org_field_name])
-                    )
-            new_site = site_db.Site(**row_dict)
-            new_site.save()
-            event_db.AddSiteToEvent(new_site, csv_file_obj.event.key().id())
-            csv_row.saved = True
-            csv_row.save()
-            csv_file_obj.saved_count += 1
-            csv_file_obj.save()
-    csv_file_obj.saving = False
-    csv_file_obj.save()
+    for csv_row_obj in csv_rows:
+        deferred.defer(write_valid_row, csv_file_obj.key(), csv_row_obj.key())
+
+def write_valid_row(csv_file_obj_key, csv_row_obj_key):
+    csv_file_obj = CSVFile.get(csv_file_obj_key)
+    csv_row_obj = CSVRow.get(csv_row_obj_key)
+    row_dict = pickle.loads(csv_row_obj.row_dict)
+    validation = pickle.loads(csv_row_obj.validation)
+    geocoded_address = pickle.loads(csv_row_obj.geocoded_address)
+    if validation['validates']: 
+        for gc_field_name, gc_field_value in geocoded_address.items():
+            if not row_dict.get(gc_field_name, None):
+                row_dict[gc_field_name] = gc_field_value
+        for org_field_name in ['reported_by', 'claimed_by']:
+            if row_dict.get(org_field_name, None):
+                row_dict[org_field_name] = (
+                    organization.Organization.get_by_id(row_dict[org_field_name])
+                )
+        new_site = site_db.Site(**row_dict)
+        new_site.save()
+        event_db.AddSiteToEvent(new_site, csv_file_obj.event.key().id())
+
+        # update counters
+        csv_row_obj.saved = True
+        csv_row_obj.save()
+        inc_counter_and_check(
+            csv_file_obj.key(), 'saved_count', 'valid_row_count', 'saving', flag_value=False
+        )
+
 
 def delete_csv(csv_id):
     csv_file_obj = CSVFile.get_by_id(int(csv_id))
@@ -453,11 +451,11 @@ def invalid_rows_to_csv(csv_file_obj):
         "SELECT * from CSVRow WHERE csv_file=:1 and saved=False", csv_file_obj.key()
     )
     output_rows = []
-    for csv_row in csv_rows:
-        annotated_row = pickle.loads(csv_row.pickle)
-        if annotated_row['validation'].get('validates', None) == False:
+    for csv_row_obj in csv_rows:
+        validation = pickle.loads(csv_row_obj.validation)
+        if validation['validates'] == False:
             output_rows.append(
-                annotated_row['row'] + [validation_to_text(annotated_row['validation'])]
+                csv_row_obj.row + [validation_to_text(validation)]
             )
     return output_rows
 
@@ -467,6 +465,7 @@ def invalid_rows_to_csv(csv_file_obj):
 # templates
 #
 
+import jinja2
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 jinja_environment.globals.update(zip=zip)
@@ -545,11 +544,38 @@ class ImportCSVHandler(base.AuthenticatedHandler):
       blob_key = files.blobstore.get_blob_key(blob_filename)
 
       # create csv file object
-      csv_file_obj = CSVFile(filename=csv_filename, event=event.key(), blob=blob_key)
+      blob_fd = blobstore.BlobReader(blob_key)
+      blob_fd.seek(0)
+      total_row_count = len(blob_fd.readlines()) - 1
+      csv_file_obj = CSVFile(
+        filename=csv_filename,
+        event=event.key(),
+        blob=blob_key,
+        total_row_count=total_row_count,
+        analysis_started=True
+      )
       csv_file_obj.save()
 
-      # perform analysis in background
-      deferred.defer(analyse_csv, csv_file_obj.key().id())
+      # create csv row objects
+      blob_fd.seek(0)
+      try:
+          for row_num, row in read_csv(event, blob_fd):
+            csv_row_obj = CSVRow(
+                parent=csv_file_obj.key(),
+                csv_file=csv_file_obj.key(),
+                num=row_num,
+                row=row
+            )
+            csv_row_obj.save()
+
+            # analyse row in background
+            deferred.defer(analyse_row, csv_file_obj.key(), csv_row_obj.key())
+      except HeaderException:
+          csv_file_obj.header_present = False
+          csv_file_obj.save()
+          self.redirect('/admin-import-csv')
+          return
+
       self.redirect('/admin-import-csv')
       return
 
@@ -565,19 +591,18 @@ class ActiveCSVImportHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
         csv_id = self.request.get('id', None)
 
-        # get csv rows & unpickle
+        # get csv rows & unpickle fields
         csv_file_obj = CSVFile.get_by_id(int(csv_id))
         csv_rows = db.GqlQuery(
             "SELECT * from CSVRow WHERE csv_file=:1 ORDER BY num ASC", csv_file_obj.key()
         )
-        unpickled_rows = [{'num': cr.num, 'd': pickle.loads(cr.pickle)} for cr in csv_rows]
         annotated_rows = [{
-            'num': ur['num'],
-            'row': ur['d']['row'],
-            'row_dict': ur['d']['row_dict'],
-            'validation': ur['d']['validation'],
-            'geocoded_address': ur['d']['geocoded_address'],
-        } for ur in unpickled_rows]
+            'num': cro.num,
+            'row': cro.row,
+            'row_dict': pickle.loads(cro.row_dict),
+            'validation': pickle.loads(cro.validation),
+            'geocoded_address': pickle.loads(cro.geocoded_address),
+        } for cro in csv_rows]
 
         # write out page
         self.response.out.write(check_template.render({

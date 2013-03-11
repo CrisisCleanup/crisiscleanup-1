@@ -11,7 +11,9 @@
       <tr>
         <th>Filename</th>
         <th>Event</th>
+        <th>Uploaded</th>
         <th>Status</th>
+        <th>Rows</th>
         <th>Valid rows</th>
         <th>Invalid rows</th>
         <th>Rows saved</th>
@@ -29,13 +31,14 @@
           {% endif %}
         </td>
         <td>{{ ac.event['name'] }}</td>
+        <td>{{ ac.creation_timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
         <td>
           {% if ac.analysis_failed %}
-            Error: Analysis failed - too large
+            Error: Analysis failed (possibly too large)
           {% elif not ac.header_present %}
             Error: invalid header row
           {% elif ac.saving %}
-            Saving...
+            Saving rows to db...
           {% elif ac.deleting %}
             Deleting...
           {% elif ac.saved_count > 0 and ac.saved_count == ac.valid_row_count %}
@@ -48,6 +51,7 @@
             Reading &amp; analysing...
           {% endif %}
         </td>
+        <td>{{ ac.total_row_count }}</td>
         <td>{{ ac.valid_row_count }}</td>
         <td>{{ ac.invalid_row_count }}</td>
         <td>{{ ac.saved_count }}</td>
@@ -90,7 +94,7 @@
 
 <h2>Template</h2>
 
-<a href="/admin-import-csv/template.csv">Get CSV Template</a>
+<a href="/admin-import-csv/template.csv">Download CSV Template</a>
 
 <h2>Instructions</h2>
 

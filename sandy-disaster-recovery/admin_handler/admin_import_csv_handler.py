@@ -68,8 +68,8 @@ FIELD_TYPES = {
     for field_name in FIELD_NAMES
 }
 
-ADDITIONALLY_REQUIRED_FIELDS = [
-    'name', 'phone1', 'city', 'state', 'work_type',
+EXPLICITLY_REQUIRED_FIELDS = [
+    'name', 'address', 'city', 'state', 'phone1', 'work_type',
 ]
 
 EXAMPLE_DATA = {
@@ -249,8 +249,8 @@ def validate_row(event, row):
     if validation['contains_example_data']:
         return validation, None
 
-    # validate specifically required fields (as form_handler does)
-    for field_name in ADDITIONALLY_REQUIRED_FIELDS:
+    # validate explicitly required fields (as form_handler does)
+    for field_name in EXPLICITLY_REQUIRED_FIELDS:
         if field_name not in row_d:
             validation['missing_fields'].append(field_name)
     if validation['missing_fields']:

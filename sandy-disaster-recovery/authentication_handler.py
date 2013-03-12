@@ -53,7 +53,8 @@ def GetOrganizationForm(post_data):
   if events.count() == 0:
     logging.warning("Initialize called")
     e = event_db.Event(name = event_db.DefaultEventName(),
-                       case_label = "A")
+                       case_label = "A",
+                       short_name = "sandy")
     e.put()
     event_key = e.key()
     # TODO(Jeremy): This could be dangerous if we reset events.
@@ -104,7 +105,7 @@ class AuthenticationHandler(base.RequestHandler):
   def get(self):
     org, event = key.CheckAuthorization(self.request)
     if org and event:
-      self.redirect(urllib.unquote(self.request.get('destination', default_value='/')).encode('ascii'))
+      self.redirect(self.request.get('destination', default_value='/'))
       return
 
     self.response.out.write(template.render({

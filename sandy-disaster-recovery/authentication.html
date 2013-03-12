@@ -1,18 +1,43 @@
-<!DOCTYPE html>
-<html>
+{% extends "base_template.html" %}
 
-<head>
+{% block head_content %}
+<link href="/stylesheets/default.css" rel="stylesheet">
  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
   <script type="text/javascript" src="javascript/authentication_dropdown.js"></script>         
 
-<title>Report a Work Zone</title>
-<link href="/stylesheets/default.css" rel="stylesheet">
-</head>
-<body>
+{% endblock %}
+
+{% block login %}
+class="activePage"
+{% endblock %}
+
+
+{% block description_title %}
+Current organizations can sign in here
+{% endblock %}
+
+{% block description_subtitle %}
+Interested in signing up? Just click <a href="/signup">here</a>.
+{% endblock %}
+
+{% block sidebar_title %}
+Thank you!
+{% endblock %}
+
+{% block sidebar_content %}
+<p>For all of our existing members, and for everyone interested in this system. Thank you for the great work that you do.</p>
+<p>If you have any questions or concerns about the new system please <a href="/contact">let us know</a>.</p>
+{% endblock %}
+
+{% block main_title %}
+Choose an incident, then fill out the rest of the form
+{% endblock %}
+
+{% block main_content %}
 <form method="POST" action="{{page}}">
 <input type="hidden" value="{{destination}}" name="destination" />
 <table>
-<tr><td class=question>Work Event:</td>
+<tr><td class=question>Incident:</td>
 <td class="answer">{{ form.event }}</td></tr>
 <tr class="toggle"><td class=question>Organization:</td>
 <td class="answer"><select id="organization" name="name">
@@ -22,7 +47,4 @@
 </table>
 <input class="toggle" type="submit" />
 <br/>
-<p>New organization interested in joining crisiscleanup.org? Signup <a href="/signup">here</a>.</p>
-
-</body>
-</html>
+{% endblock %}

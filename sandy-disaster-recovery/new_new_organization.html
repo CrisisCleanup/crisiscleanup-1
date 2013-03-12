@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html>
-    <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
-    <link href="/stylesheets/new_org_form.css?v={{version}}" rel="stylesheet">
-    <link href="/closure/css/dialog.css?v={{version}}" rel="stylesheet">
-<body>
+{% extends "base_template.html" %}
 
+{% block signup %}
+class="activePage"
+{% endblock %}
+
+{% block description_title %}
+Thanks for your interest!
+{% endblock %}
+
+{% block description_subtitle %}
+We will review your organization, contact you, and bring you into the project as soon as possible.
+{% endblock %}
+
+{% block sidebar_title %}
+How do we vet organizations?
+{% endblock %}
+
+{% block sidebar_content %}
+<p>Privacy and safety is very important to us. So we do our best to make sure that organizations that join are joining for the right reason.</p>
+<p>The first part of our vetting process is the simplest. Does your organization do the type of work for which this platform was created? Do you do home assessments and/or gutting, mucking-out, debris removal, mold abatement, or rebuilding. If we can answer that question with a 'yes', then we move on to checking your organizations reputation</p>
+<p>To vet your organization, we make sure that the email you used is part of your organizations email, we contact other people involved with your organization, and we check your organizations accreditation. Whether that means you are a part of a large organization like the Red Cross or FEMA, or whether you are a volunteer organization part of National VOAD, we work to make sure that every organization that comes on board has a good history with the community and with disaster relief.<p>
+<p>For additional questions, please <a href="/contact">contact us</a>.</p>
+{% endblock %}
+
+{% block main_title %}
+Welcome to our signup page!
+{% endblock %}
+
+{% block main_content %}
 <div id="form_background">
 <div id="form">
 <h1>Signup</h1>
@@ -261,5 +284,4 @@ In contrast, a Survey is a brief intake of the name, address and contact informa
 
 </div>
 </div>
-</body>
-<html>
+{% endblock %}

@@ -36,6 +36,7 @@ import site_util
 import event_db
 import primary_contact_db
 import organization
+import key
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -43,11 +44,16 @@ template = jinja_environment.get_template('new_new_organization.html')
 
 class NewOrganizationHandler(base.RequestHandler):
     def get(self):
+	logged_in = False
+        org, event = key.CheckAuthorization(self.request)
+        if org and key:
+	  logged_in = True
         form = organization.OrganizationForm()
         #events_list = event_db.GetAllCached()
         events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
         self.response.out.write(template.render(
         {
+	    "logged_in": logged_in,
             "form": form,
             "events_list": events_list,
         }))

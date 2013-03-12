@@ -1,0 +1,64 @@
+{% extends "base_template.html" %}
+
+{% block head_content %}
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
+
+  <script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?sensor=false">
+  </script>
+  
+  <script type="text/javascript">
+  function initialize() {
+
+
+  }
+  </script>
+  
+    <script type="text/javascript" src="javascript/public_map5.js"></script>      
+    
+    <script type="text/javascript" src="javascript/map_clusterer.js"></script>       
+    <script type="text/javascript" src="javascript/messi.js"></script>       
+      <link rel="stylesheet" href="stylesheets/messi.css">
+
+{% endblock %}
+
+{% block publicmap %}
+class="activePage"
+{% endblock %}
+
+{% block description_title %}
+Check out the public maps of our current incidents
+{% endblock %}
+
+{% block description_subtitle %}
+All personal info has been changed, and the lat/lng has been adjusted as well
+{% endblock %}
+
+{% block sidebar_title %}
+<br/>
+<img id="legend_img" src="/icons/Legend.png" />
+{% endblock %}
+
+{% block sidebar_content %}
+<h2>Incidents</h2>
+{% for event in events %}
+<p class="MapIncident" id="{{event.short_name}}">{{event.name}}</p>
+{% endfor %}
+<h2>Filters</h2>
+
+<p class="MapFilter">Claimed Sites</p>
+<p class="MapFilter">Unclaimed Sites</p>
+<p class="MapFilter">Open Sites</p>
+<p class="MapFilter">Closed Sites</p>
+{% endblock %}
+
+{% block main_title %}
+Public Maps
+{% endblock %}
+
+{% block main_content %}
+<div id="display_incident"></div>
+<div id="display_filter"></div>
+<div id="map_canvas" style="width: 700px; height: 550px"></div>
+
+{% endblock %}

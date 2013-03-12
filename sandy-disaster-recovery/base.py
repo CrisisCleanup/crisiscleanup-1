@@ -52,8 +52,7 @@ class AuthenticatedHandler(RequestHandler):
       self.HandleAuthenticationFailure('post')
       return
     for i in self.request.POST.keys():
-      if hasattr(self.request.POST[i], 'replace'): # can be cgi-escaped?
-        self.request.POST[i] = cgi.escape(self.request.POST[i])
+      self.request.POST[i] = cgi.escape(self.request.POST[i])
     self.AuthenticatedPost(org, event)
 
   def get(self):
@@ -75,8 +74,7 @@ class AuthenticatedHandler(RequestHandler):
     This is its own method so that subclasses can customize the action.
     """
     if method == 'get':
-      self.redirect("/authentication?destination=" +
-                    urllib.quote(str(self.request.url).encode('utf-8')))
+      self.redirect("/home")
     else:
       # Redirecting to a non-GET URL doesn't really make sense.
       self.redirect("/authentication")

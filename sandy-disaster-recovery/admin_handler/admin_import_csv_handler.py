@@ -17,7 +17,7 @@
 # System libraries.
 from __future__ import with_statement
 import cStringIO
-import logging
+##import logging
 import os
 import pickle
 from copy import copy
@@ -428,6 +428,8 @@ def write_valid_row(csv_file_obj_key, csv_row_obj_key):
                 row_dict[org_field_name] = (
                     organization.Organization.get_by_id(row_dict[org_field_name])
                 )
+
+        # create site object
         new_site = site_db.Site(**row_dict)
         new_site.save()
         event_db.AddSiteToEvent(new_site, csv_file_obj.event.key().id())
@@ -561,26 +563,8 @@ class ImportCSVHandler(base.AuthenticatedHandler):
       )
       csv_file_obj.save()
 
-      # create csv row objects
-      blob_fd.seek(0)
-      try:
-          for row_num, row in read_csv(event, blob_fd):
-            csv_row_obj = CSVRow(
-                parent=csv_file_obj.key(),
-                csv_file=csv_file_obj.key(),
-                num=row_num,
-                row=row
-            )
-            csv_row_obj.save()
-
-            # analyse row in background
-            deferred.defer(analyse_row, csv_file_obj.key(), csv_row_obj.key())
-      except HeaderException:
-          csv_file_obj.header_present = False
-          csv_file_obj.save()
-          self.redirect('/admin-import-csv')
-          return
-
+      # create csv row objects in the background
+      deferred.defer(write_csv_row_objects, csv_file_obj.key())
       self.redirect('/admin-import-csv')
       return
 
@@ -590,6 +574,33 @@ class ImportCSVHandler(base.AuthenticatedHandler):
         deferred.defer(delete_csv, csv_id)
         self.redirect('/admin-import-csv')
         return
+
+def write_csv_row_objects(csv_file_obj_key):
+    csv_file_obj = CSVFile.get(csv_file_obj_key)
+    event = csv_file_obj.event
+    blob_fd = blobstore.BlobReader(csv_file_obj.blob)
+    blob_fd.seek(0)
+    try:
+        for row_num, row in read_csv(event, blob_fd):
+          csv_row_obj = CSVRow(
+             ### parent=csv_file_obj.key(),
+              csv_file=csv_file_obj.key(),
+              num=row_num,
+              row=row
+          )
+          csv_row_obj.save()
+
+          # analyse row in background
+          deferred.defer(
+              analyse_row,
+              csv_file_obj.key(),
+              csv_row_obj.key(),
+              _countdown=int(0.2 * int(row_num))
+          )
+    except HeaderException:
+        csv_file_obj.header_present = False
+        csv_file_obj.save()
+
 
 
 class ActiveCSVImportHandler(base.AuthenticatedHandler):

@@ -37,6 +37,7 @@ import event_db
 import primary_contact_db
 import organization
 import key
+import page_db
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -48,11 +49,8 @@ class AboutHandler(base.RequestHandler):
         org, event = key.CheckAuthorization(self.request)
         if org and key:
 	  logged_in = True
-        self.response.out.write(template.render(
-        {
-	  'logged_in': logged_in,
-            #"form": form,
-            #"events_list": events_list,
-        }))
+        template_params = page_db.get_page_block_dict()
+        template_params['logged_in'] = logged_in
+        self.response.out.write(template.render(template_params))
 
             

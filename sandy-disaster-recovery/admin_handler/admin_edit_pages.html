@@ -1,0 +1,19 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+<h1>Edit Pages (Blocks)</h1>
+
+<p>Edit page blocks. All HTML is allowed.</p>
+
+{% for form in forms %}
+  <a name="{{ form.name.data }}">
+  <form method="POST" action="#{{ form.name.data }}">
+    <h2>{{ form.name.data }}</h2>
+    {{ form.name }}
+    <div>
+      {{ form.html(rows=10, cols=80) }}
+    </div>
+    <button type="submit">Save</button>
+  </form>
+{% endfor %}
+
+{% endblock %}

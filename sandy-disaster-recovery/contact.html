@@ -3,33 +3,25 @@
 class="activePage"
 {% endblock %}
 {% block description_title %}
-We're interested in hearing from you
+{{ contact_description_title_page_block|safe }}
 {% endblock %}
 
 {% block description_subtitle %}
-Please write is with ideas, solutions, of if you want to help.
+{{ contact_description_subtitle_page_block|safe }}
 {% endblock %}
 
 {% block sidebar_title %}
-How can you help?
+{{ contact_sidebar_title_page_block|safe }}
 {% endblock %}
 
 {% block sidebar_content %}
-<p>We can always use help at CrisisCleanup.org. Here is a short list of some of the things we are looking for.</p>
-<ul>
-<li>Get the word out, let people know about CrisisCleanup.org</li>
-<li><a href="/signup">Sign up!</a>If you're are a part of an organization that might want to be a part of CrisisCleanup.org, signup, or send us an email</li>
-<li>We can always use more developers. CrisisCleanup.org is run on Google App Engine, running python.</li>
-<li>Documentation: Document how to use the project, or document the code itself. Either would be a big help!</li>
-<ul>
+{{ contact_sidebar_page_block|safe }}
 {% endblock %}
 
 {% block main_title %}
-Email us any time
+{{ contact_main_title_page_block|safe }}
 {% endblock %}
 
 {% block main_content %}
-<p>For questions regarding the app, send emails to aaron@crisiscleanup.org</p>
-<p>For technical questions, you can email aaron@crisiscleanup.org, or andy@crisiscleanup.org</p>
-<p>Thank you for your time and interest</p>
+{{ contact_main_page_block|safe }}
 {% endblock %}

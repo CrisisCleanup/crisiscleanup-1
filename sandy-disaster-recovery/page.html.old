@@ -1,0 +1,39 @@
+{% extends "base_template.html" %}
+
+{% block home %}
+class="activePage"
+{% endblock %}
+
+{% block banner %}
+       <article role="main" class="clearfix">
+           <div class="post">
+             <h2>We're showing that we <i>can</i> bring organizations together to share information</h2>
+             <p>This project came out of the aftermath of Occupy Sandy. In the first days and weeks after the storm, one of the biggest challenges faced was that of organizational overlap. One side of a street might have been contacted several times, by several different organizations. While the other side of the street was left uncanvassed. This lead to survey fatigue, asymmetric aide, and volunteers who were frustrated because it wasn't clear what needed to be done. We wanted to do better for ourselves and our neighbors. So far, we are collaborating with over 100 organizations, with more signing up every day. <strong>CrisisCleanup.org proves that it is possible to create a near frictionless technological platform where inter-organization Cooperation, Communication, Coordination, and Collaboration is not only convenient, but required.</strong></p>
+             {{ home_block|safe }}
+           </div>
+       </article>
+{% endblock %}
+
+{% block description_title %}
+Crisis Cleanup is a Free and Open Source disaster relief mapping tool
+{% endblock %}
+
+{% block description_subtitle %}
+Bringing organizations together for better disaster relief. We're helping to facilitate over 100 organizations in 5 different states
+{% endblock %}
+
+{% block sidebar_title %}
+side bar title
+{% endblock %}
+
+{% block sidebar_content %}
+content
+{% endblock %}
+
+{% block main_title %}
+main title
+{% endblock %}
+
+{% block main_content %}
+main content
+{% endblock %}

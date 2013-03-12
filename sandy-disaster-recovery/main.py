@@ -63,7 +63,6 @@ from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
 from admin_handler import admin_all_organizations_handler
-from admin_handler import admin_all_organizations_handler
 from admin_handler import admin_inactive_organizations_handler
 from admin_handler import admin_create_admin_handler
 from admin_handler import admin_create_contact_handler
@@ -74,6 +73,7 @@ from admin_handler import admin_see_admins_handler
 from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
 from admin_handler import admin_import_csv_handler
+from admin_handler import admin_edit_pages_handler
 
 
 from admin_handler import admin_single_organization_handler as admin_single_organization_handler
@@ -155,6 +155,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-import-csv/template.csv', admin_import_csv_handler.GetCSVTemplateHandler, 'admin_import_csv_handler'),
     Route(r'/admin-import-csv/active', admin_import_csv_handler.ActiveCSVImportHandler, 'admin_import_csv_handler'),
     Route(r'/admin-import-csv/active/invalids.csv', admin_import_csv_handler.ActiveCSVImportHandler, 'admin_import_csv_handler'),
+    Route(r'/admin-edit-pages', admin_edit_pages_handler.AdminEditPagesHandler, 'admin_edit_pages_handler'),
 
     
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),

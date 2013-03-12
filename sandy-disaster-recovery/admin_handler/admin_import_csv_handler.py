@@ -241,7 +241,7 @@ def validate_row(event, row):
     # validate does not contain example data
     row_d = row_to_dict(event, FIELD_NAMES, row)
     validation['contains_example_data'] = any(
-        map(lambda s: 'example' in s or 'warning' in s,
+        map(lambda s: 'example' in s or 'warning' in s or 'error' in s,
             [val.lower() for val in row_d.values() if isinstance(val, basestring)])
     )
     if validation['contains_example_data']:
@@ -309,16 +309,21 @@ def validation_to_text(validation):
     """
     s = ""
     if not validation['row_length_ok']:
-        s += "Row is incorrect length; "
+        if s: s+= "; "
+        s += "Row is incorrect length"
     if validation['contains_example_data']:
-        s += "Row contains example or warning text; "
+        if s: s+= "; "
+        s += "Row contains example or warning text"
     if validation['missing_fields']:
-        s += "Missing fields: %s; " % ', '.join(validation['missing_fields'])
+        if s: s+= "; "
+        s += "Missing fields: %s" % ', '.join(validation['missing_fields'])
     if validation['invalid_fields']:
-        s += "Invalid fields: %s; " % ', '.join(validation['invalid_fields'])
+        if s: s+= "; "
+        s += "Invalid data: %s" % ', '.join(validation['invalid_fields'])
     if not s and not validation['address_geocodes_ok']:
-        s += "Could not find address; "
-    return "ERRORS: %s" % s
+        if s: s+= "; "
+        s += "Could not find address"
+    return s
 
 class HeaderException(Exception): pass
 
@@ -348,7 +353,6 @@ def read_csv(event, fd):
 
 def write_csv(fd, rows):
     writer = UnicodeWriter(fd)
-    writer.writerow(HEADINGS_ROW)
     for row in rows:
         writer.writerow(row)
 
@@ -463,7 +467,7 @@ def invalid_rows_to_csv(csv_file_obj):
         validation = pickle.loads(csv_row_obj.validation)
         if validation['validates'] == False:
             output_rows.append(
-                csv_row_obj.row + [validation_to_text(validation)]
+                [validation_to_text(validation)] + csv_row_obj.row
             )
     return output_rows
 
@@ -650,12 +654,10 @@ class ActiveCSVImportHandler(base.AuthenticatedHandler):
         if action == 'download_invalid_csv':
             csv_id = int(self.request.get('csv_id'))
             csv_file_obj = CSVFile.get_by_id(int(csv_id))
-            warning_row = [
-              'WARNING: error messages', 'have been added',
-              'at the far right', 'of each row. ',
-              'Remove them', 'and this row', 'before resubmitting.'
-            ]
-            rows_for_csv = [warning_row] + invalid_rows_to_csv(csv_file_obj)
+            rows_for_csv = ( 
+                [['ERRORS: !!remove this column!!'] + HEADINGS_ROW] + 
+                invalid_rows_to_csv(csv_file_obj)
+            )
             s = cStringIO.StringIO()
             write_csv(s, rows_for_csv)
             s.seek(0)

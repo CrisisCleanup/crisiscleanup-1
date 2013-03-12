@@ -105,7 +105,7 @@ class AuthenticationHandler(base.RequestHandler):
   def get(self):
     org, event = key.CheckAuthorization(self.request)
     if org and event:
-      self.redirect(self.request.get('destination', default_value='/'))
+      self.redirect(urllib.unquote(self.request.get('destination', default_value='/')).encode('ascii'))
       return
 
     self.response.out.write(template.render({

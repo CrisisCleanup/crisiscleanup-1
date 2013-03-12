@@ -20,8 +20,8 @@ import re
 import logging
 import wtforms.ext.dateutil.fields
 import wtforms.fields
-from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
+from google.appengine.api import memcache
 from wtforms.ext.appengine.db import model_form
 
 from wtforms import HiddenField
@@ -32,6 +32,8 @@ from wtforms import HiddenField
 FILENAMES = ['page.html', 'about.html', 'contact.html']
 
 PAGE_BLOCK_MARKER_CRX = re.compile('[a-z0-9_]+_page_block')
+
+MEMCACHE_DICT_KEY = 'page_block_dict'
 
 
 # classes
@@ -63,7 +65,13 @@ def get_page_block_html(name):
         return None
 
 def get_page_block_dict():
-    return {block.name:block.html for block in PageBlock.all()}
+    cached = memcache.get(MEMCACHE_DICT_KEY)
+    if cached is not None:
+        return cached
+    else:
+        page_block_dict = {block.name:block.html for block in PageBlock.all()}
+        memcache.add(MEMCACHE_DICT_KEY, page_block_dict)
+        return page_block_dict
 
 def construct_forms(page_blocks):
     return [PageBlockForm(None, block) for block in page_blocks]
@@ -75,6 +83,7 @@ def save_page_block(name, html):
     block = PageBlock.get_or_insert(name)
     block.html = html
     block.save()
+    memcache.delete(MEMCACHE_DICT_KEY)
     
 
 

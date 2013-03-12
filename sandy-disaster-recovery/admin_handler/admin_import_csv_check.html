@@ -25,7 +25,7 @@
   <form method="post">
     <input type="hidden" name="csv_id" value="{{ csv_id }}">
     <input type="hidden" name="choose_event" value="{{ event.key().id() }}">
-    <button type="submit" name="action" value="write" onclick="if (document.getElementById('choose_event').value == '') {alert('Please select an event.'); return false}">Save valid rows</button>
+    <button type="submit" name="action" value="write" onclick="return confirm('Are you sure you want to save the valid rows to the database?')">Save valid rows</button>
   </form>
 {% else %}
   <p>There are no valid rows to save.</p>
@@ -88,8 +88,10 @@
             <td>(Did not geocode due to other errors)</td>
           {% elif field_name == 'address' and validation['address_geocodes_ok'] %}
             <td class="ok">Address geocodes ok</td>
-          {% elif field_name == 'address' and not validation['address_geocodes_ok'] %}
+          {% elif field_name == 'address' and validation['geocoder_worked'] and not validation['address_geocodes_ok'] %}
             <td class="invalid">Address does not geocode</td>
+          {% elif field_name == 'address' and not validation['geocoder_worked'] %}
+            <td class="invalid">Geocoder failed - rerun at a later time</td>
           {% endif %}
         </tr>
       {% endif %}

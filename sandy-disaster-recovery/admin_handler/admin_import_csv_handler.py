@@ -106,7 +106,6 @@ class CSVFile(db.Model):
     invalid_row_count = db.IntegerProperty(default=0, required=True)
     saved_count = db.IntegerProperty(default=0, required=True)
     header_present = db.BooleanProperty(default=True, required=True)
-    analysis_started = db.BooleanProperty(default=False, required=True)
     analysis_complete = db.BooleanProperty(default=False, required=True)
     analysis_failed = db.BooleanProperty(default=False, required=True)
     saving = db.BooleanProperty(default=False, required=True)
@@ -228,6 +227,7 @@ def validate_row(event, row):
         'missing_fields': [],
         'invalid_fields': {}, # {field_name: error_msg}
         'address_geocodes_ok': None,
+        'geocoder_worked': None,
         'validates': False, # assume false
     }
 
@@ -293,9 +293,10 @@ def validate_row(event, row):
     )
     try:
         geocode_result = google_maps_utils.geocode(full_address)
+        validation['geocoder_worked'] = True
         validation['address_geocodes_ok'] = bool(geocode_result)
     except OverQuotaError:
-        validation['address_geocodes_ok'] = False
+        validation['geocoder_worked'] = False
     if not validation['address_geocodes_ok']:
         return validation, None
 
@@ -305,7 +306,7 @@ def validate_row(event, row):
 
 def validation_to_text(validation):
     """
-    Return readable description of @validation.
+    Return readable description of @validation dict.
     """
     s = ""
     if not validation['row_length_ok']:
@@ -323,6 +324,8 @@ def validation_to_text(validation):
     if not s and not validation['address_geocodes_ok']:
         if s: s+= "; "
         s += "Could not find address"
+        if not validation['geocoder_worked']:
+            s += "; geocoder failed"
     return s
 
 class HeaderException(Exception): pass
@@ -415,7 +418,7 @@ def write_valid_from_csv(csv_id):
             write_valid_row,
             csv_file_obj.key(),
             csv_row_obj.key(),
-            _countdown=int(0.5 * i)
+            _countdown=int(0.5 * i) # delay start
         )
 
 def write_valid_row(csv_file_obj_key, csv_row_obj_key):
@@ -446,6 +449,19 @@ def write_valid_row(csv_file_obj_key, csv_row_obj_key):
             csv_file_obj.key(), 'saved_count', 'valid_row_count', 'saving', flag_value=False
         )
 
+def rerun_csv(csv_id):
+    csv_file_obj = CSVFile.get_by_id(int(csv_id))
+    if csv_file_obj.saved_count > 0:
+        raise Exception("Not allowed to rerun - data has already been saved")
+    csv_file_obj.analysis_complete = False
+    csv_file_obj.analysed_row_count = 0 
+    csv_file_obj.valid_row_count = 0
+    csv_file_obj.invalid_row_count = 0
+    csv_file_obj.save()
+    csv_rows = db.GqlQuery("SELECT * from CSVRow WHERE csv_file=:1", csv_file_obj.key())
+    for csv_row in csv_rows:
+        csv_row.delete()
+    deferred.defer(write_csv_row_objects, csv_file_obj.key())
 
 def delete_csv(csv_id):
     csv_file_obj = CSVFile.get_by_id(int(csv_id))
@@ -554,7 +570,7 @@ class ImportCSVHandler(base.AuthenticatedHandler):
         f.write(csv_file.read())
       files.finalize(blob_filename)
       blob_key = files.blobstore.get_blob_key(blob_filename)
-
+    
       # create csv file object
       blob_fd = blobstore.BlobReader(blob_key)
       blob_fd.seek(0)
@@ -564,7 +580,6 @@ class ImportCSVHandler(base.AuthenticatedHandler):
         event=event.key(),
         blob=blob_key,
         total_row_count=total_row_count,
-        analysis_started=True
       )
       csv_file_obj.save()
 
@@ -573,6 +588,14 @@ class ImportCSVHandler(base.AuthenticatedHandler):
       self.redirect('/admin-import-csv')
       time.sleep(4)
       return
+
+    # rerun csv file action
+    if action == "rerun":
+        csv_id = self.request.get('csv_id')
+        deferred.defer(rerun_csv, csv_id)
+        self.redirect('/admin-import-csv')
+        time.sleep(4)
+        return
 
     # delete csv file action
     if action == "delete":
@@ -602,7 +625,7 @@ def write_csv_row_objects(csv_file_obj_key):
               analyse_row,
               csv_file_obj.key(),
               csv_row_obj.key(),
-              _countdown=int(0.2 * int(row_num))
+              _countdown=int(0.2 * int(row_num)) # delay start
           )
     except HeaderException:
         csv_file_obj.header_present = False

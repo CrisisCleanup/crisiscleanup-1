@@ -55,6 +55,15 @@
         <td>{{ ac.valid_row_count }}</td>
         <td>{{ ac.invalid_row_count }}</td>
         <td>{{ ac.saved_count }}</td>
+        {% if ac.analysis_complete and not ac.saving and ac.saved_count == 0 and not ac.deleting %}
+          <td>
+            <form method="post">
+              <input type="hidden" name="action" value="rerun">
+              <input type="hidden" name="csv_id" value="{{ ac.key().id() }}">
+              <button type="submit" onclick="return confirm('Are you sure you want to rerun {{ ac.filename }}?')">Rerun</button>
+            </form>
+          </td>
+        {% endif %}
         {% if not ac.deleting %}
           <td>
             <form method="post">

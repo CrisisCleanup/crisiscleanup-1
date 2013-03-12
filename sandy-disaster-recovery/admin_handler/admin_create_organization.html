@@ -41,7 +41,7 @@
 </select>
 {% endif %}
 <h2>Should organization be immediately active?</h2>
-<input type="radio" name="is_active" value="1">Active<br>
+<input type="radio" id="is_active" name="is_active" value="1"><label for="is_active">Active</label>
 
 <h2>Organization Information</h2>
   <div>{{ form.name.label }}: {{ form.name }}</div>

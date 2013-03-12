@@ -35,11 +35,11 @@ import map_handler
 import print_handler 
 import problem_handler
 import refresh_handler
+import blobstore_delete_handler
 import site_ajax_handler
 import site_api_handler
 import sites_handler
 import new_organization_handler
-#import admin_handler
 import update_handler
 import update_event_handler
 import welcome_handler
@@ -59,7 +59,6 @@ import contact_handler
 import public_map_handler
 import public_map_ajax_handler
 
-#import * from admin_handler
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
@@ -74,11 +73,13 @@ from admin_handler import admin_create_incident_handler
 from admin_handler import admin_see_admins_handler
 from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
+from admin_handler import admin_import_csv_handler
 
 
 from admin_handler import admin_single_organization_handler as admin_single_organization_handler
 from admin_handler import admin_edit_organization_handler as admin_edit_organization_handler
 from admin_handler import admin_edit_contact_handler as admin_edit_contact_handler
+from admin_handler import admin_import_contacts_handler as admin_import_contacts_handler
 
 
 jinja_environment = jinja2.Environment(
@@ -149,6 +150,12 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-see-admins', admin_see_admins_handler.AdminHandler, 'admin_see_admins_handler'),
     Route(r'/admin-incident-add-admin', admin_incident_add_admin_handler.AdminHandler, 'admin_incident_add_admin_handler'),
     Route(r'/admin-make-admin', admin_make_admin_handler.AdminHandler, 'admin_make_admin_handler'),
+    Route(r'/admin-import-contacts', admin_import_contacts_handler.ImportContactsHandler, 'admin_import_contacts_handler'),
+    Route(r'/admin-import-csv', admin_import_csv_handler.ImportCSVHandler, 'admin_import_csv_handler'),
+    Route(r'/admin-import-csv/template.csv', admin_import_csv_handler.GetCSVTemplateHandler, 'admin_import_csv_handler'),
+    Route(r'/admin-import-csv/active', admin_import_csv_handler.ActiveCSVImportHandler, 'admin_import_csv_handler'),
+    Route(r'/admin-import-csv/active/invalids.csv', admin_import_csv_handler.ActiveCSVImportHandler, 'admin_import_csv_handler'),
+
     
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),
@@ -162,5 +169,6 @@ app = webapp2.WSGIApplication([
     Route(r'/organization-edit-info', organization_edit_info_handler.OrganizationEditInfoHandler, 'new_organization'),
     Route(r'/see-all-contacts', see_all_contacts_handler.SeeAllContactsHandler, 'see_all_contacts_handler'),
     Route(r'/js-logs', js_logs_handler.JsLogsHandler, 'js_logs_handler'),
+    Route(r'/blobstore-delete', blobstore_delete_handler.BlobstoreDeleteHandler, 'blobstore_delete_handler'),
     
 ], debug=True)

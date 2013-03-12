@@ -44,27 +44,24 @@ class Event(db.Model):
   reminder_days = db.IntegerProperty(default=15)
   reminder_contents = db.TextProperty()
 
-import site_db
-
 def DefaultEventName():
   return "Hurricane Sandy Recovery"
 
-@db.transactional(xg=True)
-def AddSiteToEvent(site, event_id, force = False):
+@db.transactional(xg=True, retries=100)
+def AddSiteToEvent(site, event_id, force=False, can_overwrite=False):
   event = Event.get_by_id(event_id)
-  if not site or not event or ((not force) and site.event):
+  if not site or not event or ((not force and not can_overwrite) and site.event):
     logging.critical("Could not initialize site: " + str(site.key().id()))
     return False
   site.event = event
   site.case_number = event.case_label + str(event.num_sites)
   event.num_sites += 1
   cache.PutAndCache(event, ten_minutes)
-  
   site.put()
   return True
 
 ten_minutes = 600
-@db.transactional(xg=True)
+@db.transactional(xg=True, retries=100)
 def SetCountiesForEvent(event_id, counties):
   event = Event.get_by_id(event_id)
   event.counties = [county for county in counties]

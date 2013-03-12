@@ -410,7 +410,7 @@ def write_valid_from_csv(csv_id):
             write_valid_row,
             csv_file_obj.key(),
             csv_row_obj.key(),
-            _countdown=i
+            _countdown=int(0.5 * i)
         )
 
 def write_valid_row(csv_file_obj_key, csv_row_obj_key):
@@ -432,7 +432,7 @@ def write_valid_row(csv_file_obj_key, csv_row_obj_key):
         # create site object
         new_site = site_db.Site(**row_dict)
         new_site.save()
-        event_db.AddSiteToEvent(new_site, csv_file_obj.event.key().id())
+        event_db.AddSiteToEvent(new_site, csv_file_obj.event.key().id(), can_overwrite=True)
 
         # update counters
         csv_row_obj.saved = True

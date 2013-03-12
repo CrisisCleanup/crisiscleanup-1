@@ -19,6 +19,7 @@ from __future__ import with_statement
 import cStringIO
 ##import logging
 import os
+import time
 import pickle
 from copy import copy
 
@@ -566,6 +567,7 @@ class ImportCSVHandler(base.AuthenticatedHandler):
       # create csv row objects in the background
       deferred.defer(write_csv_row_objects, csv_file_obj.key())
       self.redirect('/admin-import-csv')
+      time.sleep(4)
       return
 
     # delete csv file action
@@ -573,6 +575,7 @@ class ImportCSVHandler(base.AuthenticatedHandler):
         csv_id = self.request.get('csv_id')
         deferred.defer(delete_csv, csv_id)
         self.redirect('/admin-import-csv')
+        time.sleep(4)
         return
 
 def write_csv_row_objects(csv_file_obj_key):
@@ -640,6 +643,7 @@ class ActiveCSVImportHandler(base.AuthenticatedHandler):
             csv_id = int(self.request.get('csv_id'))
             deferred.defer(write_valid_from_csv, csv_id)
             self.redirect('/admin-import-csv')
+            time.sleep(4)
             return
 
         # action download invalid CSV

@@ -1,5 +1,5 @@
 application: sandy-helping-hands
-version: 139
+version: 140
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -23,6 +23,9 @@ handlers:
   expiration: "7d"
 - url: /closure/css
   static_dir: closure_lib/closure/goog/css
+  expiration: "7d"
+- url: /assets
+  static_dir: assets
   expiration: "7d"
 
 - url: .*

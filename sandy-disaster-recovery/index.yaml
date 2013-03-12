@@ -66,3 +66,14 @@ indexes:
   properties:
   - name: event
   - name: status
+
+- kind: Site
+  properties:
+  - name: event
+  - name: status
+  - name: case_number
+  - name: claimed_by
+  - name: floors_affected
+  - name: latitude
+  - name: longitude
+  - name: work_type

@@ -1,1 +1,871 @@
-*.pyc
+
+# /
+/*.pyc
+/*~
+/*.sw?
+
+# /sandy-disaster-recovery/
+/sandy-disaster-recovery/*.pyc
+/sandy-disaster-recovery/*.sw?
+/sandy-disaster-recovery/*~
+/sandy-disaster-recovery/sheet1.csv
+
+# /sandy-disaster-recovery/closure_lib/
+/sandy-disaster-recovery/closure_lib/*.pyc
+/sandy-disaster-recovery/closure_lib/*~
+/sandy-disaster-recovery/closure_lib/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/
+/sandy-disaster-recovery/closure_lib/closure/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/*~
+/sandy-disaster-recovery/closure_lib/closure/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/bin/
+/sandy-disaster-recovery/closure_lib/closure/bin/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/bin/*~
+/sandy-disaster-recovery/closure_lib/closure/bin/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/bin/build/
+/sandy-disaster-recovery/closure_lib/closure/bin/build/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/bin/build/*~
+/sandy-disaster-recovery/closure_lib/closure/bin/build/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/css/
+/sandy-disaster-recovery/closure_lib/closure/css/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/css/*~
+/sandy-disaster-recovery/closure_lib/closure/css/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/css/inlay/
+/sandy-disaster-recovery/closure_lib/closure/css/inlay/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/css/inlay/*~
+/sandy-disaster-recovery/closure_lib/closure/css/inlay/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/
+/sandy-disaster-recovery/closure_lib/closure/goog/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/array/
+/sandy-disaster-recovery/closure_lib/closure/goog/array/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/array/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/array/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/asserts/
+/sandy-disaster-recovery/closure_lib/closure/goog/asserts/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/asserts/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/asserts/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/async/
+/sandy-disaster-recovery/closure_lib/closure/goog/async/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/async/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/async/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/bootstrap/
+/sandy-disaster-recovery/closure_lib/closure/goog/bootstrap/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/bootstrap/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/bootstrap/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/color/
+/sandy-disaster-recovery/closure_lib/closure/goog/color/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/color/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/color/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/crypt/
+/sandy-disaster-recovery/closure_lib/closure/goog/crypt/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/crypt/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/crypt/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/css/
+/sandy-disaster-recovery/closure_lib/closure/goog/css/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/css/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/css/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/css/editor/
+/sandy-disaster-recovery/closure_lib/closure/goog/css/editor/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/css/editor/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/css/editor/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/cssom/
+/sandy-disaster-recovery/closure_lib/closure/goog/cssom/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/cssom/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/cssom/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/cssom/iframe/
+/sandy-disaster-recovery/closure_lib/closure/goog/cssom/iframe/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/cssom/iframe/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/cssom/iframe/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/datasource/
+/sandy-disaster-recovery/closure_lib/closure/goog/datasource/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/datasource/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/datasource/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/date/
+/sandy-disaster-recovery/closure_lib/closure/goog/date/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/date/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/date/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/db/
+/sandy-disaster-recovery/closure_lib/closure/goog/db/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/db/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/db/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/debug/
+/sandy-disaster-recovery/closure_lib/closure/goog/debug/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/debug/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/debug/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/debug/devcss/
+/sandy-disaster-recovery/closure_lib/closure/goog/debug/devcss/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/debug/devcss/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/debug/devcss/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/css/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/css/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/css/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/css/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/editor/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/editor/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/editor/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/editor/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/editor/css/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/editor/css/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/editor/css/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/editor/css/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/emoji/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/emoji/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/emoji/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/emoji/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/fx/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/fx/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/fx/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/fx/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/fx/css3/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/fx/css3/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/fx/css3/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/fx/css3/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/graphics/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/graphics/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/graphics/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/graphics/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/images/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/images/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/images/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/images/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/css/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/css/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/css/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/css/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/images/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/images/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/images/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/tree/images/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/xpc/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/xpc/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/xpc/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/xpc/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/demos/xpc/minimal/
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/xpc/minimal/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/xpc/minimal/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/demos/xpc/minimal/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/disposable/
+/sandy-disaster-recovery/closure_lib/closure/goog/disposable/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/disposable/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/disposable/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/docs/
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/docs/static/
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/docs/static/css/
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/css/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/css/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/css/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/docs/static/images/
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/images/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/images/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/images/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/docs/static/js/
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/js/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/js/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/docs/static/js/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/dom/
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/dom/browserrange/
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/browserrange/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/browserrange/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/browserrange/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/dom/pattern/
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/pattern/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/pattern/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/pattern/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/dom/pattern/callback/
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/pattern/callback/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/pattern/callback/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/dom/pattern/callback/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/editor/
+/sandy-disaster-recovery/closure_lib/closure/goog/editor/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/editor/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/editor/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/editor/plugins/
+/sandy-disaster-recovery/closure_lib/closure/goog/editor/plugins/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/editor/plugins/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/editor/plugins/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/editor/plugins/equation/
+/sandy-disaster-recovery/closure_lib/closure/goog/editor/plugins/equation/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/editor/plugins/equation/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/editor/plugins/equation/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/events/
+/sandy-disaster-recovery/closure_lib/closure/goog/events/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/events/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/events/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/format/
+/sandy-disaster-recovery/closure_lib/closure/goog/format/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/format/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/format/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/fs/
+/sandy-disaster-recovery/closure_lib/closure/goog/fs/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/fs/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/fs/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/functions/
+/sandy-disaster-recovery/closure_lib/closure/goog/functions/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/functions/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/functions/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/fx/
+/sandy-disaster-recovery/closure_lib/closure/goog/fx/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/fx/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/fx/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/fx/anim/
+/sandy-disaster-recovery/closure_lib/closure/goog/fx/anim/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/fx/anim/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/fx/anim/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/fx/css3/
+/sandy-disaster-recovery/closure_lib/closure/goog/fx/css3/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/fx/css3/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/fx/css3/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/gears/
+/sandy-disaster-recovery/closure_lib/closure/goog/gears/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/gears/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/gears/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/graphics/
+/sandy-disaster-recovery/closure_lib/closure/goog/graphics/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/graphics/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/graphics/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/graphics/ext/
+/sandy-disaster-recovery/closure_lib/closure/goog/graphics/ext/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/graphics/ext/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/graphics/ext/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/history/
+/sandy-disaster-recovery/closure_lib/closure/goog/history/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/history/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/history/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/i18n/
+/sandy-disaster-recovery/closure_lib/closure/goog/i18n/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/i18n/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/i18n/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/images/
+/sandy-disaster-recovery/closure_lib/closure/goog/images/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/images/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/images/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/images/tree/
+/sandy-disaster-recovery/closure_lib/closure/goog/images/tree/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/images/tree/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/images/tree/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/iter/
+/sandy-disaster-recovery/closure_lib/closure/goog/iter/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/iter/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/iter/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/jsaction/
+/sandy-disaster-recovery/closure_lib/closure/goog/jsaction/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/jsaction/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/jsaction/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/json/
+/sandy-disaster-recovery/closure_lib/closure/goog/json/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/json/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/json/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/labs/
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/labs/async/
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/async/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/async/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/async/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/labs/async/result/
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/async/result/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/async/result/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/async/result/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/labs/net/
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/net/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/net/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/net/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/labs/net/testdata/
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/net/testdata/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/net/testdata/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/net/testdata/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/labs/object/
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/object/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/object/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/object/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/labs/observe/
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/observe/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/observe/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/observe/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/labs/structs/
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/structs/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/structs/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/labs/structs/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/locale/
+/sandy-disaster-recovery/closure_lib/closure/goog/locale/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/locale/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/locale/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/math/
+/sandy-disaster-recovery/closure_lib/closure/goog/math/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/math/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/math/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/memoize/
+/sandy-disaster-recovery/closure_lib/closure/goog/memoize/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/memoize/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/memoize/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/messaging/
+/sandy-disaster-recovery/closure_lib/closure/goog/messaging/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/messaging/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/messaging/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/messaging/testdata/
+/sandy-disaster-recovery/closure_lib/closure/goog/messaging/testdata/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/messaging/testdata/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/messaging/testdata/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/module/
+/sandy-disaster-recovery/closure_lib/closure/goog/module/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/module/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/module/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/module/testdata/
+/sandy-disaster-recovery/closure_lib/closure/goog/module/testdata/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/module/testdata/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/module/testdata/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/net/
+/sandy-disaster-recovery/closure_lib/closure/goog/net/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/net/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/net/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/net/testdata/
+/sandy-disaster-recovery/closure_lib/closure/goog/net/testdata/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/net/testdata/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/net/testdata/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/net/xpc/
+/sandy-disaster-recovery/closure_lib/closure/goog/net/xpc/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/net/xpc/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/net/xpc/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/net/xpc/testdata/
+/sandy-disaster-recovery/closure_lib/closure/goog/net/xpc/testdata/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/net/xpc/testdata/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/net/xpc/testdata/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/object/
+/sandy-disaster-recovery/closure_lib/closure/goog/object/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/object/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/object/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/positioning/
+/sandy-disaster-recovery/closure_lib/closure/goog/positioning/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/positioning/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/positioning/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/proto/
+/sandy-disaster-recovery/closure_lib/closure/goog/proto/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/proto/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/proto/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/proto2/
+/sandy-disaster-recovery/closure_lib/closure/goog/proto2/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/proto2/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/proto2/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/pubsub/
+/sandy-disaster-recovery/closure_lib/closure/goog/pubsub/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/pubsub/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/pubsub/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/reflect/
+/sandy-disaster-recovery/closure_lib/closure/goog/reflect/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/reflect/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/reflect/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/soy/
+/sandy-disaster-recovery/closure_lib/closure/goog/soy/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/soy/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/soy/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/spell/
+/sandy-disaster-recovery/closure_lib/closure/goog/spell/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/spell/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/spell/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/stats/
+/sandy-disaster-recovery/closure_lib/closure/goog/stats/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/stats/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/stats/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/storage/
+/sandy-disaster-recovery/closure_lib/closure/goog/storage/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/storage/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/storage/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/storage/mechanism/
+/sandy-disaster-recovery/closure_lib/closure/goog/storage/mechanism/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/storage/mechanism/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/storage/mechanism/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/string/
+/sandy-disaster-recovery/closure_lib/closure/goog/string/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/string/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/string/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/structs/
+/sandy-disaster-recovery/closure_lib/closure/goog/structs/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/structs/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/structs/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/style/
+/sandy-disaster-recovery/closure_lib/closure/goog/style/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/style/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/style/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/async/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/async/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/async/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/async/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/benchmarks/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/benchmarks/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/benchmarks/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/benchmarks/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/editor/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/editor/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/editor/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/editor/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/events/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/events/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/events/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/events/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/fs/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/fs/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/fs/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/fs/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/messaging/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/messaging/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/messaging/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/messaging/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/net/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/net/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/net/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/net/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/storage/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/storage/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/storage/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/storage/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/style/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/style/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/style/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/style/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/testing/ui/
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/ui/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/ui/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/testing/ui/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/throttle/
+/sandy-disaster-recovery/closure_lib/closure/goog/throttle/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/throttle/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/throttle/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/timer/
+/sandy-disaster-recovery/closure_lib/closure/goog/timer/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/timer/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/timer/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/tweak/
+/sandy-disaster-recovery/closure_lib/closure/goog/tweak/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/tweak/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/tweak/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/ac/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/ac/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/ac/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/ac/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/autocomplete/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/autocomplete/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/autocomplete/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/autocomplete/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/editor/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/editor/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/editor/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/editor/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/emoji/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/emoji/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/emoji/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/emoji/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/equation/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/equation/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/equation/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/equation/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/media/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/media/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/media/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/media/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/style/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/style/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/style/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/style/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/style/app/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/style/app/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/style/app/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/style/app/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/ui/tree/
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/tree/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/tree/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/ui/tree/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/uri/
+/sandy-disaster-recovery/closure_lib/closure/goog/uri/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/uri/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/uri/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/useragent/
+/sandy-disaster-recovery/closure_lib/closure/goog/useragent/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/useragent/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/useragent/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/vec/
+/sandy-disaster-recovery/closure_lib/closure/goog/vec/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/vec/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/vec/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/webgl/
+/sandy-disaster-recovery/closure_lib/closure/goog/webgl/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/webgl/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/webgl/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/goog/window/
+/sandy-disaster-recovery/closure_lib/closure/goog/window/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/goog/window/*~
+/sandy-disaster-recovery/closure_lib/closure/goog/window/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/known_issues/
+/sandy-disaster-recovery/closure_lib/closure/known_issues/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/known_issues/*~
+/sandy-disaster-recovery/closure_lib/closure/known_issues/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/closure/known_issues/testdata/
+/sandy-disaster-recovery/closure_lib/closure/known_issues/testdata/*.pyc
+/sandy-disaster-recovery/closure_lib/closure/known_issues/testdata/*~
+/sandy-disaster-recovery/closure_lib/closure/known_issues/testdata/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/
+/sandy-disaster-recovery/closure_lib/third_party/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/*~
+/sandy-disaster-recovery/closure_lib/third_party/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/
+/sandy-disaster-recovery/closure_lib/third_party/closure/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/string/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/string/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/string/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/string/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/string/html/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/string/html/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/string/html/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/caja/string/html/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/dojo/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/dojo/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/dojo/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/dojo/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/dojo/dom/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/dojo/dom/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/dojo/dom/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/dojo/dom/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/jpeg_encoder/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/jpeg_encoder/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/jpeg_encoder/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/jpeg_encoder/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/loremipsum/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/loremipsum/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/loremipsum/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/loremipsum/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/loremipsum/text/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/loremipsum/text/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/loremipsum/text/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/loremipsum/text/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/mochikit/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/mochikit/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/mochikit/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/mochikit/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/mochikit/async/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/mochikit/async/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/mochikit/async/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/mochikit/async/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/osapi/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/osapi/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/osapi/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/osapi/*.sw?
+
+# /sandy-disaster-recovery/closure_lib/third_party/closure/goog/silverlight/
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/silverlight/*.pyc
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/silverlight/*~
+/sandy-disaster-recovery/closure_lib/third_party/closure/goog/silverlight/*.sw?
+
+# /sandy-disaster-recovery/icons/
+/sandy-disaster-recovery/icons/*.pyc
+/sandy-disaster-recovery/icons/*~
+/sandy-disaster-recovery/icons/*.sw?
+
+# /sandy-disaster-recovery/javascript/
+/sandy-disaster-recovery/javascript/*.pyc
+/sandy-disaster-recovery/javascript/*~
+/sandy-disaster-recovery/javascript/*.sw?
+
+# /sandy-disaster-recovery/stylesheets/
+/sandy-disaster-recovery/stylesheets/*.pyc
+/sandy-disaster-recovery/stylesheets/*~
+/sandy-disaster-recovery/stylesheets/*.sw?
+
+# /sandy-disaster-recovery/wtforms/
+/sandy-disaster-recovery/wtforms/*.pyc
+/sandy-disaster-recovery/wtforms/*~
+/sandy-disaster-recovery/wtforms/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/
+/sandy-disaster-recovery/wtforms/ext/*.pyc
+/sandy-disaster-recovery/wtforms/ext/*~
+/sandy-disaster-recovery/wtforms/ext/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/appengine/
+/sandy-disaster-recovery/wtforms/ext/appengine/*.pyc
+/sandy-disaster-recovery/wtforms/ext/appengine/*~
+/sandy-disaster-recovery/wtforms/ext/appengine/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/csrf/
+/sandy-disaster-recovery/wtforms/ext/csrf/*.pyc
+/sandy-disaster-recovery/wtforms/ext/csrf/*~
+/sandy-disaster-recovery/wtforms/ext/csrf/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/dateutil/
+/sandy-disaster-recovery/wtforms/ext/dateutil/*.pyc
+/sandy-disaster-recovery/wtforms/ext/dateutil/*~
+/sandy-disaster-recovery/wtforms/ext/dateutil/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/django/
+/sandy-disaster-recovery/wtforms/ext/django/*.pyc
+/sandy-disaster-recovery/wtforms/ext/django/*~
+/sandy-disaster-recovery/wtforms/ext/django/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/django/templatetags/
+/sandy-disaster-recovery/wtforms/ext/django/templatetags/*.pyc
+/sandy-disaster-recovery/wtforms/ext/django/templatetags/*~
+/sandy-disaster-recovery/wtforms/ext/django/templatetags/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/
+/sandy-disaster-recovery/wtforms/ext/i18n/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/en/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/en/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/en/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/en/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/en/LC_MESSAGES/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/en/LC_MESSAGES/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/en/LC_MESSAGES/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/en/LC_MESSAGES/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/es/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/es/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/es/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/es/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/es/LC_MESSAGES/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/es/LC_MESSAGES/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/es/LC_MESSAGES/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/es/LC_MESSAGES/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/fa/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/fa/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/fa/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/fa/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/fa/LC_MESSAGES/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/fa/LC_MESSAGES/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/fa/LC_MESSAGES/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/fa/LC_MESSAGES/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/it/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/it/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/it/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/it/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/it/LC_MESSAGES/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/it/LC_MESSAGES/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/it/LC_MESSAGES/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/it/LC_MESSAGES/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/pl/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/pl/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/pl/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/pl/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/pl/LC_MESSAGES/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/pl/LC_MESSAGES/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/pl/LC_MESSAGES/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/pl/LC_MESSAGES/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/zh/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/zh/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/zh/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/zh/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/i18n/messages/zh/LC_MESSAGES/
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/zh/LC_MESSAGES/*.pyc
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/zh/LC_MESSAGES/*~
+/sandy-disaster-recovery/wtforms/ext/i18n/messages/zh/LC_MESSAGES/*.sw?
+
+# /sandy-disaster-recovery/wtforms/ext/sqlalchemy/
+/sandy-disaster-recovery/wtforms/ext/sqlalchemy/*.pyc
+/sandy-disaster-recovery/wtforms/ext/sqlalchemy/*~
+/sandy-disaster-recovery/wtforms/ext/sqlalchemy/*.sw?
+
+# /sandy-disaster-recovery/wtforms/fields/
+/sandy-disaster-recovery/wtforms/fields/*.pyc
+/sandy-disaster-recovery/wtforms/fields/*~
+/sandy-disaster-recovery/wtforms/fields/*.sw?
+
+# /sandy-disaster-recovery/wtforms/widgets/
+/sandy-disaster-recovery/wtforms/widgets/*.pyc
+/sandy-disaster-recovery/wtforms/widgets/*~
+/sandy-disaster-recovery/wtforms/widgets/*.sw?

@@ -14,17 +14,10 @@ $(function(){
  
 
 
-    $("#derechos").click(function() {
-      populateMapByIncident("derechos", 0, []);
+    $(".MapIncident").click(function() {
+      var incident_id = event.target.id;
+      populateMapByIncident(incident_id, 0, []);
     });
-  $("#gordon-barto-tornado").click(function() {
-	 populateMapByIncident("gordon-barto-tornado", 0, []);
-    });
-
-    $("#sandy").click(function() {
-	 populateMapByIncident("sandy", 0, []);
-    });
-
 })
 
 var kCompletionStatusColors = {

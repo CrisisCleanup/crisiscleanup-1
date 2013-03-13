@@ -1,4 +1,4 @@
-application: sandy-helping-hands
+application: sandy-disaster-recovery
 version: 150
 runtime: python27
 api_version: 1

@@ -41,7 +41,7 @@ import page_db
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('about.html')
+template = jinja_environment.get_template('about.html.old')
 
 class AboutHandler(base.RequestHandler):
     def get(self):

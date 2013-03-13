@@ -46,12 +46,12 @@ All personal info has been changed, and the lat/lng has been adjusted as well
 {% for event in events %}
 <p class="MapIncident" id="{{event.short_name}}">{{event.name}}</p>
 {% endfor %}
-<h2>Filters</h2>
+<!--<h2>Filters</h2>
 
 <p class="MapFilter">Claimed Sites</p>
 <p class="MapFilter">Unclaimed Sites</p>
 <p class="MapFilter">Open Sites</p>
-<p class="MapFilter">Closed Sites</p>
+<p class="MapFilter">Closed Sites</p>-->
 {% endblock %}
 
 {% block main_title %}
@@ -61,6 +61,6 @@ Public Maps
 {% block main_content %}
 <div id="display_incident"></div>
 <div id="display_filter"></div>
-<div id="map_canvas" style="width: 700px; height: 550px"></div>
+<div id="map_canvas"></div>
 
 {% endblock %}

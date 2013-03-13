@@ -50,7 +50,7 @@ class PublicMapAjaxHandler(base.RequestHandler):
     for e in events:
       if e.short_name == event_shortname:
 	event = e
-    logging.debug(event.name)
+    #logging.debug(event.name)
     #q = Query(model_class = site_db.Site)#, projection=('latitude', 'longitude','id', 'status', 'claimed_by', 'work_type', 'derechos_work_type', 'case_number', 'floors_affected'))
 
 

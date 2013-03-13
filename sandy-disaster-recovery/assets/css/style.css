@@ -251,3 +251,11 @@ td { vertical-align: top; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
 }
+
+
+.MapIncident {
+  border-style:solid;
+  border-width:2px;
+  border-color: #3891cf;
+
+}

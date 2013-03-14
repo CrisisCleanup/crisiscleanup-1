@@ -1,0 +1,45 @@
+{% extends "base_template.html" %}
+
+{% block home %}
+class="activePage"
+{% endblock %}
+
+{% block banner %}
+       <article role="main" class="clearfix">
+           <div class="post">
+             <h2>Who's in charge? You are.</h2>
+             <p>When you allow disaster recovery organizations to share information, self-organize, and coordinate, great things happen. How do you organize 30,000 volunteers from 100 organizations to 5,000 locations across a 500-mile arc in 8 weeks? You don't. You let them organize themselves.</p>
+             {{ home_block|safe }}
+           </div>
+       </article>
+{% endblock %}
+
+{% block description_title %}
+Crisis Cleanup is a Free, Open Source Disaster Relief Mapping Tool
+{% endblock %}
+
+{% block description_subtitle %}
+A seamless platform for inter-organization collaboration and communication. We've helped more than 6,000 families by bringing together more than 100 disaster recovery organizations with more than 30,000 volunteers in 5 states and 4 disasters.
+{% endblock %}
+
+{% block sidebar_title %}
+Welcome to CrisisCleanup.org
+{% endblock %}
+
+{% block sidebar_content %}
+<p>This is the first release of our public-facing site. There will be much more to come very soon.</p>
+<p>Please <a href="/contact">contact us</a> with any questions or concerns about the site. Thanks!</p>
+{% endblock %}
+
+{% block main_title %}
+When you allow disaster recovery organizations to share information, self-organize, and coordinate, great things happen. How do you organize 30,000 volunteers from 100 organizations to 5,000 locations across a 500-mile arc in 8 weeks? <em>You don't. You let them organize themselves.</em>
+{% endblock %}
+
+{% block main_content %}
+             <p>As with most worthwhile projects, CrisisCleanup has multiple converging story lines.  After helping organize tens of thousands of <em>Mormon Helping Hands</em> volunteers to clean up after Tropical Storm Irene in August&ndash;October 2011, <a href="https://twitter.com/aarontitus">Aaron Titus</a> began designing technology to improve volunteer efficiency. In August 2012 he deployed the alpha version of Crisis Cleanup to coordinate 700 volunteers from 5 organizations to assist 300 elderly residents in the aftermath of the "Derecho" thunderstorms in Southern New Jersey.</p>
+			 <p>The system was activated again after Hurricane Sandy hit New Jersey, New York and Connecticut in October, 2012.  With the added load of dozens of organizations, the system had to be rebuilt quickly.  Mormon Helping Hands volunteer <a href="https://plus.google.com/100981388284358828816/posts">Jeremy Pack</a> and several other talented developers rebuilt a more robust and user-friendly version the system on Google App Engine as an <a href="http://code.google.com/p/sandy-disaster-recovery/">open source project</a>.  The system soon became a major hub of coordination activity for more than 100 Hurricane Sandy relief organizations.</p>
+			 <p>In the meantime, the efforts of <em>Occupy Sandy</em> were in full-swing.  They were experiencing the same issues as many other relief organizations: Poor communication, inconsistent canvassing, organizational overlap, and duplicated efforts. This lead to survey fatigue, asymmetric aide, and volunteers who were frustrated because it wasn't clear what needed to be done. We wanted to do better for ourselves and our neighbors. With his extensive community organizing, programming, and disaster recovery experience, <a href="https://twitter.com/AndyGimma">Andy Gimma</a> now co-leads the Crisis Cleanup project.</p>
+			 <p>In early 2013, Mississippi VOAD requested to use the system to coordinate recovery efforts after the Hattiesburg, MS tornado.  The following week, Georgia VOAD requested to use the system to assist with tornado recovery in Gordon and Bartow counties.  <a href="http://www.nvoad.org">National VOAD</a> will formally adopt Crisis Cleanup at its annual convention in May, 2013.  We look forward to working with National VOAD.</p>
+			 <p>Talented developers and designers like <a href="https://twitter.com/cpwood">Chris Wood</a>, <a href="http://www.linkedin.com/pub/karissa-phelps/44/563/73a">Karissa Phelps</a>, and dozens of others have also made invaluable contributions to the project.</p>
+			 <p><strong>CrisisCleanup.org proves that it is possible to create a near frictionless technological platform where inter-organization Cooperation, Communication, Coordination, and Collaboration is not only convenient, but required.</strong></p>
+{% endblock %}

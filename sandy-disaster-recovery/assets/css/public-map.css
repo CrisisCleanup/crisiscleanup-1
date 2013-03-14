@@ -1,0 +1,13 @@
+.MapIncident {
+  border-style:solid;
+  border-width:2px;
+  border-color: #3891cf;
+
+}
+
+#map_canvas {
+  width: 800px;
+  height: 600px;
+  float: left;
+  margin:0 auto;
+}

@@ -261,7 +261,7 @@ var updateDialogForSite = function (dialog, site) {
     dialog.setTitle("Case number: " + site["case_number"]);
 
     addField("Name", site["name"]);
-    addField("Requests", site["work_requested"]);
+    addField("Requests", site.work_requested || "No requests.");
     var address_components = [site["address"], site["city"], site["county"], site["state"], site["zip_code"]];
     var full_address = "";
     for (var i = 0; i < address_components.length; ++i) {

@@ -23,6 +23,8 @@ import time
 import pickle
 from copy import copy
 
+import chardet
+
 from google.appengine.ext import deferred
 from google.appengine.ext import db, blobstore
 from google.appengine.api import files
@@ -100,6 +102,7 @@ class CSVFile(db.Model):
     creation_timestamp = db.DateTimeProperty(auto_now_add=True, required=True)
     event = db.ReferenceProperty(event_db.Event, required=True)
     blob = blobstore.BlobReferenceProperty(required=True)
+    encoding = db.StringProperty(required=True)
     total_row_count = db.IntegerProperty(required=True)
     analysed_row_count = db.IntegerProperty(default=0, required=True)
     valid_row_count = db.IntegerProperty(default=0, required=True)
@@ -332,11 +335,11 @@ class HeaderException(Exception): pass
 
 from google_maps_utils import geocoding_to_address_dict
 
-def read_csv(event, fd):
+def read_csv(event, fd, encoding):
     """
     Read CSV @fd to generate (row_num, row), checking for heading row first.
     """
-    reader = UnicodeReader(fd)
+    reader = UnicodeReader(fd, encoding=encoding)
     for row_num, row in enumerate(reader):
         if row_num == 0:
             # validate heading present
@@ -574,11 +577,14 @@ class ImportCSVHandler(base.AuthenticatedHandler):
       # create csv file object
       blob_fd = blobstore.BlobReader(blob_key)
       blob_fd.seek(0)
+      encoding = chardet.detect(blob_fd.read()).get('encoding', None)
+      blob_fd.seek(0)
       total_row_count = len(blob_fd.readlines()) - 1
       csv_file_obj = CSVFile(
         filename=csv_filename,
         event=event.key(),
         blob=blob_key,
+        encoding=encoding,
         total_row_count=total_row_count,
       )
       csv_file_obj.save()
@@ -610,8 +616,9 @@ def write_csv_row_objects(csv_file_obj_key):
     event = csv_file_obj.event
     blob_fd = blobstore.BlobReader(csv_file_obj.blob)
     blob_fd.seek(0)
+    encoding = csv_file_obj.encoding
     try:
-        for row_num, row in read_csv(event, blob_fd):
+        for row_num, row in read_csv(event, blob_fd, encoding):
           csv_row_obj = CSVRow(
              ### parent=csv_file_obj.key(),
               csv_file=csv_file_obj.key(),

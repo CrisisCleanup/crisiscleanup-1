@@ -102,7 +102,7 @@ class CSVFile(db.Model):
     creation_timestamp = db.DateTimeProperty(auto_now_add=True, required=True)
     event = db.ReferenceProperty(event_db.Event, required=True)
     blob = blobstore.BlobReferenceProperty(required=True)
-    encoding = db.StringProperty(required=True)
+    encoding = db.StringProperty(required=True, default='utf8')
     total_row_count = db.IntegerProperty(required=True)
     analysed_row_count = db.IntegerProperty(default=0, required=True)
     valid_row_count = db.IntegerProperty(default=0, required=True)

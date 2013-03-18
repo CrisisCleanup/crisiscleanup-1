@@ -27,7 +27,7 @@ goog.require('goog.events');
 goog.require('goog.json');
 goog.require('goog.net.cookies');
 
-
+goog.require('sandy.sites');
 
 goog.provide("sandy.form");
 
@@ -36,18 +36,24 @@ var map;
 
 var geocoder;
 var autocomplete;
+
 sandy.form.Initialize = function() {
+    // setup google map
     var myLatlng = new google.maps.LatLng(39.50, -77.35);
     var mapOptions = {
         zoom: 5,
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-    
     map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+    // load sites
+    sandy.sites.tryBatchLoadSites("open", 0);
+
+    // add event handlers
     sandy.form.SetUpValidation();
-    sandy.form.SetUpAdditionalHandlers()
-}
+    sandy.form.SetUpAdditionalHandlers();
+};
 
 sandy.form.SetUpValidation = function() {
     geocoder = new google.maps.Geocoder();

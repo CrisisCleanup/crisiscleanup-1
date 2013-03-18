@@ -35,7 +35,6 @@ goog.provide("sandy.form");
 var map;
 
 var geocoder;
-var autocomplete;
 
 sandy.form.Initialize = function() {
     // setup google map
@@ -49,6 +48,19 @@ sandy.form.Initialize = function() {
 
     // load sites
     sandy.sites.tryBatchLoadSites("open", 0);
+
+    // create autocompleters
+    var FIELD_NAMES = ['name', 'address', 'city'];
+    for (var i=0; i<FIELD_NAMES.length; i++) {
+        var fieldName = FIELD_NAMES[i];
+        var inputElement = goog.dom.getElement(fieldName);
+        var ac = goog.ui.ac.createSimpleAutoComplete(terms, inputElement, false);
+        goog.events.listen(ac, goog.ui.ac.AutoComplete.EventType.UPDATE, function(evt) {
+            // on update, redirect to edit view
+            var caseNumber = evt.row.split(':')[0];
+            document.location = '/edit?case=' + caseNumber; 
+        });
+    }
 
     // add event handlers
     sandy.form.SetUpValidation();

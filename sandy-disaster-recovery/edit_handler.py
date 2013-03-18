@@ -38,13 +38,22 @@ class EditHandler(base.AuthenticatedHandler):
     single_site_template = jinja_environment.get_template('single_site.html')
     if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       single_site_template = jinja_environment.get_template('single_site_derechos.html')
-        
-    try:
-      id = int(self.request.get('id'))
-    except:
+
+    # lookup by id or case_number
+    id = self.request.get('id', None)
+    case_number = self.request.get('case', None)
+    if not id and case_number:
+        q = db.GqlQuery("SELECT * FROM Site WHERE case_number=:1", case_number)
+        if q.count() == 1:
+            id = q[0].key().id()
+
+    # if no id, 404
+    if id is None:
       self.response.set_status(404)
       return
-    site = site_db.GetAndCache(id)
+
+    # load site
+    site = site_db.GetAndCache(int(id))
     if not site:
       self.response.set_status(404)
       return

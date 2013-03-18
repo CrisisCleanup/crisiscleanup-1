@@ -6,8 +6,7 @@ closure_lib/closure/bin/build/closurebuilder.py \
   --compiler_flags="--externs=javascript/externs.js" \
   --compiler_flags="--debug" \
   --compiler_flags="--formatting=PRETTY_PRINT" \
-  --compiler_jar=closure_compiler/compiler.jar > javascript/compiled_main.js 
-
+  --compiler_jar=closure_compiler/compiler.jar > javascript/compiled_main.js && \
 closure_lib/closure/bin/build/closurebuilder.py \
   --root=closure_lib/ \
   --root=javascript/ \
@@ -16,8 +15,7 @@ closure_lib/closure/bin/build/closurebuilder.py \
   --compiler_flags="--externs=javascript/externs.js" \
   --compiler_flags="--debug" \
   --compiler_flags="--formatting=PRETTY_PRINT" \
-  --compiler_jar=closure_compiler/compiler.jar > javascript/compiled_demo.js 
-
+  --compiler_jar=closure_compiler/compiler.jar > javascript/compiled_demo.js && \
 closure_lib/closure/bin/build/closurebuilder.py \
   --root=closure_lib/ \
   --root=javascript/ \

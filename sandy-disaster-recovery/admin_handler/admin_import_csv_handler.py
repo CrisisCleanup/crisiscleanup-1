@@ -229,6 +229,7 @@ def validate_row(event, row):
         'contains_example_data': None,
         'missing_fields': [],
         'invalid_fields': {}, # {field_name: error_msg}
+        'similar': None,
         'address_geocodes_ok': None,
         'geocoder_worked': None,
         'validates': False, # assume false
@@ -270,7 +271,7 @@ def validate_row(event, row):
     error_encountered = False
     while True:
         try:
-            site_db.Site(**validation_row_copy)
+            site = site_db.Site(**validation_row_copy)
             if error_encountered:
                 return validation, None
             else:
@@ -286,6 +287,12 @@ def validate_row(event, row):
     # bail out if any errors so far
     v = validation
     if any((not v['row_length_ok'], v['invalid_fields'], v['missing_fields'])):
+        return validation, None
+
+    # check for a similar site
+    similar_site = site.similar(event)
+    if similar_site:
+        validation['similar'] = similar_site.case_number
         return validation, None
 
     # validate full address by geocoding
@@ -324,6 +331,9 @@ def validation_to_text(validation):
     if validation['invalid_fields']:
         if s: s+= "; "
         s += "Invalid data: %s" % ', '.join(validation['invalid_fields'])
+    if validation['similar']:
+        if s: s+= "; "
+        s += "Too similar to existing work order %s" % validation['similar']
     if not s and not validation['address_geocodes_ok']:
         if s: s+= "; "
         s += "Could not find address"

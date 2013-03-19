@@ -49,28 +49,31 @@ sandy.form.Initialize = function() {
     // load sites
     sandy.sites.tryBatchLoadSites("open", 0);
 
-    // create click-through autocompleter
-    AC_FIELD_NAMES = ['name', 'address', 'city'];
-    var firstInputElement = goog.dom.getElement(AC_FIELD_NAMES[0]);
-    var ac = goog.ui.ac.createSimpleAutoComplete(terms, firstInputElement, false);
-    for (var i=1; i<AC_FIELD_NAMES.length; i++) {
-        ac.attachInputs(goog.dom.getElement(AC_FIELD_NAMES[i]));
-    }
-    // create click listener when suggestions appear
-    // (cannot use AutoComplete.EventType.UPDATE - tabbing away fires it)
-    goog.events.listen(
-        ac, goog.ui.ac.AutoComplete.EventType.SUGGESTIONS_UPDATE, function(evt) {
-            goog.events.listen(
-                ac.getRenderer().getElement(),
-                goog.events.EventType.CLICK,
-                function (evt) {
-                    // on update, redirect to edit view
-                    var caseNumber = evt.target.outerText.split(':')[0];
-                    document.location = '/edit?case=' + caseNumber; 
-                }
-            );
+    var INCLUDE_AUTOCOMPLETER = false;
+    if (INCLUDE_AUTOCOMPLETER) {
+        // create click-through autocompleter
+        AC_FIELD_NAMES = ['name', 'address', 'city'];
+        var firstInputElement = goog.dom.getElement(AC_FIELD_NAMES[0]);
+        var ac = goog.ui.ac.createSimpleAutoComplete(terms, firstInputElement, false);
+        for (var i=1; i<AC_FIELD_NAMES.length; i++) {
+            ac.attachInputs(goog.dom.getElement(AC_FIELD_NAMES[i]));
         }
-    );
+        // create click listener when suggestions appear
+        // (cannot use AutoComplete.EventType.UPDATE - tabbing away fires it)
+        goog.events.listen(
+            ac, goog.ui.ac.AutoComplete.EventType.SUGGESTIONS_UPDATE, function(evt) {
+                goog.events.listen(
+                    ac.getRenderer().getElement(),
+                    goog.events.EventType.CLICK,
+                    function (evt) {
+                        // on update, redirect to edit view
+                        var caseNumber = evt.target.outerText.split(':')[0];
+                        document.location = '/edit?case=' + caseNumber; 
+                    }
+                );
+            }
+        );
+    }
 
     // add event handlers
     sandy.form.SetUpValidation();

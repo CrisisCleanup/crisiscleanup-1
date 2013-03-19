@@ -36,6 +36,7 @@ import print_handler
 import problem_handler
 import refresh_handler
 import blobstore_delete_handler
+import scripts_handler
 import site_ajax_handler
 import site_api_handler
 import sites_handler
@@ -171,5 +172,7 @@ app = webapp2.WSGIApplication([
     Route(r'/see-all-contacts', see_all_contacts_handler.SeeAllContactsHandler, 'see_all_contacts_handler'),
     Route(r'/js-logs', js_logs_handler.JsLogsHandler, 'js_logs_handler'),
     Route(r'/blobstore-delete', blobstore_delete_handler.BlobstoreDeleteHandler, 'blobstore_delete_handler'),
+
+    Route(r'/script/run', scripts_handler.ScriptsHandler, 'scripts_handler'),
     
 ], debug=True)

@@ -322,6 +322,9 @@ def find_similar(site, event):
     Two sites are similar if at least one of:
     (i) Their normalised phone numbers are the same.
     (ii) Their name and address metaphones and digits in address all match.
+
+    Note: algorithm *does not* check city field due to use of synonyms
+    (e.g. "New York" vs "New York City" vs "NYC")
     """
     if site.phone_normalised:
         q = db.GqlQuery(

@@ -57,6 +57,7 @@ def AddSiteToEvent(site, event_id, force=False, can_overwrite=False):
   site.case_number = event.case_label + str(event.num_sites)
   event.num_sites += 1
   cache.PutAndCache(event, ten_minutes)
+  site.compute_similarity_matching_fields()
   site.put()
   return True
 

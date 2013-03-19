@@ -127,18 +127,26 @@ class FormHandler(base.AuthenticatedHandler):
       if data.status.data == 'Open, unassigned':
         site.assigned_to = ''
 
-      if site.event or event_db.AddSiteToEvent(site, event.key().id()):
+      # attempt to save site
+      if site.similar() and not self.request.get('ignore_similar', None):
+        similar_site = site.similar()
+        message = "Failed: too similar to %s [edit]" % similar_site.case_number
+        message_url = "/edit?id=%s" % similar_site.key().id()
+      elif site.event or event_db.AddSiteToEvent(site, event.key().id()):
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
         return
       else:
         message = "Failed to add site to event: " + event.name
+        message_url = None
     else:
       message = "Failed to validate"
+      message_url = None
     single_site = single_site_template.render(
         { "form": data,
           "org": org})
     self.response.out.write(template.render(
         {"message": message,
+         "message_url": message_url,
          "version" : os.environ['CURRENT_VERSION_ID'],
          "errors": data.errors,
          "logout" : logout_template.render({"org": org, "event": event}),

@@ -30,6 +30,7 @@ from google.appengine.ext.db import Query
 import cache
 import event_db
 import organization
+import metaphone
 
 def _GetOrganizationName(site, field):
   """Returns the name of the organization in the given field, if possible.
@@ -73,6 +74,15 @@ class Site(db.Model):
   landmark = db.StringProperty()
   phone1 = db.StringProperty()
   phone2 = db.StringProperty()
+
+  # similarity-matching fields
+  name_metaphone = db.StringProperty()
+  address_digits = db.StringProperty()
+  address_metaphone = db.StringProperty()
+  city_metaphone = db.StringProperty()
+  phone_normalised = db.StringProperty()
+
+  # more fields
   time_to_call = db.StringProperty()
   rent_or_own = db.StringProperty(choices=["Rent", "Own", "Public Land", "Non-Profit", "Business"])
   work_without_resident = db.BooleanProperty()
@@ -241,12 +251,33 @@ class Site(db.Model):
       'prepared_by',
       'status_notes',
       'derechos_work_type',
-      ]
+  ]
+
+  CSV_IGNORE = [
+      'name_metaphone',
+      'address_digits',
+      'address_metaphone',
+      'city_metaphone',
+      'phone_normalised',
+  ]
 
   _CSV_ACCESSORS = {
     'reported_by': _GetOrganizationName,
     'claimed_by': _GetOrganizationName,
     }
+
+  def compute_similarity_matching_fields(self):
+    """Use double metaphone values and store as 'X-Y'."""
+    self.name_metaphone = '%s-%s' % metaphone.dm(unicode(self.name)) if self.name else None
+    self.address_digits = _filter_non_digits(self.address) if self.address else None
+    self.address_metaphone = '%s-%s' % metaphone.dm(unicode(self.address)) if self.address else None
+    self.city_metaphone = '%s-%s' % metaphone.dm(unicode(self.city)) if self.city else None
+    self.phone_normalised = _filter_non_digits(self.phone1) if self.phone1 else None
+
+  def similar(self):
+    """Find a single similar site (or else None) using find_similar()."""
+    self.compute_similarity_matching_fields()
+    return find_similar(self)
 
   def ToCsvLine(self):
     """Returns the site as a list of string values, one per field in
@@ -270,7 +301,7 @@ def _ValidateCsvFields():
   # NOTE(Bruce): If there's ever a field that we don't want to include in CSV
   # output, we can add an exclusion list, and ensure that CSV_FIELDS + the
   # exclusion list covers all properties.
-  missing = set(Site.fields()) - set(Site.CSV_FIELDS)
+  missing = set(Site.fields()) - set(Site.CSV_IGNORE) - set(Site.CSV_FIELDS)
   if missing:
     raise ValueError('CSV_FIELDS is missing entries for these properties: %s' %
                      ', '.join(missing))
@@ -283,6 +314,28 @@ def _ChoicesWithBlank(choices):
   choose all values.
   """
   return [('', '--Choose One--')] + [(choice, choice) for choice in choices]
+
+def find_similar(site):
+    """
+    Finds a single site similar to @site.
+
+    Two sites are similar if at least one of:
+    (i) Their normalised phone numbers are the same.
+    (ii) Their name and address metaphones and digits in address all match.
+    """
+    if site.phone_normalised:
+        q = db.GqlQuery("SELECT * FROM Site WHERE phone_normalised=:1", site.phone_normalised)
+        if q.count() != 0:
+            return q[0]
+    if site.name_metaphone and site.address_metaphone:
+        q = db.GqlQuery(
+            "SELECT * FROM Site "
+            "WHERE name_metaphone=:1 AND address_digits=:2 AND address_metaphone=:3",
+            site.name_metaphone, site.address_digits, site.address_metaphone)
+        if q.count() != 0:
+            return q[0]
+    return None
+
 
 class DerechosSiteForm(model_form(Site)):
     priority = wtforms.fields.RadioField(
@@ -366,6 +419,7 @@ def GetCached(site_id):
   return cache_entry
 
 def PutAndCache(site):
+  site.compute_similarity_matching_fields()
   site.put()
   return memcache.set(cache_prefix + str(site.key().id()),
                       (site, SiteToDict(site)),
@@ -435,3 +489,7 @@ def GetAllCached(event, ids = None):
 
   sites = cache_results.values() + data_store_results
   return sites
+
+def _filter_non_digits(s):
+    return ''.join(filter(lambda x: x.isdigit(), s))
+

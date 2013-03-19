@@ -128,8 +128,8 @@ class FormHandler(base.AuthenticatedHandler):
         site.assigned_to = ''
 
       # attempt to save site
-      if site.similar() and not self.request.get('ignore_similar', None):
-        similar_site = site.similar()
+      if site.similar(event) and not self.request.get('ignore_similar', None):
+        similar_site = site.similar(event)
         message = "Failed: too similar to %s [edit]" % similar_site.case_number
         message_url = "/edit?id=%s" % similar_site.key().id()
       elif site.event or event_db.AddSiteToEvent(site, event.key().id()):

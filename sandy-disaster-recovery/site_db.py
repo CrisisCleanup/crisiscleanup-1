@@ -274,10 +274,10 @@ class Site(db.Model):
     self.city_metaphone = '%s-%s' % metaphone.dm(unicode(self.city)) if self.city else None
     self.phone_normalised = _filter_non_digits(self.phone1) if self.phone1 else None
 
-  def similar(self):
-    """Find a single similar site (or else None) using find_similar()."""
+  def similar(self, event):
+    """Find a single similar site in @event using find_similar()."""
     self.compute_similarity_matching_fields()
-    return find_similar(self)
+    return find_similar(self, event)
 
   def ToCsvLine(self):
     """Returns the site as a list of string values, one per field in
@@ -315,7 +315,7 @@ def _ChoicesWithBlank(choices):
   """
   return [('', '--Choose One--')] + [(choice, choice) for choice in choices]
 
-def find_similar(site):
+def find_similar(site, event):
     """
     Finds a single site similar to @site.
 
@@ -324,14 +324,18 @@ def find_similar(site):
     (ii) Their name and address metaphones and digits in address all match.
     """
     if site.phone_normalised:
-        q = db.GqlQuery("SELECT * FROM Site WHERE phone_normalised=:1", site.phone_normalised)
+        q = db.GqlQuery(
+            "SELECT * FROM Site WHERE event=:1 AND phone_normalised=:2",
+            event.key(),
+            site.phone_normalised)
         if q.count() != 0:
             return q[0]
     if site.name_metaphone and site.address_metaphone:
         q = db.GqlQuery(
             "SELECT * FROM Site "
-            "WHERE name_metaphone=:1 AND address_digits=:2 AND address_metaphone=:3",
-            site.name_metaphone, site.address_digits, site.address_metaphone)
+            "WHERE event=:1 "
+            "AND name_metaphone=:2 AND address_digits=:3 AND address_metaphone=:4",
+            event.key(), site.name_metaphone, site.address_digits, site.address_metaphone)
         if q.count() != 0:
             return q[0]
     return None

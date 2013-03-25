@@ -140,6 +140,7 @@ class FormHandler(base.AuthenticatedHandler):
         message = "Failed to add site to event: " + event.name
     else:
       message = "Failed to validate"
+      similar_site = None
     single_site = single_site_template.render(
         { "form": data,
           "org": org})

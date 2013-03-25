@@ -13,14 +13,13 @@ We will review your organization, contact you, and bring you into the project as
 {% endblock %}
 
 {% block sidebar_title %}
-How do we vet organizations?
+Signup Process
 {% endblock %}
 
 {% block sidebar_content %}
-<p>Privacy and safety is very important to us. So we do our best to make sure that organizations that join are joining for the right reason.</p>
-<p>The first part of our vetting process is the simplest. Does your organization do the type of work for which this platform was created? Do you do home assessments and/or gutting, mucking-out, debris removal, mold abatement, or rebuilding. If we can answer that question with a 'yes', then we move on to checking your organizations reputation</p>
-<p>To vet your organization, we make sure that the email you used is part of your organizations email, we contact other people involved with your organization, and we check your organizations accreditation. Whether that means you are a part of a large organization like the Red Cross or FEMA, or whether you are a volunteer organization part of National VOAD, we work to make sure that every organization that comes on board has a good history with the community and with disaster relief.<p>
-<p>For additional questions, please <a href="/contact">contact us</a>.</p>
+<p>To help appropriate organizations access the system, we will review the information you provide as quickly as possible. As often as possible, we will designate someone in the disaster area who is more familiar with the organizations on the ground to review and approve sign-up applications.</p>
+
+<p>To promote the saftey and privacy of those who need help, Crisis Cleanup engages in data minimization practices. For example, we do not permit SSNs, medical information, or case management information in the system.  We may ask if a person is over 60, but will not request a date of birth, for example. The information in Crisis Cleanup is primarily related to <em>property</em> rather than <em>people</em>, and only reputable organizations with a presence in the disaster area who this type of work are permitted access.</p>
 {% endblock %}
 
 {% block main_title %}
@@ -136,12 +135,11 @@ Welcome to our signup page!
 	<tr>
 	
         <td class="question" colspan="2"><a href="#fn4"><strong><label for="canvass" title="Visiting the area affected by a disaster and noting damage visible from the street, such as flood levels or physical destruction. Scanning does not require interacting directly with residents or homeownersa and may be done in a vehicle or on foot.
-In contrast, a Survey is a brief intake of the name, address and contact information of a resident and how they were affected by the disaster. The primary difference between a Survey and a basic Assessment is that a Survey does NOT result in a work order, while an Assessment always results in a work order.">Canvassing</label>:</strong></a></td><td></td>
+In contrast, a Survey is a brief intake of the name, address and contact information of a resident and how they were affected by the disaster. The primary difference between a Survey and a basic Assessment is that a Survey does NOT result in a work order, while an Assessment always results in a work order.">Canvassing</label>:</strong></a></td>
         {{ do_radios(form.canvass) }}
     </tr>
 	<tr>
         <td class="question" colspan="2"><a href="#fn5"><strong><label for="assessment" title="An evaluation of a request for assistance that includes a written scope of work and enough information to estimate resources needed, safety concerns, and labor needed to accomplish it.">Assessment</label>:</strong></a></td>
-        <td></td>
         {{ do_radios(form.assessment) }}
     </tr>
 	<tr>

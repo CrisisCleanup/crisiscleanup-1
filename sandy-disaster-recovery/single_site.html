@@ -36,10 +36,20 @@
 <td class="answer"> {{with_errors(form.state)}}<div id=stateSuggestion></div></td></tr>
 <tr><td class=question>Zip Code:</td>
 <td class="answer"> {{with_errors(form.zip_code) }}<div id=zipCodeSuggestion></td></tr>
-<tr><td class=question>Latitude:</td>
-<td class="answer"> {{with_errors(form.latitude)}}</td></tr>
-<tr><td class=question>Longitude:</td>
-<td class="answer"> {{with_errors(form.longitude)}}</td></tr>
+<tr>
+  <td class=question>
+    Latitude:
+    <small>(<a href="#" onclick="document.getElementById('latitude').disabled=false; document.getElementById('latitude').focus(); return false;">edit</a>)</small>
+  </td>
+  <td class="answer">{{with_errors(form.latitude, disabled=True)}}</td>
+</tr>
+<tr>
+  <td class=question>
+    Longitude:
+    <small>(<a href="#" onclick="document.getElementById('longitude').disabled=false; document.getElementById('longitude').focus(); return false">edit</a>)</small>
+  </td>
+  <td class="answer">{{with_errors(form.longitude, disabled=True)}}</td>
+</tr>
 <tr><td class=question>Cross Street or Nearby Landmark:</td>
 <td class="answer"> {{with_errors(form.cross_street) }}</td></tr>
 <tr><td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>

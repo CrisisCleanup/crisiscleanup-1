@@ -23,8 +23,8 @@ from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 from google.appengine.api import memcache
-import json
 from google.appengine.ext.db import Query
+from google.appengine.api import search
 
 # Local libraries.
 import cache
@@ -319,26 +319,32 @@ def find_similar(site, event):
     """
     Finds a single site similar to @site.
 
-    Two sites are similar if at least one of:
-    (i) Their normalised phone numbers are the same.
-    (ii) Their name and address metaphones and digits in address all match.
+    Two sites are similar if at least one of: # @@TODO rewrite this algo
+    (i) Their geocoded co-ords are within 8 metres of each other.
+    (ii) Their name metaphone and normalised phone numbers match.
 
-    Note: algorithm *does not* check city field due to use of synonyms
-    (e.g. "New York" vs "New York City" vs "NYC")
+    Note: address and city similarity fields are not currently used.
     """
-    if site.phone_normalised:
+    # geospatial search ## NOTE: THIS DOES NOT WORK ON DEV_APPENGINE 
+    # (as per https://code.google.com/p/googleappengine/issues/detail?id=7769 )
+    r = search.Index('GEOSEARCH_INDEX').search(
+        'distance(geopoint(%0.10f, %0.10f), loc) < 8' % (site.latitude, site.longitude)
+    )
+    if r.number_found > 0:
+        for scored_doc in r.results:
+            # check event matches
+            possible_site_match = Site.get(scored_doc.doc_id)
+            if possible_site_match and possible_site_match.event.key() == event.key():
+                return possible_site_match
+
+    # fallback to similar name and phone
+    if site.phone_normalised and site.name_metaphone:
         q = db.GqlQuery(
-            "SELECT * FROM Site WHERE event=:1 AND phone_normalised=:2",
+            "SELECT * FROM Site WHERE event=:1 "
+            "AND name_metaphone=:2 and phone_normalised=:3",
             event.key(),
+            site.name_metaphone,
             site.phone_normalised)
-        if q.count() != 0:
-            return q[0]
-    if site.name_metaphone and site.address_metaphone:
-        q = db.GqlQuery(
-            "SELECT * FROM Site "
-            "WHERE event=:1 "
-            "AND name_metaphone=:2 AND address_digits=:3 AND address_metaphone=:4",
-            event.key(), site.name_metaphone, site.address_digits, site.address_metaphone)
         if q.count() != 0:
             return q[0]
     return None
@@ -428,6 +434,15 @@ def GetCached(site_id):
 def PutAndCache(site):
   site.compute_similarity_matching_fields()
   site.put()
+
+  # geospatial index ## NOTE: THIS DOES NOT WORK ON DEV_APPENGINE 
+  # (as per https://code.google.com/p/googleappengine/issues/detail?id=7769 )
+  search_doc = search.Document(
+    doc_id=str(site.key()),
+    fields=[
+      search.GeoField(name='loc', value=search.GeoPoint(site.latitude, site.longitude))
+  ])
+  search.Index(name='GEOSEARCH_INDEX').put(search_doc)
   return memcache.set(cache_prefix + str(site.key().id()),
                       (site, SiteToDict(site)),
                       time = cache_time)

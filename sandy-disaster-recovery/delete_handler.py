@@ -18,11 +18,11 @@
 import jinja2
 import os
 from google.appengine.ext import db
+from google.appengine.api import search
 
 # Local libraries.
 import base
 import site_db
-import event_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -48,6 +48,7 @@ class DeleteHandler(base.AuthenticatedHandler):
       return
     site = site_db.Site.get(db.Key.from_path('Site', id))
     if site:
+      search.Index(name='GEOSEARCH_INDEX').delete(str(site.key()))
       site.delete()
-      event_id = event.key().id()
+      ##event_id = event.key().id()
     self.redirect('/sites?message=Site Deleted')

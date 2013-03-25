@@ -16,6 +16,8 @@
 #
 import logging
 
+from google.appengine.api import search
+
 import base
 import site_db
 
@@ -60,3 +62,13 @@ def compute_all_sims(offset):
             site.put()
         else:
             logging.info("skipping %s..." % i)
+
+def insert_all_geosearch_docs(offset):
+    for i, site in enumerate(site_db.Site.all().run(offset=offset)):
+        search_doc = search.Document(
+            doc_id=str(site.key()),
+            fields=[
+              search.GeoField(name='loc', value=search.GeoPoint(site.latitude, site.longitude))
+        ])
+        search.Index(name='GEOSEARCH_INDEX').put(search_doc)
+        

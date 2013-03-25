@@ -133,6 +133,7 @@ class FormHandler(base.AuthenticatedHandler):
         message = "Failed: too similar to %s [edit]" % similar_site.case_number
         message_url = "/edit?id=%s" % similar_site.key().id()
       elif site.event or event_db.AddSiteToEvent(site, event.key().id()):
+        site_db.PutAndCache(site)
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
         return
       else:

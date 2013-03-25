@@ -81,5 +81,5 @@ def insert_all_geosearch_docs(offset):
     for i, site in enumerate(site_db.Site.all().run(offset=offset)):
         deferred.defer(_geoindex_doc, site.key())
         logging.warn('deferred %s' %i)
-    logging.info('Finish defers')
+    logging.info('Completed defers')
         

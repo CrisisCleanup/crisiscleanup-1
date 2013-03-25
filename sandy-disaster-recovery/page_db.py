@@ -15,15 +15,14 @@
 # limitations under the License.
 #
 # System libraries.
-import datetime
+import os
 import re
 import logging
-import wtforms.ext.dateutil.fields
-import wtforms.fields
+
+import jinja2
 from google.appengine.ext import db
 from google.appengine.api import memcache
 from wtforms.ext.appengine.db import model_form
-
 from wtforms import HiddenField
 
 
@@ -40,7 +39,7 @@ MEMCACHE_DICT_KEY = 'page_block_dict'
 
 class PageBlock(db.Model):
     name = db.StringProperty(required=True)
-    html = db.TextProperty(required=True, default="<p>Your HTML here</p>")
+    html = db.TextProperty()
 
 class PageBlockForm(model_form(PageBlock)):
     name = HiddenField('name')
@@ -54,22 +53,35 @@ def detect_page_blocks():
         for block_name in PAGE_BLOCK_MARKER_CRX.findall(fd.read()):
             yield block_name
 
-def get_all_page_blocks():
-    return [PageBlock.get_or_insert(name, name=name) for name in detect_page_blocks()]
-
-def get_page_block_html(name):
-    block = PageBlock.get_by_key_name(name)
-    if block:
-        return block.html
+def get_page_block_default_html(block_name):
+    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    defaults_template = jinja_env.get_template('pageblock.defaults.html')
+    default_block_fn = defaults_template.blocks.get(block_name, None)
+    if default_block_fn:
+        return list(default_block_fn(None))[0]
     else:
         return None
 
+def get_all_page_blocks():
+    """
+    Get all page blocks, creating from defaults as necessary.
+    """
+    page_blocks = [PageBlock.get_or_insert(name, name=name) for name in detect_page_blocks()]
+    for block in page_blocks:
+        if not block.html:
+            block.html = get_page_block_default_html(block.name)
+            block.save()
+    return page_blocks
+
 def get_page_block_dict():
+    """
+    Returns {block_name: html} for all known PageBlocks (memcached).
+    """
     cached = memcache.get(MEMCACHE_DICT_KEY)
     if cached is not None:
         return cached
     else:
-        page_block_dict = {block.name:block.html for block in PageBlock.all()}
+        page_block_dict = {block.name:block.html for block in get_all_page_blocks()}
         memcache.add(MEMCACHE_DICT_KEY, page_block_dict)
         return page_block_dict
 

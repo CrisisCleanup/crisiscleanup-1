@@ -1,0 +1,171 @@
+{# PageBlock defaults #}
+{# ================== #}
+
+{# CMS-style PageBlocks are populated with these values as defaults. #}
+
+
+{# page.html (home page) #} 
+
+{% block home_banner_page_block %}
+<h2>Who's in charge? You are.</h2>
+<p>When you allow disaster recovery organizations to share information, self-organize, and coordinate, great things happen. How do you organize 30,000 volunteers from 100 organizations to 5,000 locations across a 500-mile arc in 8 weeks? You don't. You let them organize themselves.</p>
+{% endblock %}
+
+{% block home_description_title_page_block %}
+Crisis Cleanup is a Free, Open Source Disaster Relief Mapping Tool
+{% endblock %}
+
+{% block home_description_subtitle_page_block %}
+A seamless platform for inter-organization collaboration and communication. We've helped more than 6,000 families by bringing together more than 100 disaster recovery organizations with more than 30,000 volunteers in 5 states and 4 disasters.
+{% endblock %}
+
+{% block home_sidebar_title_page_block %}
+Welcome to CrisisCleanup.org
+{% endblock %}
+
+{% block home_sidebar_content_page_block %}
+<p>This is the first release of our public-facing site. There will be much more to come very soon.</p>
+<p>Please <a href="/contact">contact us</a> with any questions or concerns about the site. Thanks!</p>
+{% endblock %}
+
+{% block home_main_title_page_block %}
+When you allow disaster recovery organizations to share information, self-organize, and coordinate, great things happen. How do you organize 30,000 volunteers from 100 organizations to 5,000 locations across a 500-mile arc in 8 weeks? <em>You don't. You let them organize themselves.</em>
+{% endblock %}
+
+{% block home_main_content_page_block %}
+<p>As with most worthwhile projects, CrisisCleanup has multiple converging story lines.  After helping organize tens of thousands of <em>Mormon Helping Hands</em> volunteers to clean up after Tropical Storm Irene in August&ndash;October 2011, <a href="https://twitter.com/aarontitus">Aaron Titus</a> began designing technology to improve volunteer efficiency. In August 2012 he deployed the alpha version of Crisis Cleanup to coordinate 700 volunteers from 5 organizations to assist 300 elderly residents in the aftermath of the "Derecho" thunderstorms in Southern New Jersey.</p>
+
+<p>The system was activated again after Hurricane Sandy hit New Jersey, New York and Connecticut in October, 2012.  With the added load of dozens of organizations, the system had to be rebuilt quickly.  Mormon Helping Hands volunteer <a href="https://plus.google.com/100981388284358828816/posts">Jeremy Pack</a> and several other talented developers rebuilt a more robust and user-friendly version the system on Google App Engine as an <a href="http://code.google.com/p/sandy-disaster-recovery/">open source project</a>.  The system soon became a major hub of coordination activity for more than 100 Hurricane Sandy relief organizations.</p>
+
+<p>In the meantime, the efforts of <em>Occupy Sandy</em> were in full-swing.  They were experiencing the same issues as many other relief organizations: Poor communication, inconsistent canvassing, organizational overlap, and duplicated efforts. This lead to survey fatigue, asymmetric aide, and volunteers who were frustrated because it wasn't clear what needed to be done. We wanted to do better for ourselves and our neighbors. With his extensive community organizing, programming, and disaster recovery experience, <a href="https://twitter.com/AndyGimma">Andy Gimma</a> now co-leads the Crisis Cleanup project.</p>
+
+<p>In early 2013, Mississippi VOAD requested to use the system to coordinate recovery efforts after the Hattiesburg, MS tornado.  The following week, Georgia VOAD requested to use the system to assist with tornado recovery in Gordon and Bartow counties.  <a href="http://www.nvoad.org">National VOAD</a> will formally adopt Crisis Cleanup at its annual convention in May, 2013.  We look forward to working with National VOAD.</p>
+
+<p>Talented developers and designers like <a href="https://twitter.com/cpwood">Chris Wood</a>, <a href="http://www.linkedin.com/pub/karissa-phelps/44/563/73a">Karissa Phelps</a>, and dozens of others have also made invaluable contributions to the project.</p>
+
+<p><strong>CrisisCleanup.org proves that it is possible to create a near frictionless technological platform where inter-organization Cooperation, Communication, Coordination, and Collaboration is not only convenient, but required.</strong></p>
+{% endblock %}
+
+
+{# contact.html #}
+
+{% block contact_description_title_page_block %}
+We're interested in hearing from you
+{% endblock %}
+
+{% block contact_description_subtitle_page_block %}
+Please write is with ideas, solutions, of if you want to help.
+{% endblock %}
+
+{% block contact_sidebar_title_page_block %}
+How can you help?
+{% endblock %}
+
+{% block contact_sidebar_page_block %}
+<p>We can always use help at CrisisCleanup.org. Here is a short list of some of the things we are looking for.</p>
+<ul>
+<li>Get the word out, let people know about CrisisCleanup.org</li>
+<li><a href="/signup">Sign up!</a>If you're are a part of an organization that might want to be a part of CrisisCleanup.org, signup, or send us an email</li>
+<li>We can always use more developers. CrisisCleanup.org is run on Google App Engine, running python.</li>
+<li>Documentation: Document how to use the project, or document the code itself. Either would be a big help!</li>
+<ul>
+{% endblock %}
+
+{% block contact_main_title_page_block %}
+Email us any time
+{% endblock %}
+
+{% block contact_main_page_block %}
+<p>For questions regarding the app, send emails to aaron@crisiscleanup.org</p>
+<p>For technical questions, you can email aaron@crisiscleanup.org, or andy@crisiscleanup.org</p>
+<p>Thank you for your time and interest</p>
+{% endblock %}
+
+
+{# about.html #}
+
+{% block about_description_title_page_block %}
+Well, how did we get here?
+{% endblock %}
+
+{% block about_description_subtitle_page_block %}
+Who we are, what our philosophies are, and how we are making a new kind of system work.
+{% endblock %}
+
+{% block about_sidebar_title_page_block %}
+Real Innovation
+{% endblock %}
+
+{% block about_sidebar_page_block %}
+<p>The real innovation of this system is the ability to coordinate tens of thousands of volunteers from dozens of organizations to thousands of sites after a disaster. <strong>The Collaborative Work Order System proves that it is possible to create a near frictionless technological platform where inter-organization Cooperation, Communication, Coordination, and Collaboration is not only convenient, but required.</strong></p>
+{% endblock %}
+
+{% block about_main_title_page_block %}
+Disaster Recovery Collaborative Work Order System
+{% endblock %}
+
+{% block about_main_page_block %}
+Updated 20 Feb 2013.<br/>
+Taken from this <a href="http://www.aarontitus.net/blog/2012/12/20/disaster-recovery-collaborative-work-order-system/">link.</a><br/>
+<p>Over the past several months a few developers and I have created a Collaborative Work Order System for disaster recovery (now at CrisisCleanup.org, Twitter: @CrisisCleanup). The project is open source under the Apache 2.0 License, and is a gift to the community. The system is now being used to manage recovery efforts in Connecticut, New York, New Jersey, Mississippi, and Georgia. The National VOAD will formally adopt/assume the project in May at the National VOAD conference. Many thanks to the dedicated work of Andy Gimma, Jeremy Pack, Chris Wood and dozens of others who have made this volunteer effort more successful than I could have ever imagined at the outset.</p>
+
+<p>The platform implements a “Craigslist” philosophy to recovery efforts—organizations that are aware of work orders enter them into the system, and organizations with capacity to help can claim and perform the work without interference from any centralized organization. This minimizes duplication and maximizes communication, coordination, and efficiency.</p>
+
+<p>No single organization can guarantee that any of the individuals in the system will be served. However, using the same system will permit inter-agency coordination, situational awareness, and help participating organizations prioritize their limited resources. And sharing work order information among dozens of organizations maximizes the chances that a client will receive help.</p>
+
+<p>As of right now, more than 90 relief organizations and agencies with more than 30,000 combined volunteers are using the system to coordinate Hurricane Sandy relief efforts. The system is managing more than 4,900 homes in need of gutting and rebuilding from Connecticut, Long Island, New York, New Jersey, Mississippi and Georgia.</p>
+
+<p>There are three requirements for an organization to participate in the system:</p>
+
+<ol>
+<li>An organization must have a physical presence in the disaster area.</li>
+<li>An organization must either perform home assessments and/or perform gutting, mucking-out, debris removal, mold abatement, or rebuilding.</li>
+<li>An organization must be reputable. This generally means that the organization must be non-profit, or a member of National VOAD, a state VOAD, a County VOAD/COAD, a local government agency, or come recommended by a VOAD member or government agency.</li>
+</ol>
+<p>The current implementation requires a password. However, I have posted a training video that explains how the system works. I’ve also included screenshots below.</p>
+
+<h2>Philosophy Behind and Limits to the Collaborative Work Order System</h2>
+<p>The system is based upon a few foundational philosophies:</p>
+<ul>
+<li>Retired Admiral Thad Allen observed that in the military, they operate under a “Unity of Command,” but in private sector disaster recovery, the best you can hope for us “Unity of Effort.” This tool facilitates Unity of Effort without striving for the mirage of private sector Unity of Command.</li>
+<li>I don’t want to be in charge of your organization’s activities, or tell you what to do.</li>
+<li>The system should enable, not interfere with your existing business processes.</li>
+<li>No single organization should be in charge of others without their consent.</li>
+<li>The system should make collaboration and communication not only convenient, but required.</li>
+<li>This is not the “One App to Rule them All.” Do not stray too far from the system’s strengths.</li>
+<li>The system is open (but not public), and should therefore not contain sensitive personal information.</li>
+</ul>
+<h2>App Development Philosophy</h2>
+<p>There are two approaches to app development. The first is to create a mammoth, fully-integrated system that tries to be all things to all people. Sahana is a great example of this approach. However, even the most successful of these apps can be overwhelming and tend to be a jack of all trades but master of none.</p>
+
+<p>The second approach is to try and create a relatively lightweight app that does only one thing very well. These apps are generally far more user-friendly; but their success comes with a cost. Without careful curation, these apps can be highjacked, forced to do things outside their core competency, and grow into unwieldy mammoths.</li>
+
+<p>The Collaborative Work Order System definitely falls into category 2. There is no such thing as “The One App to Rule Them All,” and this is no exception. The Collaborative Work Order System excels at coordinating tens or hundreds of thousands of volunteers from multiple organizations, to thousands or tens of thousands of work order sites across a large geographic area; improving communication, and improving inter-organization coordination. But there are certain things for which it should never be used.</p>
+
+<p>For example, because the system is open (but not public—there is an important difference), it is inappropriate to use the system to store sensitive personal information. The system’s power to coordinate and facilitate communication comes from its openness; but some things were not meant to be shared, such as confidential case management information, volunteer details, etc. The Collaborative Work Order System is not, and can never be, all things to all people. The Collaborative Work Order System should never be used to store sensitive personal or case management information.</p>
+
+<h2>Why a Collaborative Work Order System Hasn’t Been Developed Before</h2>
+<p>In the disaster recovery community, we talk a good deal about VOAD’s 4Cs: Cooperation, Communication, Coordination, and Collaboration. One reason these ideals are so difficult to achieve is because, even though we don’t like to admit it, most disaster recovery organizations are essentially competitors. Of course, we all get along in the field, forging deep and lasting friendships while we labor side-by-side in the service of our fellows in distress. But almost all relief organizations (with exceptions like Mormon Helping Hands and Occupy Sandy) rely upon grants to fund their operations.</p>
+
+<p>Passive competition for scarce grant resources means that every organization wants to be in charge. In an effort to qualify for the next grant, each organization strives to direct the work of other organizations and, most importantly, each organization wants to control the flow of information. These tensions create natural barriers to the 4Cs.</p>
+
+<p>In addition, organizations with employees have a tendency to perpetuate inefficiency. Even though efficiency saves the organization money, efficiency may also eliminate jobs. Therefore, most bureaucracies are suspicious of or downright hostile towards new or efficient technologies.</p>
+
+<p>In short, a collaborative work order system hasn’t been developed until now because: 1. Everybody wants to be in charge; and 2. Internal bureaucratic interests run counter to efficiency.</p>
+
+<h2>My Unique Opportunity</h2>
+<p>First, allow me to start with a disclaimer: The Collaborative Work Order System is neither developed nor formally endorsed by The Church of Jesus Christ of Latter-day Saints/ Mormon Helping Hands, and this blog post represents my own opinion and not the official position of the Church. In my role as New Jersey VOAD representative for the Church, I have had a wonderful opportunity to tackle these difficult problems during Hurricane Irene, the June 2012 derecho storms, and Hurricane Sandy. First, because Mormon Helping Hands relief efforts do not rely on government grants, it has no economic incentive to be “in charge” of other organizations. We just want to help everyone get the job done.</p>
+
+<p>As a result, I designed the system so that no single organization is capable of controlling the information or governing other organizations without consent. The technology permits, but does not require oversight. Who is in charge? The answer to that question is the same as this question: “Who is in charge of Craigslist?”</p>
+
+<p>This non-threatening approach is designed to facilitate an organization’s existing business processes, rather than impose new processes. As Joseph Smith taught, people can “govern themselves” when they operate according to correct principles. And based upon the participation of more than 90 organizations, the approach works.</p>
+
+<p>Second, unlike most other relief organizations, Mormon Helping Hands relies exclusively on volunteers with families and full-time jobs. Unlike employees, volunteers have a natural inclination to work efficiently, and are therefore more open to adopting disruptive or efficient technologies. Mormon Helping Hands volunteers (as well as Occupy volunteers) don’t get paid, and if they’re anything like me, they must hold down a full-time job make time to see their wife and five cute kids. Volunteering efficiently improves my personal bottom line.</p>
+
+<h2>Real Innovation</h2>
+<p>The Collaborative Work Order System’s technology is not new or particularly innovative. Due to the great work of developers like Jeremy Pack, the user interface is great, but not groundbreaking. In fact, if I leave you with the impression that the Collaborative Work Order System is just a cool technology, then I have failed. This system does not evangelize technology; it evangelizes a philosophy.</p>
+
+<p>The real innovation of this system is the ability to coordinate tens of thousands of volunteers from dozens of organizations to thousands of sites after a disaster. <strong>The Collaborative Work Order System proves that it is possible to create a near frictionless technological platform where inter-organization Cooperation, Communication, Coordination, and Collaboration is not only convenient, but required.</strong></p>
+
+{% endblock %}
+

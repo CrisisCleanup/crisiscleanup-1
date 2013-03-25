@@ -319,8 +319,8 @@ def find_similar(site, event):
     """
     Finds a single site similar to @site.
 
-    Two sites are similar if at least one of: # @@TODO rewrite this algo
-    (i) Their geocoded co-ords are within 8 metres of each other.
+    Two sites are similar if at least one of:
+    (i) Their geocoded co-ords are within 4 metres of each other.
     (ii) Their name metaphone and normalised phone numbers match.
 
     Note: address and city similarity fields are not currently used.
@@ -328,7 +328,7 @@ def find_similar(site, event):
     # geospatial search ## NOTE: THIS DOES NOT WORK ON DEV_APPENGINE 
     # (as per https://code.google.com/p/googleappengine/issues/detail?id=7769 )
     r = search.Index('GEOSEARCH_INDEX').search(
-        'distance(geopoint(%0.10f, %0.10f), loc) < 8' % (site.latitude, site.longitude)
+        'distance(geopoint(%0.10f, %0.10f), loc) < 4' % (site.latitude, site.longitude)
     )
     if r.number_found > 0:
         for scored_doc in r.results:

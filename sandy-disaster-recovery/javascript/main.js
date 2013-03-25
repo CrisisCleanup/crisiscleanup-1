@@ -300,7 +300,13 @@ var updateDialogForSite = function (dialog, site) {
             i == "rent_or_own" ||
             i == "time_to_call" ||
             i == "phone1" ||
-            i == "phone2") continue;
+            i == "phone2" ||
+            i == "name_metaphone" ||
+            i == "address_digits" ||
+            i == "address_metaphone" ||
+            i == "city_metaphone" ||
+            i == "phone_normalised"
+        ) continue;
         var label = i.replace(/_/g, " ");
         label = label[0].toUpperCase() + label.slice(1);
         if (i == "habitable") {

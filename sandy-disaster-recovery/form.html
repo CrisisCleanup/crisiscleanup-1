@@ -44,6 +44,15 @@ goog.require("sandy.form");
 {% endif %} {# not mode_js #}
 <input type="hidden" name="event_name" value="{{event_name}}" />
 
+{% if similar_site %}
+  <section id="errors">
+    <h1>Possible Duplicate</h1>
+    <p>It looks like {{ similar_site.name }} ({{ similar_site.address }}) is already in the system.</p>
+    <p><a href="/edit?id={{ similar_site.key().id() }}" target="_new_duplicate">Click here to open exisiting work order (in a new tab)</a></p>
+    <p>To ignore this warning, select the checkbox at the bottom of this form.</p>
+  </section>
+{% endif %}
+
 {% if message %}
   <div class="form_message">
     {% if message_url %}

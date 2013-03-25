@@ -16,6 +16,7 @@
 #
 import logging
 
+from google.appengine.ext import deferred
 from google.appengine.api import search
 
 import base
@@ -42,6 +43,9 @@ class ScriptsHandler(base.AuthenticatedHandler):
         if script_name == 'compute_all_sims':
             offset = int(self.request.get('offset', 0))
             compute_all_sims(offset)
+        elif script_name == 'insert_all_geosearch_docs':
+            offset = int(self.request.get('offset', 0))
+            insert_all_geosearch_docs(offset)
         else:
             ran_script = False
 
@@ -63,12 +67,19 @@ def compute_all_sims(offset):
         else:
             logging.info("skipping %s..." % i)
 
+def _geoindex_doc(site_key):
+    site = site_db.Site.get(site_key)
+    search_doc = search.Document(
+        doc_id=str(site.key()),
+        fields=[
+          search.GeoField(name='loc', value=search.GeoPoint(site.latitude, site.longitude))
+    ])
+    search.Index(name='GEOSEARCH_INDEX').put(search_doc)
+
 def insert_all_geosearch_docs(offset):
+    logging.info('Deferring geoindexing of all sites (offset=%s)...' % offset)
     for i, site in enumerate(site_db.Site.all().run(offset=offset)):
-        search_doc = search.Document(
-            doc_id=str(site.key()),
-            fields=[
-              search.GeoField(name='loc', value=search.GeoPoint(site.latitude, site.longitude))
-        ])
-        search.Index(name='GEOSEARCH_INDEX').put(search_doc)
+        deferred.defer(_geoindex_doc, site.key())
+        logging.warn('deferred %s' %i)
+    logging.info('Finish defers')
         

@@ -39,24 +39,28 @@
               <a {% block about %}{% endblock %} href="/about"><span class="icon">Û</span>About</a>
             </li>
             <li>
-              <a {% block publicmap %}{% endblock %} href="/public-map"><span class="icon">M</span>Public Map</a>
+              <a {% block publicmap %}{% endblock %} href="/public-map"><span class="icon">5</span>Public Map</a>
             </li>
+            <li>
+              <a {% block blog %}{% endblock %} href="/blog"><span class="icon">?</span>Blog</a>
+            </li>
+
 	    <li>
               <a {% block contact %}{% endblock %} href="/contact"><span class="icon">M</span>Contact Us</a>
             </li>
 	    <li>
-              <a {% block signup %}{% endblock %} href="/signup"><span class="icon">M</span>Sign Up</a>
+              <a {% block signup %}{% endblock %} href="/signup"><span class="icon">@</span>Sign Up</a>
             </li>
             {% if logged_in %}
             <li>
-	    <a href="/"><span class="icon">M</span>Assessment Form</a>
+	    <a href="/"><span class="icon">5</span>Assessment Form</a>
 	    </li>
             <li>
-            <a href="/logout"><span class="icon">M</span>Log Out</a>
+            <a href="/logout"><span class="icon">L</span>Log Out</a>
 	    </li>
             {% else %}
 	    <li>
-              <a {% block login %}{% endblock %} href="/authentication"><span class="icon">M</span>Log In</a>
+              <a {% block login %}{% endblock %} href="/authentication"><span class="icon">L</span>Log In</a>
             </li>
             {% endif %}
           </ul>

@@ -114,6 +114,10 @@ html, body {
 .bold {
   font-weight: bold;
 }
+input[readonly=""]
+{
+    background-color:lightgrey;
+}
 .hide {
   display: none;
 }

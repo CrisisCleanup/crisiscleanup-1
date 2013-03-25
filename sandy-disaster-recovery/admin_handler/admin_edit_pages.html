@@ -4,6 +4,8 @@
 
 <p>Edit page blocks. All HTML is allowed. <strong style="background-color: yellow">Only edit and save one textarea at a time.<strong></p>
 
+<p><a href="/admin-edit-pages/download/defaults">Download New Defaults File</a></p>
+
 {% for form in forms %}
   <a name="{{ form.name.data }}">
   <form method="POST" action="#{{ form.name.data }}">

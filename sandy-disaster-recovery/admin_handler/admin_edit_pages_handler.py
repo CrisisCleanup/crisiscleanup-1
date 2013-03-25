@@ -18,7 +18,6 @@
 # System libraries.
 import jinja2
 import os
-import logging
 import HTMLParser
 
 
@@ -62,4 +61,21 @@ class AdminEditPagesHandler(base.AuthenticatedHandler):
         self.redirect('/admin-edit-pages')
         return
 
-        
+class AdminDownloadPageBlocks(base.AuthenticatedHandler):
+    def AuthenticatedGet(self, org, event):
+        if not org.name == GLOBAL_ADMIN_NAME:
+            self.redirect("/")
+            return
+
+        # create downloadable defaults file
+        page_blocks = page_db.get_all_page_blocks()
+        s  = "{# PageBlock defaults #}\n"
+        s += "{# ================== #}\n\n"
+        s += "{# CMS-style PageBlocks are populated with these values as defaults. #}\n\n"
+        for block in page_blocks:
+            s += "{%% block %s %%}\n" % block.name
+            s += block.html.strip() + "\n"
+            s += "{% endblock %}\n\n"
+        self.response.out.write(s)
+        return
+

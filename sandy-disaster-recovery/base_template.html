@@ -28,6 +28,7 @@
         <ul class="social-icons">
           <!--<li><a href="http://www.facebook.com/blog.cssjuntion" class="icon flip">^</a></li>
           <li><a href="" class="icon">T</a></li>-->
+          <li><a href="/contact" class="icon">M</a></li>
           <li><a href="http://www.twitter.com/crisiscleanup" class="icon">^</a></li>
         </ul>
         <nav class="clearfix">
@@ -39,16 +40,13 @@
               <a {% block about %}{% endblock %} href="/about"><span class="icon">Û</span>About</a>
             </li>
             <li>
-              <a {% block publicmap %}{% endblock %} href="/public-map"><span class="icon">5</span>Public Map</a>
+              <a {% block publicmap %}{% endblock %} href="/public-map"><span class="icon">5</span>Map</a>
             </li>
             <li>
               <a {% block blog %}{% endblock %} href="http://blog.crisiscleanup.org/"><span class="icon">?</span>Blog</a>
             </li>
 
-	    <li>
-              <a {% block contact %}{% endblock %} href="/contact"><span class="icon">M</span>Contact Us</a>
-            </li>
-	    <li>
+	          <li>
               <a {% block signup %}{% endblock %} href="/signup"><span class="icon">@</span>Sign Up</a>
             </li>
             {% if logged_in %}

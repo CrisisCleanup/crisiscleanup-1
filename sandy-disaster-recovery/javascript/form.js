@@ -36,6 +36,28 @@ var map;
 
 var geocoder;
 
+var showSimilar = function(matches) {
+    // show similarity matches 
+    var div = goog.dom.getElement('similars');
+    goog.dom.removeChildren(div);
+    if (matches.length > 0) {
+        var p = goog.dom.createDom('p', 'bold', 'Possible existing matches:');
+        div.appendChild(p);
+        var ul = goog.dom.createElement('ul');
+        div.appendChild(ul);
+        for (var i=0; i<matches.length && i<3; i++) {
+            (function() {
+                var match = matches[i];
+                var url = "/edit?case=" + match.split(':')[0];
+                ul.appendChild(
+                    goog.dom.createDom('li', null, 
+                        goog.dom.createDom('a', {href:url}, match))
+                );
+            })();
+        }
+    }
+};
+
 sandy.form.Initialize = function() {
     // setup google map
     var myLatlng = new google.maps.LatLng(39.50, -77.35);
@@ -49,30 +71,24 @@ sandy.form.Initialize = function() {
     // load sites
     sandy.sites.tryBatchLoadSites("open", 0);
 
-    var INCLUDE_AUTOCOMPLETER = false;
-    if (INCLUDE_AUTOCOMPLETER) {
-        // create click-through autocompleter
-        AC_FIELD_NAMES = ['name', 'address', 'city'];
-        var firstInputElement = goog.dom.getElement(AC_FIELD_NAMES[0]);
-        var ac = goog.ui.ac.createSimpleAutoComplete(terms, firstInputElement, false);
-        for (var i=1; i<AC_FIELD_NAMES.length; i++) {
-            ac.attachInputs(goog.dom.getElement(AC_FIELD_NAMES[i]));
-        }
-        // create click listener when suggestions appear
-        // (cannot use AutoComplete.EventType.UPDATE - tabbing away fires it)
-        goog.events.listen(
-            ac, goog.ui.ac.AutoComplete.EventType.SUGGESTIONS_UPDATE, function(evt) {
+    // construct array matcher
+    var am = new goog.ui.ac.ArrayMatcher(terms);
+
+    // listen for keyup on primary fields
+    var AC_FIELD_NAMES = ['name', 'address', 'zip_code'];
+    for (var i=0; i<AC_FIELD_NAMES.length; i++) {
+        (function() {
+            var inputElement = goog.dom.getElement(AC_FIELD_NAMES[i]);
                 goog.events.listen(
-                    ac.getRenderer().getElement(),
-                    goog.events.EventType.CLICK,
-                    function (evt) {
-                        // on update, redirect to edit view
-                        var caseNumber = evt.target.outerText.split(':')[0];
-                        document.location = '/edit?case=' + caseNumber; 
+                    inputElement,
+                    goog.events.EventType.KEYUP,
+                    function(evt) {
+                        if (inputElement.value.length > 3) {
+                            showSimilar(am.getPrefixMatches(inputElement.value));
+                        }
                     }
                 );
-            }
-        );
+        })();
     }
 
     // add event handlers

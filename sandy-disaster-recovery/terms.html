@@ -1,0 +1,29 @@
+{% extends "base_template.html" %}
+
+{% block terms %}
+class="activePage"
+{% endblock %}
+
+{% block description_title %}
+{{ terms_description_title_page_block|safe }}
+{% endblock %}
+
+{% block description_subtitle %}
+{{ terms_description_subtitle_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_title %}
+{{ terms_sidebar_title_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_content %}
+{{ terms_sidebar_page_block|safe }}
+{% endblock %}
+
+{% block main_title %}
+{{ terms_main_title_page_block|safe }}
+{% endblock %}
+
+{% block main_content %}
+{{ terms_main_page_block|safe }}
+{% endblock %}

@@ -56,6 +56,8 @@ import see_all_contacts_handler
 import js_logs_handler
 import page_handler
 import about_handler
+import terms_handler
+import privacy_handler
 import contact_handler
 import public_map_handler
 import public_map_ajax_handler
@@ -108,8 +110,10 @@ app = webapp2.WSGIApplication([
     Route(r'/public-map', public_map_handler.PublicMapHandler, 'dev'),
     Route(r'/public_map_ajax_handler', public_map_ajax_handler.PublicMapAjaxHandler, 'dev'),
 
-    Route(r'/about', about_handler.AboutHandler, 'dev'),
     Route(r'/home', page_handler.PageHandler, 'dev'),
+    Route(r'/about', about_handler.AboutHandler, 'about'),
+    Route(r'/terms', terms_handler.TermsHandler, 'terms'),
+    Route(r'/privacy', privacy_handler.PrivacyHandler, 'privacy'),
     Route(r'/refresh_counties', refresh_handler.RefreshHandler, name='refresh_counties'),
     Route(r'/old', redirect_to=SPREADSHEET_URL, name='spreadsheet_redirect'),
     Route(r'/api/site', site_api_handler.SiteApiHandler, 'site_api'),

@@ -28,7 +28,15 @@ from wtforms import HiddenField
 
 # constants
 
-FILENAMES = ['page.html', 'about.html', 'contact.html']
+FILENAMES = [
+    'page.html',
+    'about.html',
+    'contact.html',
+    'new_new_organization.html',
+    'public_map.html',
+    'terms.html',
+    'privacy.html',
+]
 
 PAGE_BLOCK_MARKER_CRX = re.compile('[a-z0-9_]+_page_block')
 

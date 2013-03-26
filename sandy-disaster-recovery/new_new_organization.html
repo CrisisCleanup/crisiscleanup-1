@@ -5,42 +5,30 @@ class="activePage"
 {% endblock %}
 
 {% block description_title %}
-Thanks for your interest!
+{{ sign_up_description_title_page_block|safe }}
 {% endblock %}
 
 {% block description_subtitle %}
-We will review your organization, contact you, and bring you into the project as soon as possible.
+{{ sign_up_description_subtitle_page_block|safe }}
 {% endblock %}
 
 {% block sidebar_title %}
-Signup Process
+{{ sign_up_sidebar_title_page_block|safe }}
 {% endblock %}
 
 {% block sidebar_content %}
-<p>To help appropriate organizations access the system, we will review the information you provide as quickly as possible. As often as possible, we will designate someone in the disaster area who is more familiar with the organizations on the ground to review and approve sign-up applications.</p>
-
-<p>To promote the saftey and privacy of those who need help, Crisis Cleanup engages in data minimization practices. For example, we do not permit SSNs, medical information, or case management information in the system.  We may ask if a person is over 60, but will not request a date of birth, for example. The information in Crisis Cleanup is primarily related to <em>property</em> rather than <em>people</em>, and only reputable organizations with a presence in the disaster area who this type of work are permitted access.</p>
+{{ sign_up_sidebar_page_block|safe }}
 {% endblock %}
 
 {% block main_title %}
-Welcome to our signup page!
+{{ sign_up_main_title_page_block|safe }}
 {% endblock %}
 
 {% block main_content %}
 <div id="form_background">
 <div id="form">
-<h1>Signup</h1>
 
-<p>Welcome! Organizations that clean up disasters may join <em>CrisisCleanup.org</em>, if they meet the following requirements:</p>
-<ol>
-    <li>Your organization must have a physical presence in the disaster area.</li>
-    <li>Your organization must either perform home assessments and/or gutting, mucking-out, debris removal, mold abatement, or rebuilding.</li>
-    <li>Your organization must be reputable. This generally means a non-profit member of National VOAD, a state VOAD, a County VOAD/COAD, a local government agency, or an organization recommended by a VOAD member or government agency.</li>
-    <!--<li>Your organization must agree to the <a href="#">Terms of Service</a>.</li>-->
-    <li>Each volunteer using the system must watch the <a href="https://vimeo.com/53689479" target="_blank">Training Video</a>.</li>
-</ol>
-
-<p><strong>Filling out this application carefully, correctly, and completely will save you hours and save your volunteers dozens or hundreds of hours in productivity (we promise).</strong></p>
+{{ sign_up_form_premable_page_block|safe }}
 
 {# show errors #}
 {% if errors %}

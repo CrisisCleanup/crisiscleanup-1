@@ -29,11 +29,11 @@ class="activePage"
 {% endblock %}
 
 {% block description_title %}
-Check out the public maps of our current incidents
+{{ public_map_description_title_page_block|safe }}
 {% endblock %}
 
 {% block description_subtitle %}
-All personal info has been changed, and the lat/lng has been adjusted as well
+{{ public_map_description_subtitle_page_block|safe }}
 {% endblock %}
 
 {% block sidebar_title %}

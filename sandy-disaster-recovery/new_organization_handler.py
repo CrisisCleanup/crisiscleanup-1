@@ -31,12 +31,10 @@ from google.appengine.ext import db
 # Local libraries.
 import base
 import event_db
-import site_db
-import site_util
-import event_db
 import primary_contact_db
 import organization
 import key
+import page_db
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -51,24 +49,26 @@ class NewOrganizationHandler(base.RequestHandler):
         form = organization.OrganizationForm()
         #events_list = event_db.GetAllCached()
         events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
-        self.response.out.write(template.render(
-        {
+        template_params = page_db.get_page_block_dict()
+        template_params.update({
 	    "logged_in": logged_in,
             "form": form,
             "events_list": events_list,
-        }))
+        })
+        self.response.out.write(template.render(template_params))
         
     def post(self):
         choose_event = self.request.get("choose_event")
         data = organization.OrganizationForm(self.request.POST)
         if not data.validate():
             events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
-            self.response.out.write(template.render(
-            {
+            template_params = page_db.get_page_block_dict()
+            template_params.update({
                 "form": data,
                 "errors": data.errors,
                 "events_list": events_list,
-            }))
+            })
+            self.response.out.write(template.render(template_params))
         else:
             event_id = data.choose_event.data
             event = event_db.GetEventFromParam(event_id)

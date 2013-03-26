@@ -1,0 +1,29 @@
+{% extends "base_template.html" %}
+
+{% block privacy %}
+class="activePage"
+{% endblock %}
+
+{% block description_title %}
+{{ privacy_description_title_page_block|safe }}
+{% endblock %}
+
+{% block description_subtitle %}
+{{ privacy_description_subtitle_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_title %}
+{{ privacy_sidebar_title_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_content %}
+{{ privacy_sidebar_page_block|safe }}
+{% endblock %}
+
+{% block main_title %}
+{{ privacy_main_title_page_block|safe }}
+{% endblock %}
+
+{% block main_content %}
+{{ privacy_main_page_block|safe }}
+{% endblock %}

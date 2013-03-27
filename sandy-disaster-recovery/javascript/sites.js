@@ -142,7 +142,7 @@ sandy.sites.loadSitesBatch = function (sites_status, page, url, callBack) {
         if (!empty) {
             var new_page = page + 1;
             var new_url = '/api/site_ajax?status=' + sites_status + '&id=all&page=' + new_page;
-            sandy.sites.loadSitesBatch(sites_status, new_page, new_url);
+            sandy.sites.loadSitesBatch(sites_status, new_page, new_url, callBack);
         }
     });
 };

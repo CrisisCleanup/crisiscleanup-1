@@ -17,6 +17,7 @@
 # System libraries.
 import datetime
 import logging
+import re
 import wtforms.ext.dateutil.fields
 import wtforms.fields
 from google.appengine.ext.db import to_dict
@@ -315,29 +316,60 @@ def _ChoicesWithBlank(choices):
   """
   return [('', '--Choose One--')] + [(choice, choice) for choice in choices]
 
+APARTMENT_SIGNIFIERS = ["#", "Suite", "Ste", "Apartment", "Apt", "Unit", "Department", "Dept", "Room", "Rm", "Floor", "Fl", "Bldg", "Building", "Basement", "Bsmt", "Front", "Frnt", "Lobby", "Lbby", "Lot", "Lower", "Lowr", "Office", "Ofc", "Penthouse", "Pent", "PH", "Rear", "Side", "Slip", "Space", "Trailer", "Trlr", "Upper", "Uppr"]
+
+APARTMENT_TERM_CRX = re.compile(
+    "(" + "|".join(("%s[^W]+\s" % s for s in APARTMENT_SIGNIFIERS)) + ")", re.I
+)
+
+def likely_apartment(address):
+    """
+    >>> likely_apartment('apt 24 at 1 main st')
+    True
+    >>> likely_apartment('bsmt, 10 commercial st')
+    True
+    >>> likely_apartment('15 Park Ave')
+    False
+    """
+    return bool(APARTMENT_TERM_CRX.search(address))
+
+
 def find_similar(site, event):
     """
     Finds a single site similar to @site.
 
     Two sites are similar if at least one of:
-    (i) Their geocoded co-ords are within 4 metres of each other.
-    (ii) Their name metaphone and normalised phone numbers match.
-
-    Note: address and city similarity fields are not currently used.
+    (i) The addresses imply an apartment and the addresses and names have
+        matching metaphones.
+    (ii) The addresses do not imply an apartment and the geocoded co-ords
+         are within 4 metres of each other.
+    (iii) Their name metaphone and normalised phone numbers match.
     """
-    # geospatial search ## NOTE: THIS DOES NOT WORK ON DEV_APPENGINE 
-    # (as per https://code.google.com/p/googleappengine/issues/detail?id=7769 )
-    r = search.Index('GEOSEARCH_INDEX').search(
-        'distance(geopoint(%0.10f, %0.10f), loc) < 4' % (site.latitude, site.longitude)
-    )
-    if r.number_found > 0:
-        for scored_doc in r.results:
-            # check event matches
-            possible_site_match = Site.get(scored_doc.doc_id)
-            if possible_site_match and possible_site_match.event.key() == event.key():
-                return possible_site_match
+    # split on probable apartment or not
+    if not likely_apartment(site.address):
+        # geospatial search ## NOTE: THIS DOES NOT WORK ON DEV_APPENGINE 
+        # (as per https://code.google.com/p/googleappengine/issues/detail?id=7769 )
+        r = search.Index('GEOSEARCH_INDEX').search(
+            'distance(geopoint(%0.10f, %0.10f), loc) < 4' % (site.latitude, site.longitude)
+        )
+        if r.number_found > 0:
+            for scored_doc in r.results:
+                # check event matches
+                possible_site_match = Site.get(scored_doc.doc_id)
+                if possible_site_match and possible_site_match.event.key() == event.key():
+                    return possible_site_match
+    else:
+        # is likely an apartment => compare metaphones
+        if site.address_metaphone and site.name_metaphone:
+            q = db.GqlQuery(
+                "SELECT * FROM Site "
+                "WHERE name_metaphone=:1 AND address_digits=:2 AND address_metaphone=:3",
+                site.name_metaphone, site.address_digits, site.address_metaphone
+            )
+            if q.count() != 0:
+                return q[0]
 
-    # fallback to similar name and phone
+    # fallback to similar name and phone number
     if site.phone_normalised and site.name_metaphone:
         q = db.GqlQuery(
             "SELECT * FROM Site WHERE event=:1 "
@@ -347,6 +379,8 @@ def find_similar(site, event):
             site.phone_normalised)
         if q.count() != 0:
             return q[0]
+    
+    # no similar match
     return None
 
 

@@ -21,6 +21,10 @@ import csv
 import base
 import site_db
 import site_util
+import incident_csv_db
+from google.appengine.ext import db
+
+
 
 class ExportHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
@@ -34,8 +38,17 @@ class ExportHandler(base.AuthenticatedHandler):
     self.response.headers['Content-Disposition'] = (
         'attachment; filename="work_sites.csv"')
 
+    q = db.Query(incident_csv_db.IncidentCSV)
+    q.filter("incident =", event.key())
+    query = q.get()
+    new_list = []
+    
+    for i in query.incident_csv:
+      new_list.append(str(i))
+      
+    
     writer = csv.writer(self.response.out)
-    writer.writerow(site_db.Site.CSV_FIELDS)
+    writer.writerow(site_db.STANDARD_SITE_PROPERTIES_LIST + new_list)
 
     for site in sites:
-      writer.writerow(site.ToCsvLine())
+      writer.writerow(site.ToCsvLine(new_list))

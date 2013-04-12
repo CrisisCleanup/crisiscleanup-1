@@ -61,6 +61,8 @@ import privacy_handler
 import contact_handler
 import public_map_handler
 import public_map_ajax_handler
+import form_ajax_handler
+
 
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
@@ -77,6 +79,8 @@ from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
 from admin_handler import admin_import_csv_handler
 from admin_handler import admin_edit_pages_handler
+from admin_handler import admin_create_incident_form_handler
+
 
 
 from admin_handler import admin_single_organization_handler as admin_single_organization_handler
@@ -162,6 +166,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-import-csv/active/invalids.csv', admin_import_csv_handler.ActiveCSVImportHandler, 'admin_import_csv_handler'),
     Route(r'/admin-edit-pages', admin_edit_pages_handler.AdminEditPagesHandler, 'admin_edit_pages_handler'),
     Route(r'/admin-edit-pages/download/defaults', admin_edit_pages_handler.AdminDownloadPageBlocks, 'admin_edit_pages_handler'),
+    Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
 
     
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
@@ -179,5 +184,7 @@ app = webapp2.WSGIApplication([
     Route(r'/blobstore-delete', blobstore_delete_handler.BlobstoreDeleteHandler, 'blobstore_delete_handler'),
 
     Route(r'/script/run', scripts_handler.ScriptsHandler, 'scripts_handler'),
+    Route(r'/form_ajax_handler', form_ajax_handler.FormAjaxHandler, 'form_ajax_handler'),
+
     
 ], debug=True)

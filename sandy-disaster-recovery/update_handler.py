@@ -20,7 +20,7 @@ from google.appengine.ext import deferred
 
 # Local libraries.
 import base
-import update_schema
+import update_schema_expando
 
 
 
@@ -28,6 +28,6 @@ class UpdateHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
         if not org.name == "Admin":
             return False  
-        update_schema.UpdateSchema(self, event)
+        update_schema_expando.UpdateSchema(self, event)
         
         

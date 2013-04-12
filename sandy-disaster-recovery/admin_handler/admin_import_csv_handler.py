@@ -72,7 +72,7 @@ EXAMPLE_DATA = {
     'city': 'New York City',
     'state': 'NY',
     'phone1': '555-555-5555',
-    'work_type': 'ONE OF: %s' % ', '.join(site_db.Site.work_type.choices),
+    'work_type': 'Flood'# % ', '.join(site_db.Site.work_type.choices),
 }
 
 for field_name, field_type in FIELD_TYPES.items():

@@ -6,6 +6,8 @@
 <title>Collaborative Disaster Recovery Work Order System: Enter a Work Order.</title>
 <link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
 <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
+
 <!-- <link href="/stylesheets/popup_radio_form.css" rel="stylesheet"> -->
 
   <link rel="stylesheet" href="/closure/css/autocomplete.css?v={{version}}">
@@ -23,6 +25,76 @@ goog.require("sandy.form");
 </script>
 {% else %}
 <script src="/javascript/compiled_form.js?v={{version}}">
+{% endif %}
+</script>
+<script>
+{% if post_json %}
+$(function(){
+var post_json = {{post_json}};
+var oFormObject = document.forms['form'];
+
+Object.keys(post_json).forEach(function(key) {
+    var this_element = document.getElementById(key);
+    if (key == "priority") {
+      var which_button = null;
+      if (post_json[key] == "5") {
+	which_button = "0";
+      }
+      if (post_json[key] == "4") {
+	which_button = "1";
+      }
+      if (post_json[key] == "3") {
+	which_button = "2";
+      }
+      if (post_json[key] == "2") {
+	which_button = "3";
+      }
+      if (post_json[key] == "1") {
+	which_button = "4";
+      }
+      
+      var new_key = "priority-" + which_button;
+      this_element = document.getElementById(new_key);
+    }
+    var type = null;
+    try
+    {
+      var type = this_element.type;	
+      console.log("TYPE: " + type);
+      if (type == "text") {
+	this_element.value = post_json[key];
+      }
+      if (type == "textarea") {
+	this_element.value = post_json[key];
+      }
+      
+      if (type.indexOf("select") !== -1) {
+	this_element.value = post_json[key];
+	console.log("SELECT!!!!!!!!!!!!");
+      }
+      if (type == "checkbox") {
+	this_element.checked = true;
+      }
+      
+      if (type == "radio") {
+	this_element.checked = true;
+      }
+
+    }
+  catch(err)
+    {
+      console.log("ERROR, ELEMENT = " + key + err);
+      
+    }
+
+    console.log(key, post_json[key]);
+//     if (key == "name") {
+//        var the_element = document.getElementById(key);
+//        the_element.value = post_json[key];
+//     }
+});
+})
+
 {% endif %}
 </script>
 </head>
@@ -95,13 +167,9 @@ The {{event_name}} Waiting List will alert volunteer organizations in your area 
 {% if not delete %}
 {% if id %}
 
-<input type=submit value="Save changes">
 {% else %}
 
-<input type="checkbox" id="ignore_similar" name="ignore_similar">
-<label for="ignore_similar">Ignore similar matches</label>
 <br>
-<input type=submit value="Submit request">
 
 {% endif %}
 {% endif %}

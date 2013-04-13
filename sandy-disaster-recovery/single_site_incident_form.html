@@ -1,0 +1,20 @@
+{% if not readonly %}
+{% macro with_errors(field) %}
+  {% if field.errors %}
+    {% set error_class = ' error_field' %}
+  {% else %}
+    {% set error_class = '' %}
+  {% endif %}
+
+  <div class="form_field{{error_class}}">
+    {{ field(class=css_class, **kwargs) }}
+  </div>
+{% endmacro %}
+{% else %}
+
+{% macro with_errors(field) %}
+    {{ field }}
+{% endmacro %}
+{% endif %}
+
+{{ incident_form_block|safe }}

@@ -54,8 +54,8 @@ class AdminEditPagesHandler(base.AuthenticatedHandler):
 
         # save form data received
         block_name = self.request.get('name', None)
-        block_html = self.request.get('html', None)
-        if block_name and block_html:
+        block_html = self.request.get('html', '')
+        if block_name:
             block_html = HTML_PARSER.unescape(block_html)
             page_db.save_page_block(block_name, block_html)
         self.redirect('/admin-edit-pages')

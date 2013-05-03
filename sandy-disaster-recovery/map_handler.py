@@ -27,6 +27,7 @@ import base
 import event_db
 import key
 import site_db
+import page_db
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
@@ -60,7 +61,8 @@ class MapHandler(base.RequestHandler):
       # default to 15
       zoom_level = self.request.get("z", default_value = "15")
 
-      template_values = {
+      template_values = page_db.get_page_block_dict()
+      template_values.update({
           "version" : os.environ['CURRENT_VERSION_ID'],
           #"uncompiled" : True,
           "counties" : event.counties,
@@ -76,7 +78,7 @@ class MapHandler(base.RequestHandler):
           "demo" : False,
           "zoom_level" : zoom_level,
           "site_id" :  site_id
-        }
+        })
     else:
       # TODO(Jeremy): Temporary code until this handler scales.
       self.redirect("/authentication?destination=/map")
@@ -87,7 +89,8 @@ class MapHandler(base.RequestHandler):
       if not event:
         self.response.set_status(404)
         return
-      template_values = {
+      template_values = page_db.get_page_block_dict()
+      template_values.update({
           "sites" :
              [json.dumps({
                  "latitude": round(s.latitude, 2),
@@ -105,5 +108,5 @@ class MapHandler(base.RequestHandler):
                  }) for s in [p[0] for p in site_db.GetAllCached(event)]],
           "filters" : filters,
           "demo" : True,
-        }
+        })
     self.response.out.write(template.render(template_values))

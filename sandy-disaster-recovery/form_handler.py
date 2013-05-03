@@ -27,6 +27,7 @@ import base
 import event_db
 import site_db
 import site_util
+import page_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -56,7 +57,8 @@ class FormHandler(base.AuthenticatedHandler):
     single_site = single_site_template.render(
         { "form": form,
           "org": org})
-    self.response.out.write(template.render(
+    template_params = page_db.get_page_block_dict()
+    template_params.update(
         {"version" : os.environ['CURRENT_VERSION_ID'],
          "message" : message,
          "logout" : logout_template.render({"org": org, "event": event, "admin": org.is_admin}),
@@ -64,7 +66,8 @@ class FormHandler(base.AuthenticatedHandler):
          "form": form,
          "id": None,
          "page": "/",
-         "event_name": event.name}))
+         "event_name": event.name})
+    self.response.out.write(template.render(template_params))
 
   def AuthenticatedPost(self, org, event):
     single_site_template = jinja_environment.get_template('single_site.html')
@@ -144,7 +147,8 @@ class FormHandler(base.AuthenticatedHandler):
     single_site = single_site_template.render(
         { "form": data,
           "org": org})
-    self.response.out.write(template.render(
+    template_params = page_db.get_page_block_dict()
+    template_params.update(
         {"message": message,
          "similar_site": similar_site,
          "version" : os.environ['CURRENT_VERSION_ID'],
@@ -154,4 +158,5 @@ class FormHandler(base.AuthenticatedHandler):
          "form": data,
          "id": None,
          "page": "/",
-         "event_name": event.name}))
+         "event_name": event.name})
+    self.response.out.write(template.render(template_params))

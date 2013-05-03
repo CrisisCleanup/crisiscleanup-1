@@ -29,6 +29,7 @@ from wtforms import HiddenField
 # constants
 
 FILENAMES = [
+    'map_banner.html',
     'page.html',
     'about.html',
     'contact.html',
@@ -56,10 +57,14 @@ def detect_page_blocks():
     """
     Search for page block names in files with FILENAMES.
     """
+    block_names_set = set()
     for filename in FILENAMES:
         fd = open(filename)
         for block_name in PAGE_BLOCK_MARKER_CRX.findall(fd.read()):
-            yield block_name
+            block_names_set.add(block_name)
+    sorted_block_names = sorted(list(block_names_set))
+    for block_name in sorted_block_names:
+        yield block_name
 
 def get_page_block_default_html(block_name):
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -101,7 +106,7 @@ def save_page_block(name, html):
     if name not in detect_page_blocks():
         return
     block = PageBlock.get_or_insert(name)
-    block.html = html
+    block.html = html if html else " "
     block.save()
     memcache.delete(MEMCACHE_DICT_KEY)
     

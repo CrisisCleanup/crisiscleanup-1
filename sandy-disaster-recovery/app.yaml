@@ -1,4 +1,5 @@
-# application: sandy-disaster-recovery # ** do not commit this line **
+# application: sandy-disaster-recovery # ** do not commit this line uncommented **
+# application: crisiscleanup-demo # ** do not commit this line uncommented **
 application: sandy-helping-hands
 version: 162
 runtime: python27

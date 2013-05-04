@@ -15,9 +15,7 @@
 # limitations under the License.
 #
 # System libraries.
-import datetime
 import jinja2
-import json
 import os
 import webapp2
 from webapp2_extras import routes

@@ -112,6 +112,7 @@ app = webapp2.WSGIApplication([
     Route(r'/about', about_handler.AboutHandler, 'about'),
     Route(r'/terms', terms_handler.TermsHandler, 'terms'),
     Route(r'/privacy', privacy_handler.PrivacyHandler, 'privacy'),
+    Route(r'/donate', redirect_to='http://www.crowdrise.com/CrisisCleanup', name='donate'),
     Route(r'/refresh_counties', refresh_handler.RefreshHandler, name='refresh_counties'),
     Route(r'/old', redirect_to=SPREADSHEET_URL, name='spreadsheet_redirect'),
     Route(r'/api/site', site_api_handler.SiteApiHandler, 'site_api'),

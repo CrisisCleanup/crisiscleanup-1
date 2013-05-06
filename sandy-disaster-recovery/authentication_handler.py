@@ -35,6 +35,7 @@ import event_db
 import key
 import organization
 import site_db
+import page_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -108,11 +109,13 @@ class AuthenticationHandler(base.RequestHandler):
       self.redirect(urllib.unquote(self.request.get('destination', default_value='/')).encode('ascii'))
       return
 
-    self.response.out.write(template.render({
+    template_params = page_db.get_page_block_dict()
+    template_params.update({
       "form" : GetOrganizationForm(self.request.POST),
       "destination" : self.request.get('destination', default_value='/'),
       "page" : "/authentication",
-    }))
+    })
+    self.response.out.write(template.render(template_params))
 
   def post(self):
     now = datetime.datetime.now()

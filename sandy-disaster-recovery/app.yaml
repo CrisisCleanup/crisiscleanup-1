@@ -1,5 +1,5 @@
 #application: sandy-disaster-recovery # ** do not commit this line uncommented **
-#application: crisiscleanup-demo # ** do not commit this line uncommented **
+#application: crisiscleanup-demo # DISABLE secure directive below if deploying demo # ** do not commit this line uncommented **
 application: sandy-helping-hands
 version: 181
 runtime: python27

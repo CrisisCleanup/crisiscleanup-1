@@ -37,6 +37,7 @@ FILENAMES = [
     'public_map.html',
     'terms.html',
     'privacy.html',
+    'authentication.html',
 ]
 
 PAGE_BLOCK_MARKER_CRX = re.compile('[a-z0-9_]+_page_block')

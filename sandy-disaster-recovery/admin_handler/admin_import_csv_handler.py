@@ -118,7 +118,7 @@ class CSVRow(db.Model):
     csv_file = db.ReferenceProperty(CSVFile, required=True)
     num = db.IntegerProperty(required=True)
     saved = db.BooleanProperty(default=False, required=True)
-    row = db.ListProperty(unicode, required=True)
+    row = db.ListProperty(db.Text, required=True)
     row_dict = db.BlobProperty()
     validation = db.BlobProperty()
     geocoded_address = db.BlobProperty()
@@ -182,6 +182,7 @@ def parse_field(field_name, field_type, field_value):
 def row_to_dict(event, field_names, row):
     d = {}
     for field_name, field_value in zip(field_names, row):
+        field_value = unicode(field_value)  # cast from db.Text
         field_type = FIELD_TYPES[field_name]
 
         # parse
@@ -634,7 +635,7 @@ def write_csv_row_objects(csv_file_obj_key):
              ### parent=csv_file_obj.key(),
               csv_file=csv_file_obj.key(),
               num=row_num,
-              row=row
+              row=[db.Text(cell) for cell in row]
           )
           csv_row_obj.save()
 

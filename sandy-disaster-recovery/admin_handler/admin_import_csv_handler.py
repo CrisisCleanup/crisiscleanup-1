@@ -589,7 +589,8 @@ class ImportCSVHandler(base.AuthenticatedHandler):
       blob_fd.seek(0)
       encoding = chardet.detect(blob_fd.read()).get('encoding', None)
       blob_fd.seek(0)
-      total_row_count = len(blob_fd.readlines()) - 1
+      total_row_count = len(list(UnicodeReader(blob_fd, encoding=encoding))) - 1
+      blob_fd.seek(0)
       csv_file_obj = CSVFile(
         filename=csv_filename,
         event=event.key(),

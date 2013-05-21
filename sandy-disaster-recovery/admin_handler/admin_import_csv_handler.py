@@ -17,7 +17,7 @@
 # System libraries.
 from __future__ import with_statement
 import cStringIO
-##import logging
+import logging
 import os
 import time
 import pickle
@@ -191,7 +191,9 @@ def row_to_dict(event, field_names, row):
         # handle org references
         if field_name in ('reported_by', 'claimed_by'):
             results = db.GqlQuery(
-                "SELECT * FROM Organization WHERE name=:1 AND incident=:2", field_value, event.key()
+                "SELECT * FROM Organization WHERE name=:1 AND incident=:2",
+                field_value,
+                event.key()
             )
             if results and results.count() == 1:
                 d[field_name] = results[0].key().id()
@@ -649,6 +651,10 @@ def write_csv_row_objects(csv_file_obj_key):
     except HeaderException:
         csv_file_obj.header_present = False
         csv_file_obj.save()
+    except Exception, e:
+        # capture exception to avoid blowing up deferred task
+        logging.error("Error in write_csv_row_objects - import will be incomplete")
+        logging.exception(e)
 
 
 

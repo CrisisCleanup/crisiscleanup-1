@@ -41,6 +41,8 @@ import incident_csv_db
 from csv_utils import UnicodeReader, UnicodeWriter
 
 def get_field_names(event):
+    FIELD_NAMES_TO_EXCLUDE = {'case_number', 'event', 'latitude', 'longitude', 'blurred_latitude', 'blurred_longitude'}
+
     q = db.Query(incident_csv_db.IncidentCSV)
     q.filter("incident =", event.key())
     query = q.get()
@@ -49,7 +51,11 @@ def get_field_names(event):
     for i in query.incident_csv:
       new_list.append(str(i))
       
-    field_names = site_db.STANDARD_SITE_PROPERTIES_LIST + new_list
+    all_field_names = site_db.STANDARD_SITE_PROPERTIES_LIST + new_list
+    field_names = [
+      field_name for field_name in field_names
+      if field_name not in FIELD_NAMES_TO_EXCLUDE
+    ]
     return field_names
 # constants
 GLOBAL_ADMIN_NAME = "Admin"

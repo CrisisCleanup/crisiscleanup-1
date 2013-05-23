@@ -426,11 +426,11 @@ def analyse_row(csv_file_obj_key, csv_row_obj_key):
     csv_file_obj = CSVFile.get(csv_file_obj_key)
     csv_row_obj = CSVRow.get(csv_row_obj_key)
     event = csv_file_obj.event
-    event_obj = event_db.Event.get_by_id(event)
+    #event_obj = event_db.Event.get_by_id(event)
     row = csv_row_obj.row
     validation, geocoding = validate_row(event, row)
     geocoded_address = geocoding_to_address_dict(geocoding) if geocoding else None
-    row_dict = row_to_dict(event, get_field_names(event_obj), row)
+    row_dict = row_to_dict(event, get_field_names(event), row)
     csv_row_obj.row_dict = pickle.dumps(row_dict)
     csv_row_obj.validation = pickle.dumps(validation)
     csv_row_obj.geocoded_address = pickle.dumps(geocoded_address)

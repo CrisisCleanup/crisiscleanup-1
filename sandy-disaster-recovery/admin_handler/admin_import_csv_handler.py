@@ -660,8 +660,6 @@ def write_csv_row_objects(csv_file_obj_key):
     encoding = csv_file_obj.encoding
     try:
         for row_num, row in read_csv(event, blob_fd, encoding):
-	  raise Exception("I know python!")
-
           csv_row_obj = CSVRow(
              ### parent=csv_file_obj.key(),
               csv_file=csv_file_obj.key(),

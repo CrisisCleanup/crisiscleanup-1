@@ -204,14 +204,16 @@ def row_to_dict(event, field_names, row):
     d = {}
     for field_name, field_value in zip(field_names, row):
         field_value = unicode(field_value)  # cast from db.Text
-        field_types = {
-	    field_name: type(getattr(site_db.Site, field_name))
-	    for field_name in get_field_names(event)
-	}
-        field_type = field_types[field_name]
+        # DEBUG TEMP disable type checking - TODO put this back
+        #field_types = {
+	#    field_name: type(getattr(site_db.Site, field_name))
+	#    for field_name in get_field_names(event)
+	#}
+        #field_type = field_types[field_name]
 
         # parse
-        parsed_value = parse_field(field_name, field_type, field_value)
+        parsed_value = field_value
+        ###parsed_value = parse_field(field_name, field_type, field_value)
 
         # handle org references
         if field_name in ('reported_by', 'claimed_by'):

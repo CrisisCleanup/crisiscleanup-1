@@ -53,7 +53,7 @@ def get_field_names(event):
       
     all_field_names = site_db.STANDARD_SITE_PROPERTIES_LIST + new_list
     field_names = [
-      field_name for field_name in field_names
+      field_name for field_name in all_field_names
       if field_name not in FIELD_NAMES_TO_EXCLUDE
     ]
     return field_names

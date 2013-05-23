@@ -41,7 +41,7 @@ import incident_csv_db
 from csv_utils import UnicodeReader, UnicodeWriter
 
 def get_field_names(event):
-    FIELD_NAMES_TO_EXCLUDE = {'case_number', 'event', 'latitude', 'longitude', 'blurred_latitude', 'blurred_longitude'}
+    FIELD_NAMES_TO_EXCLUDE = {'case_number', 'event', 'latitude', 'longitude', 'blurred_latitude', 'blurred_longitude', 'name_metaphone	address_digits', 'address_metaphone', 'city_metaphone', 'phone_normalised'}
 
     q = db.Query(incident_csv_db.IncidentCSV)
     q.filter("incident =", event.key())

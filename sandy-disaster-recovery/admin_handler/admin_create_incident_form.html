@@ -1,0 +1,136 @@
+{% extends "admin_base.html" %}
+{% block bodycontent %}
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
+
+<script>
+$(function(){
+
+     $("#choose_incident").prepend("<option value='' selected='selected'>Choose From Below</option>");
+     $("#choose_incident").change(function(){
+   	 $("textarea#form_text_area").val("Enter an HTML form here. All validation needs to be done on the client side. Here are some hints on how to make a good one. Delete all of this before beginning.");
+         $("#organization").children().remove();
+         
+      
+         $.getJSON("/form_ajax_handler",{event_name: $(this).val(), ajax: 'true'}, function(data){
+	     $("textarea#form_text_area").val(data);
+         })
+     })
+ })
+
+</script>
+
+<h1>Create Incident Form</h1>
+<p>To create the form, follow the format below. Soon, we will implement a form creator to automate this process</p>
+<p>First, add a header to your section. A "Personal Information" section will be included for you.<p>
+<p>Then, within a table, you can enter either "text" or "checkbox" elements as shown.</p>
+<p>
+&lt;h2&gt;Personal Information&lt;/h2&gt;<br/>&lt;table&gt;<br/>&lt;tr&gt;&lt;td class=question&gt;Resident name: &lt;span class=required-asterisk&gt;*&lt;/span&gt;&lt;/td&gt;<br/>&lt;td class=&quot;answer&quot;&gt;<br/>  <br/>    <br/>  <br/><br/>  &lt;div class=&quot;form_field&quot;&gt;<br/>    &lt;input class=&quot;&quot; id=&quot;name&quot; name=&quot;name&quot; type=&quot;text&quot; value=&quot;&quot;&gt;<br/>  &lt;/div&gt;<br/>&lt;/td&gt;&lt;/tr&gt;<br/>&lt;tr&gt;&lt;td class=question&gt;Date of Request:&lt;/td&gt;<br/><br/>&lt;td class=&quot;answer&quot;&gt; <br/><br/><br/>  &lt;div class=&quot;form_field&quot;&gt;<br/>    &lt;input class=&quot;&quot; id=&quot;work_without_resident&quot; name=&quot;work_without_resident&quot; type=&quot;checkbox&quot; value=&quot;y&quot;&gt;<br/>  &lt;/div&gt;<br/>&lt;/td&gt;&lt;/tr&gt;<br/>&lt;tr&gt;&lt;td class=question&gt;Member of your organization:&lt;/td&gt;<br/>&lt;td class=&quot;answer&quot;&gt; <br/>  
+</p>
+
+<p>These fields, and the Personal Information header are included at the top of each form</p>
+<ul>
+<li>name</li>
+<li>request_date</li>
+<li>address</li>
+<li>city</li>
+<li>county</li>
+<li>state</li>
+<li>zip_code</li>
+<li>latitude</li>
+<li>longitude</li>
+<li>cross_street</li>
+<li>phone1</li>
+<li>phone2</li>
+<li>time_to_call</li>
+<li>work_without_resident</li>
+<li>member_of_assessing_organization</li>
+<li>first_responder</li>
+<li>disabled</li>
+<li>special_needs</li>
+<li>priority</li>
+</ul>
+
+<p>An example of how to add below, is shown here.</p>
+&lt;h3&gt;Rain-Related Damage and Needs&lt;/h3&gt;<br/>&lt;table&gt;<br/>&lt;tr&gt;&lt;td class=&quot;question&quot;&gt;Ceiling Removal:&lt;/td&gt;<br/>&lt;td class=&quot;answer&quot;&gt;<br/>  &lt;div class=&quot;form_field&quot;&gt;<br/>    &lt;input class=&quot;&quot; id=&quot;ceiling_removal&quot; name=&quot;ceiling_removal&quot; type=&quot;checkbox&quot; value=&quot;y&quot;&gt;<br/>  &lt;/div&gt;<br/>&lt;/td&gt;&lt;/tr&gt;<br/>&lt;tr&gt;&lt;td class=question&gt;Carpet Removal:&lt;/td&gt;<br/>&lt;td class=&quot;answer&quot;&gt;<br/>  &lt;div class=&quot;form_field&quot;&gt;<br/>    &lt;input class=&quot;&quot; id=&quot;carpet_removal&quot; name=&quot;carpet_removal&quot; type=&quot;checkbox&quot; value=&quot;y&quot;&gt;<br/>  &lt;/div&gt;<br/>&lt;/td&gt;&lt;/tr&gt;<br/>&lt;tr&gt;&lt;td class=question&gt;Hardwood Floor Removal:&lt;/td&gt;<br/>&lt;td class=&quot;answer&quot;&gt;<br/>  &lt;div class=&quot;form_field&quot;&gt;<br/>    &lt;input class=&quot;&quot; id=&quot;hardwood_floor_removal&quot; name=&quot;hardwood_floor_removal&quot; type=&quot;checkbox&quot; value=&quot;y&quot;&gt;<br/>  &lt;/div&gt;<br/>&lt;/td&gt;&lt;/tr&gt;<br/>&lt;tr&gt;&lt;td class=question&gt;Drywall Removal:&lt;/td&gt;<br/>&lt;td class=&quot;answer&quot;&gt;<br/>  &lt;div class=&quot;form_field&quot;&gt;<br/>    &lt;input class=&quot;&quot; id=&quot;drywall_removal&quot; name=&quot;drywall_removal&quot; type=&quot;checkbox&quot; value=&quot;y&quot;&gt;<br/>  &lt;/div&gt;<br/>&lt;/td&gt;&lt;/tr&gt;<br/>&lt;tr&gt;&lt;td class=question&gt;Standing Water:&lt;/td&gt;<br/>&lt;td class=&quot;answer&quot;&gt;<br/>  &lt;div class=&quot;form_field&quot;&gt;<br/>    &lt;input class=&quot;&quot; id=&quot;standing_water&quot; name=&quot;standing_water&quot; type=&quot;checkbox&quot; value=&quot;y&quot;&gt;<br/>  &lt;/div&gt;<br/>&lt;/td&gt;&lt;/tr&gt;<br/>&lt;tr&gt;&lt;td class=question&gt;Mold Remediation:&lt;/td&gt;<br/>&lt;td class=&quot;answer&quot;&gt;<br/>  &lt;div class=&quot;form_field&quot;&gt;<br/>    &lt;input class=&quot;&quot; id=&quot;mold_remediation&quot; name=&quot;mold_remediation&quot; type=&quot;checkbox&quot; value=&quot;y&quot;&gt;<br/>  &lt;/div&gt;<br/>&lt;/td&gt;&lt;/tr&gt;<br/>&lt;tr&gt;&lt;td class=question&gt;Notes:&lt;/td&gt;<br/>&lt;td class=&quot;answer&quot;&gt;<br/>  &lt;div class=&quot;form_field&quot;&gt;<br/>    &lt;input class=&quot;&quot; id=&quot;notes&quot; name=&quot;notes&quot; type=&quot;text&quot; value=&quot;&quot;&gt;<br/>  &lt;/div&gt;<br/>&lt;/td&gt;&lt;/tr&gt;<br/>&lt;/table&gt;<p>The above would look like this<p>
+<h3>Rain-Related Damage and Needs</h3>
+<table>
+<tr><td class="question">Ceiling Removal:</td>
+<td class="answer">
+  <div class="form_field">
+    <input class="" id="ceiling_removal" name="ceiling_removal" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question>Carpet Removal:</td>
+<td class="answer">
+  <div class="form_field">
+    <input class="" id="carpet_removal" name="carpet_removal" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question>Hardwood Floor Removal:</td>
+<td class="answer">
+  <div class="form_field">
+    <input class="" id="hardwood_floor_removal" name="hardwood_floor_removal" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question>Drywall Removal:</td>
+<td class="answer">
+  <div class="form_field">
+    <input class="" id="drywall_removal" name="drywall_removal" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question>Standing Water:</td>
+<td class="answer">
+  <div class="form_field">
+    <input class="" id="standing_water" name="standing_water" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question>Mold Remediation:</td>
+<td class="answer">
+  <div class="form_field">
+    <input class="" id="mold_remediation" name="mold_remediation" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question>Notes:</td>
+<td class="answer">
+  <div class="form_field">
+    <input class="" id="notes" name="notes" type="text" value="">
+  </div>
+</td></tr>
+</table>
+
+<p>Please email your administrator with any questions</p>
+<p><strong>Extra properties will be added by taking the 'id' of each &lt;input&gt; element.</strong></p>
+
+
+
+<form method="POST" action="/admin-create-incident-form">
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<p>Choose incident</p>
+<select name="choose_incident" id="choose_incident">
+{% for result in event_results %}
+<option value="{{result.key().id()}}">{{result.name}}</option>
+{% endfor %}
+</select><br/><br/>
+<textarea id="form_text_area" name="incident_form_html" rows="30" cols="150">Enter an HTML form here. All validation needs to be done on the client side. Here are some hints on how to make a good one. Delete all of this before beginning.</textarea>
+<br/>
+<br/>
+
+<input type=submit value="Submit Form">
+</form>
+
+{% endblock %}

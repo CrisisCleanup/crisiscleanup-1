@@ -35,7 +35,6 @@ import primary_contact_db
 import organization
 import key
 import page_db
-import messaging
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -121,18 +120,6 @@ class NewOrganizationHandler(base.RequestHandler):
             organization.PutAndCacheOrganizationAndContact(organization = new_org,
                                 contact = new_contact,
                                 )
-
-            # send email
-            messaging.email_administrators(
-                subject="%s has signed up as an organization" % new_org.name,
-                body=(
-                    "%s has signed up as an organization.\n\n" % new_org.name +
-                    "Email address: %s\n\n" % new_org.email +
-                    "Login: https://www.crisiscleanup.org/authentication\n\n" +
-                    "The CrisisCleanup System"
-                )
-            )
-
-            # redirect
+                                
             self.redirect("/welcome")
             

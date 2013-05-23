@@ -158,7 +158,7 @@ sandy.sites.batchLoadSites = function (status, page, callBack) {
 
 sandy.sites.tryBatchLoadSites = function (status, page, callBack) {
     try {      
-        sandy.sites.batchLoadSites("open", 0, callBack);
+        sandy.sites.batchLoadSites(status, 0, callBack);
     } catch (err) {
         txt="Error description: " + err.message + "\n\n";
         goog.net.XhrIo.send('/js-logs?message=' + txt,

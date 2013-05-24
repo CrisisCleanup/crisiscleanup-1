@@ -28,6 +28,7 @@ goog.require("sandy.form");
 {% endif %}
 </script>
 <script>
+
 {% if post_json %}
 $(function(){
 var post_json = {{post_json}};
@@ -70,10 +71,11 @@ Object.keys(post_json).forEach(function(key) {
       
       if (type.indexOf("select") !== -1) {
 	this_element.value = post_json[key];
-	console.log("SELECT!!!!!!!!!!!!");
       }
       if (type == "checkbox") {
-	this_element.checked = true;
+        if (post_json[key] == "y") {
+	  this_element.checked = true;
+	}
       }
       
       if (type == "radio") {
@@ -154,10 +156,12 @@ Object.keys(post_json).forEach(function(key) {
 <div class="QuestionHeading">
 The {{event_name}} Waiting List will alert volunteer organizations in your area that you need assistance. As the need is so great, we cannot guarantee that you will be helped, and we do not know how long you might need to wait before an organization helps. We are working as hard as we can.
 </div>
+  <script type="text/javascript" src="javascript/populate_edit_form.js"></script>         
+
 
 <div id="similars"></div>
 
-{{ single_site }}
+{{ single_site|safe }}
 
 {% if id %}
 <input type="hidden" name="_id" value="{{id}}">

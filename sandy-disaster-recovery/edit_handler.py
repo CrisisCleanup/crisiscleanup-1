@@ -94,12 +94,14 @@ class EditHandler(base.AuthenticatedHandler):
         { "form": form,
           "org": org,
 	  "incident_form_block": inc_form,
+	  "post_json": post_json,
           })
     #raise Exception(query.form_html)
     self.response.out.write(template.render(
           {"mode_js": self.request.get("mode") == "js",
            "logout" : logout_template.render({"org": org, "event": event}),
            "single_site": single_site,
+           "event_name": event.name,
            "form": form,
            "id": id,
 	   "post_json": post_json	,

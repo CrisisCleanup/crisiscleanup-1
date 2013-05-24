@@ -710,7 +710,7 @@ class ActiveCSVImportHandler(base.AuthenticatedHandler):
         self.response.out.write(check_template.render({
             ##'global_admin': global_admin,
             'event': event,
-            'form': site_db.SiteForm(),
+            'form': site_db.StandardSiteForm(),
             'csv_file_obj': csv_file_obj,
             'csv_id': csv_id, 
             'field_names': field_names,

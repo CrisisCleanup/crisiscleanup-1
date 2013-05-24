@@ -133,7 +133,6 @@ sandy.map.Refilter = function(only_new) {
 
 var firstTime = true;
 sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
-  alert("init mapjs");
   mapSites = mapSites.concat(currentMapSites);
   // Initialize KML layers
   if (firstTime) {

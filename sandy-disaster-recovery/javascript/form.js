@@ -104,14 +104,7 @@ sandy.form.SetUpValidation = function() {
     goog.dom.getElement('state').onblur = validate;
     goog.dom.getElement('county').onblur = validate;
     goog.dom.getElement('city').onblur = validate;
-    var setToZero = [
-    goog.dom.getElement('hours_worked_per_volunteer'),
-    goog.dom.getElement('total_volunteers')];
-    for (var i = 0; i < setToZero.length; ++i) {
-        if (setToZero[i].value == "" || !setToZero[i].value) {
-            setToZero[i].value = "0";
-        }
-    }
+
 }
 
 

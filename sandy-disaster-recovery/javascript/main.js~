@@ -25,15 +25,14 @@ goog.require('goog.ui.Option');
 goog.require('goog.ui.Select');
 goog.require('goog.style');
 goog.require('goog.dom.forms');
+goog.require('sandy.sites');
 goog.require('sandy.map');
 goog.require('sandy.form');
 
 goog.provide('sandy.main');
 
-var siteMap = {};
 var autoComplete;
 var dialog;
-var sites;
 var runSiteRpc = function (request, response_handler) {
     goog.net.XhrIo.send('/api/site', function (e) {
         var xhr = e.target;
@@ -257,11 +256,19 @@ var updateDialogForSite = function (dialog, site) {
         button.onclick = event_handler;
         goog.dom.appendChild(main_div, button);
     };
+    
+    var addEditButton = function (label, event_handler) {
+        button = document.createElement('button');
+	button.setAttribute("id", "edit_button");
+        button.innerHTML = label;
+        button.onclick = event_handler;
+        goog.dom.appendChild(main_div, button);
+    };
 
     dialog.setTitle("Case number: " + site["case_number"]);
 
     addField("Name", site["name"]);
-    addField("Requests", site["work_requested"]);
+    addField("Requests", site.work_requested || "No requests.");
     var address_components = [site["address"], site["city"], site["county"], site["state"], site["zip_code"]];
     var full_address = "";
     for (var i = 0; i < address_components.length; ++i) {
@@ -301,7 +308,13 @@ var updateDialogForSite = function (dialog, site) {
             i == "rent_or_own" ||
             i == "time_to_call" ||
             i == "phone1" ||
-            i == "phone2") continue;
+            i == "phone2" ||
+            i == "name_metaphone" ||
+            i == "address_digits" ||
+            i == "address_metaphone" ||
+            i == "city_metaphone" ||
+            i == "phone_normalised"
+        ) continue;
         var label = i.replace(/_/g, " ");
         label = label[0].toUpperCase() + label.slice(1);
         if (i == "habitable") {
@@ -334,7 +347,7 @@ var updateDialogForSite = function (dialog, site) {
     addButton('Printer Friendly', function (e) {
         window.open("/print?id=" + site["id"], '_blank');
     });
-    addButton('Edit', function (e) {
+    addEditButton('Edit', function (e) {
         sandy.main.OpenEdit(site);
     });
 
@@ -422,123 +435,11 @@ sandy.main.SelectSite = function (site) {
     }
 }
 
-var terms = [];
-var loadedCases = {};
-
-function loadSitesById(id, callBack) {
-    //todo id can be array?
-    loadSites('/api/site_ajax?id=' + id, callBack);
-}
-
-function loadSites(url, callBack) {
-    goog.net.XhrIo.send(url, function (e) {
-        var xhr = e.target;
-        var empty = true;
-        var status = xhr.getStatus();
-        if (status == 200) {
-            var newSites = xhr.getResponseJson();
-            if (newSites.length == 0) return false;
-            var sites = [];
-            for (var i = 0; i < newSites.length; ++i) {
-                if (loadedCases[newSites[i]["case_number"]]) continue;
-                loadedCases[newSites[i]["case_number"]] = true;
-                sites.push(newSites[i]);
-            }
-            
-            sandy.map.InitializeMap(sites, AddMarker, map);
-            var filters = goog.dom.getElement('filtersbackground');
-            goog.style.showElement(filters, true);
-
-            if (sites.length > 0) {
-                empty = true;
-            }
-            for (var i = 0; i < sites.length; ++i) {
-                if (sites[i].case_number && sites[i].name) {
-                    var term = sites[i].case_number + ": <" + sites[i].name + ">";
-                    if (sites[i].address) {
-                        term += " " + sites[i].address;
-                    }
-                    if (sites[i].city) {
-                        term += " " + sites[i].city;
-                    }
-                    if (sites[i].state) {
-                        term += " " + sites[i].state;
-                    }
-                    if (sites[i].zip_code) {
-                        term += " " + sites[i].zip_code;
-                    }
-                    terms.push(term);
-                    siteMap[term] = sites[i];
-                }
-            }
-
-            if (callBack) {
-                callBack();
-            }
-        }
-    })
-}
-
-function loadSitesBatch(sites_status, page, url, callBack) {
-    goog.net.XhrIo.send(url, function (e) {
-        var xhr = e.target;
-        var empty = true;
-        var status = xhr.getStatus();
-        if (status == 200) {
-            var newSites = xhr.getResponseJson();
-            if (newSites.length == 0) return false;
-                        var sites = [];
-            for (var i = 0; i < newSites.length; ++i) {
-                if (loadedCases[newSites[i]["case_number"]]) continue;
-                        loadedCases[newSites[i]["case_number"]] = true;
-                sites.push(newSites[i]);
-            }
-            
-            sandy.map.InitializeMap(sites, AddMarker, map);
-            var filters = goog.dom.getElement('filtersbackground');
-            goog.style.showElement(filters, true);
-            if (sites.length > 0) {
-                empty = false;
-            }
-            for (var i = 0; i < sites.length; ++i) {
-                if (sites[i].case_number && sites[i].name) {
-                    var term = sites[i].case_number + ": <" + sites[i].name + ">";
-                    if (sites[i].address) {
-                        term += " " + sites[i].address;
-                    }
-                    if (sites[i].city) {
-                        term += " " + sites[i].city;
-                    }
-                    if (sites[i].state) {
-                        term += " " + sites[i].state;
-                    }
-                    if (sites[i].zip_code) {
-                        term += " " + sites[i].zip_code;
-                    }
-                    terms.push(term);
-                    siteMap[term] = sites[i];
-                }
-            }
-            
-            if (callBack) {
-                callBack();
-            }
-        }
-        if (!empty) {
-            var new_page = page + 1;
-            var new_url = '/api/site_ajax?status=' + sites_status + '&id=all&page=' + new_page;
-            loadSitesBatch(sites_status, new_page, new_url);
-        }
-    })
-}
-
-function loadSitesForCounty(county, status) {
-    loadSites('/api/site_ajax?status=' + status + '&id=all&county=' + county);
-}
-function batchLoadSites(status, page) {
-    var url = '/api/site_ajax?status=' + status + '&id=all&page=' + page;
-    loadSitesBatch(status, page, url);
-}
+var initMap = function() {
+    sandy.map.InitializeMap(sites, AddMarker, map);
+    var filters = goog.dom.getElement('filtersbackground');
+    goog.style.showElement(filters, true);
+};
 
 sandy.main.initialize = function (siteId, zoomLevel) {
     var myLatlng = new google.maps.LatLng(39.483351, -74.999737);
@@ -553,7 +454,7 @@ sandy.main.initialize = function (siteId, zoomLevel) {
     // TODO(Jeremy): Set myLatLng to the location of the highest
     // priority current site.
     var searchBox = goog.dom.getElement('search_box');
-    autoComplete = goog.ui.ac.createSimpleAutoComplete(terms, searchBox, false);
+    autoComplete = goog.ui.ac.createSimpleAutoComplete(terms, searchBox, false); // @@TODO get terms
     var selectFunction = function (e) {
         if (siteMap[e.row]) {
             var site = siteMap[e.row];
@@ -577,11 +478,11 @@ sandy.main.initialize = function (siteId, zoomLevel) {
     goog.events.listen(autoComplete,
         goog.ui.ac.AutoComplete.EventType.UPDATE,
         selectFunction);
-    batchLoadSites("open", 0);
+    sandy.sites.tryBatchLoadSites("open", 0, initMap);
     goog.dom.getElement("open").checked = true;
     goog.dom.getElement("open").onclick = function () {
         goog.dom.getElement("open").onclick = null;
-        batchLoadSites("closed", 0);
+        sandy.sites.tryBatchLoadSites("closed", 0, initMap);
     };
 
     if (siteId) {
@@ -600,8 +501,9 @@ sandy.main.initialize = function (siteId, zoomLevel) {
                     break;
                 }
             }
+            initMap();
         };
 
-        loadSitesById(siteId, callbackZoomFunction);
+        sandy.sites.loadSitesById(siteId, callbackZoomFunction);
     }
 }

@@ -27,7 +27,7 @@ goog.require('goog.events');
 goog.require('goog.json');
 goog.require('goog.net.cookies');
 
-
+goog.require('sandy.sites');
 
 goog.provide("sandy.form");
 
@@ -35,19 +35,66 @@ goog.provide("sandy.form");
 var map;
 
 var geocoder;
-var autocomplete;
+
+var showSimilar = function(matches) {
+    // show similarity matches 
+    var div = goog.dom.getElement('similars');
+    goog.dom.removeChildren(div);
+    if (matches.length > 0) {
+        var p = goog.dom.createDom('p', 'bold', 'Possible existing matches:');
+        div.appendChild(p);
+        var ul = goog.dom.createElement('ul');
+        div.appendChild(ul);
+        for (var i=0; i<matches.length && i<3; i++) {
+            (function() {
+                var match = matches[i];
+                var url = "/edit?case=" + match.split(':')[0];
+                ul.appendChild(
+                    goog.dom.createDom('li', null, 
+                        goog.dom.createDom('a', {href:url}, match))
+                );
+            })();
+        }
+    }
+};
+
 sandy.form.Initialize = function() {
-    var myLatlng = new google.maps.LatLng(40.7697, -73.5735);
+    // setup google map
+    var myLatlng = new google.maps.LatLng(39.50, -77.35);
     var mapOptions = {
-        zoom: 11,
+        zoom: 5,
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-    
     map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+    // load sites
+    sandy.sites.tryBatchLoadSites("open", 0);
+
+    // construct array matcher
+    var am = new goog.ui.ac.ArrayMatcher(terms);
+
+    // listen for keyup on primary fields
+    var AC_FIELD_NAMES = ['name', 'address', 'zip_code'];
+    for (var i=0; i<AC_FIELD_NAMES.length; i++) {
+        (function() {
+            var inputElement = goog.dom.getElement(AC_FIELD_NAMES[i]);
+                goog.events.listen(
+                    inputElement,
+                    goog.events.EventType.KEYUP,
+                    function(evt) {
+                        if (inputElement.value.length > 3) {
+                            showSimilar(am.getPrefixMatches(inputElement.value));
+                        }
+                    }
+                );
+        })();
+    }
+
+    // add event handlers
     sandy.form.SetUpValidation();
-    sandy.form.SetUpAdditionalHandlers()
-}
+    sandy.form.SetUpAdditionalHandlers();
+};
 
 sandy.form.SetUpValidation = function() {
     geocoder = new google.maps.Geocoder();
@@ -74,9 +121,6 @@ var last_zip_code = "";
 var last_geocode = "";
 var geocoding = false;
 var marker;
-sandy.form.SetUpAdditionalHandlers = function() {
-  goog.dom.getElement('status').onchange = handle_status_changed();
-}
 
 function handle_status_changed() {
   // show Assigned To field only if status is 'Open, unassigned'
@@ -88,6 +132,19 @@ function handle_status_changed() {
     assigned_to_row.style['display'] = 'block';
   }
 }
+
+sandy.form.SetUpAdditionalHandlers = function() {
+  // handle status changed
+  goog.dom.getElement('status').onchange = handle_status_changed();
+
+  // disable return key
+  document.onkeypress = function(e) {
+    if (e.which == '13') {
+      e.preventDefault();
+    }
+  }
+}
+
 
 function validate() {
     var zip_code = goog.dom.getElement('zip_code').value;
@@ -128,7 +185,7 @@ function validate() {
             map.setZoom(10);
             map.fitBounds(mapBounds);
             
-            searchMatchingLatLng(ll.lat(), ll.lng());
+//             searchMatchingLatLng(ll.lat(), ll.lng());
             
             goog.dom.getElement('latitude').value =ll.lat();
             goog.dom.getElement('longitude').value = ll.lng();

@@ -50,7 +50,6 @@ def get_form_data_types(event):
     properties_json = query.properties_json
     properties_dict = json.loads(properties_json)
     
-    raise Exception(properties_dict)
     return properties_dict
 
       
@@ -726,6 +725,7 @@ def write_csv_row_objects(csv_file_obj_key):
               _countdown=int(0.2 * int(row_num)) # delay start
           )
     except HeaderException:
+        raise Exception("here")
         csv_file_obj.header_present = False
         csv_file_obj.save()
     except Exception, e:

@@ -24,6 +24,8 @@ import os
 import urllib2
 import wtforms.validators
 import HTMLParser
+import json
+
 
 
 # Local libraries.
@@ -53,6 +55,7 @@ GLOBAL_ADMIN_NAME = "Admin"
 cache_time = 60 * 60
 HTML_PARSER = HTMLParser.HTMLParser()
 PROPERTIES_LIST = []
+PROPERTIES_TYPES_LIST = []
 
 class AdminCreateIncidentFormHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
@@ -268,6 +271,10 @@ class AdminCreateIncidentFormHandler(base.AuthenticatedHandler):
 	i.put()
 	f = form_db.IncidentForm(incident = incident.key(), form_html = final_form_html, editable_form_html = incident_form_html)
 	form_db.PutAndCache(f, cache_time)
+	properties_dict = dict(zip(PROPERTIES_LIST, PROPERTIES_TYPES_LIST))
+	properties_json = json.dumps(properties_dict)
+	ft = form_types_db.FormTypes(incident = incident.key(), properties_json = properties_json)
+	form_types_db.PutAndCache(ft, cache_time)
 	self.redirect("/admin?message=Form Added")
 
 	return
@@ -280,5 +287,8 @@ class HtmlPropertiesParser(HTMLParser.HTMLParser):
 	for name, value in attrs:
 	  if name == "id":
 	    PROPERTIES_LIST.append(value)
+	    # need to find the type... really only need select and checkbox
+	  if name == "type":
+	    PROPERTIES_TYPES_LIST.append(value)
 	    counter += 1
 	    

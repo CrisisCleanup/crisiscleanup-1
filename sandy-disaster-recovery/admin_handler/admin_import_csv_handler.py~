@@ -22,6 +22,7 @@ import os
 import time
 import pickle
 from copy import copy
+import json
 
 import chardet
 
@@ -36,10 +37,24 @@ import site_db
 import event_db
 import organization
 import incident_csv_db
+import form_types_db
 
 
 from csv_utils import UnicodeReader, UnicodeWriter
 
+def get_form_data_types(event):
+    q = db.Query(form_types_db.FormTypes)
+    q.filter("incident =", event.key())
+    query = q.get()
+
+    properties_json = query.properties_json
+    properties_dict = json.loads(properties_json)
+    
+    raise Exception(properties_dict)
+    return properties_dict
+
+      
+    
 def get_field_names(event):
     FIELD_NAMES_TO_EXCLUDE = {'case_number', 'event', 'latitude', 'longitude', 'blurred_latitude', 'blurred_longitude', 'name_metaphone	address_digits', 'address_metaphone', 'city_metaphone', 'phone_normalised'}
 
@@ -57,6 +72,18 @@ def get_field_names(event):
       if field_name not in FIELD_NAMES_TO_EXCLUDE
     ]
     return field_names
+  
+def get_expando_field_names(event):
+    q = db.Query(incident_csv_db.IncidentCSV)
+    q.filter("incident =", event.key())
+    query = q.get()
+    new_list = []
+    
+    for i in query.incident_csv:
+      new_list.append(str(i))
+      
+    return new_list
+  
 # constants
 GLOBAL_ADMIN_NAME = "Admin"
 
@@ -289,6 +316,26 @@ def validate_row(event, row):
     if validation['missing_fields']:
         return validation, None
 
+    # validate new fields from form
+    VALUES = []
+    form_names_and_types_dict = get_form_data_types(event)
+    form_names_list = get_expando_field_names(event)
+    
+    
+    for k, v in row_d.iteritems():
+      if k in form_names_list:
+        try:
+	  string = form_names_and_types_dict[k]
+	except:
+	  continue
+	if string == "checkbox":
+	  if v == "y":
+	    continue
+	  else:
+	    validation['invalid_fields'][k] = 'Checkbox must be y for yes, and blank for no'
+	    
+      
+      
     # validate org ref fields are not strings
     validation_row_copy = copy(row_d)
     for field_name in ('reported_by', 'claimed_by'):
@@ -710,7 +757,7 @@ class ActiveCSVImportHandler(base.AuthenticatedHandler):
         self.response.out.write(check_template.render({
             ##'global_admin': global_admin,
             'event': event,
-            #'form': site_db.StandardSiteForm(),
+            'form': site_db.StandardSiteForm(),
             'csv_file_obj': csv_file_obj,
             'csv_id': csv_id, 
             'field_names': field_names,

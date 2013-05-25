@@ -84,6 +84,8 @@ from admin_handler import admin_import_contacts_handler as admin_import_contacts
 
 from admin_handler import admin_create_incident_form_handler
 
+import form_ajax_handler
+
 
 
 jinja_environment = jinja2.Environment(
@@ -181,7 +183,8 @@ app = webapp2.WSGIApplication([
     Route(r'/blobstore-delete', blobstore_delete_handler.BlobstoreDeleteHandler, 'blobstore_delete_handler'),
 
     Route(r'/script/run', scripts_handler.ScriptsHandler, 'scripts_handler'),
-    
+    Route(r'/form_ajax_handler', form_ajax_handler.FormAjaxHandler, 'form_ajax_handler'),
+
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
     
 ], debug=True)

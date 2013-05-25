@@ -62,3 +62,11 @@ def IncidentFormToDict(incident_form):
   incident_form_dict = to_dict(incident_form)
   incident_form_dict["id"] = incident_form.key().id()
   return incident_form_dict
+
+def CheckDuplicatesAndPut(form_html, cache_time, event):
+    q = db.Query(IncidentForm)
+    q.filter("incident =", event.key())
+    query = q.get()
+    if query:
+      db.delete(query)
+    PutAndCache(form_html, cache_time)

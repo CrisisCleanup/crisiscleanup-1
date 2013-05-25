@@ -61,3 +61,11 @@ def FormTypesToDict(form_types):
   form_types_dict = to_dict(form_types)
   form_types_dict["id"] = form_types.key().id()
   return form_types_dict
+
+def CheckDuplicatesAndPut(form_types, cache_time, event):
+    q = db.Query(FormTypes)
+    q.filter("incident =", event.key())
+    query = q.get()
+    if query:
+      db.delete(query)
+    PutAndCache(form_types, cache_time)

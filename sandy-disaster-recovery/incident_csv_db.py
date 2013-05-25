@@ -62,3 +62,11 @@ def IncidentCSVToDict(incident_csv):
   incident_csv_dict = to_dict(incident_csv)
   incident_csv_dict["id"] = incident_csv.key().id()
   return incident_csv_dict
+
+def CheckDuplicatesAndPut(incident_csv, cache_time, event):
+    q = db.Query(IncidentCSV)
+    q.filter("incident =", event.key())
+    query = q.get()
+    if query:
+      db.delete(query)
+    PutAndCache(incident_csv, cache_time)

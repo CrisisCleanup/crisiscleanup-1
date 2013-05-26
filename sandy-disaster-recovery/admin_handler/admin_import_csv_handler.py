@@ -787,8 +787,14 @@ class ActiveCSVImportHandler(base.AuthenticatedHandler):
             return
 
 
+class DownloadCSVTemplateHandler(base.AuthenticatedHandler):
+    def AuthenticatedPost(self, org, event):
+        event_id = self.request.get('choose_event')
+        if not event_id:
+            self.response.out.write('No event selected.')
+            return
+        event = event_db.GetEventFromParam(event_id)
 
-class GetCSVTemplateHandler(base.AuthenticatedHandler):
-    def AuthenticatedGet(self, org, event):
+        # send CSV
         self.response.headers['Content-Type'] = 'text/csv'
         write_csv_template(self.response.out, event)

@@ -103,7 +103,17 @@
 
 <h2>Template</h2>
 
-<a href="/admin-import-csv/template.csv">Download CSV Template</a>
+<form enctype="multipart/form-data" method="post" action="admin-import-csv/template.csv">
+  <label>Disaster:
+    <select id="choose_event" name="choose_event">
+      <option value="">--Choose One--</option>
+      {% for result in events_list %}
+        <option value="{{result.key().id()}}">{{result.name}}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button type="submit">Download</button>
+</form>
 
 <h2>Instructions</h2>
 

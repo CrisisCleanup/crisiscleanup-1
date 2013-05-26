@@ -83,11 +83,14 @@ def get_expando_field_names(event):
       
     return new_list
   
+
 # constants
+
 GLOBAL_ADMIN_NAME = "Admin"
 
-TRUE_VALUES = ['y', 'yes', 'true', '1']
-FALSE_VALUES = ['n', 'no', 'false', '0', 'null']
+TRUTHY_VALUES = ['y', 'yes', 'true', '1']
+FALSEY_VALUES = ['n', 'no', 'false', '0', 'null']
+BOOLEY_VALUES = TRUTHY_VALUES + FALSEY_VALUES
 
 
 #
@@ -208,10 +211,10 @@ def parse_field(field_name, field_type, field_value):
         return int(field_value)
     elif field_type == db.FloatProperty:
         return float(field_value)
-    elif field_type == db.BooleanProperty:
-        if field_value.lower() in TRUE_VALUES:
+    elif field_type in ['checklist', db.BooleanProperty]:
+        if field_value.lower() in TRUTHY_VALUES:
             return True
-        elif field_value.lower() in FALSE_VALUES:
+        elif field_value.lower() in FALSEY_VALUES:
             return False
         else:
             return field_value # handle error later
@@ -224,22 +227,21 @@ def parse_field(field_name, field_type, field_value):
         # handle outside
         return field_value
     else:
+        # default to string
         return field_value
 
-def row_to_dict(event, field_names, row):
+def row_to_dict(event, field_names, field_types, row):
+    """
+    @field_names is a list
+    @field_types = {field_name: type}
+    """
     d = {}
     for field_name, field_value in zip(field_names, row):
         field_value = unicode(field_value)  # cast from db.Text
-        # DEBUG TEMP disable type checking - TODO put this back
-        #field_types = {
-	#    field_name: type(getattr(site_db.Site, field_name))
-	#    for field_name in get_field_names(event)
-	#}
-        #field_type = field_types[field_name]
+        field_type = field_types.get(field_name, 'string')  # default to 'string'
 
         # parse
-        parsed_value = field_value
-        ###parsed_value = parse_field(field_name, field_type, field_value)
+        parsed_value = parse_field(field_name, field_type, field_value)
 
         # handle org references
         if field_name in ('reported_by', 'claimed_by'):
@@ -299,8 +301,12 @@ def validate_row(event, row):
     else:
         validation['row_length_ok'] = True
 
+    # validate by constructing row dict
+    field_types_dict = get_form_data_types(event)
+    form_names_list = get_expando_field_names(event)
+    row_d = row_to_dict(event, field_names, field_types_dict, row)
+
     # validate does not contain example data
-    row_d = row_to_dict(event, field_names, row)
     validation['contains_example_data'] = any(
         map(lambda s: 'example' in s or 'warning' in s or 'error' in s,
             [val.lower() for val in row_d.values() if isinstance(val, basestring)])
@@ -315,26 +321,6 @@ def validate_row(event, row):
     if validation['missing_fields']:
         return validation, None
 
-    # validate new fields from form
-    VALUES = []
-    form_names_and_types_dict = get_form_data_types(event)
-    form_names_list = get_expando_field_names(event)
-    
-    
-    for k, v in row_d.iteritems():
-      if k in form_names_list:
-        try:
-	  string = form_names_and_types_dict[k]
-	except:
-	  continue
-	if string == "checkbox":
-	  if v == "y":
-	    continue
-	  else:
-	    validation['invalid_fields'][k] = 'Checkbox must be y for yes, and blank for no'
-	    
-      
-      
     # validate org ref fields are not strings
     validation_row_copy = copy(row_d)
     for field_name in ('reported_by', 'claimed_by'):
@@ -348,7 +334,9 @@ def validate_row(event, row):
     error_encountered = False
     while True:
         try:
-            site = site_db.Site(**validation_row_copy)
+            site = site_db.Site(**{
+                k:v for k, v in validation_row_copy.items() if v
+            })
             if error_encountered:
                 return validation, None
             else:
@@ -433,6 +421,8 @@ def read_csv(event, fd, encoding):
             if row_num == 0:
                 # check heading row present then skip
                 if row != get_field_names(event):
+                    logging.error(row)
+                    logging.error(get_field_names(event))
                     missing = set(get_field_names(event)) - set(row)
                     unexpected = set(row) - set(get_field_names(event))
                     raise HeaderException(
@@ -478,7 +468,12 @@ def analyse_row(csv_file_obj_key, csv_row_obj_key):
     row = csv_row_obj.row
     validation, geocoding = validate_row(event, row)
     geocoded_address = geocoding_to_address_dict(geocoding) if geocoding else None
-    row_dict = row_to_dict(event, get_field_names(event), row)
+    row_dict = row_to_dict(
+        event,
+        get_field_names(event),
+        get_form_data_types(event),
+        row
+    )
     csv_row_obj.row_dict = pickle.dumps(row_dict)
     csv_row_obj.validation = pickle.dumps(validation)
     csv_row_obj.geocoded_address = pickle.dumps(geocoded_address)
@@ -724,7 +719,8 @@ def write_csv_row_objects(csv_file_obj_key):
               csv_row_obj.key(),
               _countdown=int(0.2 * int(row_num)) # delay start
           )
-    except HeaderException:
+    except HeaderException, e:
+        logging.exception(HeaderException)
         csv_file_obj.header_present = False
         csv_file_obj.save()
     except Exception, e:

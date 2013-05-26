@@ -147,6 +147,7 @@ sandy.main.CloseEdit = function () {
 
 sandy.main.OpenEdit = function (site) {
     currentEditSite = site;
+    console.log("ID = " + site["id"]);
     goog.net.XhrIo.send('/edit?mode=js&id=' + site["id"],
         function (e) {
             var xhr = e.target;
@@ -305,7 +306,8 @@ var updateDialogForSite = function (dialog, site) {
             i == "address_digits" ||
             i == "address_metaphone" ||
             i == "city_metaphone" ||
-            i == "phone_normalised"
+            i == "phone_normalised" ||
+            i == "event"
         ) continue;
         var label = i.replace(/_/g, " ");
         label = label[0].toUpperCase() + label.slice(1);
@@ -320,8 +322,10 @@ var updateDialogForSite = function (dialog, site) {
                 details += label + ". ";
             }
         } else if (typeof site[i] == "string" && site[i].length > 0) {
-            details += label + ": " + site[i];
-            if (details[details.length - 1] != ".") details += ". ";
+	    if (label != "Event name") {
+	      details += label + ": " + site[i];
+	      if (details[details.length - 1] != ".") details += ". ";
+	    }
         }
     }
     addField("Details", details);
@@ -434,9 +438,9 @@ var initMap = function() {
 };
 
 sandy.main.initialize = function (siteId, zoomLevel) {
-    var myLatlng = new google.maps.LatLng(39.483351, -74.999737);
+    var myLatlng = new google.maps.LatLng(39, -86);
     var mapOptions = {
-        zoom:8,
+        zoom:6,
         center:myLatlng,
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };

@@ -46,7 +46,11 @@ display_all_template = jinja_environment.get_template('organizations_display_all
 
 class OrganizationInfoHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
-        id = int(self.request.get("organization", 0))
+        id = None
+        try:
+            id = int(self.request.get("organization", 0))
+        except:
+	    id = None
         message = self.request.get("message")
         if not id:
             query_string = "SELECT * FROM Organization WHERE incident = :1 ORDER BY name"

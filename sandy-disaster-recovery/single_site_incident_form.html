@@ -16,5 +16,77 @@
     {{ field }}
 {% endmacro %}
 {% endif %}
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
+  <script type="text/javascript" src="javascript/populate_edit_form.js"></script>         
+    <script type="text/javascript">
+        alert(234);
+        $(function(){
+var post_json = {{post_json}};
+var oFormObject = document.forms['form'];
 
+Object.keys(post_json).forEach(function(key) {
+    var this_element = document.getElementById(key);
+    if (key == "priority") {
+      var which_button = null;
+      if (post_json[key] == "5") {
+	which_button = "0";
+      }
+      if (post_json[key] == "4") {
+	which_button = "1";
+      }
+      if (post_json[key] == "3") {
+	which_button = "2";
+      }
+      if (post_json[key] == "2") {
+	which_button = "3";
+      }
+      if (post_json[key] == "1") {
+	which_button = "4";
+      }
+      
+      var new_key = "priority-" + which_button;
+      this_element = document.getElementById(new_key);
+    }
+    var type = null;
+    try
+    {
+      var type = this_element.type;	
+      console.log("TYPE: " + type);
+      if (type == "text") {
+	this_element.value = post_json[key];
+      }
+      if (type == "textarea") {
+	this_element.value = post_json[key];
+      }
+      
+      if (type.indexOf("select") !== -1) {
+	this_element.value = post_json[key];
+      }
+      if (type == "checkbox") {
+        if (post_json[key] == "y") {
+	  this_element.checked = true;
+	}
+      }
+      
+      if (type == "radio") {
+	this_element.checked = true;
+      }
+
+    }
+  catch(err)
+    {
+      console.log("ERROR, ELEMENT = " + key + err);
+      
+    }
+
+    console.log(key, post_json[key]);
+//     if (key == "name") {
+//        var the_element = document.getElementById(key);
+//        the_element.value = post_json[key];
+//     }
+});
+})
+
+    </script>
+    <!-- The contents of myscript.js will be loaded inside the script tag -->
 {{ incident_form_block }}

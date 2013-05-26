@@ -147,6 +147,7 @@ sandy.main.CloseEdit = function () {
 
 sandy.main.OpenEdit = function (site) {
     currentEditSite = site;
+    console.log("ID = " + site["id"]) ;
     goog.net.XhrIo.send('/edit?mode=js&id=' + site["id"],
         function (e) {
             var xhr = e.target;
@@ -256,14 +257,6 @@ var updateDialogForSite = function (dialog, site) {
         button.onclick = event_handler;
         goog.dom.appendChild(main_div, button);
     };
-    
-    var addEditButton = function (label, event_handler) {
-        button = document.createElement('button');
-	button.setAttribute("id", "edit_button");
-        button.innerHTML = label;
-        button.onclick = event_handler;
-        goog.dom.appendChild(main_div, button);
-    };
 
     dialog.setTitle("Case number: " + site["case_number"]);
 
@@ -313,7 +306,8 @@ var updateDialogForSite = function (dialog, site) {
             i == "address_digits" ||
             i == "address_metaphone" ||
             i == "city_metaphone" ||
-            i == "phone_normalised"
+            i == "phone_normalised" ||
+            i == "event"
         ) continue;
         var label = i.replace(/_/g, " ");
         label = label[0].toUpperCase() + label.slice(1);
@@ -328,8 +322,10 @@ var updateDialogForSite = function (dialog, site) {
                 details += label + ". ";
             }
         } else if (typeof site[i] == "string" && site[i].length > 0) {
-            details += label + ": " + site[i];
-            if (details[details.length - 1] != ".") details += ". ";
+	    if (label != "Event name") {
+	      details += label + ": " + site[i];
+	      if (details[details.length - 1] != ".") details += ". ";
+	    }
         }
     }
     addField("Details", details);
@@ -347,7 +343,7 @@ var updateDialogForSite = function (dialog, site) {
     addButton('Printer Friendly', function (e) {
         window.open("/print?id=" + site["id"], '_blank');
     });
-    addEditButton('Edit', function (e) {
+    addButton('Edit', function (e) {
         sandy.main.OpenEdit(site);
     });
 
@@ -442,9 +438,9 @@ var initMap = function() {
 };
 
 sandy.main.initialize = function (siteId, zoomLevel) {
-    var myLatlng = new google.maps.LatLng(39.483351, -74.999737);
+    var myLatlng = new google.maps.LatLng(39, -86);
     var mapOptions = {
-        zoom:8,
+        zoom:6,
         center:myLatlng,
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };

@@ -60,17 +60,11 @@ def get_field_names(event):
     q = db.Query(incident_csv_db.IncidentCSV)
     q.filter("incident =", event.key())
     query = q.get()
-    new_list = []
+    names_list = []
     
     for i in query.incident_csv:
-      new_list.append(str(i))
-      
-    all_field_names = site_db.STANDARD_SITE_PROPERTIES_LIST + new_list
-    field_names = [
-      field_name for field_name in all_field_names
-      if field_name not in FIELD_NAMES_TO_EXCLUDE
-    ]
-    return field_names
+      names_list.append(str(i))
+    return names_list
   
 def get_expando_field_names(event):
     q = db.Query(incident_csv_db.IncidentCSV)

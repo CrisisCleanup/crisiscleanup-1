@@ -265,7 +265,7 @@ class AdminCreateIncidentFormHandler(base.AuthenticatedHandler):
 <br/>
 
 """
-	final_form_html = primary_form_html + incident_form_html + ignore_similar + html_button
+	final_form_html = incident_form_html + ignore_similar + html_button
 	parser = HtmlPropertiesParser()
 	new_properties_list = parser.feed(incident_form_html)
 	i = incident_csv_db.IncidentCSV(incident = event.key(), incident_csv = PROPERTIES_LIST)

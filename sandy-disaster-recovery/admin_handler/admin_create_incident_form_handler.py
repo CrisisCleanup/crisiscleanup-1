@@ -285,7 +285,7 @@ class AdminCreateIncidentFormHandler(base.AuthenticatedHandler):
 class HtmlPropertiesParser(HTMLParser.HTMLParser):
     def handle_starttag(self, tag, attrs):
         counter = 0
-        if tag != "input":
+        if tag != "input" and tag != "select":
 	  return
 	for name, value in attrs:
 	  if name == "id":

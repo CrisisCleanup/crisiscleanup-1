@@ -93,7 +93,8 @@ class EditHandler(base.AuthenticatedHandler):
     form=None
     if query:
       inc_form = query.form_html
-    new_inc_form = inc_form
+    new_inc_form = inc_form.replace("checked ", "")
+    
     
     for k, v in post_json2.iteritems():
       if k == "request_date" or k == "name" or k == "city" or k == "county" or k == "state" or k=="address" or k=="zip_code" or k=="latitude" or k=="longitude" or k=="cross_street" or k =="phone1" or k=="phone2" or k=="time_to_call" or k=="tarps_needed" or k=="damaged_fence_length" or k=="fence_type" or k=="fence_notes" or k=="assigned_to" or k=="total_volunteers" or k =="hours_worked_per_volunteer" or k=="initials_of_resident_present" or k=="prepared_by" or k=="do_not_work_before":
@@ -118,7 +119,24 @@ class EditHandler(base.AuthenticatedHandler):
 	except:
 	  pass
 	  
-      # find 'id=" + k
+      elif k=="priority" or k=="destruction_level":
+	#try:
+	id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
+	#new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
+
+	new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
+      elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status"]:
+	id_index = new_inc_form.index('id="' + k)
+	value_index = new_inc_form[id_index:].index('value="' + v)
+	new_inc_form = new_inc_form[:id_index + value_index+8 + len(v)] + "selected" + new_inc_form[id_index + value_index+8 + len(v):] 
+
+	
+
+
+	
+	#raise Exception(new_inc_form[:id_index + 380])
+	#except:
+	  #pass      # find 'id=" + k
       # find type=", (index)
       # find ", (index)
       # What's in between is the type.

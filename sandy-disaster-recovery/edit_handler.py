@@ -92,10 +92,27 @@ class EditHandler(base.AuthenticatedHandler):
     form=None
     if query:
       inc_form = query.form_html
+    new_inc_form = None
+    
+    for k, v in post_json2.iteritems():
+      if k == "request_date":
+	try:
+	  id_index = inc_form.index('id="' + k)
+	  value_index = inc_form[id_index:].index("value")
+	  new_inc_form = inc_form[:id_index + value_index+7] + v + inc_form[id_index + value_index+7:] 
+	except:
+	  pass
+      # find 'id=" + k
+      # find type=", (index)
+      # find ", (index)
+      # What's in between is the type.
+      # If the type == Checkbox, and value == y
+      # find >, (index)
+      # add "checked" just before
     single_site = single_site_template.render(
         { "form": form,
           "org": org,
-	  "incident_form_block": inc_form,
+	  "incident_form_block": new_inc_form,
 	  "post_json": post_json,
           })
     #raise Exception(query.form_html)
@@ -198,6 +215,7 @@ class EditHandler(base.AuthenticatedHandler):
 	#"reported_by": str(site.reported_by.name),
       #}
       post_json = json.dumps(post_json2)
+
       single_site = single_site_template.render(
           { "form": data,
             "org": org,

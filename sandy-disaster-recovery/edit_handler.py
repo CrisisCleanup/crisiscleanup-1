@@ -109,7 +109,7 @@ class EditHandler(base.AuthenticatedHandler):
 	  new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 
 	except:
 	  pass
-      elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes", 'goods_and_services':
+      elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes" or k== 'goods_and_services':
 	try:
 	  id_index = new_inc_form.index('id="' + k)
 	  value_index = new_inc_form[id_index:].index(">")

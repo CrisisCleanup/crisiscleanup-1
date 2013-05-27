@@ -77,6 +77,7 @@ class EditHandler(base.AuthenticatedHandler):
       #"reported_by": str(site.reported_by.name),
     #}
     post_json = json.dumps(post_json2)
+    #raise Exception(post_json)
     
     
     q = db.Query(form_db.IncidentForm)

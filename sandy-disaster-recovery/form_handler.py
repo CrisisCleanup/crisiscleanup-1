@@ -93,7 +93,7 @@ class FormHandler(base.AuthenticatedHandler):
 
   def AuthenticatedPost(self, org, event):
     post_data = self.request.POST
-
+    
     my_string = ""
     for k, v in self.request.POST.iteritems():
       if v == "":
@@ -167,12 +167,15 @@ class FormHandler(base.AuthenticatedHandler):
       if data.status.data == 'Open, unassigned':
         site.assigned_to = ''
       # attempt to save site
+
       similar_site = None
       if site.similar(event) and not self.request.get('ignore_similar', None):
         similar_site = site.similar(event)
         message = None
       elif site.event or event_db.AddSiteToEvent(site, event.key().id()):
         site_db.PutAndCache(site)
+	#dict_dict_site = site_db.SiteToDict(site)
+	#raise Exception(dict_dict_site)
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
         return
       else:

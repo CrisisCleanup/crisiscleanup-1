@@ -36,6 +36,7 @@ var oFormObject = document.forms['form'];
 
 Object.keys(post_json).forEach(function(key) {
     var this_element = document.getElementById(key);
+    console.log(this_element);
     if (key == "priority") {
       var which_button = null;
       if (post_json[key] == "5") {
@@ -173,7 +174,6 @@ Object.keys(post_json).forEach(function(key) {
 
 {% endif %}
 {% endif %}
-</form>
 </div>
 </div>
 {{ logout }}

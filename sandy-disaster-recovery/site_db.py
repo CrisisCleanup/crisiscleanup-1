@@ -36,9 +36,8 @@ import metaphone
 STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 'claimed_by', 'request_date', 
 				'address', 'city', 'state', 'county', 'zip_code', 'cross_street', 'landmark', 
 				'phone1', 'phone2', 'name_metaphone', 'address_digits', 'address_metaphone',
-				'city_metaphone', 'phone_normalised', 'time_to_call', 'rent_or_own', 'work_without_resident',
-				'member_of_assessing_organization', 'first_responder', 'older_than_60',
-				'disabled', 'special_needs', 'work_type', 'latitude', 'longitude', 'priority']
+				'city_metaphone', 'phone_normalised', 'rent_or_own',
+				'disabled', 'work_type', 'latitude', 'longitude', 'priority']
 
 def _GetOrganizationName(site, field):
   """Returns the name of the organization in the given field, if possible.

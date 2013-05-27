@@ -284,7 +284,7 @@ var updateDialogForSite = function (dialog, site) {
         "electricity":"Live electrical wires. "
     };
     for (var i in site) {
-        if (details.length > 500) break;
+        if (details.length > 100000) break;
         if (i == "initials of resident present" ||
             i == "address" ||
             i == "city" ||

@@ -333,7 +333,7 @@ var updateDialogForSite = function (dialog, site) {
                 details += label + ". ";
             }
         } else if (typeof site[i] == "string" && site[i].length > 0) {
-	    if (label != "Event name") {
+	    if (label != "Event name" && site[i] != "0") {
 	      details += label + ": " + site[i];
 	      if (details[details.length - 1] != ".") details += ". ";
 	    }

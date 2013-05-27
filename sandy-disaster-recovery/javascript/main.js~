@@ -317,7 +317,7 @@ var updateDialogForSite = function (dialog, site) {
             i == "work_without_resident" ||
             i == "status" ||
             i == "total_volunteers" ||
-            
+            i == "prepared_by"
             
         ) continue;
         var label = i.replace(/_/g, " ");

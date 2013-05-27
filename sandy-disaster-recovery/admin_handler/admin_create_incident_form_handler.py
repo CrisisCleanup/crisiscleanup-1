@@ -277,7 +277,7 @@ class AdminCreateIncidentFormHandler(base.AuthenticatedHandler):
 	properties_json = json.dumps(properties_dict)
 	ft = form_types_db.FormTypes(incident = incident.key(), properties_json = properties_json)
 	form_types_db.PutAndCache(ft, cache_time)
-	form_types_db.CheckDuplicatesAndPut(form_types = ft, cache_time = cache_time, event = event)
+	form_types_db.CheckDuplicatesAndPut(form_types = ft, cache_time = cache_time, event = incident)
 	self.redirect("/admin?message=Form Added")
 
 	return

@@ -23,6 +23,7 @@ import json
 import wtforms.validators
 from datetime import datetime
 
+
 # Local libraries.
 import base
 import site_db
@@ -92,16 +93,31 @@ class EditHandler(base.AuthenticatedHandler):
     form=None
     if query:
       inc_form = query.form_html
-    new_inc_form = None
+    new_inc_form = inc_form
     
     for k, v in post_json2.iteritems():
-      if k == "request_date":
+      if k == "request_date" or k == "name" or k == "city" or k == "county" or k == "state" or k=="address" or k=="zip_code" or k=="latitude" or k=="longitude" or k=="cross_street" or k =="phone1" or k=="phone2" or k=="time_to_call" or k=="tarps_needed" or k=="damaged_fence_length" or k=="fence_type" or k=="fence_notes" or k=="assigned_to" or k=="total_volunteers" or k =="hours_worked_per_volunteer" or k=="initials_of_resident_present" or k=="prepared_by" or k=="do_not_work_before":
 	try:
-	  id_index = inc_form.index('id="' + k)
-	  value_index = inc_form[id_index:].index("value")
-	  new_inc_form = inc_form[:id_index + value_index+7] + v + inc_form[id_index + value_index+7:] 
+	  id_index = new_inc_form.index('id="' + k)
+	  value_index = new_inc_form[id_index:].index("value")
+	  new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 
 	except:
 	  pass
+      elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes":
+	try:
+	  id_index = new_inc_form.index('id="' + k)
+	  value_index = new_inc_form[id_index:].index(">")
+	  new_inc_form = new_inc_form[:id_index + value_index+1] + str(v) + new_inc_form[id_index + value_index+1:] 
+	except:
+	  pass
+      elif k=="house_affected" or k == "outbuilding_affected" or k == "exterior_property_affected" or k =="work_without_resident" or k=="member_of_assessing_organization" or k =="first_responder" or k=="older_than_60" or k=="house_roof_damage" or k=="outbuilding_roof_damage" or k == "help_install_tarp" or k == "interior_debris_removal" or k=="nonvegitative_debris_removal" or k=="vegitative_debris_removal" or k =="unsalvageable_structure" or k=="heavy_machinery_required" or k=="habitable" or k=="electricity" or k =="electrical_lines" or k=="unsafe_roof" or k == "unrestrained_animals" or k=="claim_for_org":
+	try:
+	  id_index = new_inc_form.index('id="' + k)
+	  value_index = new_inc_form[id_index:].index(">")
+	  new_inc_form = new_inc_form[:id_index + value_index] + "checked" + new_inc_form[id_index + value_index:] 
+	except:
+	  pass
+	  
       # find 'id=" + k
       # find type=", (index)
       # find ", (index)
@@ -181,8 +197,12 @@ class EditHandler(base.AuthenticatedHandler):
       for k, v in self.request.POST.iteritems():
 	if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
 	  if k == "request_date":
-	    date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
-	    setattr(site, k, date_object)
+	    try:
+	      date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
+	      setattr(site, k, date_object)
+	    except:
+	      date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S.%f')
+	      setattr(site, k, date_object)
 
 	  else:
             setattr(site, k, v)

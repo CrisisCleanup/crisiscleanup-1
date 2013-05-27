@@ -35,7 +35,7 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site_incident_form.html')
 logout_template = jinja_environment.get_template('logout.html')
-HATTIESBURG_SHORT_NAME = "hattiesburg"
+HATTIESBURG_SHORT_NAME = "derechos"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 class EditHandler(base.AuthenticatedHandler):
@@ -106,7 +106,10 @@ class EditHandler(base.AuthenticatedHandler):
 	  try:
 	    id_index = new_inc_form.index('id="' + k)
 	    value_index = new_inc_form[id_index:].index("value")
-	    new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 
+	    if k in ["latitude", "longitude"]:
+	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+10:] 
+	    else:
+	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 
 	  except:
 	    pass
 	elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes" or k== 'goods_and_services':
@@ -133,16 +136,20 @@ class EditHandler(base.AuthenticatedHandler):
 
 	  new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
 	elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
-	  logging.debug(k + " is the key")
-	  id_index = new_inc_form.index('id="' + k)
-	  value_index = new_inc_form[id_index:].index('value="' + str(v))
-	  length = 0
-	  if v != None:
-	    length = len(str(v))
-	    
-	  new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
+	  if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME] and k == "floors_affected":
+	    pass
+	  else:
+	    logging.debug(event.short_name)
+	    logging.debug(k + " is the key")
+	    id_index = new_inc_form.index('id="' + k)
+	    value_index = new_inc_form[id_index:].index('value="' + str(v))
+	    length = 0
+	    if v != None:
+	      length = len(str(v))
+	      
+	    new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
 
-	
+	  
 
 
 	
@@ -186,8 +193,25 @@ class EditHandler(base.AuthenticatedHandler):
 
     # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
     data.name.data = site_util.unescape(data.name.data)
-    data.latitude.data = float(data.latitude.data)
-    data.longitude.data = float(data.longitude.data)
+    logging.debug(data.latitude.data)
+    logging.debug(data.longitude.data)
+    lat_string = self.request.get("latitude")
+    decimal_index = lat_string[3:].find('.')
+    lat_string = lat_string[:decimal_index]
+    lat_float = float(lat_string)
+    logging.debug(lat_float)
+
+    lng_string = self.request.get("longitude")
+    logging.debug(lng_string)
+
+    decimal_index = lng_string[4:].find('.')
+    lng_string = lng_string[:decimal_index]
+    logging.debug(lng_string)
+
+    lng_float = float(lng_string)
+
+    #data.latitude.data = lat_float
+    #data.longitude.data = lng_float
     data.priority.data = int(data.priority.data)
     data.name.validators = data.name.validators + [wtforms.validators.Length(min = 1, max = 100,
                              message = "Name must be between 1 and 100 characters")]
@@ -210,6 +234,8 @@ class EditHandler(base.AuthenticatedHandler):
 
     mode_js = self.request.get("mode") == "js"
     if data.validate():
+      #setattr(site, "longitude", lng_float)
+      #setattr(site, "latitude", lat_float)
       # Save the data, and redirect to the view page
       for f in data:
         # In order to avoid overriding fields that didn't appear
@@ -236,8 +262,6 @@ class EditHandler(base.AuthenticatedHandler):
 	    except:
 	      date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S.%f')
 	      setattr(site, k, date_object)
-	  elif k in ['latitude', 'longitude']:
-	    setattr(site, k, float(v))
 	  else:
             setattr(site, k, v)
       site_db.PutAndCache(site)

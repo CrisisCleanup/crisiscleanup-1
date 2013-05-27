@@ -36,7 +36,7 @@ import metaphone
 STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 'claimed_by', 
 				'address', 'city', 'state', 'county', 'zip_code', 'cross_street', 'landmark', 
 				'phone1', 'phone2', 'name_metaphone', 'address_digits', 'address_metaphone',
-				'city_metaphone', 'phone_normalised',
+				'city_metaphone', 'phone_normalised', 'latitude', 'longitude',
 				'work_type', 'priority']
 
 def _GetOrganizationName(site, field):

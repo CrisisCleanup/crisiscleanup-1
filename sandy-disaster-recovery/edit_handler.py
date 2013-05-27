@@ -133,7 +133,7 @@ class EditHandler(base.AuthenticatedHandler):
 	new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
       elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
 	id_index = new_inc_form.index('id="' + k)
-	value_index = new_inc_form[id_index:].index('value="' + v)
+	value_index = new_inc_form[id_index:].index('value="' + str(v))
 	new_inc_form = new_inc_form[:id_index + value_index+8 + len(v)] + "selected" + new_inc_form[id_index + value_index+8 + len(v):] 
 
 	

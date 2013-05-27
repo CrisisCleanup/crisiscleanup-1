@@ -294,7 +294,7 @@ Case #{{site.case_number}}</h3>
     <p>&nbsp;</p>
   </td>
   <td colspan=7 class="allBorders">
-    <p>Num Wide Trees (>18")</p>
+    <p>Num Wide Trees</p>
   </td>
   <td class="allBorders">
     <p class="data">{{site.num_wide_trees}}</p>
@@ -303,10 +303,10 @@ Case #{{site.case_number}}</h3>
     <p>&nbsp;</p>
   </td>
   <td colspan=4 class="allBorders">
-    <p>&nbsp;</p>
+    <p>Non-Vegitative Debris Removal</p>
   </td>
   <td class="allBorders">
-    <p class="data">&nbsp;</p>
+    <p class="data">{{yesno(site.nonvegitative_debris_removal)}}</p>
   </td>
  </tr>
 
@@ -340,10 +340,10 @@ Case #{{site.case_number}}</h3>
     <p>&nbsp;</p>
   </td>
   <td colspan=4 class="allBorders">
-    <p>&nbsp;</p>
+    <p>Vegitative Debris Removal</p>
   </td>
   <td class="allBorders">
-    <p class="data">&nbsp;</p>
+    <p class="data">{{ yesno(site.vegitative_debris_removal) }}</p>
   </td>
  </tr>
 
@@ -406,10 +406,10 @@ Case #{{site.case_number}}</h3>
 
  <tr>
   <td colspan=2 class="allBorders">
-    <p>Other Work</p>
+    <p>Fence Notes</p>
   </td>
   <td colspan=26 class="allBorders">
-    <p class="data">{{site.work_requested}}{% if site.work_requested and site.goods_and_services %}, {% endif %}{{site.goods_and_services}}</p>
+    <p class="data">{{site.fence_notes}}{% if site.work_requested and site.goods_and_services %}, {% endif %}{{site.goods_and_services}}</p>
   </td>
  </tr>
 

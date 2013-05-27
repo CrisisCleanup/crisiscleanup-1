@@ -48,7 +48,7 @@ class PrintHandler(base.AuthenticatedHandler):
     self.AuthenticatedPost(org, event)
 
   def AuthenticatedPost(self, org, event):
-    print_single_template = jinja_environment.get_template('print_single.html')
+    print_single_template = jinja_environment.get_template('print_single_moore.html')
     if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       print_single_template = jinja_environment.get_template('print_single_derechos.html')
     if event.short_name == MOORE_OKLAHOMA_SHORT_NAME:

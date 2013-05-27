@@ -469,13 +469,55 @@ Case #{{site.case_number}}</h3>
     <p class="data">{{yesno(site.work_without_resident)}}</p>
   </td>
  </tr>
-
+ <tr>
+  <td colspan=2 class="allBorders">
+   <p>Unrestrained Animals</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.unrestrained_animals)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=8 class="allBorders">
+    <p>Unsalvageable Structure</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.unsalvageable_structure)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=7 class="allBorders">
+    <p>Unsafe Roof</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">{{yesno(site.unsafe_roof)}}</p>
+  </td>
+  <td>
+    <p>&nbsp;</p>
+  </td>
+  <td colspan=4 class="allBorders">
+    <p>&nbsp;</p>
+  </td>
+  <td class="allBorders">
+    <p class="data">&nbsp;</p>
+  </td>
+ </tr>
  <tr>
   <td colspan=2 class="allBorders">
     <p>Other Hazards</p>
   </td>
   <td colspan=26 class="allBorders">
     <p class="data">{{site.other_hazards}}</p>
+  </td>
+ </tr>
+  <tr>
+  <td colspan=2 class="allBorders">
+    <p>Current Status</p>
+  </td>
+  <td colspan=26 class="allBorders">
+    <p class="data">{{site.status}}</p>
   </td>
  </tr>
 

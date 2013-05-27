@@ -21,6 +21,7 @@ import os
 from google.appengine.ext import db
 import json
 import wtforms.validators
+from datetime import datetime
 
 # Local libraries.
 import base
@@ -162,7 +163,12 @@ class EditHandler(base.AuthenticatedHandler):
         
       for k, v in self.request.POST.iteritems():
 	if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
-	  setattr(site, k, v)
+	  if k == "request_date":
+	    date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
+	    setattr(site, k, date_object)
+
+	  else:
+            setattr(site, k, v)
       site_db.PutAndCache(site)
       if mode_js:
         # returning a 200 is sufficient here.

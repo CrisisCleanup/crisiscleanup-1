@@ -46,6 +46,7 @@ class EditHandler(base.AuthenticatedHandler):
 
     # lookup by id or case_number
     id = self.request.get('id', None)
+    mode_js = self.request.get("mode") == "js"
     case_number = self.request.get('case', None)
     if not id and case_number:
         q = db.GqlQuery("SELECT * FROM Site WHERE case_number=:1", case_number)
@@ -94,24 +95,29 @@ class EditHandler(base.AuthenticatedHandler):
     if query:
       inc_form = query.form_html
     new_inc_form = inc_form.replace("checked ", "")
+    if mode_js:
+      new_inc_form = new_inc_form.replace('<input type="checkbox" id="ignore_similar" name="ignore_similar">', "")
+      new_inc_form = new_inc_form.replace('Ignore similar matches', '')
+      new_inc_form = new_inc_form.replace('<input type=submit value="Submit request">', '')
     
     
     for k, v in post_json2.iteritems():
-      if k == "request_date" or k == "name" or k == "city" or k == "county" or k == "state" or k=="address" or k=="zip_code" or k=="latitude" or k=="longitude" or k=="cross_street" or k =="phone1" or k=="phone2" or k=="time_to_call" or k=="tarps_needed" or k=="damaged_fence_length" or k=="fence_type" or k=="fence_notes" or k=="assigned_to" or k=="total_volunteers" or k =="hours_worked_per_volunteer" or k=="initials_of_resident_present" or k=="prepared_by" or k=="do_not_work_before":
+      if k in ["request_date", "name", "city", 'county', 'country', 'state', 'address', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'time_to_call', 'tarps_needed', 'damaged_fence_length', 'fence_type', 'fence_notes', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'prepared_by', 'do_not_work_before', 'flood_height']:
 	try:
 	  id_index = new_inc_form.index('id="' + k)
 	  value_index = new_inc_form[id_index:].index("value")
 	  new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 
 	except:
 	  pass
-      elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes":
+      elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes", 'goods_and_services':
 	try:
 	  id_index = new_inc_form.index('id="' + k)
 	  value_index = new_inc_form[id_index:].index(">")
 	  new_inc_form = new_inc_form[:id_index + value_index+1] + str(v) + new_inc_form[id_index + value_index+1:] 
 	except:
 	  pass
-      elif k=="house_affected" or k == "outbuilding_affected" or k == "exterior_property_affected" or k =="work_without_resident" or k=="member_of_assessing_organization" or k =="first_responder" or k=="older_than_60" or k=="house_roof_damage" or k=="outbuilding_roof_damage" or k == "help_install_tarp" or k == "interior_debris_removal" or k=="nonvegitative_debris_removal" or k=="vegitative_debris_removal" or k =="unsalvageable_structure" or k=="heavy_machinery_required" or k=="habitable" or k=="electricity" or k =="electrical_lines" or k=="unsafe_roof" or k == "unrestrained_animals" or k=="claim_for_org":
+
+      elif k in ['house_affected', 'outbuilding_affected', 'exterior_property_affected', 'work_without_resident', 'member_of_assessing_organization', 'first_responder', 'older_than_60', 'house_roof_damage', 'outbuilding_roof_damage', 'help_install_tarp', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinery_required', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'claim_for_org', 'disabled', 'hardwood_floor_removal', 'drywall_removal', 'heavy_item_removal', 'applicance_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'roof_damage', "debris_removal_only", "broken_glass"]:
 	try:
 	  id_index = new_inc_form.index('id="' + k)
 	  value_index = new_inc_form[id_index:].index(">")
@@ -125,7 +131,7 @@ class EditHandler(base.AuthenticatedHandler):
 	#new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
 
 	new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
-      elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status"]:
+      elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
 	id_index = new_inc_form.index('id="' + k)
 	value_index = new_inc_form[id_index:].index('value="' + v)
 	new_inc_form = new_inc_form[:id_index + value_index+8 + len(v)] + "selected" + new_inc_form[id_index + value_index+8 + len(v):] 

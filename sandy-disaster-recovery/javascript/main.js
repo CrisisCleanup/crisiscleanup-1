@@ -307,7 +307,18 @@ var updateDialogForSite = function (dialog, site) {
             i == "address_metaphone" ||
             i == "city_metaphone" ||
             i == "phone_normalised" ||
-            i == "event"
+            i == "event" ||
+            i == "hours_worked_per_volunteer" ||
+            i == "claim_for_org" ||
+            i == "initials_of_resident_present" ||
+            i == "status_notes" ||
+            i == "total_volunteers" ||
+            i == "rent_or_own" ||
+            i == "work_without_resident" ||
+            i == "status" ||
+            i == "total_volunteers" ||
+            i == "prepared_by"
+            
         ) continue;
         var label = i.replace(/_/g, " ");
         label = label[0].toUpperCase() + label.slice(1);

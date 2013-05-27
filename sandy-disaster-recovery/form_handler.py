@@ -24,6 +24,7 @@ import wtforms.validators
 from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 import json
+from datetime import datetime
 
 
 
@@ -156,7 +157,12 @@ class FormHandler(base.AuthenticatedHandler):
                             priority = int(data.priority.data))
       for k, v in self.request.POST.iteritems():
 	if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
-	  setattr(site, k, v)
+	  if k == "request_date":
+	    date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
+	    setattr(site, k, date_object)
+
+	  else:
+            setattr(site, k, v)
       data.populate_obj(site)
 
       site.reported_by = org

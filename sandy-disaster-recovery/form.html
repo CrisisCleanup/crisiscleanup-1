@@ -28,6 +28,9 @@ goog.require("sandy.form");
 {% endif %}
 </script>
 <script>
+var d = new Date();
+console.log(d);
+
 
 {% if post_json %}
 $(function(){
@@ -180,7 +183,25 @@ Object.keys(post_json).forEach(function(key) {
 
 <div id="map_canvas"></div>
 <div id="wrapper"></div>
+<script>
+function requestDate() {
+Number.prototype.padLeft = function(base,chr){
+    var  len = (String(base || 10).length - String(this).length)+1;
+    return len > 0? new Array(len).join(chr || '0')+this : this;
+}
 
+var d = new Date,
+    dformat = [d.getFullYear(),
+     (d.getMonth()+1).padLeft(),
+      d.getDate().padLeft()].join('-')+
+              ' ' +
+              [d.getHours().padLeft(),
+               d.getMinutes().padLeft(),
+               d.getSeconds().padLeft()].join(':');
+document.getElementById('request_date').value = dformat;
+}
+requestDate();
+</script>
 </body>
 </html>
 {% endif %} {# not mode_js #}

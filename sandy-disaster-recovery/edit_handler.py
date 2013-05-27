@@ -101,44 +101,46 @@ class EditHandler(base.AuthenticatedHandler):
       new_inc_form = new_inc_form.replace('<input type=submit value="Submit request">', '')
     
     
-    for k, v in post_json2.iteritems():
-      if k in ["request_date", "name", "city", 'county', 'country', 'state', 'address', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'time_to_call', 'tarps_needed', 'damaged_fence_length', 'fence_type', 'fence_notes', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'prepared_by', 'do_not_work_before', 'flood_height']:
-	try:
-	  id_index = new_inc_form.index('id="' + k)
-	  value_index = new_inc_form[id_index:].index("value")
-	  new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 
-	except:
-	  pass
-      elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes" or k== 'goods_and_services':
-	try:
-	  id_index = new_inc_form.index('id="' + k)
-	  value_index = new_inc_form[id_index:].index(">")
-	  new_inc_form = new_inc_form[:id_index + value_index+1] + str(v) + new_inc_form[id_index + value_index+1:] 
-	except:
-	  pass
+      for k, v in post_json2.iteritems():
+	if k in ["request_date", "name", "city", 'county', 'country', 'state', 'address', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'time_to_call', 'tarps_needed', 'damaged_fence_length', 'fence_type', 'fence_notes', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'prepared_by', 'do_not_work_before', 'flood_height']:
+	  try:
+	    id_index = new_inc_form.index('id="' + k)
+	    value_index = new_inc_form[id_index:].index("value")
+	    new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 
+	  except:
+	    pass
+	elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes" or k== 'goods_and_services':
+	  try:
+	    id_index = new_inc_form.index('id="' + k)
+	    value_index = new_inc_form[id_index:].index(">")
+	    new_inc_form = new_inc_form[:id_index + value_index+1] + str(v) + new_inc_form[id_index + value_index+1:] 
+	  except:
+	    pass
 
-      elif k in ['house_affected', 'outbuilding_affected', 'exterior_property_affected', 'work_without_resident', 'member_of_assessing_organization', 'first_responder', 'older_than_60', 'house_roof_damage', 'outbuilding_roof_damage', 'help_install_tarp', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinery_required', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'claim_for_org', 'disabled', 'hardwood_floor_removal', 'drywall_removal', 'heavy_item_removal', 'applicance_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'roof_damage', "debris_removal_only", "broken_glass"]:
-	try:
-	  id_index = new_inc_form.index('id="' + k)
-	  value_index = new_inc_form[id_index:].index(">")
-	  new_inc_form = new_inc_form[:id_index + value_index] + "checked" + new_inc_form[id_index + value_index:] 
-	except:
-	  pass
-	  
-      elif k=="priority" or k=="destruction_level":
-	#try:
-	id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
-	#new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
+	elif k in ['house_affected', 'outbuilding_affected', 'exterior_property_affected', 'work_without_resident', 'member_of_assessing_organization', 'first_responder', 'older_than_60', 'house_roof_damage', 'outbuilding_roof_damage', 'help_install_tarp', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinery_required', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'claim_for_org', 'disabled', 'hardwood_floor_removal', 'drywall_removal', 'heavy_item_removal', 'applicance_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'roof_damage', "debris_removal_only", "broken_glass"]:
+	  try:
+	    if v == "y":
+	      id_index = new_inc_form.index('id="' + k)
+	      value_index = new_inc_form[id_index:].index(">")
+	      new_inc_form = new_inc_form[:id_index + value_index] + "checked" + new_inc_form[id_index + value_index:] 
+	  except:
+	    pass
+	    
+	elif k=="priority" or k=="destruction_level":
+	  #try:
+	  id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
+	  #new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
 
-	new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
-      elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
-	id_index = new_inc_form.index('id="' + k)
-	value_index = new_inc_form[id_index:].index('value="' + str(v))
-	length = 0
-	if v != None:
-	  length = len(str(v))
-	  
-	new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
+	  new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
+	elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
+	  logging.debug(k + " is the key")
+	  id_index = new_inc_form.index('id="' + k)
+	  value_index = new_inc_form[id_index:].index('value="' + str(v))
+	  length = 0
+	  if v != None:
+	    length = len(str(v))
+	    
+	  new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
 
 	
 
@@ -184,6 +186,8 @@ class EditHandler(base.AuthenticatedHandler):
 
     # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
     data.name.data = site_util.unescape(data.name.data)
+    data.latitude.data = float(data.latitude.data)
+    data.longitude.data = float(data.longitude.data)
     data.priority.data = int(data.priority.data)
     data.name.validators = data.name.validators + [wtforms.validators.Length(min = 1, max = 100,
                              message = "Name must be between 1 and 100 characters")]
@@ -224,6 +228,7 @@ class EditHandler(base.AuthenticatedHandler):
         
       for k, v in self.request.POST.iteritems():
 	if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
+
 	  if k == "request_date":
 	    try:
 	      date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
@@ -231,7 +236,8 @@ class EditHandler(base.AuthenticatedHandler):
 	    except:
 	      date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S.%f')
 	      setattr(site, k, date_object)
-
+	  elif k in ['latitude', 'longitude']:
+	    setattr(site, k, float(v))
 	  else:
             setattr(site, k, v)
       site_db.PutAndCache(site)

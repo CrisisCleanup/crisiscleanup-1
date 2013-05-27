@@ -163,8 +163,10 @@ class FormHandler(base.AuthenticatedHandler):
 
 	  else:
             setattr(site, k, v)
-      data.populate_obj(site)
-
+      try:
+	data.populate_obj(site)
+      except:
+	raise Exception("populate")
       site.reported_by = org
       if claim_for_org:
         site.claimed_by = org

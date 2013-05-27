@@ -136,7 +136,7 @@ class EditHandler(base.AuthenticatedHandler):
 	value_index = new_inc_form[id_index:].index('value="' + str(v))
 	length = 0
 	if v != None:
-	  length = len(v)
+	  length = len(str(v))
 	  
 	new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
 

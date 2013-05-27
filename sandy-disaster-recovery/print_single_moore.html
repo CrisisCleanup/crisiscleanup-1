@@ -176,7 +176,7 @@ Case #{{site.case_number}}</h3>
 
  <tr>
   <td colspan=2 class="allBorders">
-    <p>Best Time to Call</p>
+    <p>Best Time Call</p>
   </td>
   <td colspan=16 class="allBorders">
     <p class="data">{{site.time_to_call}}</p>
@@ -195,10 +195,10 @@ Case #{{site.case_number}}</h3>
 
  <tr>
   <td colspan=2 class="allBorders">
-    <p>Disabled</p>
+    <p>Rent/Own/Public</p>
   </td>
   <td colspan=16 class="allBorders">
-    <p class="data">{{yesno(site.disabled)}}</p>
+    <p class="data">{{yesno(site.rent_or_own)}}</p>
   </td>
   <td>
     <p>&nbsp;</p>
@@ -217,6 +217,15 @@ Case #{{site.case_number}}</h3>
   </td>
   <td colspan=26 class="allBorders">
     <p class="data">{{site.special_needs}}</p>
+  </td>
+ </tr>
+ 
+  <tr>
+  <td colspan=2 class="allBorders">
+    <p>Do Not Work Before</p>
+  </td>
+  <td colspan=26 class="allBorders">
+    <p class="data">{{site.do_not_work_before}}</p>
   </td>
  </tr>
 
@@ -239,10 +248,10 @@ Case #{{site.case_number}}</h3>
 
  <tr>
   <td colspan=2 class="allBorders">
-   <p>House Roof Damage</p>
+   <p>House Roof</p>
   </td>
   <td class="allBorders">
-    <p class="data">{{site.house_roof_damage}}</p>
+    <p class="data">{{yesno(site.house_roof_damage)}}</p>
   </td>
   <td>
     <p>&nbsp;</p>
@@ -276,7 +285,7 @@ Case #{{site.case_number}}</h3>
 
  <tr>
   <td colspan=2 class="allBorders">
-   <p>Outbuilding Roof Damage</p>
+   <p>Outbuilding Roof</p>
   </td>
   <td class="allBorders">
     <p class="data">{{yesno(site.outbuilding_roof_damage)}}</p>
@@ -370,17 +379,8 @@ Case #{{site.case_number}}</h3>
   <td colspan=7 class="allBorders">
     <p>Fence Type</p>
   </td>
-  <td class="allBorders">
+  <td colspan=16 class="allBorders">
     <p class="data">{{site.fence_type}}</p>
-  </td>
-  <td>
-    <p>&nbsp;</p>
-  </td>
-  <td colspan=4 class="allBorders">
-    <p>&nbsp;</p>
-  </td>
-  <td class="allBorders">
-    <p class="data">&nbsp;</p>
   </td>
  </tr>
 
@@ -436,7 +436,7 @@ Case #{{site.case_number}}</h3>
 
  <tr>
   <td colspan=2 class="allBorders">
-   <p>Is The Home Habitable</p>
+   <p>Habitable</p>
   </td>
   <td class="allBorders">
     <p class="data">{{yesno(site.habitable)}}</p>
@@ -471,7 +471,7 @@ Case #{{site.case_number}}</h3>
  </tr>
  <tr>
   <td colspan=2 class="allBorders">
-   <p>Unrestrained Animals</p>
+   <p>Free Animals</p>
   </td>
   <td class="allBorders">
     <p class="data">{{yesno(site.unrestrained_animals)}}</p>

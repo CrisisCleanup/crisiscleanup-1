@@ -106,7 +106,7 @@ class EditHandler(base.AuthenticatedHandler):
 	  try:
 	    id_index = new_inc_form.index('id="' + k)
 	    value_index = new_inc_form[id_index:].index("value")
-	    if k in ["latitude", "longitude"]:
+	    if k in ["latitude", "longitude"] and event.short_name != "moore":
 	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+10:] 
 	    else:
 	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 

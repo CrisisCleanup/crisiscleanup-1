@@ -149,6 +149,5 @@
 <li><a href="/admin-import-csv">Import CSV.</a></li>
 {% endif %}
 <li><a href="/logout">Logout. </a></li>
-</ul>
 
 {% endblock %}

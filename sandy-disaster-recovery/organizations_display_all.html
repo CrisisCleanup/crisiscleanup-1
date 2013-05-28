@@ -1,6 +1,23 @@
-{% extends "nav_base.html" %}
-{% block bodycontent%}
+{% extends "base_template.html" %}
+{% block main_title %}
+<h2>All Organizations</h2>
+{% endblock %}
+{% block main_content %}
 {% for result in org_query %}
   <p><a href="/organization-info?organization={{ result.key().id() }}">{{ result.name }}</a></p>
 {% endfor %}
+{% endblock %}
+
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/sites">Browse Cases.</a></li>
+<li><a href="/organization-settings">See My Organizations.</a></li>
+<li><a href="/organization-info">See All Organizations.</a></li>
+<li><a href="/see-all-contacts">See All Contacts.</a></li>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a></li>
+</ul>
+
 {% endblock %}

@@ -1,15 +1,39 @@
 {% extends "base_template.html" %}
+
 {% block main_title %}
-<h2>Organization Signups</h2>
+<h2>Create New Incident</h2>
 {% endblock %}
+
 {% block main_content %}
-{% for result in org_query %}
 
-<p><a href="{{url}}{{ result.key().id()}}">{{ result.name }}</a></p>
-{% endfor %}
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+
+<form method="POST" action="/admin-create-incident">
+    <div>{{ form.name.label }}: {{ form.name}}</div>
+    <div>{{ form.short_name.label }}: {{ form.short_name }}</div>
+    <p>Case Label: {{ case_label }}</p>
+    <br/>
+     <input type=hidden name=password value={{auto_password}}>
+
+<input type=submit value="Submit request">
+
+</form>
 {% endblock %}
-
-
 {% block sidebar_content %}
 <ul>
 <li><a href="/">Home.</a></li>
@@ -19,14 +43,11 @@
 <li><a href="/admin-inactive-organizations">Inactive Organizations.</a></li>
 <li><a href="/admin-create-contact">Create Contact.</a></li>
 <li><a href="/admin-display-contacts">Display Contacts.</a></li>
-{% if global_admin %}
 <li><a href="/admin-edit-pages">Edit Pages.</a></li>
 <li><a href="/admin-see-admins">See Local Admins.</a></li>
 <li><a href="/admin-create-incident">Create Incident.</a></li>
 <li><a href="/admin-create-incident-form">Create Incident Form.</a></li>
 <li><a href="/admin-import-csv">Import CSV.</a></li>
-{% endif %}
 <li><a href="/logout">Logout. </a></li>
-</ul>
 
 {% endblock %}

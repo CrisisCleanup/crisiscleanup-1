@@ -1,5 +1,9 @@
-{% extends "nav_base.html" %}
-{% block bodycontent%}
+{% extends "base_template.html" %}
+{% block main_title %}
+<h2>Contacts</h2>
+{% endblock %}
+
+{% block main_content%}
 <h2>List of all contacts</h2>
 <a href="/see-all-contacts?order=first_name">Order by first name. </a>
 <a href="/see-all-contacts?order=last_name">Order by last name. </a>
@@ -11,4 +15,19 @@
 
 {% endfor %}
 {% endif %}
+{% endblock %}
+
+
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/sites">Browse Cases.</a></li>
+<li><a href="/organization-settings">See My Organizations.</a></li>
+<li><a href="/organization-info">See All Organizations.</a></li>
+<li><a href="/see-all-contacts">See All Contacts.</a></li>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a></li>
+</ul>
+
 {% endblock %}

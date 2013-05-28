@@ -1,7 +1,8 @@
 {% extends "base_template.html" %}
 {% block main_title %}
-<h2>Organization Signups</h2>
+<h2>All Organizations</h2>
 {% endblock %}
+
 {% block main_content %}
 {% for result in org_query %}
 
@@ -27,6 +28,5 @@
 <li><a href="/admin-import-csv">Import CSV.</a></li>
 {% endif %}
 <li><a href="/logout">Logout. </a></li>
-</ul>
 
 {% endblock %}

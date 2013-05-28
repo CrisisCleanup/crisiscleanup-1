@@ -1,10 +1,12 @@
-{% extends "admin_base.html" %}
-{% block bodycontent %}
+{% extends "base_template.html" %}
+{% block main_title %}
+<h2>Create Incident Form</h2>
+{% endblock %}
+{% block main_content %}
  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
 
 <script>
 $(function(){
-alert(4);
      $("#choose_incident").prepend("<option value='' selected='selected'>Choose From Below</option>");
      $("#choose_incident").change(function(){
    	 $("textarea#form_text_area").val("Enter an HTML form here. All validation needs to be done on the client side. Here are some hints on how to make a good one. Delete all of this before beginning.");
@@ -134,5 +136,25 @@ alert(4);
 
 <input type=submit value="Submit Form">
 </form>
+
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/">Home.</a></li>
+<li><a href="/admin-organization-requests">Requests for new organizations.</a></li>
+<li><a href="/admin-create-organization">Create Organization.</a></li>
+<li><a href="/admin-all-organizations">See All Organizations.</a></li>
+<li><a href="/admin-inactive-organizations">Inactive Organizations.</a></li>
+<li><a href="/admin-create-contact">Create Contact.</a></li>
+<li><a href="/admin-display-contacts">Display Contacts.</a></li>
+
+<li><a href="/admin-edit-pages">Edit Pages.</a></li>
+<li><a href="/admin-see-admins">See Local Admins.</a></li>
+<li><a href="/admin-create-incident">Create Incident.</a></li>
+<li><a href="/admin-create-incident-form">Create Incident Form.</a></li>
+<li><a href="/admin-import-csv">Import CSV.</a></li>
+
+<li><a href="/logout">Logout. </a></li>
 
 {% endblock %}

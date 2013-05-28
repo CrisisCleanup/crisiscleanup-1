@@ -1,5 +1,9 @@
-{% extends "nav_base.html" %}
-{% block bodycontent%}
+{% extends "base_template.html" %}
+
+{% block main_title %}
+<h2>Add Contact</h2>
+{% endblock %}
+{% block main_content%}
 <h1>Create Contact</h1>
 
 <form method="POST" action="/organization-add-contact">
@@ -33,4 +37,17 @@
  <input type=hidden name=create_contact value=True>
 <input type=submit value="Submit Edit">
 </form>
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/sites">Browse Cases.</a></li>
+<li><a href="/organization-settings">See My Organizations.</a></li>
+<li><a href="/organization-info">See All Organizations.</a></li>
+<li><a href="/see-all-contacts">See All Contacts.</a></li>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a></li>
+</ul>
+
 {% endblock %}

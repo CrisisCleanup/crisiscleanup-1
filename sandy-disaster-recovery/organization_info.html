@@ -1,5 +1,9 @@
-{% extends "nav_base.html" %}
-{% block bodycontent%}
+{% extends "base_template.html" %}
+{% block main_title %}
+<h2>Organization Info</h2>
+{% endblock %}
+
+{% block main_content%}
 {% if contacts %}
 <p>Contacts</p>
 {% if is_admin %}
@@ -45,4 +49,17 @@
 {% else %}
 <p>Show list of organizations</p>
 {% endif %}
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/sites">Browse Cases.</a></li>
+<li><a href="/organization-settings">See My Organizations.</a></li>
+<li><a href="/organization-info">See All Organizations.</a></li>
+<li><a href="/see-all-contacts">See All Contacts.</a></li>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a></li>
+</ul>
+
 {% endblock %}

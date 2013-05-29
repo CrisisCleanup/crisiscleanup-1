@@ -55,6 +55,16 @@ indexes:
 - kind: Site
   properties:
   - name: event
+  - name: case_number
+  - name: claimed_by
+  - name: floors_affected
+  - name: latitude
+  - name: longitude
+  - name: work_type
+
+- kind: Site
+  properties:
+  - name: event
   - name: name
 
 - kind: Site

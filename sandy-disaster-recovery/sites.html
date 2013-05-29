@@ -1,0 +1,44 @@
+{% extends "base_template_without_log_in_checks.html" %}
+
+{% block head_content %}        
+
+{% endblock %}
+
+{% block login %}
+class="activePage"
+{% endblock %}
+
+
+{% block description_title %}
+DESC TITLE
+{% endblock %}
+
+{% block description_subtitle %}
+DESC SUBTITLE
+{% endblock %}
+
+{% block sidebar_title %}
+Order
+{% endblock %}
+
+{% block sidebar_content %}
+<p><a href='/sites?order=request_date'>Order by date created</a></p> <p><a href='/sites?order=name'>Order by name</a></p>
+
+{% endblock %}
+
+{% block main_title %}
+Browse Sites
+{% endblock %}
+
+{% block main_content %}
+
+{% if show_next_page %}
+<p><a href='/sites?page={{ previous_page }}'>Previous Page</a></p>
+{% endif %}
+
+<p><a href='/sites?page={{ page_number }}'>Next Page</a></p>
+
+{% for result in sites_query %}
+  <p><u>{{ result.case_number }} {{ result.name }} {{ result.address }}</u> <a href="/edit?id={{ result.key().id() }}"><u>Edit</u></a> <a href="/delete?id={{ result.key().id() }}"><u>Delete</u></a> </p>
+{% endfor %}
+{% endblock %}

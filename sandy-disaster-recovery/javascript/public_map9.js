@@ -1,7 +1,7 @@
 var clusterer=null;
 $(function(){
     
-    var myLatlng = new google.maps.LatLng(39.50, -77.35);
+    var myLatlng = new google.maps.LatLng(38.50, -85.35);
     var mapOptions = {
         zoom: 5,
         center: myLatlng,

@@ -42,6 +42,7 @@ class PublicMapAjaxHandler(base.RequestHandler):
   def get(self):
     logging.debug("PublicMapAjaxHandler")
     event_shortname = self.request.get("shortname")
+    logging.debug(event_shortname + " = event")
     page = self.request.get("page")
     page_int = int(page)
 
@@ -54,7 +55,7 @@ class PublicMapAjaxHandler(base.RequestHandler):
 	event = e
 
       
-    #logging.debug(event.name)
+    logging.debug(event.name)
     #q = Query(model_class = site_db.Site)#, projection=('latitude', 'longitude','id', 'status', 'claimed_by', 'work_type', 'derechos_work_type', 'case_number', 'floors_affected'))
 
 
@@ -77,8 +78,30 @@ class PublicMapAjaxHandler(base.RequestHandler):
     #q = db.Query(site_db.Site, projection=('latitude', 'longitude','id', 'status', 'claimed_by', 'work_type', 'derechos_work_type', 'case_number', 'floors_affected'), filter('status >=', "open"))
     #q = site_db.Site.gql("SELECT latitude, longitude, id, claimed_by, work_type, derechos_work_type, case_number, floors_affected WHERE status >= open")
     where_string = "Open"
-    gql_string = 'SELECT latitude, longitude, claimed_by, work_type, case_number, floors_affected FROM Site WHERE status >= :1 and event = :2'# WHERE status >= %s", where_string
-    q = db.GqlQuery(gql_string, where_string, event.key())
+    q = None
+    if event.short_name != 'moore':
+      gql_string = 'SELECT latitude, longitude, claimed_by, work_type, case_number, floors_affected FROM Site WHERE status >= :1 and event = :2'# WHERE status >= %s", where_string
+      q = db.GqlQuery(gql_string, where_string, event.key())
+
+    else:
+      q = Query(model_class = site_db.Site)
+
+      logging.debug("again" + event.name)
+      q.filter("event =", event.key())
+      q.is_keys_only()
+      logging.debug("status == open")
+      q.filter("status >= ", "Open")
+	  
+      #query = q.fetch(PAGE_OFFSET, offset = page_int * PAGE_OFFSET)
+      #for q in query:
+	  #ids.append(q.key().id())
+	  
+      this_offset = page_int * PAGE_OFFSET
+      logging.debug("this_offset = " + str(this_offset))
+	  
+      ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
+      logging.debug("ids len = " + str(len(ids)))
+           
 
 
     this_offset = page_int * PAGE_OFFSET

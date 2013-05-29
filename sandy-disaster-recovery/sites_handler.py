@@ -27,8 +27,14 @@ import site_db
 import cgi
 import key
 import random_password
+import jinja2
+
 
 PAGE_OFFSET = 200
+jinja_environment = jinja2.Environment(
+loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+template = jinja_environment.get_template('sites.html')
+
 class SitesHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
     page = cgi.escape(self.request.get("page"))  
@@ -41,16 +47,16 @@ class SitesHandler(base.AuthenticatedHandler):
         print "error"
     message = cgi.escape(self.request.get("message"))
     order = cgi.escape(self.request.get("order", "name"))
-    if message:
-      self.response.out.write(message + "<br /><br />")
+    #if message:
+      #self.response.out.write(message + "<br /><br />")
       
-    self.response.out.write("<a href='/sites?order=request_date'>Order by date created</a><br />")
-    self.response.out.write("<a href='/sites?order=name'>Order by name</a><br /><br/>")
-    next_page =  page + 1
-    page_link = "<a href='/sites?page=%d'>Next Page</a><br /><br/>" % next_page
-    self.response.out.write(page_link)
-    self.response.out.write("200 shown per page")
-    self.response.out.write(message + "<br /><br />")
+    #self.response.out.write("<a href='/sites?order=request_date'>Order by date created</a><br />")
+    #self.response.out.write("<a href='/sites?order=name'>Order by name</a><br /><br/>")
+    #next_page =  page + 1
+    #page_link = "<a href='/sites?page=%d'>Next Page</a><br /><br/>" % next_page
+    #self.response.out.write(page_link)
+    #self.response.out.write("200 shown per page")
+    #self.response.out.write(message + "<br /><br />")
     
     
     
@@ -80,9 +86,21 @@ class SitesHandler(base.AuthenticatedHandler):
       query_string = "SELECT * FROM Site WHERE county = :county and event = :event_key " + order_string + " LIMIT %s OFFSET %s" % (PAGE_OFFSET, page * PAGE_OFFSET)
       query = db.GqlQuery(query_string, where_variable = county, event_key = event.key())
       
-    for s in query:
-      self.response.out.write(
-          '<a href="/edit?id=%(id)s">Edit</a> '
-          '<a href="/delete?id=%(id)s">Delete</a> - ' % {'id' : s.key().id() })
-      self.response.out.write("%s: %s - %s<br />" %
-                              (s.case_number, s.name, s.address))
+    #for q in query:
+      #raise Exception(q.key().id)
+    show_previous_page = False
+    if page != 0:
+      show_previous_page = True
+    self.response.out.write(template.render(
+    {
+	"sites_query": query,
+	"page_number": page,
+	"show_previous_page": show_previous_page,
+    }))
+    return
+    #for s in query:
+      #self.response.out.write(
+          #'<a href="/edit?id=%(id)s">Edit</a> '
+          #'<a href="/delete?id=%(id)s">Delete</a> - ' % {'id' : s.key().id() })
+      #self.response.out.write("%s: %s - %s<br />" %
+                              #(s.case_number, s.name, s.address))

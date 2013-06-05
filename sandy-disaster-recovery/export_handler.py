@@ -48,7 +48,7 @@ class ExportHandler(base.AuthenticatedHandler):
       
     
     writer = csv.writer(self.response.out)
-    writer.writerow(site_db.STANDARD_SITE_PROPERTIES_LIST + new_list)
+    writer.writerow(new_list)
 
     for site in sites:
       writer.writerow(site.ToCsvLine(new_list))

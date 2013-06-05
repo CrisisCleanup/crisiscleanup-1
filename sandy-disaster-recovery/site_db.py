@@ -405,7 +405,7 @@ class Site(db.Expando):
     """Returns the site as a list of string values, one per field in
     CSV_FIELDS."""
     csv_row = []
-    fields_list = STANDARD_SITE_PROPERTIES_LIST + extra_csv_list
+    fields_list = extra_csv_list
     for field in fields_list:
       accessor = self._CSV_ACCESSORS.get(field, _GetField)
       value = accessor(self, field)

@@ -50,18 +50,12 @@
 	          <li>
               <a {% block signup %}{% endblock %} href="/signup"><span class="icon">@</span>Sign Up</a>
             </li>
-            {% if logged_in %}
             <li>
 	    <a href="/"><span class="icon">5</span>Assessment Form</a>
 	    </li>
             <li>
             <a href="/logout"><span class="icon">L</span>Log Out</a>
 	    </li>
-            {% else %}
-	    <li>
-              <a {% block login %}{% endblock %} href="/authentication"><span class="icon">L</span>Log In</a>
-            </li>
-            {% endif %}
           </ul>
         </nav>
       </div>

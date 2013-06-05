@@ -85,6 +85,8 @@ from admin_handler import admin_import_contacts_handler as admin_import_contacts
 from admin_handler import admin_create_incident_form_handler
 
 import form_ajax_handler
+import update_csv_handler
+from admin_handler import admin_create_incident_csv_handler
 
 
 
@@ -110,6 +112,8 @@ class Route(routes.RedirectRoute):
 
 app = webapp2.WSGIApplication([
     Route(r'/contact', contact_handler.ContactHandler, 'dev'),
+    Route(r'/update_csv_handler', update_csv_handler.UpdateCSVHandler, 'dev'),
+
     Route(r'/public-map', public_map_handler.PublicMapHandler, 'dev'),
     Route(r'/public_map_ajax_handler', public_map_ajax_handler.PublicMapAjaxHandler, 'dev'),
 
@@ -166,6 +170,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-import-csv/active/invalids.csv', admin_import_csv_handler.ActiveCSVImportHandler, 'admin_import_csv_handler'),
     Route(r'/admin-edit-pages', admin_edit_pages_handler.AdminEditPagesHandler, 'admin_edit_pages_handler'),
     Route(r'/admin-edit-pages/download/defaults', admin_edit_pages_handler.AdminDownloadPageBlocks, 'admin_edit_pages_handler'),
+    Route(r'/admin-create-incident-csv', admin_create_incident_csv_handler.AdminCreateIncidentCSVHandler, 'admin_edit_pages_handler'),
 
     
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),

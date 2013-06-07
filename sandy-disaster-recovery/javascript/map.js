@@ -186,10 +186,10 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
         max_lat = Math.max(max_lat, ll.lat());
         max_lng = Math.max(max_lng, ll.lng());
       }
-      map.fitBounds(new google.maps.LatLngBounds(
-          new google.maps.LatLng(min_lat - .01, min_lng - .01), 
-          new google.maps.LatLng(max_lat + .01, max_lng + .01)));
-      map.setZoom(8);
+//       map.fitBounds(new google.maps.LatLngBounds(
+//           new google.maps.LatLng(min_lat - .01, min_lng - .01), 
+//           new google.maps.LatLng(max_lat + .01, max_lng + .01)));
+      map.setZoom(5);
     }
   }
   if (markers.length > 0) myLatlng = markers[0].getPosition();

@@ -27,7 +27,7 @@
 <option value="{{result.key().id()}}">{{result.name}}</option>
 {% endfor %}
 </select><br/><br/>
-<textarea id="form_text_area" name="incident_form_html" rows="30" cols="150">Enter all terms, separated by comma.</textarea>
+<textarea id="form_text_area" name="incident_csv" rows="30" cols="150">Enter all terms, separated by comma.</textarea>
 <br/>
 <br/>
 

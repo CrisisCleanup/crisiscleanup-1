@@ -49,5 +49,6 @@
 <li><a href="/admin-create-incident-form">Create Incident Form.</a></li>
 <li><a href="/admin-import-csv">Import CSV.</a></li>
 <li><a href="/logout">Logout. </a></li>
+</ul>
 
 {% endblock %}

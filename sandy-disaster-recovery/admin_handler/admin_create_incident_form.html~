@@ -156,5 +156,6 @@ $(function(){
 <li><a href="/admin-import-csv">Import CSV.</a></li>
 
 <li><a href="/logout">Logout. </a></li>
+</ul>
 
 {% endblock %}

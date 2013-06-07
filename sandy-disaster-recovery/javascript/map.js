@@ -35,6 +35,13 @@ var layers = [
 //     { kml: "https://www.google.com/maps/ms?ie=UTF8&authuser=0&msa=0&output=kml&msid=210988455284977221384.0004cdd57d7e7e61d9c00",
 //       description: "Affected Areas" }
               ];
+var moore_layers = [
+ { kml: 
+   "http://www.aarontitus.net/maps/MooreNWS.kml",
+   description: ""
+  }
+  ];
+  
 
 sandy.map.ClassifySite = function(site, my_organization) {
   var tags = [];
@@ -193,5 +200,33 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
     }
   }
   if (markers.length > 0) myLatlng = markers[0].getPosition();
+//   if (firstTime) {
+//     goog.net.XhrIo.send('/get_event_ajax',
+//         function (e) {
+//             var xhr = e.target;
+//             var status = xhr.getStatus();
+//             if (status == 200) {
+//                 var new_site = xhr.getResponseJson();
+// 		console.log(new_site['event_name']);
+// 		if (new_site['event_name'] == "sandy") {
+// 		      MarkerClusterer.IMAGE_PATH = "/icons/m";
+// 		      clusterer = new MarkerClusterer(map);
+// 		      clusterer.setGridSize(40);
+// 		      clusterer.setMaxZoom(12);
+// 		      for (var i = 0; i < layers.length; ++i) {
+// 			var layer = new google.maps.KmlLayer({
+// 			clickable: true,
+// 			map: map,
+// 			preserveViewport: true,
+// 			suprressInfoWindows: false,
+// 			url: layers[i].kml
+// 			  });
+// 			layerObjects.push(layer);
+// 		      }
+// 		}		
+// 		
+//             }
+//     })
+//   }
   firstTime = false;
 }

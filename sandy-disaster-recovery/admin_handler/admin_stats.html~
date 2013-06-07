@@ -1,12 +1,19 @@
 {% extends "base_template.html" %}
 {% block main_title %}
-<h2>Organization Signups</h2>
+<h2>Crisis Cleanup Stats</h2>
 {% endblock %}
-{% block main_content %}
-{% for result in org_query %}
 
-<p><a href="{{url}}{{ result.key().id()}}">{{ result.name }}</a></p>
-{% endfor %}
+{% block main_content %}
+<p>Sandy Total Sites = {{ SANDY_TOTAL_SITES }}</p>
+
+<p>Hattiesburg Total Sites = {{ HATTIESBURG_TOTAL_SITES }}</p>
+
+<p>Gordon-Bartow Total Sites = {{ GORDON_BARTOW_TOTAL_SITES }}</p>
+
+<p>Moore Total Sites = {{ MOORE_TOTAL_SITES }}</p>
+
+<p>Crisis Cleanup Total Sites = {{ TOTAL_SITES }}</p>
+
 {% endblock %}
 
 
@@ -28,5 +35,4 @@
 {% endif %}
 <li><a href="/logout">Logout. </a></li>
 </ul>
-
 {% endblock %}

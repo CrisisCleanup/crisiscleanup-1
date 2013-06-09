@@ -43,6 +43,8 @@ var kCompletionStatusColors = {
     "Closed, no help wanted":"xgray"
 };
 
+
+
 var getMarkerIcon = function (site) {
     // TODO(Jeremy): Do we really want them invisible? Wouldn't it be better to
     // Just remove them from the database in this case?
@@ -65,10 +67,67 @@ var getMarkerIcon = function (site) {
     }
     site.work_type = marker_work_type;
     var icon_type = site.work_type.replace(/ /g, "_");
+    console.log("/icons/" + icon_type + "_" + color + ".png");
     return "/icons/" + icon_type + "_" + color + ".png";
 }
 
-   var populateMapByIncident = function(incident, page, old_markers) {
+var getInfoboxDetails = function(site) {
+ details = "";
+ for (var i in site) {
+        if (details.length > 100000) break;
+        if (i == "initials of resident present" ||
+            i == "address" ||
+            i == "city" ||
+            i == "status" ||
+            i == "clustered" ||
+            i == "zip_code" ||
+            i == "case_number" ||
+            i == "name" ||
+            i == "request_date" ||
+            i == "prepared_by" ||
+            i == "state" ||
+            i == "county" ||
+            i == "cross_street" ||
+            i == "rent_or_own" ||
+            i == "time_to_call" ||
+            i == "phone1" ||
+            i == "phone2" ||
+            i == "name_metaphone" ||
+            i == "address_digits" ||
+            i == "address_metaphone" ||
+            i == "city_metaphone" ||
+            i == "phone_normalised" ||
+            i == "event" ||
+            i == "hours_worked_per_volunteer" ||
+            i == "claim_for_org" ||
+            i == "initials_of_resident_present" ||
+            i == "status_notes" ||
+            i == "total_volunteers" ||
+            i == "rent_or_own" ||
+            i == "work_without_resident" ||
+            i == "status" ||
+            i == "total_volunteers" ||
+            i == "prepared_by"
+            
+        ) continue;
+        var label = i.replace(/_/g, " ");
+        label = label[0].toUpperCase() + label.slice(1);
+        if (i == "habitable") {
+            if (!site[i]) {
+                details += "House is not habitable. ";
+            }
+        } else if (typeof site[i] == "string" && site[i].length > 0 && site[i] != "n") {
+	    if (label != "Event name" && site[i] != "0") {
+	      details += label + ": " + site[i];
+	      if (details[details.length - 1] != ".") details += ". ";
+	    }
+        }
+    }
+    console.log(details);
+    return details;
+}
+
+var populateMapByIncident = function(incident, page, old_markers) {
   var run_again = false;
   $.getJSON(
     "/public_map_ajax_handler",
@@ -87,7 +146,8 @@ var getMarkerIcon = function (site) {
        var i = 0;
        
        for (var i = 0; i < sites_list.length; i++) {
-	 var latLng = new google.maps.LatLng(sites_list[i].latitude, sites_list[i].longitude);
+	 var details = getInfoboxDetails(sites_list[i]);
+	 var latLng = new google.maps.LatLng(sites_list[i].blurred_latitude, sites_list[i].blurred_longitude);
 	 var marker = new google.maps.Marker({'position': latLng, 
 					     'icon': getMarkerIcon(sites_list[i]), 
 					     'site_id': sites_list[i].id, 
@@ -99,7 +159,7 @@ var getMarkerIcon = function (site) {
 	 var site_id = sites_list[i].id;
 	google.maps.event.addListener(marker, "click", function() {
 	  new Messi('<p>Name, Address, Phone Number are removed from the public map</p><p>Details: work type: '
-	  + this.work_type+ ', floors affected: ' + this.floors_affected + '</p>' + '<p>Status: ' + this.status + '</p>',
+	  + this.work_type+ ', Details: ' + details + '</p>' + '<p>Status: ' + this.status + '</p>',
 	  {title: 'Case Number: ' + this.case_number, titleClass: 'info', 
 	  buttons: [
 	  {id: 0, label: 'Printer Friendly', val: "On the live version, this would send all of this site's data to a printer friendly page." }, 

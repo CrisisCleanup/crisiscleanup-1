@@ -80,7 +80,7 @@ class PublicMapAjaxHandler(base.RequestHandler):
     where_string = "Open"
     q = None
     if event.short_name != 'moore':
-      gql_string = 'SELECT latitude, longitude, claimed_by, work_type, case_number, floors_affected FROM Site WHERE status >= :1 and event = :2'# WHERE status >= %s", where_string
+      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2'# WHERE status >= %s", where_string
       q = db.GqlQuery(gql_string, where_string, event.key())
 
     else:

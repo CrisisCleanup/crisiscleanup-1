@@ -2,16 +2,24 @@ import logging
 import organization
 from google.appengine.ext import deferred
 from google.appengine.ext import db
+import random
+import site_db
 
-BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
+BATCH_SIZE = 400  # ideal batch size may vary based on entity size.
 
 def UpdateSchema(self, event, cursor=None, num_updated=0): 
-    query = organization.Organization.all()
+    logging.debug("UpdateSchema")
+    OFFSET_SIZE = int(num_updated) * BATCH_SIZE
+    logging.debug(OFFSET_SIZE)
+    query = site_db.Site.all()
     if cursor:
         query.with_cursor(cursor)
 
     to_put = []
-    for p in query.fetch(limit=BATCH_SIZE):
+    for p in query.fetch(limit=BATCH_SIZE, offset = OFFSET_SIZE):
+        p.blurred_latitude = p.latitude + random.uniform(-0.001798, 0.001798)
+	p.blurred_longitude = p.longitude + random.uniform(-0.001798, 0.001798)
+	#raise Exception(p)
         # In this example, the default values of 0 for num_votes and avg_rating
         # are acceptable, so we don't need this loop.  If we wanted to manually
         # manipulate property values, it might go something like this:
@@ -44,13 +52,19 @@ def UpdateSchema(self, event, cursor=None, num_updated=0):
 
     if to_put:
         db.put(to_put)
-        num_updated += len(to_put)
-        logging.debug(
-            'Put %d entities to Datastore for a total of %d',
-            len(to_put), num_updated)
+        #num_updated += len(to_put)
+        #logging.debug(
+            #'Put %d entities to Datastore for a total of %d',
+            #len(to_put), num_updated)
         deferred.defer(
             UpdateSchema, cursor=query.cursor(), num_updated=num_updated)
-        self.redirect('/admin?message=Update Schema Completed Successfully')     
+
+        if len(to_put) == BATCH_SIZE:
+	  next_update = int(num_updated) + 1
+	  logging.debug(next_update)
+	  self.redirect("/update_handler?num_updates=" + str(next_update))
+	else:
+	  self.redirect('/admin?message=Update Schema Completed Successfully')     
     else:
         logging.debug(
             'UpdateSchema complete with %d updates!', num_updated)

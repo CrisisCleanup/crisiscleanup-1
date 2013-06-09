@@ -36,6 +36,8 @@ import site_util
 import form_db
 import site_db
 
+import random
+
 
 
 jinja_environment = jinja2.Environment(
@@ -181,6 +183,9 @@ class FormHandler(base.AuthenticatedHandler):
         similar_site = site.similar(event)
         message = None
       elif site.event or event_db.AddSiteToEvent(site, event.key().id()):
+	site.blurred_latitude = site.latitude + random.uniform(-0.001798, 0.001798)
+	site.blurred_longitude = site.longitude + random.uniform(-0.001798, 0.001798)
+
         site_db.PutAndCache(site)
 	#dict_dict_site = site_db.SiteToDict(site)
 	#raise Exception(dict_dict_site)

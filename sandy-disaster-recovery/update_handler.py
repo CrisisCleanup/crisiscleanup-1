@@ -26,8 +26,12 @@ import update_schema
 
 class UpdateHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
+        num_updates = self.request.get("num_updates")
+        if not num_updates:
+	  num_updates = "0"
+	int_num_updates = int(num_updates)
         if not org.name == "Admin":
             return False  
-        update_schema.UpdateSchema(self, event)
+        update_schema.UpdateSchema(self, event, num_updated = num_updates)
         
         

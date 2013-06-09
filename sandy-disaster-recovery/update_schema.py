@@ -4,14 +4,21 @@ from google.appengine.ext import deferred
 from google.appengine.ext import db
 import random
 import site_db
+import event_db
 
-BATCH_SIZE = 400  # ideal batch size may vary based on entity size.
+BATCH_SIZE = 10  # ideal batch size may vary based on entity size.
 
 def UpdateSchema(self, event, cursor=None, num_updated=0): 
     logging.debug("UpdateSchema")
     OFFSET_SIZE = int(num_updated) * BATCH_SIZE
     logging.debug(OFFSET_SIZE)
     query = site_db.Site.all()
+    
+    other_q = event_db.Event.all()
+    other_q.filter("short_name =", "moore")
+    moore_event = other_q.get()
+    query.filter("event =", moore_event.key())
+    logging.debug(moore_event.name)
     if cursor:
         query.with_cursor(cursor)
 
@@ -59,7 +66,7 @@ def UpdateSchema(self, event, cursor=None, num_updated=0):
         deferred.defer(
             UpdateSchema, cursor=query.cursor(), num_updated=num_updated)
 
-        if len(to_put) == BATCH_SIZE:
+        if len(to_put) == BATCH_SIZE and num_updated != 18:
 	  next_update = int(num_updated) + 1
 	  logging.debug(next_update)
 	  self.redirect("/update_handler?num_updates=" + str(next_update))
@@ -67,4 +74,4 @@ def UpdateSchema(self, event, cursor=None, num_updated=0):
 	  self.redirect('/admin?message=Update Schema Completed Successfully')     
     else:
         logging.debug(
-            'UpdateSchema complete with %d updates!', num_updated)
+            'UpdateSchema complete with updates')

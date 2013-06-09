@@ -66,7 +66,7 @@ def UpdateSchema(self, event, cursor=None, num_updated=0):
         deferred.defer(
             UpdateSchema, cursor=query.cursor(), num_updated=num_updated)
 
-        if len(to_put) == BATCH_SIZE and num_updated != 18:
+        if len(to_put) == BATCH_SIZE and int(num_updated) != 18:
 	  next_update = int(num_updated) + 1
 	  logging.debug(next_update)
 	  self.redirect("/update_handler?num_updates=" + str(next_update))

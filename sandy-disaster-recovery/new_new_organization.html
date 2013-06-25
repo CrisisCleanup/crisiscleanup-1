@@ -27,23 +27,13 @@ class="activePage"
 {% block main_content %}
       <link rel="stylesheet" href="stylesheets/messi.css">
 		<script>
-		submit_boolean = false;
 
-// 		function isValidEmailAddress(emailAddress) {
-// 		  var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
-// 		  // alert( pattern.test(emailAddress) );
-// 		  return pattern.test(emailAddress);
-// 		};
-// 		
-// 		function checkAndSubmit() {
-// 		console.log("checkAndSubmit");
-// 		  var email = $('#email').val();
-// 		  console.log(email);
-// 		}
-		
-// 		 if (submit_boolean == false) {
-// 		    document.forms[0].submit();return false;
-// 		  }
+		function isValidEmailAddress(emailAddress) {
+		  var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+		  // alert( pattern.test(emailAddress) );
+		  return pattern.test(emailAddress);
+		};
+
 		  
 		  function checkEach() {
 		  var txt=document.getElementById("javascript_form_errors");
@@ -77,9 +67,14 @@ class="activePage"
 		    }
 		    for (var i=0; i < properties_array.length; i ++) {
 		      var property = $('#' + properties_array[i]).val();
-		      console.log(properties_array[i]);
 		      if (property.length < 1) {
 		        errors_array.push(properties_array[i]);
+		      }
+		      
+		      if (properties_array[i] == "email" || properties_array[i] == "personal_email") {
+			if (isValidEmailAddress(property) == false) {
+			  email_errors_array.push(properties_array[i]);
+			}
 		      }
 		    }
 		    for (var k=0; k < errors_array.length; k++) {
@@ -89,6 +84,13 @@ class="activePage"
 			txt.innerHTML=innermyspan + '<p class="error">' + properties_dictionary[errors_array[k]] + '</p>';
 		    }
 		    
+		    console.log(email_errors_array);
+		     for (var j=0; j < email_errors_array.length; j++) {
+		       var txt=document.getElementById("javascript_form_errors");
+		       var innermyspan = document.getElementById("javascript_form_errors").innerHTML;
+
+			txt.innerHTML=innermyspan + '<p class="error">' + email_errors_array[j] + ' is not a proper email address</p>';
+		    }
 		    if (errors_array.length==0) {
 		    console.log("sending form");
 		    document.forms[0].submit();return false;
@@ -158,7 +160,7 @@ class="activePage"
   <div><label>Organization URL</label>: <input name="url" id="url" type="text" value=""></div>
   <div><label>Organization Twitter</label>: <input name="twitter" id="twitter" type="text" value=""></div>
   <div><label>Facebook link</label>: <input name="facebook" id="facebook" type="text" value=""></div>
-  <div><label>Publish Organization Profile</label><a href="#0.1_fn3"><sup>3</sup></a>: <input name="publish" id="publish" type="checkbox" value="y"></div>
+  <div><label>Publish Organization Profile</label><a href="#0.1_fn3"><sup>3</sup></a>: <input name="publish" id="publish" type="checkbox" value="1"></div>
     
 <h2>Qualifications</h2>
   

@@ -69,7 +69,7 @@ class NewOrganizationHandler(base.RequestHandler):
 	      chosen_event = event_db.Event.get_by_id(int(v))
 	      setattr(org, "incident", chosen_event.key())
 	    elif k in boolean_properties_list:
-	      setattr(org, k, bool(v))
+	      setattr(org, k, bool(int(v)))
 
 	    else:
 	      setattr(org, k, v)

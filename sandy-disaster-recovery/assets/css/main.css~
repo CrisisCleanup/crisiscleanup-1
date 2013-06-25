@@ -15,6 +15,9 @@ select,
 textarea {
   color: #444;
 }
+.errors {
+ font-size: 300%;
+}
 ::-moz-selection {
   background: #ffcc44;
   color: White;
@@ -79,7 +82,7 @@ strong {
 ================================================*/
 .container {
   margin: 0 auto;
-  width:90%;
+  width:85%;
 }
 span.icon {
   text-transform: none !important;

@@ -21,6 +21,7 @@ from google.appengine.ext import deferred
 # Local libraries.
 import base
 import update_schema
+import update_organization_schema
 
 
 
@@ -32,6 +33,6 @@ class UpdateHandler(base.AuthenticatedHandler):
 	int_num_updates = int(num_updates)
         if not org.name == "Admin":
             return False  
-        update_schema.UpdateSchema(self, event, num_updated = num_updates)
+        update_organization_schema.UpdateSchema(self, event, num_updated = num_updates)
         
         

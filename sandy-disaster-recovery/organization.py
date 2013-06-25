@@ -25,7 +25,7 @@ from google.appengine.api import memcache
 from google.appengine.ext.db import to_dict
 import primary_contact_db
 
-class Organization(db.Model):
+class Organization(db.Expando):
   # Data about the organization.
   name = db.StringProperty(required = True)
   # We store passwords in plain text, because we want to
@@ -54,7 +54,8 @@ class Organization(db.Model):
   email = db.StringProperty(required=False)
   incident = db.ReferenceProperty()
   publish = db.BooleanProperty(required=False)
-  
+  appropriate_work = db.BooleanProperty(required=False)
+
   
   voad_referral = db.TextProperty(required=False)#|If your organization is not a member of VOAD, please provide the name and contact information for at least one (and preferably three or more) representatives from VOAD organizations or a government agency who can vouch for your work:
   physical_presence = db.BooleanProperty(required=False)#|Does your Organization have a physical presence in the disaster area?
@@ -66,24 +67,24 @@ class Organization(db.Model):
   
   # PHASES. Note: Phases attach to an incident, not an organization. An organization may complete different phases, depending upon the incident.
   # Setting defaults to True for schema update. Otherwise all old organizations will have no phases in scope
-  canvass = db.BooleanProperty(required=False, default=True)#|Canvass
-  assessment = db.BooleanProperty(required=False, default=True)#|Assessment
-  clean_up = db.BooleanProperty(required=False, default=True)#|Clean-up
-  water_pumping = db.BooleanProperty(required=False, default=True)#|Water Pumping
-  muck_out = db.BooleanProperty(required=False, default=True)#|Muck Out
-  interior_debris = db.BooleanProperty(required=False, default=True)#|Interior Debris
-  gutting = db.BooleanProperty(required=False, default=True)#|Gutting
-  tree_removal = db.BooleanProperty(required=False, default=True)#|Tree Removal
-  exterior_debris = db.BooleanProperty(required=False, default=True)#|Exterior Debris
-  sanitizing = db.BooleanProperty(required=False, default=True)#|Sanitizing
-  mold_treatment = db.BooleanProperty(required=False, default=True)#|Mold Treatment
-  design = db.BooleanProperty(required=False, default=True)#|Design
-  permits = db.BooleanProperty(required=False, default=True)#|Building Permits
-  reconstruction = db.BooleanProperty(required=False, default=True)#|Reconstruction
-  replace_appliances = db.BooleanProperty(required=False, default=True)#|Replace Appliances
-  replace_furniture = db.BooleanProperty(required=False, default=True)#|Replace Furniture
-  mold_abatement = db.BooleanProperty(required=False, default=True)#|Mold Abatement
-  refurbishing = db.BooleanProperty(required=False, default=True)#|Refurbishing
+  canvass = db.BooleanProperty(required=False)#|Canvass
+  assessment = db.BooleanProperty(required=False)#|Assessment
+  clean_up = db.BooleanProperty(required=False)#|Clean-up
+  water_pumping = db.BooleanProperty(required=False)#|Water Pumping
+  muck_out = db.BooleanProperty(required=False)#|Muck Out
+  interior_debris = db.BooleanProperty(required=False)#|Interior Debris
+  gutting = db.BooleanProperty(required=False)#|Gutting
+  tree_removal = db.BooleanProperty(required=False)#|Tree Removal
+  exterior_debris = db.BooleanProperty(required=False)#|Exterior Debris
+  sanitizing = db.BooleanProperty(required=False)#|Sanitizing
+  mold_treatment = db.BooleanProperty(required=False)#|Mold Treatment
+  design = db.BooleanProperty(required=False)#|Design
+  permits = db.BooleanProperty(required=False)#|Building Permits
+  reconstruction = db.BooleanProperty(required=False)#|Reconstruction
+  replace_appliances = db.BooleanProperty(required=False)#|Replace Appliances
+  replace_furniture = db.BooleanProperty(required=False)#|Replace Furniture
+  mold_abatement = db.BooleanProperty(required=False)#|Mold Abatement
+  refurbishing = db.BooleanProperty(required=False)#|Refurbishing
 
   _ACTIVE_PHASE_BOOLEANS = [
     canvass,

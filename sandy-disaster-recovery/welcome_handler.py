@@ -28,6 +28,7 @@ import cache
 
 # Local libraries.
 import base
+import key
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -36,6 +37,14 @@ welcome_template = jinja_environment.get_template('welcome.html')
 
 class WelcomeHandler(base.RequestHandler):
     def get(self):
-        self.response.out.write(welcome_template.render({}))
+      	logged_in = False
+        org, event = key.CheckAuthorization(self.request)
+        if org and key:
+	  logged_in = True
+	  
+	
+        self.response.out.write(welcome_template.render({
+	  "logged_in": logged_in,
+	}))
         
         

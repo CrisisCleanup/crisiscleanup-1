@@ -49,10 +49,10 @@ class NewOrganizationHandler(base.RequestHandler):
         form = organization.OrganizationForm()
         #events_list = event_db.GetAllCached()
         events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
+
         template_params = page_db.get_page_block_dict()
         template_params.update({
 	    "logged_in": logged_in,
-            "form": form,
             "events_list": events_list,
         })
         self.response.out.write(template.render(template_params))
@@ -60,66 +60,29 @@ class NewOrganizationHandler(base.RequestHandler):
     def post(self):
         choose_event = self.request.get("choose_event")
         data = organization.OrganizationForm(self.request.POST)
-        if not data.validate():
-            events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
-            template_params = page_db.get_page_block_dict()
-            template_params.update({
-                "form": data,
-                "errors": data.errors,
-                "events_list": events_list,
-            })
-            self.response.out.write(template.render(template_params))
-        else:
-            event_id = data.choose_event.data
-            event = event_db.GetEventFromParam(event_id)
-            new_org = organization.Organization(name = data.name.data,
-                                email = data.email.data,
-                                phone = data.phone.data,
-                                address = data.address.data,
-                                city = data.city.data,
-                                state = data.state.data,
-                                zip_code = data.zip_code.data,
-                                physical_presence = bool(data.physical_presence.data),
-                                number_volunteers = data.number_volunteers.data,
-                                voad_member = bool(data.voad_member.data),
+        org = organization.Organization(name= self.request.get("name"), is_active=False, org_verified=False)
+        contact_properties_list = ["first_name", "last_name", "personal_phone", "personal_email"]
+        boolean_properties_list = ["publish", "physical_presence", "appropriate_work", "voad_member"]
+	for k, v in self.request.POST.iteritems():
+	  if k not in contact_properties_list:
+	    if k == "choose_event":
+	      chosen_event = event_db.Event.get_by_id(int(v))
+	      setattr(org, "incident", chosen_event.key())
+	    elif k in boolean_properties_list:
+	      setattr(org, k, bool(v))
 
-                                canvass = bool(data.canvass.data),
-                                assessment = bool(data.assessment.data),
-                                water_pumping = bool(data.water_pumping.data),
-                                muck_out = bool(data.muck_out.data),
-                                interior_debris = bool(data.interior_debris.data),
-                                gutting = bool(data.gutting.data),
-                                tree_removal = bool(data.tree_removal.data),
-                                exterior_debris = bool(data.exterior_debris.data),
-                                sanitizing = bool(data.sanitizing.data),
-                                mold_treatment = bool(data.mold_treatment.data),
-                                design = bool(data.design.data),
-                                permits = bool(data.permits.data),
-                                reconstruction = bool(data.reconstruction.data),
-                                replace_appliances = bool(data.replace_appliances.data),
-                                replace_furniture = bool(data.replace_furniture.data),
-
-                                choose_event = event,
-                                org_verified=bool(0),
-                                twitter = data.twitter.data,
-                                url = data.url.data,
-                                voad_referral = data.voad_referral.data,
-                                work_area = data.work_area.data,
-                                voad_member_url = data.voad_member_url.data,
-                                facebook = data.facebook.data,  
-                                publish = data.publish.data,
-                                incident = event.key(),
-                                )
-                                
-            new_contact = primary_contact_db.Contact(first_name = data.contact_first_name.data,
-                                last_name = data.contact_last_name.data,
-                                email = data.contact_email.data,
-                                phone=data.contact_phone.data,
-                                is_primary=True)
-                                
-            organization.PutAndCacheOrganizationAndContact(organization = new_org,
-                                contact = new_contact,
-                                )
-                                
-            self.redirect("/welcome")
+	    else:
+	      setattr(org, k, v)
+      
+	new_contact = primary_contact_db.Contact(first_name = self.request.get("first_name"),
+			    last_name = self.request.get("last_name"),
+			    email = self.request.get("personal_email"),
+			    phone=self.request.get("personal_phone"),
+			    is_primary=True)
+			    
+	organization.PutAndCacheOrganizationAndContact(organization = org,
+			    contact = new_contact,
+			    )
+			    
+	self.redirect("/welcome")
             

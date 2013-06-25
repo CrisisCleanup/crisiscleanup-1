@@ -1,0 +1,14 @@
+.errors {
+  background-color: red;
+  font-size: 200%;
+}
+
+#div_errors {
+  background-color: red;
+  font-size: 200%;
+}
+
+#error {
+  background-color: red;
+  font-size: 200%;
+}

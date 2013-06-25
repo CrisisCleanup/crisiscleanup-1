@@ -42,6 +42,7 @@ This organization is awaiting approval
 <p>Zip Code: {{ new_organization.zip_code }}<p>
 <p>Physical Presence: {{ new_organization.physical_presence }}<p>
 <p>Work Area: {{ new_organization.work_area }}<p>
+<p>Number Of Volunteers: {{ new_organization.number_volunteers }}<p>
 <p>Voad Member: {{ new_organization.voad_member }}<p>
 <p>Voad Referrals: {{ new_organization.voad_referral }}</p>
 

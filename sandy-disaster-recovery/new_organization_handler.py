@@ -60,7 +60,7 @@ class NewOrganizationHandler(base.RequestHandler):
     def post(self):
         choose_event = self.request.get("choose_event")
         data = organization.OrganizationForm(self.request.POST)
-        org = organization.Organization(name= self.request.get("name"), is_active=False, org_verified=False)
+        org = organization.Organization(name= self.request.get("name"), is_active=False, org_verified=False, voad_referral = self.request.get("voad_referral"))
         contact_properties_list = ["first_name", "last_name", "personal_phone", "personal_email"]
         boolean_properties_list = ["publish", "physical_presence", "appropriate_work", "voad_member"]
 	for k, v in self.request.POST.iteritems():

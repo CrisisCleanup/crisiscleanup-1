@@ -15,9 +15,6 @@ select,
 textarea {
   color: #444;
 }
-.errors {
- font-size: 300%;
-}
 ::-moz-selection {
   background: #ffcc44;
   color: White;

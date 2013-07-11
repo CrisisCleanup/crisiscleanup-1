@@ -203,10 +203,12 @@ class EditHandler(base.AuthenticatedHandler):
 
     lng_string = self.request.get("longitude")
     logging.debug(lng_string)
+    
 
-    decimal_index = lng_string[4:].find('.')
-    lng_string = lng_string[:decimal_index]
-    logging.debug(lng_string)
+    if event.short_name != "black_forest":
+      decimal_index = lng_string[4:].find('.')
+      lng_string = lng_string[:decimal_index]
+      logging.debug(lng_string)
 
     lng_float = float(lng_string)
 

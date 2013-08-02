@@ -902,3 +902,97 @@ footer[role=contentinfo] p .left {
   width: 680px;
   float: left;
 }
+
+/*
+	OL Custom styles to permit "1.1.1" numbering in legal documents such as Terms and Privacy Policy, up to 15.x.x
+	Example Usage:
+	<ol class="custom three">
+		<li>Numbered bullet</li> //3.1
+		<ol class="custom three">
+			<li>Numbered Sub-bullet</li>  //3.1.1
+		</ol>
+	</ol>
+*/
+
+ol.custom {
+  list-style-type: none;
+  margin-left: 0;
+  counter-reset: item;
+}
+
+ol.custom > li {
+  counter-increment: customlistcounter;
+  display: block;
+}
+
+ol.custom:first-child, ol.custom:second-child {
+  counter-reset: customlistcounter;
+}
+
+ol.custom > li:before {
+  counter-increment: item;
+  /*content: "#" counter(customlistcounter);*/
+  font-weight: bold;
+  float: left;
+  width: 3em;
+}
+
+ol.one > li:before {
+  content: "1." counters(item, ".") " ";
+}
+
+ol.two > li:before {
+  content: "2." counters(item, ".") " ";
+}
+
+ol.three > li:before {
+  content: "3." counters(item, ".") " ";
+}
+
+ol.four > li:before {
+  content: "4." counters(item, ".") " ";
+}
+
+ol.five > li:before {
+  content: "5." counters(item, ".") " ";
+}
+
+ol.six > li:before {
+  content: "6." counters(item, ".") " ";
+}
+
+ol.seven > li:before {
+  content: "7." counters(item, ".") " ";
+}
+
+ol.eight > li:before {
+  content: "8." counters(item, ".") " ";
+}
+
+ol.nine > li:before {
+  content: "9." counters(item, ".") " ";
+}
+
+ol.ten > li:before {
+  content: "10." counters(item, ".") " ";
+}
+
+ol.eleven > li:before {
+  content: "11." counters(item, ".") " ";
+}
+
+ol.twelve > li:before {
+  content: "12." counters(item, ".") " ";
+}
+
+ol.thirteen > li:before {
+  content: "13." counters(item, ".") " ";
+}
+
+ol.fourteen > li:before {
+  content: "14." counters(item, ".") " ";
+}
+
+ol.fifteen > li:before {
+  content: "15." counters(item, ".") " ";
+}

@@ -1,0 +1,238 @@
+{% extends "base_template.html" %}
+
+{% block signup %}
+class="activePage"
+{% endblock %}
+
+{% block description_title %}
+{{ sign_up_description_title_page_block|safe }}
+{% endblock %}
+
+{% block description_subtitle %}
+{{ sign_up_description_subtitle_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_title %}
+{{ sign_up_sidebar_title_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_content %}
+{{ sign_up_sidebar_page_block|safe }}
+{% endblock %}
+
+{% block main_title %}
+{{ sign_up_main_title_page_block|safe }}
+{% endblock %}
+
+{% block main_content %}
+      <link rel="stylesheet" href="stylesheets/messi.css">
+		<script>
+
+		function isValidEmailAddress(emailAddress) {
+		  var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+		  // alert( pattern.test(emailAddress) );
+		  return pattern.test(emailAddress);
+		};
+
+		  
+		  function checkEach() {
+		  var txt=document.getElementById("javascript_form_errors");
+		  txt.innerHTML="";
+		  
+		  properties_dictionary = { 
+		    choose_event: "You must select an event from the drop down list",
+		    first_name: "You must fill out the first name field in Primary Contact",
+		    last_name: "You must fill out the last name field in Primary Contact",
+		    personal_email: "You must fill out the personal email field in Primary Contact",
+		    personal_phone: "You must fill out the personal phone field in Primary Contact",
+		    name: "You must fill out the name field in Organization Information",
+		    email: "You must fill out the email field in Organization Information",
+		    phone: "You must fill out the phone field in Organization Information",
+		    address: "You must fill out the address field in Organization Information",
+		    city: "You must fill out the city field in Organization Information",
+		    state: "You must fill out the state field in Organization Information",
+		    zip_code: "You must fill out the zip code field in Organization Information",
+		    url: "You must fill out the url field in Organization Information",
+
+
+
+		  }
+		  properties_array = ["first_name", "last_name", "personal_email", "personal_phone", "name"];
+		    errors_array = [];
+		    email_errors_array = [];
+		    
+		    var choose_event = $('#choose_event').val();
+		    if (choose_event == "choose") {
+		      errors_array.push("choose_event");
+		    }
+		    for (var i=0; i < properties_array.length; i ++) {
+		      var property = $('#' + properties_array[i]).val();
+		      if (property.length < 1) {
+		        errors_array.push(properties_array[i]);
+		      }
+		      
+		      if (properties_array[i] == "email" || properties_array[i] == "personal_email") {
+			if (isValidEmailAddress(property) == false) {
+			  email_errors_array.push(properties_array[i]);
+			}
+		      }
+		    }
+		    for (var k=0; k < errors_array.length; k++) {
+		       var txt=document.getElementById("javascript_form_errors");
+		       var innermyspan = document.getElementById("javascript_form_errors").innerHTML;
+
+			txt.innerHTML=innermyspan + '<p class="error">' + properties_dictionary[errors_array[k]] + '</p>';
+		    }
+		    
+		    console.log(email_errors_array);
+		     for (var j=0; j < email_errors_array.length; j++) {
+		       var txt=document.getElementById("javascript_form_errors");
+		       var innermyspan = document.getElementById("javascript_form_errors").innerHTML;
+
+			txt.innerHTML=innermyspan + '<p class="error">' + email_errors_array[j] + ' is not a proper email address</p>';
+		    }
+		    if (errors_array.length==0) {
+		    console.log("sending form");
+		    document.forms[0].submit();return false;
+		    console.log("form sent");
+		    }
+		  }
+		</script>
+{# show errors #}
+<div style="background-color:yellow;" id="javascript_form_errors">
+</div>
+</div>
+{% if errors %}
+<section id="errors">
+<div id="div_errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</div>
+</section>
+
+{% endif %}
+<div id="form_background">
+<div id="form">
+
+{{ sign_up_form_premable_page_block|safe }}
+
+
+
+<form method="POST" action="/signup">
+<p>Want to let us know about a new incident? Click <a href="/new_incident">here</a> and fill out a short pop up form.</p>
+<div name="select_div" id="select_div">
+
+{% if events_list %}
+  <h1>Choose a Disaster:</h1>
+  <select name="choose_event" id="choose_event">
+    <option value="choose">--Choose One--</option>
+    {% for result in events_list %}
+      <option value="{{result.key().id()}}">{{result.name}}</option>
+    {% endfor %}
+  </select>
+{% endif %}
+
+<a name="primary-contact"></a>
+<h2>Primary Contact<a href="#fn1"><sup>1</sup></a></h2>
+  <div><label>Your First Name</label>*: <input name="first_name" id="first_name" type="text" value=""></div>
+  <div><label>Your Last Name</label>*: <input name="last_name" id="last_name" type="text" value=""></div>
+  <div><label>Your email</label>*: <input name="personal_email" id="personal_email" type="text" value=""></div>
+  <div><label>Your phone</label>*: <input name="personal_phone" id="personal_phone" type="text" value=""></div>
+<h2>Organization Information<a href="#0.1_fn2"><sup>2</sup></a></h2>
+<a name="0.1_organization"></a>
+  <div><label>Organization Name</label>*: <input name="name" id="name" type="text" value=""></div>
+  <div><label>Organization Email</label>: <input name="email" id="email" type="text" value=""></div>
+  <div><label>Organization Phone Number</label>: <input name="phone" id="phone" type="text" value=""></div>
+  <div><label>Address</label>: <input name="address" id="address" type="text" value=""></div>
+  <div><label>City</label>: <input name="city" id="city" type="text" value=""></div>
+  <div><label>State</label>: <input name="state" id="state" type="text" value=""></div>
+  <div><label>Zip Code</label>: <input name="zip_code" id="zip_code" type="text" value=""></div>
+  <div><label>Organization URL</label>: <input name="url" id="url" type="text" value=""></div>
+  <div><label>Organization Twitter</label>: <input name="twitter" id="twitter" type="text" value=""></div>
+  <div><label>Facebook link</label>: <input name="facebook" id="facebook" type="text" value=""></div>
+  <div><label>Publish Organization Profile</label><a href="#0.1_fn3"><sup>3</sup></a>: <input name="publish" id="publish" type="checkbox" value="1"></div>
+    
+<h2>Qualifications</h2>
+  
+  <table>	<tr>
+		<td>
+			<input name="physical_presence" type="radio" value="1"> Yes<br>
+			<input name="physical_presence" type="radio" value="0"> No
+		</td>
+		<td>Does your organization have a physical presence in the affected area?</td>
+	</tr>
+	<tr>
+		<td> </td>
+		<td>If yes, areas you plan to work: <input name="work_area" type="text" value="" size="100">
+	</td></tr>
+
+	<tr>
+		<td>
+			<input name="voad_member" type="radio" value="1"> Yes<br>
+			<input name="voad_member" type="radio" value="0"> No
+		</td>
+		<td>Is your organization a non-profit member of National VOAD, a State VOAD or County VOAD/COAD?</td>
+	</tr>
+ 	<tr>
+		<td> </td>
+		<td>If yes, how can we best confirm? <input name="voad_referral" type="text" value="" size="100">
+	</td></tr>
+ 	<tr>
+		<td> </td>
+		<td>If no, can you refer us to someone who can vouch for your work? <input name="voad_referral" type="text" value="" size="70">
+	</td></tr>
+
+	<tr>
+		<td>
+			<input name="appropriate_work" type="radio" value="1"> Yes<br>
+			<input name="appropriate_work" type="radio" value="0"> No
+		</td>
+		<td>Does your organization do one or more of the following: Canvassing, Assessment, Debris Removal, Muck-outs/ Mud-outs, Tree Removal, Mold Abatement or Control, Rebuilding, or Refurbishing?
+		</td>
+	</tr>
+</table>
+<table>
+	<tr>
+		<td>
+  <a href="#" onclick="checkEach()" class="button button-icon icon icon-envelope">Signup</a>
+		</td>
+	</tr>
+
+</td></td></td></table></div></form>
+
+<hr>
+
+<h3>Explanations</h3>
+<a name="0.1_fn1"></a>
+<p><a href="#0.1_primary-contact"><sup>1</sup></a> <strong>Required</strong>. At least one Primary Contact is required for each organization.  Personal information will not be shared publicly, but will be shared with other organizations to assist with coordination in the your disaster(s).</p>
+<a name="0.1_fn2"></a>
+<p><a href="#0.1_organization"><sup>2</sup></a> <strong>Organization name and contact info is required</strong>. Please be as specific as possible. For example, rather than &quot;Americorps,&quot; choose &quot;Americorps Hudson County.&quot;  Your organization&#39;s name will be used internally and will have a public profile by default.</p>
+<a name="0.1_fn3"></a>
+<p><a href="#0.1_organization"><sup>3</sup></a> <strong>Organization profile information is optional</strong>. If you choose yes, your organization&#39;s address, phone number, website, and social media information you provide may be published on <a href="http://crisiscleanup.org" target="_blank">crisiscleanup.org</a> as a way for volunteers and others to contact your organization.</p>
+
+</div>
+</div>
+
+        
+   
+  
+      <p>
+        <span>CSS Junction © 2012 | HTML template released under CC License. <a href="#0.1_">Top</a></span>
+        <a href="http://home" target="_blank">HOME</a> | <a href="http://about" target="_blank">ABOUT</a> | <a href="http://public-map" target="_blank">PUBLIC MAP</a> | <a href="http://blog.crisiscleanup.org/" target="_blank">BLOG</a> | <a href="http://contact" target="_blank">CONTACT US</a> | <a href="http://signup" target="_blank">SIGN UP</a> | <a>ASSESSMENT FORM</a> | <a href="http://logout" target="_blank">LOG OUT</a> 
+      </p>
+  
+  
+  
+  
+</div>
+{% endblock %}

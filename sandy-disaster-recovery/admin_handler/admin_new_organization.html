@@ -23,31 +23,85 @@ This organization is awaiting approval
 
 {% block main_content %}
 {% if contact %}
-<p>Applicant Name: <a href="/admin-single-contact?contact={{contact.key().id()}}">{{ contact.first_name }} {{ contact.last_name }}</a></p>
-<p>Applicant Phone: {{ contact.phone }}</p>
-<p>Applicant Email: {{ contact.email }}</p>
+<table>
+<tr>
+<td>Applicant Name:</td>
+<td><a href="/admin-single-contact?contact={{contact.key().id()}}">{{ contact.first_name }} {{ contact.last_name }}</a></td>
+</tr>
+
+<tr>
+<td>Applicant Phone:</td>
+<td>{{ contact.phone }}</td>
+</tr>
+
+<tr>
+<td>Applicant Email:</td>
+<td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
+</tr>
+</table>
 <hr>
 {% endif %}
-<p>Incident: {{ new_organization.incident.name }}<p>
-<p>Name: {{ new_organization.name }}<p>
-<p>Email: {{ new_organization.email }}<p>
-<p>Phone: {{ new_organization.phone }}<p>
-<p>URL: {{ new_organization.url }}<p>
-<p>Twitter: {{ new_organization.twitter }}<p>
-<p>Facebook: {{ new_organization.facebook }}<p>
-<p>Organization: {{ new_organization.name }}<p>
-<p>Address: {{ new_organization.address }}<p>
-<p>City: {{ new_organization.city }}<p>
-<p>State: {{ new_organization.state }}<p>
-<p>Zip Code: {{ new_organization.zip_code }}<p>
-<p>Physical Presence: {{ new_organization.physical_presence }}<p>
-<p>Work Area: {{ new_organization.work_area }}<p>
-<p>Voad Member: {{ new_organization.voad_member }}<p>
-<p>Voad Referrals: {{ new_organization.voad_referral }}</p>
-<p>Appropriate Work: {{ new_organization.appropriate_work }}</p>
-<p>Publish Info: {{ new_organization.publish }}</p>
+<table>
+<tr>
+<td>Incident:</td>
+<td><strong>{{ new_organization.incident.name }}</strong></td>
+</tr>
 
-<p><strong>Password:  {{ new_organization.password }}</p>
+<tr>
+<td>Organization:</td>
+<td><a href="{{ new_organization.url }}">{{ new_organization.name }}</a></td>
+</tr>
+
+<tr>
+<td>Org Email:</td>
+<td><a href="mailto:{{ new_organization.email }}">{{ new_organization.email }}</a></td>
+</tr>
+
+<tr>
+<td>Org Phone:</td>
+<td>{{ new_organization.phone }}</td>
+</tr>
+
+<tr>
+<td>Twitter:</td>
+<td>{{ new_organization.twitter }}</td>
+</tr>
+
+<tr>
+<td>Facebook:</td>
+<td><a href="{{ new_organization.facebook }}">{{ new_organization.facebook }}</a></td>
+</tr>
+
+<tr>
+<td>Address:</td>
+<td>{{ new_organization.address }}, {{ new_organization.city }}, {{ new_organization.state }}  {{ new_organization.zip_code }}</td>
+</tr>
+
+<tr>
+<td>Physical Presence:</td>
+<td><strong>{{ new_organization.physical_presence }}</strong> <em>({{ new_organization.work_area }})</em></td>
+</tr>
+
+<tr>
+<td>VOAD Member:</td>
+<td><strong>{{ new_organization.voad_member }}</strong>. Referral: {{ new_organization.voad_referral }}</td>
+</tr>
+
+<tr>
+<td>Appropriate Work:</td>
+<td><strong>{{ new_organization.appropriate_work }}</strong></td>
+</tr>
+
+<tr>
+<td>Publish Info:</td>
+<td>{{ new_organization.publish }}</td>
+</tr>
+
+<tr>
+<td><strong>Password:</strong></td>
+<td><strong>{{ new_organization.password }}</strong></td>
+</tr>
+</table>
 
 {% if form %}
   (this cannot be undone)

@@ -123,9 +123,19 @@ Object.keys(post_json).forEach(function(key) {
 
 {% endif %}
 </script>
+  <script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	  ga('create', 'UA-42924421-1', 'crisiscleanup.org');
+	  ga('send', 'pageview');
+	
+  </script>
 </head>
 
-<body onload="sandy.form.Initialize()">
+<body onLoad="sandy.form.Initialize()">
 
 <div id="form_background">
 <div id="form">
@@ -147,7 +157,7 @@ Object.keys(post_json).forEach(function(key) {
     <h1>Possible Duplicate</h1>
     <p>It looks like {{ similar_site.name }} ({{ similar_site.address }}) is already in the system.</p>
     <p><a href="/edit?id={{ similar_site.key().id() }}" target="_new_duplicate">Click here to open exisiting work order (in a new tab)</a></p>
-    <input type="submit" onclick="document.getElementById('ignore_similar').checked=true;" value="Ignore &amp; Save">
+    <input type="submit" onClick="document.getElementById('ignore_similar').checked=true;" value="Ignore &amp; Save">
   </section>
 {% endif %}
 

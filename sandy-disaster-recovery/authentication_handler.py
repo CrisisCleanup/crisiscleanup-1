@@ -53,9 +53,9 @@ def GetOrganizationForm(post_data):
   event_key = None
   if events.count() == 0:
     logging.warning("Initialize called")
-    e = event_db.Event(name = event_db.DefaultEventName(),
+    e = event_db.Event(name = "North Central Victorian Floods",
                        case_label = "A",
-                       short_name = "sandy")
+                       short_name = "ncv_floods")
     e.put()
     event_key = e.key()
     # TODO(Jeremy): This could be dangerous if we reset events.

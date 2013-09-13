@@ -1,0 +1,35 @@
+{% extends "base_template.html" %}
+
+
+{% block body_title_block %}
+Title
+{% endblock %}
+
+{% block main_content %}
+Make sure that your CSV has these categories. Only the categories listed below will be saved.
+<ul>
+<li>site_name</li>
+<li>address</li>
+<li>borough</li>
+<li>program</li>
+<li>program_type</li>
+<li>agency</li>
+<li>age_group</li>
+<li>contact_number</li>
+</ul>
+<br/>
+<form action="/import-co-flood-handler" method="POST" enctype="multipart/form-data">
+<label for="file" class="label">Upload File:</label><br/>
+<input type="file" class="submit" name="file"><br/><br/>
+<input type="submit" class="submit_decorator" name="submit" value="Import">
+</form>
+{% endblock %}
+
+{% block sidebar_title %}
+Sidebar title
+{% endblock %}
+
+
+{% block sidebar_content %}
+Sidebar content
+{% endblock %}

@@ -1,4 +1,4 @@
-    #!/usr/bin/env python
+#!/usr/bin/env python
 #
 # Copyright 2012 Jeremy Pack
 #
@@ -35,28 +35,27 @@ import event_db
 import key
 import organization
 import site_db
+import page_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('authentication.html')
 
 def GetOrganizationForm(post_data):
-  #organizations = organization.GetAllCached()
-  organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True")# WHERE organization = :1 LIMIT 1", obj.key())
-  events = event_db.GetAllCached()
   e = event_db.Event(name = "Test Incident",
   case_label = "B",
-  counties = ["Middlesex"]
-  )
-  event_db.PutAndCache(e, 600)  
-  print 98
-  events = db.GqlQuery("SELECT * From Event")
+  counties = ["Kings"])
+  query_string = "SELECT * FROM Organization WHERE is_active = True ORDER BY name"
+  organizations = db.GqlQuery(query_string)
+  events = event_db.GetAllCached()
+  events = db.GqlQuery("SELECT * From Event ORDER BY created_date DESC")
   dirty = False
   event_key = None
   if events.count() == 0:
     logging.warning("Initialize called")
-    e = event_db.Event(name = event_db.DefaultEventName(),
-                       case_label = "A")
+    e = event_db.Event(name = "Demo",
+                       case_label = "A",
+                       short_name = "demo")
     e.put()
     event_key = e.key()
     # TODO(Jeremy): This could be dangerous if we reset events.
@@ -72,7 +71,7 @@ def GetOrganizationForm(post_data):
     # addresses we want to allow.
     default = organization.Organization(name = "Admin", password = "temporary_password", org_verified=True, is_active=True, is_admin=True, incident = event_key)
     default.put()
-    organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True")# WHERE organization = :1 LIMIT 1", obj.key())
+    organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True ORDER BY name")# WHERE organization = :1 LIMIT 1", obj.key())
   elif organizations.count() >= 2:
     modified = []
     for o in organizations:
@@ -107,14 +106,16 @@ class AuthenticationHandler(base.RequestHandler):
   def get(self):
     org, event = key.CheckAuthorization(self.request)
     if org and event:
-      self.redirect(self.request.get('destination', default_value='/'))
+      self.redirect(urllib.unquote(self.request.get('destination', default_value='/')).encode('ascii'))
       return
 
-    self.response.out.write(template.render({
+    template_params = page_db.get_page_block_dict()
+    template_params.update({
       "form" : GetOrganizationForm(self.request.POST),
       "destination" : self.request.get('destination', default_value='/'),
       "page" : "/authentication",
-    }))
+    })
+    self.response.out.write(template.render(template_params))
 
   def post(self):
     now = datetime.datetime.now()

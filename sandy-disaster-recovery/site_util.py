@@ -18,6 +18,7 @@
 from google.appengine.ext.db import Query
 # Local libraries.
 import site_db
+import logging
 
 # TODO(Jeremy): Deprecate this once we move to server-side
 # filter generation.
@@ -33,6 +34,20 @@ def SitesFromIds(comma_separated_ids, event):
     except:
       return None
     return [site[0] for site in site_db.GetAllCached(event, ids = ids)]
+
+def BatchSitesFromIds(event):
+  logging.debug("BatchSitesFromIds")
+  """Given a string of ids, like "1,2,3", returns corresponding Site objects.
+  If comma_separated_ids is empty, returns all sites.
+  """
+  q = Query(model_class = site_db.Site)
+  q.filter('event = ', event)
+  sites = q.run(limit=1000, offset = 4000)
+
+  
+  return sites
+  
+
 
 
 #  copied from http://wiki.python.org/moin/EscapingHtml

@@ -43,6 +43,7 @@ import update_handler
 import update_event_handler
 import welcome_handler
 import organization_ajax_handler
+import export_all_handler
 from admin_handler import admin_handler
 import organization_info_handler
 import organization_settings_handler
@@ -60,6 +61,7 @@ import contact_handler
 import public_map_handler
 import public_map_ajax_handler
 import get_event_ajax_handler
+import import_co_handler
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
@@ -130,6 +132,7 @@ app = webapp2.WSGIApplication([
     Route(r'/authentication', authentication_handler.AuthenticationHandler,
           'auth'),
     Route(r'/export', export_handler.ExportHandler, 'export'),
+    Route(r'/export_all', export_all_handler.ExportAllHandler, 'export_all'),
     Route(r'/get_event_ajax', get_event_ajax_handler.GetEventAjaxHandler, 'get_event_ajax'),
 
     Route(r'/logout', LogoutHandler, 'logout'),
@@ -176,6 +179,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-create-incident-csv', admin_create_incident_csv_handler.AdminCreateIncidentCSVHandler, 'admin_edit_pages_handler'),
 
     Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'),
+    Route(r'/import-co-flood-handler', import_co_handler.ImportCOHandler, 'import-co-flood'),
 
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),

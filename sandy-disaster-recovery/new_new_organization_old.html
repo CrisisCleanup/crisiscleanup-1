@@ -93,7 +93,7 @@ class="activePage"
 		    }
 		    if (errors_array.length==0) {
 		    console.log("sending form");
-		    document.forms[0].submit();return false;
+		    document.forms[0].submit();
 		    console.log("form sent");
 		    }
 		  }
@@ -164,49 +164,91 @@ class="activePage"
     
 <h2>Qualifications</h2>
   
-  <table>	<tr>
-		<td>
-			<input name="physical_presence" type="radio" value="1"> Yes<br>
-			<input name="physical_presence" type="radio" value="0"> No
-		</td>
-		<td>Does your organization have a physical presence in the affected area?</td>
-	</tr>
-	<tr>
-		<td> </td>
-		<td>If yes, areas you plan to work: <input name="work_area" type="text" value="" size="100">
-	</td></tr>
-
-	<tr>
-		<td>
-			<input name="voad_member" type="radio" value="1"> Yes<br>
-			<input name="voad_member" type="radio" value="0"> No
-		</td>
-		<td>Is your organization a non-profit member of National VOAD, a State VOAD or County VOAD/COAD?</td>
-	</tr>
- 	<tr>
-		<td> </td>
-		<td>If yes, how can we best confirm? <input name="voad_referral" type="text" value="" size="100">
-	</td></tr>
- 	<tr>
-		<td> </td>
-		<td>If no, can you refer us to someone who can vouch for your work? <input name="voad_referral" type="text" value="" size="70">
-	</td></tr>
-
-	<tr>
-		<td>
-			<input name="appropriate_work" type="radio" value="1"> Yes<br>
-			<input name="appropriate_work" type="radio" value="0"> No
-		</td>
-		<td>Does your organization do one or more of the following: Canvassing, Assessment, Debris Removal, Muck-outs/ Mud-outs, Tree Removal, Mold Abatement or Control, Rebuilding, or Refurbishing?
-		</td>
-	</tr>
-</table>
-<table>
-	<tr>
-		<td>
+  <table>	<tr>
+
+		<td>
+
+			<input name="physical_presence" type="radio" value="1"> Yes<br>
+
+			<input name="physical_presence" type="radio" value="0"> No
+
+		</td>
+
+		<td>Does your organization have a physical presence in the affected area?</td>
+
+	</tr>
+
+	<tr>
+
+		<td> </td>
+
+		<td>If yes, areas you plan to work: <input name="work_area" type="text" value="" size="100">
+
+	</td></tr>
+
+
+
+	<tr>
+
+		<td>
+
+			<input name="voad_member" type="radio" value="1"> Yes<br>
+
+			<input name="voad_member" type="radio" value="0"> No
+
+		</td>
+
+		<td>Is your organization a non-profit member of National VOAD, a State VOAD or County VOAD/COAD?</td>
+
+	</tr>
+
+ 	<tr>
+
+		<td> </td>
+
+		<td>If yes, how can we best confirm? <input name="voad_referral" type="text" value="" size="100">
+
+	</td></tr>
+
+ 	<tr>
+
+		<td> </td>
+
+		<td>If no, can you refer us to someone who can vouch for your work? <input name="voad_referral" type="text" value="" size="70">
+
+	</td></tr>
+
+
+
+	<tr>
+
+		<td>
+
+			<input name="appropriate_work" type="radio" value="1"> Yes<br>
+
+			<input name="appropriate_work" type="radio" value="0"> No
+
+		</td>
+
+		<td>Does your organization do one or more of the following: Canvassing, Assessment, Debris Removal, Muck-outs/ Mud-outs, Tree Removal, Mold Abatement or Control, Rebuilding, or Refurbishing?
+
+		</td>
+
+	</tr>
+
+</table>
+
+<table>
+
+	<tr>
+
+		<td>
+
   <a href="#" onclick="checkEach()" class="button button-icon icon icon-envelope">Signup</a>
-		</td>
-	</tr>
+		</td>
+
+	</tr>
+
 
 </td></td></td></table></div></form>
 

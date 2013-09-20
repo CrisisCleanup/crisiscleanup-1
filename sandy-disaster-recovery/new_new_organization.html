@@ -93,7 +93,8 @@ class="activePage"
 		    }
 		    if (errors_array.length==0) {
 		    console.log("sending form");
-		    document.forms[0].submit();
+		    document.getElementById("signup_form").submit();
+
 		    console.log("form sent");
 		    }
 		  }
@@ -128,7 +129,7 @@ class="activePage"
 
 
 
-<form method="POST" action="/signup">
+<form id="signup_form" method="POST" action="/signup">
 <p><a href="/contact">Contact Us</a> to request a new Incident.</p>
 <div name="select_div" id="select_div">
 

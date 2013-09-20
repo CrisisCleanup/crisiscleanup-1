@@ -3,7 +3,7 @@
 <html>
 
 <head>
-<title>Collaborative Disaster Recovery Work Order System: Enter a Work Order.</title>
+<title>Crisis Cleanup</title>
 <link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
 <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
@@ -37,6 +37,7 @@ var oFormObject = document.forms['form'];
 
 Object.keys(post_json).forEach(function(key) {
     var this_element = document.getElementById(key);
+//     alert(this_element);
 //     console.log(this_element);
     if (key == "priority") {
       var which_button = null;
@@ -109,7 +110,7 @@ Object.keys(post_json).forEach(function(key) {
     }
   catch(err)
     {
-//       console.log("ERROR, ELEMENT = " + key + err);
+      console.log("ERROR, ELEMENT = " + key + err + err.message);
       
     }
 

@@ -31,7 +31,7 @@ class Organization(db.Expando):
   # We store passwords in plain text, because we want to
   # set the passwords ourselves, and may need to be able
   # to retrieve them for an organization.
-  password = db.StringProperty(default=random_password.generate_password())
+  password = db.StringProperty()
   primary_contact_email = db.StringProperty(default = '') # DEPRECATED - to be removed
   # If set, then only session cookies are sent to the
   # user's browser. Otherwise, they'll receive cookies that

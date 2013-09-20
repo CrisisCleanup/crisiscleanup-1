@@ -210,7 +210,7 @@ class EditHandler(base.AuthenticatedHandler):
       lng_string = lng_string[:decimal_index]
       logging.debug(lng_string)
 
-    lng_float = float(lng_string)
+    #lng_float = float(lng_string)
 
     #data.latitude.data = lat_float
     #data.longitude.data = lng_float

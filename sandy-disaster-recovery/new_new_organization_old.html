@@ -93,7 +93,7 @@ class="activePage"
 		    }
 		    if (errors_array.length==0) {
 		    console.log("sending form");
-		    document.forms[0].submit();
+		    document.getElementById("signup_form").submit();
 		    console.log("form sent");
 		    }
 		  }
@@ -128,7 +128,7 @@ class="activePage"
 
 
 
-<form method="POST" action="/signup">
+<form id="signup_form" method="POST" action="/signup">
 <p>Want to let us know about a new incident? Click <a href="/new_incident">here</a> and fill out a short pop up form.</p>
 <div name="select_div" id="select_div">
 

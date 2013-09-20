@@ -77,7 +77,9 @@ class MapHandler(base.RequestHandler):
           "filters" : filters,
           "demo" : False,
           "zoom_level" : zoom_level,
-          "site_id" :  site_id
+          "site_id" :  site_id,
+	  "event_name": event.name,
+
         })
     else:
       # TODO(Jeremy): Temporary code until this handler scales.

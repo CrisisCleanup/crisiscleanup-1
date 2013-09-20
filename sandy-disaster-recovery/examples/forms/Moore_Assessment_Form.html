@@ -1,0 +1,510 @@
+<!-- 2013-07-03 3:30pm -->
+<p>The Moore, OK Waiting List will alert volunteer organizations in your area that survivors need assistance. Each organization is responsible for obtaining consent.  As the need is so great, we cannot guarantee help, and we do not know how long a person might need to wait before an organization helps. Everyone is working as hard as they can.</p>
+	<h2>Property and Personal Information</h2>
+	<table>
+	<tr><td class=question>Resident name: <span class=required-asterisk>*</span></td>
+	<td class="answer">
+	  <div class="form_field">
+	    <input class="" id="name" name="name" type="text" value="" />
+	  </div>
+	</td></tr>
+	<tr><td class=question>Date of Request:</td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" id="request_date" name="request_date" type="text" value="" />
+	  </div>
+	</td></tr>
+	<tr><td class=question>Street Address:<span class=required-asterisk>*</span></td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" id="address" name="address" type="text" value="" />
+	  </div>
+	</td></tr>
+	<tr><td class=question>City:<span class=required-asterisk>*</span></td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" id="city" name="city" type="text" value="" />
+	  </div>
+	<div id=citySuggestion></div></td></tr>
+	<tr><td class=question>County:</td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" id="county" name="county" type="text" value="" />
+	  </div>
+	<div id=countySuggestion></div></td></tr>
+	<tr><td class=question>State:<span class=required-asterisk>*</span></td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" id="state" name="state" type="text" value="" />
+	  </div>
+	<div id=stateSuggestion></div></td></tr>
+	<tr><td class=question>Zip Code:</td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" id="zip_code" name="zip_code" type="text" value="" />
+	  </div>
+	<div id=zipCodeSuggestion></div></td></tr>
+	<tr>
+	  <td class=question>
+	    Latitude:
+	    <small>(<a href="#" onclick="document.getElementById('latitude').readOnly=false; document.getElementById('latitude').focus(); return false;">edit</a>)</small>
+	  </td>
+	  <td class="answer">
+	  <div class="form_field">
+	    <input class="" id="latitude" name="latitude" readonly type="text" value="" />
+	  </div>
+	</td>
+	</tr>
+	<tr>
+	  <td class=question>
+	    Longitude:
+	    <small>(<a href="#" onclick="document.getElementById('longitude').readOnly=false; document.getElementById('longitude').focus(); return false">edit</a>)</small>
+	  </td>
+	  <td class="answer">
+	  <div class="form_field">
+	    <input class="" id="longitude" name="longitude" readonly type="text" value="" />
+	  </div>
+	</td>
+	</tr>
+	<tr><td class=question>Cross Street or Nearby Landmark:</td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" id="cross_street" name="cross_street" type="text" value="" />
+	  </div>
+	</td></tr>
+	<tr><td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" id="phone1" name="phone1" type="text" value="" />
+	  </div>
+	  <div class="form_field">
+	    <input class="" id="phone2" name="phone2" type="text" value="" />
+	  </div>
+	</td></tr>
+	<tr><td class=question>Best time to call:</td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" id="time_to_call" name="time_to_call" type="text" value="" />
+	  </div>
+	</td></tr>
+	<tr><td class=question>Primary help needed:<span class=required-asterisk>*</span></td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <select class="" id="work_type" name="work_type"><option value="" />--Choose One--</option><option value="Tarp">Tarp</option><option value="Trees">Trees</option><option value="Debris">Debris Removal</option><option value="Fence">Fencing</option><option value="Tornado">Tornado</option><option value="Other">Other</option></select>
+	  </div>
+	</td></tr>
+	<tr><td class=question>Property Affected</td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" name="house_affected" type="hidden" value="n" /> <input class="" id="house_affected" name="house_affected" type="checkbox" value="y"> <label for="house_affected">House</label><br />
+        <input class="" name="outbuilding_affected" type="hidden" value="n" /><input class="" id="outbuilding_affected" name="outbuilding_affected" type="checkbox" value="y"> <label for="outbuilding_affected">Outbuilding</label><br />
+        <input class="" name="exterior_property_affected" type="hidden" value="n" /><input class="" id="exterior_property_affected" name="exterior_property_affected" type="checkbox" value="y"> <label for="exterior_property_affected">Exterior</label>
+	  </div>
+	</td></tr>
+
+	<tr><td class=question>Rent/Own/Public</td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <select class="" id="rent_or_own" name="rent_or_own"><option value="" />--Choose One--</option><option value="Rent">Rent</option><option value="Own">Own</option><option value="Public Land">Public Land</option><option value="Non-Profit">Non-Profit</option><option value="Business">Business</option></select>
+	  </div>
+	</td></tr>
+	<tr><td class=question><label for="work_without_resident">Work without resident present?</label></td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" name="work_without_resident" type="hidden" value="n" /><input class="" id="work_without_resident" name="work_without_resident" type="checkbox" value="y">
+	  </div>
+	</td></tr>
+	<tr><td class=question><label for="member_of_assessing_organization">Member of your organization:</label></td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" name="member_of_assessing_organization" type="hidden" value="n" /><input class="" id="member_of_assessing_organization" name="member_of_assessing_organization" type="checkbox" value="y">
+	  </div>
+	</td></tr>
+	<tr><td class=question><label for="first_responder">First Responder:</label></td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" name="first_responder" type="hidden" value="n" /><input class="" id="first_responder" name="first_responder" type="checkbox" value="y">
+	  </div>
+	</td></tr>
+	<tr><td class=question><label for="older_than_60">Older than 60:</label></td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <input class="" name="older_than_60" type="hidden" value="n" /><input class="" id="older_than_60" name="older_than_60" type="checkbox" value="y">
+	  </div>
+	</td></tr>
+	<tr><td class=question>Special needs:</td>
+	<td class="answer"> 
+	  <div class="form_field">
+	    <textarea class="" id="special_needs" name="special_needs"></textarea>
+	  </div>
+	</td></tr>
+	<tr><td class=question>Priority:</td>
+	<td class="answer">
+	<table>
+	<tr><td>Low (5)</td>
+
+	<td><input id="priority-0" name="priority" type="radio" value="5"></td>
+
+	<td><input id="priority-1" name="priority" type="radio" value="4"></td>
+
+	<td><input checked id="priority-2" name="priority" type="radio" value="3"></td>
+
+	<td><input id="priority-3" name="priority" type="radio" value="2"></td>
+
+	<td><input id="priority-4" name="priority" type="radio" value="1"></td>
+
+	<td>(1) High</td></tr></table>
+
+	</td></tr>
+
+	<tr><td class=question>Level of Destruction:</td>
+	<td class="answer">
+	<table>
+	<tr><td>Minor</td>
+
+	<td><input checked id="destruction_level-0" name="destruction_level" type="radio" value="Low"></td>
+
+	<td><input id="destruction_level-1" name="destruction_level" type="radio" value="Medium"></td>
+
+	<td><input id="destruction_level-2" name="destruction_level" type="radio" value="High"></td>
+
+	<td><input id="destruction_level-3" name="destruction_level" type="radio" value="Very High"></td>
+
+	<td><input id="destruction_level-4" name="destruction_level" type="radio" value="Complete"></td>
+
+	<td>Complete</td></tr></table>
+
+	</td></tr>
+
+
+	</table>
+	<br>
+
+	<h2 style="page-break-before:always;">Work</h2>
+
+
+<h3>Tarping</h3>
+<table>
+<tr><td class=question>Roof Damage:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+ 
+ 	    <input class="" name="house_roof_damage" type="hidden" value="n" /><input class="" id="house_roof_damage" name="house_roof_damage" type="checkbox" value="y"> <label for="house_roof_damage">House</label> | <input class="" name="outbuilding_roof_damage" type="hidden" value="n" /><input class="" id="outbuilding_roof_damage" name="outbuilding_roof_damage" type="checkbox" value="y"> <label for="outbuilding_roof_damage">Outbuilding</label>
+  </div>
+</td></tr>
+<tr><td class=question>Number of 20' x 30'Tarps Needed:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="tarps_needed" name="tarps_needed" type="text" value="">
+  </div>
+</td></tr>
+<tr><td class=question><label for="help_install_tarp">Need Help Installing</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="help_install_tarp" type="hidden" value="n" /><input class="" id="help_install_tarp" name="help_install_tarp" type="checkbox" value="y">
+  </div>
+</td></tr>
+</table>
+
+<h3>Tree Work</h3>
+<table>
+<tr><td class=question>Number of trees down:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <select class="" id="num_trees_down" name="num_trees_down"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5+</option></select>
+  </div>
+</td></tr>
+<tr><td class=question>Number of trees wider than 18 inches:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <select class="" id="num_wide_trees" name="num_wide_trees"><option selected value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5+</option></select>
+  </div>
+</td></tr>
+</table>
+
+<h3>Debris and Demolition</h3>
+<table>
+<tr><td class=question><label for="interior_debris_removal">Interior Debris</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="interior_debris_removal" type="hidden" value="n" /><input class="" id="interior_debris_removal" name="interior_debris_removal" type="checkbox" value="y"> 
+  </div>
+</td></tr>
+<tr><td class=question><label for="nonvegitative_debris_removal">Non-Vegitative/Structural Debris</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+     <input class="" name="nonvegitative_debris_removal" type="hidden" value="n" /><input class="" id="nonvegitative_debris_removal" name="nonvegitative_debris_removal" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question><label for="vegitative_debris_removal">Vegitative Debris</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="vegitative_debris_removal" type="hidden" value="n" /><input class="" id="vegitative_debris_removal" name="vegitative_debris_removal" type="checkbox" value="y"> 
+    
+  </div>
+</td></tr>
+
+<tr><td class=question><label for="unsalvageable_structure">Unsalvageable Structure</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="unsalvageable_structure" type="hidden" value="n" /><input class="" id="unsalvageable_structure" name="unsalvageable_structure" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question><label for="heavy_machinary_required">Heavy Machinary Needed</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="heavy_machinary_required" type="hidden" value="n" /><input class="" id="heavy_machinary_required" name="heavy_machinary_required" type="checkbox" value="y">
+  </div>
+</td></tr>
+</table>
+
+
+<h3>Fencing</h3>
+<table>
+<tr><td class=question>Length of Damaged Fencing (feet):</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="damaged_fence_length" name="damaged_fence_length" type="text" value="">
+  </div>
+</td></tr>
+<tr><td class=question>Type of Fence:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="fence_type" name="fence_type" type="text" value="" />
+  </div>
+</td></tr>
+<tr><td class=question>Fencing Notes:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="fence_notes" name="fence_notes" type="text" value="" />
+  </div>
+</td></tr>
+</table>
+
+
+<h3>Notes</h3>
+<table>
+<tr><td class=question>Notes:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <textarea class="" id="notes" name="notes"></textarea>
+  </div>
+</td></tr>
+</table>
+
+<h2>Hazards</h2>
+<table>
+<tr><td class=question><label for="habitable">Is the home habitable:</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="habitable" type="hidden" value="n" /><input checked class="" id="habitable" name="habitable" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question><label for="electricity">Power on:</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="electricity" type="hidden" value="n" /><input class="" id="electricity" name="electricity" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question><label for="electrical_lines">Downed Wires on Property:</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="electrical_lines" type="hidden" value="n" /><input class="" id="electrical_lines" name="electrical_lines" type="checkbox" value="y">
+  </div>
+</td></tr>
+<tr><td class=question><label for="unsafe_roof">Unsafe Roof:</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="unsafe_roof" type="hidden" value="n" /><input class="" id="unsafe_roof" name="unsafe_roof" type="checkbox" value="y">
+  </div>
+</td></tr>
+
+<tr><td class=question><label for="unrestrained_animals">Unrestrained Animals:</label></td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" name="unrestrained_animals" type="hidden" value="n" /><input class="" id="unrestrained_animals" name="unrestrained_animals" type="checkbox" value="y">
+  </div>
+</td></tr>
+
+<tr><td class=question>Other Hazards:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <textarea class="" id="other_hazards" name="other_hazards"></textarea>
+  </div>
+</td></tr>
+</table>
+
+
+<h2>Claim, Status and Report</h2>
+<table>
+<tr><td class=question>Claim:</td>
+<td class="answer"><input class="" name="claim_for_org" type="hidden" value="n" /><input type=checkbox id="claim_for_org" name="claim_for_org" value="y" /></td></tr>
+<tr><td class=question>Current Status:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <select class="" id="status" name="status"><option selected value="Open, unassigned">Open, unassigned</option><option value="Open, assigned">Open, assigned</option><option value="Open, partially completed">Open, partially completed</option><option value="Open, needs follow-up">Open, needs follow-up</option><option value="Closed, completed">Closed, completed</option><option value="Closed, incomplete">Closed, incomplete</option><option value="Closed, out of scope">Closed, out of scope</option><option value="Closed, done by others">Closed, done by others</option><option value="Closed, no help wanted">Closed, no help wanted</option><option value="Closed, rejected">Closed, rejected</option><option value="Closed, duplicate">Closed, duplicate</option></select>
+  </div>
+</td></tr>
+<tr id="assigned_to_row" class="hide">
+  <td class="question">Assigned To:</td>
+  <td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="assigned_to" name="assigned_to" type="text" value="" />
+  </div>
+</td>
+</tr>
+<tr><td class=question>Volunteers:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="total_volunteers" name="total_volunteers" type="text" value="">
+  </div>
+</td></tr>
+<tr><td class=question>Hours per volunteer:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="hours_worked_per_volunteer" name="hours_worked_per_volunteer" type="text" value="">
+  </div>
+</td></tr>
+<tr><td class=question>Initials of resident present during work:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="initials_of_resident_present" name="initials_of_resident_present" type="text" value="" />
+  </div>
+</td></tr>
+<tr><td class=question>Status notes:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <textarea class="" id="status_notes" name="status_notes"></textarea>
+  </div>
+</td></tr>
+</table>
+
+
+<h2>Other Information</h2>
+<table>
+<tr><td class=question>Prepared by:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="prepared_by" name="prepared_by" type="text" value="" />
+  </div>
+</td></tr>
+<tr><td class=question>Do not work before:</td>
+<td class="answer"> 
+  
+    
+  
+
+  <div class="form_field">
+    <input class="" id="do_not_work_before" name="do_not_work_before" type="text" value="" />
+  </div>
+</td></tr>
+</table>
+

@@ -317,49 +317,33 @@ class AdminHandler(base.AuthenticatedHandler):
             return
             
         if self.request.get("edit_org"):
-            data = organization.OrganizationEditForm(self.request.POST)
-            if data.validate():
-                try:
-                    id = int(self.request.get("edit_org"))
-                except:
-                    self.response.set_status(400)
-                    return
-                org_by_id = organization.Organization.get(db.Key.from_path('Organization', id))
-                org_by_id.name = data.name.data
-                org_by_id.org_verified = bool(data.org_verified.data)
-                org_by_id.is_active = bool(data.is_active.data)
-                org_by_id.email = data.email.data
-                org_by_id.phone = data.phone.data
-                org_by_id.address = data.address.data
-                org_by_id.city = data.city.data
-                org_by_id.state = data.state.data
-                org_by_id.zip_code = data.zip_code.data
-                org_by_id.twitter = data.twitter.data
-                org_by_id.facebook = data.facebook.data
-                org_by_id.url = data.url.data
-                org_by_id.physical_presence = bool(data.physical_presence.data)
-                org_by_id.number_volunteers = data.number_volunteers.data
-                org_by_id.voad_member = bool(data.voad_member.data)
-                org_by_id.voad_referral = data.voad_referral.data
-                org_by_id.work_area = data.work_area.data
-                org_by_id.voad_member_url = data.voad_member_url.data
+	    try:
+	      id = int(self.request.get("edit_org"))
+	    except:
+	      self.response.set_status(400)
+	      return
+	    org_by_id = organization.Organization.get(db.Key.from_path('Organization', id))
+	    org_by_id.name = self.request.get("name")
+	    org_by_id.email = self.request.get("email")
+	    org_by_id.phone = self.request.get("phone")
+	    org_by_id.address = self.request.get("address")
+	    org_by_id.city = self.request.get("city")
+	    org_by_id.state = self.request.get("state")
+	    org_by_id.zip_code = self.request.get("zip_code")
+	    org_by_id.url = self.request.get("url")
+	    org_by_id.twitter = self.request.get("twitter")
+	    org_by_id.facebook = self.request.get("facebook")
+	    org_by_id.publish = bool(self.request.get("publish"))
+	    org_by_id.physical_presence = bool(self.request.get("physical_presence"))
+	    org_by_id.work_area = self.request.get("work_area")
+	    org_by_id.voad_member = bool(self.request.get("voad_member"))
+	    org_by_id.voad_referral = self.request.get("voad_referral")
+	    org_by_id.appropriate_work = bool(self.request.get("appropriate_work"))
 
-                # phase fields
-                for phase_field_name in org_by_id.get_phase_boolean_names():
-                    setattr(org_by_id, phase_field_name, bool(data[phase_field_name].data))
-
-                organization.PutAndCache(org_by_id, 600)
-                self.redirect("/admin")
-                return
-            else:
-                self.response.out.write(template.render(
-                {
-                    "edit_org": True,
-                    "form": data,
-                    "errors": data.errors,
-                    "org_id": int(self.request.get("edit_org")),
-                }))
-                return
+	    organization.PutAndCache(org_by_id, 600)
+	    self.redirect("/admin-single-organization?organization=" + self.request.get("edit_org"))
+	    return
+       
             
         
     def AuthenticatedGet(self, org, event):

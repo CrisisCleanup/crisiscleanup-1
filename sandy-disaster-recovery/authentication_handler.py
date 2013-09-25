@@ -128,7 +128,7 @@ class AuthenticationHandler(base.RequestHandler):
         event = e
     org = None
     for l in organization.Organization.gql(
-        "WHERE name = :name LIMIT 1", name = self.request.get("name")):
+        "WHERE name = :name AND incident = :incident LIMIT 1", name = self.request.get("name"), incident=event.key()):
     # when all orgs have incidents
     #for l in organization.Organization.gql(
             #"WHERE name = :name and incident = :event_key LIMIT 1", name = form.name.data, event_key = event.key()):

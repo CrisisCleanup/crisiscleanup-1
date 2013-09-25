@@ -53,9 +53,9 @@ def GetOrganizationForm(post_data):
   event_key = None
   if events.count() == 0:
     logging.warning("Initialize called")
-    e = event_db.Event(name = "Demo",
+    e = event_db.Event(name = "North Central Victorian Floods",
                        case_label = "A",
-                       short_name = "demo")
+                       short_name = "ncv_floods")
     e.put()
     event_key = e.key()
     # TODO(Jeremy): This could be dangerous if we reset events.
@@ -128,7 +128,7 @@ class AuthenticationHandler(base.RequestHandler):
         event = e
     org = None
     for l in organization.Organization.gql(
-        "WHERE name = :name LIMIT 1", name = self.request.get("name")):
+        "WHERE name = :name AND event = :event LIMIT 1", name = self.request.get("name"), event=event.key()):
     # when all orgs have incidents
     #for l in organization.Organization.gql(
             #"WHERE name = :name and incident = :event_key LIMIT 1", name = form.name.data, event_key = event.key()):

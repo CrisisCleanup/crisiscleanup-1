@@ -27,6 +27,7 @@
 <p>Zip Code: {{ organization.zip_code }}<p>
 <p>Physical Presence: {{ organization.physical_presence }}<p>
 <p>Work Area: {{ organization.work_area }}<p>
+<p>Number Of Volunteers: {{ organization.number_volunteers }}<p>
 <p>Voad Member: {{ organization.voad_member }}<p>
 <p>Voad Member urls: {{ organization.voad_member_url }}</p>
 <p>Voad Referrals: {{ organization.voad_referral }}</p>

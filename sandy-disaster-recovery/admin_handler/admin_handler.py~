@@ -219,7 +219,7 @@ class AdminHandler(base.AuthenticatedHandler):
                     contact.organization = org_key
                 contact.is_primary=bool(data.is_primary.data)
                 primary_contact_db.PutAndCache(contact, ten_minutes)
-                self.redirect("/admin-single-contact?contact=" + self.request.get("edit_contact_final"))
+                self.redirect("/admin-single-contact?contact=" + str(id))
                 return
             else:
                 try:

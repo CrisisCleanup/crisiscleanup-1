@@ -169,15 +169,24 @@ class FormHandler(base.AuthenticatedHandler):
 	      date_saved=False
 	      pass
 	    if date_saved is False:
-	      #try:
+	      try:
 	        v = v.replace("/", "-")
 		date_object = datetime.strptime(v, '%Y-%m-%d')
 		setattr(site, k, date_object)
 		date_saved=True
-	      #except:
-		#raise Exception("4")
-		#date_saved=False
-		#pass
+	      except:
+		date_saved=False
+		pass
+	    if date_saved is False:
+	      try:
+	        v = v.replace("/", "-")
+		date_object = datetime.strptime(v, '%m-%d-%Y')
+		setattr(site, k, date_object)
+		date_saved=True
+	      except:
+		date_saved=False
+		pass
+	      
 
 
 	  else:

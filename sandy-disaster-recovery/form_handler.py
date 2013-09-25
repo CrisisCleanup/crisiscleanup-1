@@ -160,8 +160,25 @@ class FormHandler(base.AuthenticatedHandler):
       for k, v in self.request.POST.iteritems():
 	if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
 	  if k == "request_date":
-	    date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
-	    setattr(site, k, date_object)
+	    date_saved = False
+	    try:
+	      date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
+	      setattr(site, k, date_object)
+	      date_saved=True
+	    except:
+	      date_saved=False
+	      pass
+	    if date_saved is False:
+	      #try:
+	        v = v.replace("/", "-")
+		date_object = datetime.strptime(v, '%Y-%m-%d')
+		setattr(site, k, date_object)
+		date_saved=True
+	      #except:
+		#raise Exception("4")
+		#date_saved=False
+		#pass
+
 
 	  else:
             setattr(site, k, v)

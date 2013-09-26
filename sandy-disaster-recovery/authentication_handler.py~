@@ -114,6 +114,7 @@ class AuthenticationHandler(base.RequestHandler):
       "form" : GetOrganizationForm(self.request.POST),
       "destination" : self.request.get('destination', default_value='/'),
       "page" : "/authentication",
+      "error_message": self.request.get("error_message")
     })
     self.response.out.write(template.render(template_params))
 
@@ -130,7 +131,7 @@ class AuthenticationHandler(base.RequestHandler):
     if (self.request.get("name") == "Admin"):
       
       for l in organization.Organization.gql(
-	  "WHERE name = :name AND incident = :incident LIMIT 1", name = self.request.get("name"), incident=event.key()):
+	  "WHERE name = :name LIMIT 1", name = self.request.get("name")):
       # when all orgs have incidents
       #for l in organization.Organization.gql(
 	      #"WHERE name = :name and incident = :event_key LIMIT 1", name = form.name.data, event_key = event.key()):

@@ -114,6 +114,7 @@ class AuthenticationHandler(base.RequestHandler):
       "form" : GetOrganizationForm(self.request.POST),
       "destination" : self.request.get('destination', default_value='/'),
       "page" : "/authentication",
+      "error_message": self.request.get("error_message")
     })
     self.response.out.write(template.render(template_params))
 
@@ -165,4 +166,4 @@ class AuthenticationHandler(base.RequestHandler):
                                        selected_key.getCookie(org, event))
       self.redirect(urllib.unquote(self.request.get('destination', default_value='/').encode('ascii')))
     else:
-      self.redirect(self.request.url)
+      self.redirect(self.request.url + "?error_message=Incorrect Organization and Passcode Combination")

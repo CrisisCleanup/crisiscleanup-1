@@ -341,7 +341,7 @@ class AdminHandler(base.AuthenticatedHandler):
 	    org_by_id.appropriate_work = bool(self.request.get("appropriate_work"))
 
 	    organization.PutAndCache(org_by_id, 600)
-	    self.redirect("/admin-single-organization?organization=" + )
+	    self.redirect("/admin-single-organization?organization=" + self.request.get("edit_org"))
 	    return
        
             

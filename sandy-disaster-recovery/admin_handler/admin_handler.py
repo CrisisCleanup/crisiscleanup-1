@@ -204,7 +204,7 @@ class AdminHandler(base.AuthenticatedHandler):
                         return
             ###########################
             this_contact = primary_contact_db.Contact.get(db.Key.from_path('Contact', id))
-            if not this_contact.organization.incident.key() == org.incident.key():
+            if not this_contact.organization.incident.key() == org.incident.key() and org.name != GLOBAL_ADMIN_NAME:
                 self.redirect("/error")
                 return
             data = primary_contact_db.ContactFormFull(self.request.POST)

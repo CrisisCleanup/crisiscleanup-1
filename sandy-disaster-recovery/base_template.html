@@ -52,8 +52,8 @@
             <li>
               <a {% block about %}{% endblock %} href="/about"><span class="icon">Û</span>About</a>
             </li>
-            <li>
-              <a {% block publicmap %}{% endblock %} href="/public-map"><span class="icon">5</span>Map</a>
+            <li> 
+              <a {% block publicmap %}{% endblock %} href={% if logged_in %} "/map" {% else %} "/public-map" {% endif %}><span class="icon">5</span>Map</a>
             </li>
             <li>
               <a {% block blog %}{% endblock %} href="http://blog.crisiscleanup.org/"><span class="icon">?</span>Blog</a>

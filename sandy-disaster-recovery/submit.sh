@@ -1,2 +1,0 @@
-./compile.sh
-svn commit $?

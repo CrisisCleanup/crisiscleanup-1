@@ -88,13 +88,15 @@ class AdminHandler(base.AuthenticatedHandler):
                     if not this_organization.incident.key() == org.incident.key():
                         self.redirect("/")
                         return
-                contact = primary_contact_db.Contact(first_name = data.first_name.data,
-                    last_name = data.last_name.data,
-                    phone = data.phone.data,
-                    email = data.email.data,
-                    is_primary = bool(data.is_primary.data),
-                    organization = this_organization.key(),
-                    )
+                contact = primary_contact_db.Contact(
+                    first_name=data.first_name.data,
+                    last_name=data.last_name.data,
+                    title=data.title.data,
+                    phone=data.phone.data,
+                    email=data.email.data,
+                    is_primary=bool(data.is_primary.data),
+                    organization=this_organization.key(),
+                )
                 primary_contact_db.PutAndCache(contact, ten_minutes)
                 self.redirect("/admin?message=Contact Created")
                 return
@@ -153,9 +155,11 @@ class AdminHandler(base.AuthenticatedHandler):
                     for phase_name in new_org.get_phase_boolean_names():
                         setattr(new_org, phase_name, True)
 
-                    new_contact = primary_contact_db.Contact(first_name = data.contact_first_name.data,
-                        last_name = data.contact_last_name.data,
-                        email = data.contact_email.data,
+                    new_contact = primary_contact_db.Contact(
+                        first_name=data.contact_first_name.data,
+                        last_name=data.contact_last_name.data,
+                        title=data.contact_title.data,
+                        email=data.contact_email.data,
                         phone=data.contact_phone.data,
                         is_primary=True
                     )
@@ -211,9 +215,10 @@ class AdminHandler(base.AuthenticatedHandler):
             if data.validate():     
             
                 contact = this_contact
-                contact.first_name=data.first_name.data
+                contact.first_name = data.first_name.data
                 contact.last_name = data.last_name.data
-                contact.phone=data.phone.data
+                contact.title = data.title.data
+                contact.phone = data.phone.data
                 contact.email = data.email.data
                 if org_key is not None:
                     contact.organization = org_key
@@ -228,7 +233,14 @@ class AdminHandler(base.AuthenticatedHandler):
                     self.response.set_status(400)
                     return
                 contact = primary_contact_db.Contact.get_by_id(id)
-                form = primary_contact_db.ContactFormFull(first_name = contact.first_name, last_name = contact.last_name, phone = contact.phone, email = contact.email, is_primary=int(contact.is_primary))
+                form = primary_contact_db.ContactFormFull(
+                    first_name=contact.first_name,
+                    last_name=contact.last_name,
+                    title=contact.title,
+                    phone=contact.phone,
+                    email=contact.email,
+                    is_primary=int(contact.is_primary)
+                )
                 self.response.out.write(template.render(
                 {
                     "edit_contact_id": id,

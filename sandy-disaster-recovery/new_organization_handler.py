@@ -62,7 +62,7 @@ class NewOrganizationHandler(base.RequestHandler):
         ##choose_event = self.request.get("choose_event")
         ##data = organization.OrganizationForm(self.request.POST)
         org = organization.Organization(name= self.request.get("name"), is_active=False, org_verified=False, voad_referral = self.request.get("voad_referral"), password=random_password.generate_password())
-        contact_properties_list = ["first_name", "last_name", "personal_phone", "personal_email"]
+        contact_properties_list = ["first_name", "last_name", "title", "personal_phone", "personal_email"]
         boolean_properties_list = ["publish", "physical_presence", "appropriate_work", "voad_member"]
 	for k, v in self.request.POST.iteritems():
 	  if k not in contact_properties_list:
@@ -74,16 +74,18 @@ class NewOrganizationHandler(base.RequestHandler):
 
 	    else:
 	      setattr(org, k, v)
-      
-	new_contact = primary_contact_db.Contact(first_name = self.request.get("first_name"),
-			    last_name = self.request.get("last_name"),
-			    email = self.request.get("personal_email"),
-			    phone=self.request.get("personal_phone"),
-			    is_primary=True)
+
+        new_contact = primary_contact_db.Contact(
+            first_name=self.request.get("first_name"),
+            last_name=self.request.get("last_name"),
+            title=self.request.get("title"),
+            email=self.request.get("personal_email"),
+            phone=self.request.get("personal_phone"),
+	    is_primary=True
+        )
 			    
 	organization.PutAndCacheOrganizationAndContact(organization = org,
 			    contact = new_contact,
 			    )
 			    
 	self.redirect("/welcome")
-            

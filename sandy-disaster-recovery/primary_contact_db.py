@@ -53,9 +53,11 @@ def _GetField(contact, field):
     logging.warn('contact %s is missing attribute' % (contact.key().id(), field))
     return None
 
+
 class Contact(db.Model):
     first_name = db.StringProperty(required=True)
     last_name = db.StringProperty(required=True)
+    title = db.StringProperty()
     phone = db.StringProperty(required=True)
     email = db.StringProperty(required=True)
     organization = db.ReferenceProperty()
@@ -64,6 +66,7 @@ class Contact(db.Model):
     CSV_FIELDS = [
         'first_name',
         'last_name',
+        'title',
         'phone',
         'email',
         'organization',
@@ -134,6 +137,8 @@ class ContactForm(model_form(Contact)):
     message = "Name must be between 1 and 100 characters")])
     last_name = TextField('Last Name', [wtforms.validators.Length(min = 1, max = 100,
     message = "Name must be between 1 and 100 characters")])
+    title = TextField('Title',[wtforms.validators.Length(
+        min=1, max=100, message="Title must be between 1 and 100 characters")])
     phone = TextField('Phone', [wtforms.validators.Length(min = 1, max = 15,
     message = "Phone must be between 1 and 15 characters")])
     email = TextField('Email', [wtforms.validators.Length(min = 1, max = 100,
@@ -144,6 +149,8 @@ class ContactFormFull(model_form(Contact)):
     message = "Name must be between 1 and 100 characters")])
     last_name = TextField('Last Name', [wtforms.validators.Length(min = 1, max = 100,
     message = "Name must be between 1 and 100 characters")])
+    title = TextField('Title',[wtforms.validators.Length(
+        min=1, max=100, message="Title must be between 1 and 100 characters")])
     phone = TextField('Phone', [wtforms.validators.Length(min = 1, max = 15,
     message = "Phone must be between 1 and 15 characters")])
     email = TextField('Email', [wtforms.validators.Length(min = 1, max = 100,
@@ -151,4 +158,3 @@ class ContactFormFull(model_form(Contact)):
     is_primary = RadioField(
     choices = [(1, "True"), (0, "False")],
     coerce = int)
-    

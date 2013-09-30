@@ -43,6 +43,7 @@ class="activePage"
 		    choose_event: "You must select an incident from the drop down list",
 		    first_name: "You must fill out the first name field in Primary Contact",
 		    last_name: "You must fill out the last name field in Primary Contact",
+		    title: "You must fill out the title field in Primary Contact",
 		    personal_email: "You must fill out the personal email field in Primary Contact",
 		    personal_phone: "You must fill out the personal phone field in Primary Contact",
 		    name: "You must fill out the Organization name",
@@ -53,11 +54,12 @@ class="activePage"
 		    state: "You must fill out the Organization state",
 		    zip_code: "You must fill out the Organization zip code",
 		    url: "You must fill out the Organization url",
-
-
-
 		  }
-		  properties_array = ["first_name", "last_name", "personal_email", "personal_phone", "name"];
+
+		  properties_array = [
+        "first_name", "last_name", "personal_email", "personal_phone", "name"
+      ];
+
 		    errors_array = [];
 		    email_errors_array = [];
 		    
@@ -153,6 +155,10 @@ class="activePage"
 	<tr>
 		<td class="question"><label for="last_name">Your Last Name</label>*:</td>
 		<td class="answer"><input name="last_name" id="last_name" type="text" value="" size="35" /></td>
+	</tr>
+	<tr>
+		<td class="question"><label for="title">Title</label>:</td>
+		<td class="answer"><input name="title" id="title" type="text" value="" size="35" /></td>
 	</tr>
 	<tr>
 		<td class="question" title="This should be an email that someone actually uses during the Incident, so so colleagues from other organizations can contact you."><label for="personal_email">Your email</label>*:</td>

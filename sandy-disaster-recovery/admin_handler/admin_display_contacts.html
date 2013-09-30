@@ -11,7 +11,6 @@
 {% if contacts %}
 {% for result in contacts %}
 <p>Name: <a href="/admin-single-contact?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/admin-single-organization?organization={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
-
 {% endfor %}
 {% endif %}
 {% endblock %}

@@ -82,7 +82,15 @@ class AdminHandler(base.AuthenticatedHandler):
                     if o.incident.key() == org.incident.key():
                         organization_list.append(o)
 
-            form = primary_contact_db.ContactFormFull(first_name = contact.first_name, last_name=contact.last_name, phone = contact.phone, email = contact.email, is_primary=int(contact.is_primary))
+            form = primary_contact_db.ContactFormFull(
+                first_name=contact.first_name,
+                last_name=contact.last_name,
+                title=contact.title,
+                phone=contact.phone,
+                email=contact.email,
+                is_primary=int(contact.is_primary)
+            )
+
             organization_name = None
             if contact.organization:
                 organization_name = contact.organization.name

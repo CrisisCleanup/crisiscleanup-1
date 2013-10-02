@@ -1,7 +1,7 @@
 $(function(){
      $(".toggle").hide();
      $("#event").prepend("<option value='' selected='selected'>Choose From Below</option>").val('');
-     $("#event").live('change keypress', function(){
+     $("#event").on('change keypress', function(){
          $("#organization").children().remove();
          
       

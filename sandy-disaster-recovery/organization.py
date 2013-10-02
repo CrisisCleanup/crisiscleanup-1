@@ -18,12 +18,12 @@ from google.appengine.ext import db
 
 import cache
 from wtforms.ext.appengine.db import model_form
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
+from wtforms import Form, BooleanField, TextField, validators, RadioField
 import wtforms
-import random_password
 from google.appengine.api import memcache
 from google.appengine.ext.db import to_dict
 import primary_contact_db
+
 
 class Organization(db.Expando):
   # Data about the organization.

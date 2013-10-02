@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Crisis Cleanup</title>
+  <title>{% block title %}Crisis Cleanup{% endblock %}</title>
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
   <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no" name="viewport" />
@@ -105,8 +105,12 @@
         <a href="/home">HOME</a> | <a href="/about">ABOUT</a> | <a href="/public-map">PUBLIC MAP</a> | <a href="http://blog.crisiscleanup.org/">BLOG</a> | <a href="/contact">CONTACT US</a> | <a href="/terms">TERMS</a> | <a href="/privacy">PRIVACY</a> | <a href="/signup">SIGN UP</a> | {% if logged_in %}<a href="/">ASSESSMENT FORM</a> | <a href="/logout">LOG OUT</a> {% else %} <a href="/authentication">LOG IN</a>{% endif %}
       </p>
   </footer>
+
+  {# load scripts at the end #}
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.7.1.min.js"><\/script>')</script>
   <script src="assets/js/script.js"></script>
+  {% block scripts %}
+  {% endblock %}
 </body>
 </html>

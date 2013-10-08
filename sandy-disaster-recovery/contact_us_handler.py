@@ -41,9 +41,9 @@ import page_db
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('contact.html')
+template = jinja_environment.get_template('contact_us.html')
 
-class ContactHandler(base.RequestHandler):
+class ContactUsHandler(base.RequestHandler):
     def get(self):
         logged_in = False
         org, event = key.CheckAuthorization(self.request)

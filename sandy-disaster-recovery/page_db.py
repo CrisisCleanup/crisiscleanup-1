@@ -32,7 +32,7 @@ FILENAMES = [
     'map_banner.html',
     'page.html',
     'about.html',
-    'contact.html',
+    'contact_us.html',
     'new_organization.html',
     'public_map.html',
     'terms.html',

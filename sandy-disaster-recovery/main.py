@@ -57,7 +57,7 @@ import page_handler
 import about_handler
 import terms_handler
 import privacy_handler
-import contact_handler
+import contact_us_handler
 import public_map_handler
 import public_map_ajax_handler
 import get_event_ajax_handler
@@ -114,7 +114,7 @@ class Route(routes.RedirectRoute):
     routes.RedirectRoute.__init__(self, *args, **kwargs)
 
 app = webapp2.WSGIApplication([
-    Route(r'/contact', contact_handler.ContactHandler, 'dev'),
+    Route(r'/contact', contact_us_handler.ContactUsHandler, 'dev'),
     Route(r'/update_csv_handler', update_csv_handler.UpdateCSVHandler, 'dev'),
 
     Route(r'/public-map', public_map_handler.PublicMapHandler, 'dev'),

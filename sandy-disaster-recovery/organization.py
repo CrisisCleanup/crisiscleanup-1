@@ -70,6 +70,8 @@ class Organization(db.Expando):
   physical_presence = db.BooleanProperty(required=False)#|Does your Organization have a physical presence in the disaster area?
 
   work_area = db.StringProperty(required=False)#|If so, in which areas are you primarily working?
+
+  # note: voad_referral is used for any kind of referral
   voad_referral = db.TextProperty(required=False)#|If your organization is not a member of VOAD, please provide the name and contact information for at least one (and preferably three or more) representatives from VOAD organizations or a government agency who can vouch for your work: # - not necessarily VOAD referral
   
   number_volunteers = db.StringProperty(required=False)#|Approximately how many volunteers will your organization utilize for cleanup efforts?

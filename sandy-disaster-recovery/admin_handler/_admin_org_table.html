@@ -35,6 +35,13 @@
 <td><a href="{{ organization.url }}">{{ organization.name }}</a></td>
 </tr>
 
+{% if organization.admin_notes %}
+  <tr>
+    <td><em>Administrator Notes:</em></td>
+    <td>{{ organization.admin_notes }}</td>
+  </tr>
+{% endif %}
+
 <tr>
 <td>Org Email:</td>
 <td><a href="mailto:{{ organization.email }}">{{ organization.email }}</a></td>

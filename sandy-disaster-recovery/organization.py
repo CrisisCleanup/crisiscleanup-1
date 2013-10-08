@@ -73,6 +73,8 @@ class Organization(db.Expando):
 
   # note: voad_referral is used for any kind of referral
   voad_referral = db.TextProperty(required=False)#|If your organization is not a member of VOAD, please provide the name and contact information for at least one (and preferably three or more) representatives from VOAD organizations or a government agency who can vouch for your work: # - not necessarily VOAD referral
+
+  admin_notes = db.TextProperty(required=False)
   
   number_volunteers = db.StringProperty(required=False)#|Approximately how many volunteers will your organization utilize for cleanup efforts?
   voad_member = db.BooleanProperty(required=False)#|Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?

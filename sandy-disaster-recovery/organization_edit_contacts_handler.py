@@ -51,6 +51,7 @@ ten_minutes = 600
 class OrganizationEditContactsHandler(base.AuthenticatedHandler):
 
     def AuthenticatedPost(self, org, event):
+        authenticated_org = org
         try:
             id = int(self.request.get("edit_contact_final"))
         except:
@@ -72,6 +73,12 @@ class OrganizationEditContactsHandler(base.AuthenticatedHandler):
         ###########################
 
         this_contact = primary_contact_db.Contact.get(db.Key.from_path('Contact', id))
+
+        # abort if not authorised to update this contact: must match the authenticated org
+        if this_contact.organization.key() != authenticated_org.key():
+            self.abort(403)
+
+        # abort if from the wrong incident
         if not this_contact.organization.incident.key() == org.incident.key():
             self.redirect("/")
             return

@@ -17,3 +17,14 @@
   {% endif %}
   </tr>
 {% endmacro %}
+
+{% macro render_field_row_without_input(field) %}
+  <tr>
+    <td>
+      {{ field.label }}
+    </td>
+    <td>
+      {{ field.data }}
+    </td>
+  </tr>
+{% endmacro %}

@@ -80,6 +80,7 @@ class OrganizationEditContactsHandler(base.AuthenticatedHandler):
             contact = this_contact
             contact.first_name=data.first_name.data
             contact.last_name = data.last_name.data
+            contact.title = data.title.data
             contact.phone=data.phone.data
             contact.email = data.email.data
             if org_key is not None:
@@ -95,7 +96,14 @@ class OrganizationEditContactsHandler(base.AuthenticatedHandler):
                 self.response.set_status(400)
                 return
             contact = primary_contact_db.Contact.get_by_id(id)
-            form = primary_contact_db.ContactFormFull(first_name = contact.first_name, last_name = contact.last_name, phone = contact.phone, email = contact.email, is_primary=int(contact.is_primary))
+            form = primary_contact_db.ContactFormFull(
+                first_name=contact.first_name,
+                last_name=contact.last_name,
+                title=contact.title,
+                phone=contact.phone,
+                email=contact.email,
+                is_primary=int(contact.is_primary)
+            )
             self.response.out.write(template.render(
             {
                 "edit_contact_id": id,

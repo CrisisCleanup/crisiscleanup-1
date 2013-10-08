@@ -35,8 +35,6 @@ class OrganizationSettingsHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, authenticated_org, event):
         # decide what org to lookup
         org = organization.Organization.get_by_id(authenticated_org.key().id())  # hardcoded
-        import logging
-        logging.error(org.name)
         if org.is_admin:
             contacts = db.GqlQuery("SELECT * From IncidentAdmin WHERE incident = :1", org.incident.key())
         else:

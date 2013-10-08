@@ -36,7 +36,6 @@ class OrganizationEditInfoHandler(base.AuthenticatedHandler):
         form = organization.OrganizationInformationForm(self.request.POST)
         if form.validate():
             form.populate_obj(org)
-            import logging; logging.error('HERE!!!!!')
             org.save()
             organization.PutAndCache(org, 600)
             self.redirect("/organization-settings")

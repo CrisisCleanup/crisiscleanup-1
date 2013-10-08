@@ -22,7 +22,7 @@
     {% for contact in contacts %}
       <tr>
         <td>
-          <a href="/admin-single-contact?contact={{ contact.key().id() }}"> {# links to admin only? #}
+          <a href="/contact-info?contact={{ contact.key().id() }}"> {# links to admin only? #}
             {{ contact.first_name }} {{ contact.last_name }}
           </a>
         </td>

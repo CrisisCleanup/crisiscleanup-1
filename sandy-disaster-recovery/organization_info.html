@@ -4,18 +4,23 @@
 {% endblock %}
 
 {% block main_content%}
-{% if contacts %}
-<h3>Contacts</h3>
-{% if is_admin %}
-{% for contact in contacts %}
-<p>{{contact.contact.first_name}} {{contact.contact.last_name}} | {{contact.contact.email}}</p>
-{% endfor %}
-{% else %}
-{% for contact in contacts %}
-<p>{{contact.first_name}} {{contact.last_name}} | {{contact.email}}</p>
-{% endfor %}
 
-{% endif %}
+{% if contacts %}
+  <h3>Contacts</h3>
+
+  <ul>
+    {% for contact in contacts %}
+      {% if is_admin %}  {# TODO: is this necessary? #}
+        {% set contact = contact.contact %}
+      {% endif %}
+      <li>
+        <a href="/contact-info?contact={{ contact.key().id() }}">
+          {{ contact.first_name }} {{ contact.last_name }}
+        </a>
+        ({{ contact.email }})
+      </li>
+    {% endfor %}
+  </ul>
 
 <div>
   <a href="/export_contacts_handler?organization={{organization.name}}">[Export contacts to CSV]</a>
@@ -23,9 +28,10 @@
   <a href="/export_contacts_handler">[Export all contacts to CSV]</a>
 </div>
 
+{% endif %}
+
 <form method=POST action="/admin">
 
-{% endif %}
 <hr>
 {% if organization %}
   <h3>Organization</h3>

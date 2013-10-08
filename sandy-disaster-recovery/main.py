@@ -46,6 +46,7 @@ import organization_ajax_handler
 import export_all_handler
 from admin_handler import admin_handler
 import organization_info_handler
+import contact_info_handler
 import organization_settings_handler
 import export_contacts_handler
 import organization_add_contacts_handler
@@ -183,6 +184,7 @@ app = webapp2.WSGIApplication([
 
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),
+    Route(r'/contact-info', contact_info_handler.ContactInfoHandler, 'contact_info_handler'),
     Route(r'/organization-settings', organization_settings_handler.OrganizationSettingsHandler, 'organization_settings_handler'),
     Route(r'/export_contacts_handler', export_contacts_handler.ExportContactsHandler, 'export_contacts_handler'),
     Route(r'/organization-add-contact', organization_add_contacts_handler.OrganizationAddContactsHandler, 'organization_add_contacts_handler'),   

@@ -129,7 +129,9 @@ def RemoveOrgFromContacts(org):
     # set incident to None
     # putandcache
     
+
 class ContactForm(model_form(Contact, exclude=['organization'])):
+
     first_name = TextField('First Name', [
         validators.Length(
             min=1, max=100,
@@ -139,11 +141,6 @@ class ContactForm(model_form(Contact, exclude=['organization'])):
         validators.Length(
             min=1, max=100,
             message = "Name must be between 1 and 100 characters")
-    ])
-    title = TextField('Title',[
-        validators.Length(
-            min=1, max=100,
-            message="Title must be between 1 and 100 characters")
     ])
     phone = TextField('Phone', [
         validators.Length(
@@ -159,4 +156,5 @@ class ContactForm(model_form(Contact, exclude=['organization'])):
 
 
 class ContactFormFull(ContactForm):
+
     is_primary = BooleanField()

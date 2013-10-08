@@ -15,28 +15,15 @@
 # limitations under the License.
 #
 # System libraries.
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
-import cgi
 import jinja2
-import logging
 import os
-import urllib2
-import wtforms.validators
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
-
-from datetime import datetime
-import settings
+import organization
 
 from google.appengine.ext import db
-import organization
-import primary_contact_db
-import random_password
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -44,30 +31,19 @@ template = jinja_environment.get_template('organization_settings.html')
 
 
 class OrganizationSettingsHandler(base.AuthenticatedHandler):
-    def AuthenticatedGet(self, org, event):
-        name = org.name
-        query_string = "SELECT * FROM Organization WHERE name = :1"
-        organization_list = db.GqlQuery(query_string, name)
-        for o in organization_list:
-            id = o.key().id()
-        
-        org_by_id = organization.Organization.get_by_id(id)
-        org_key = org_by_id.key()
-        
-        contact_query = None
+
+    def AuthenticatedGet(self, authenticated_org, event):
+        # decide what org to lookup
+        org = organization.Organization.get_by_id(authenticated_org.key().id())  # hardcoded
+        import logging
+        logging.error(org.name)
         if org.is_admin:
-            contact_query = db.GqlQuery("SELECT * From IncidentAdmin WHERE incident = :1", org.incident.key())
+            contacts = db.GqlQuery("SELECT * From IncidentAdmin WHERE incident = :1", org.incident.key())
         else:
-            contact_query = db.GqlQuery("SELECT * From Contact WHERE organization = :org_key", org_key = org_key)
-        self.response.out.write(template.render(
-        {
-            "organization": org_by_id,
-            "contacts": contact_query,
+            contacts = db.GqlQuery("SELECT * From Contact WHERE organization = :org_key", org_key = org.key())
+        self.response.out.write(template.render({
+            "organization": org,
+            "contacts": contacts,
             "message": self.request.get("message"),
             "is_admin": org.is_admin,
         }))
-        return
-        
-        
-
-            

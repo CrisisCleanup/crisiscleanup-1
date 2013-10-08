@@ -48,6 +48,7 @@ GLOBAL_ADMIN_NAME = "Admin"
 ten_minutes = 600
 
 class AdminHandler(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
         global_admin = False
         local_admin = False
@@ -72,25 +73,18 @@ class AdminHandler(base.AuthenticatedHandler):
                 if not obj.incident.key() == org.incident.key():
                     self.redirect("/admin")
                     return
-            query = db.GqlQuery("SELECT * FROM Contact WHERE organization = :1 LIMIT 1", obj.key())
-            contact_id = None
-            contact = None
-            for q in query:
-                contact_id = q.key().id()
-            if contact_id:
-                contact = primary_contact_db.Contact.get_by_id(contact_id)    
-            suggested_password = random_password.generate_password()
-            
-            self.response.out.write(template.render(
-            {
+
+            # lookup contacts
+            contacts = db.GqlQuery("SELECT * FROM Contact WHERE organization = :1", obj.key())
+
+            # render template
+            self.response.out.write(template.render({
                 "form": True,
                 "new_organization": obj,
-                "contact": contact,
-                "suggested_password": suggested_password,
+                "contacts": contacts,
                 "global_admin": global_admin,
             }))
             return   
         else:
             self.redirect("/")
             return
-            

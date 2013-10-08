@@ -22,86 +22,9 @@ This organization is awaiting approval
 {% endblock %}
 
 {% block main_content %}
-{% if contact %}
-<table>
-<tr>
-<td>Applicant Name:</td>
-<td><a href="/admin-single-contact?contact={{contact.key().id()}}">{{ contact.first_name }} {{ contact.last_name }}</a></td>
-</tr>
 
-<tr>
-<td>Applicant Phone:</td>
-<td>{{ contact.phone }}</td>
-</tr>
-
-<tr>
-<td>Applicant Email:</td>
-<td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
-</tr>
-</table>
-<hr>
-{% endif %}
-<table>
-<tr>
-<td>Incident:</td>
-<td><strong>{{ new_organization.incident.name }}</strong></td>
-</tr>
-
-<tr>
-<td>Organization:</td>
-<td><a href="{{ new_organization.url }}">{{ new_organization.name }}</a></td>
-</tr>
-
-<tr>
-<td>Org Email:</td>
-<td><a href="mailto:{{ new_organization.email }}">{{ new_organization.email }}</a></td>
-</tr>
-
-<tr>
-<td>Org Phone:</td>
-<td>{{ new_organization.phone }}</td>
-</tr>
-
-<tr>
-<td>Twitter:</td>
-<td>{{ new_organization.twitter }}</td>
-</tr>
-
-<tr>
-<td>Facebook:</td>
-<td><a href="{{ new_organization.facebook }}">{{ new_organization.facebook }}</a></td>
-</tr>
-
-<tr>
-<td>Address:</td>
-<td>{{ new_organization.address }}, {{ new_organization.city }}, {{ new_organization.state }}  {{ new_organization.zip_code }}</td>
-</tr>
-
-<tr>
-<td>Physical Presence:</td>
-<td><strong>{{ new_organization.physical_presence }}</strong> <em>({{ new_organization.work_area }})</em></td>
-</tr>
-
-<tr>
-<td>VOAD Member:</td>
-<td><strong>{{ new_organization.voad_member }}</strong>. Referral: {{ new_organization.voad_referral }}</td>
-</tr>
-
-<tr>
-<td>Appropriate Work:</td>
-<td><strong>{{ new_organization.appropriate_work }}</strong></td>
-</tr>
-
-<tr>
-<td>Publish Info:</td>
-<td>{{ new_organization.publish }}</td>
-</tr>
-
-<tr>
-<td><strong>Password:</strong></td>
-<td><strong>{{ new_organization.password }}</strong></td>
-</tr>
-</table>
+{% set organization=new_organization %}
+{% include '_admin_org_table.html' %}
 
 {% if form %}
   (this cannot be undone)

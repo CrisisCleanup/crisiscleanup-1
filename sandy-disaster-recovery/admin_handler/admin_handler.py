@@ -183,100 +183,7 @@ class AdminHandler(base.AuthenticatedHandler):
                     "auto_password": suggested_password,
                 }))
                 return
-                
-        if self.request.get("edit_contact_final"):
-            try:
-                id = int(self.request.get("edit_contact_final"))
-            except:
-                self.response.set_status(400)
-                return
-            org_id = None
-            org_key = None
-            
-            # check to see if organization was edited
-            if self.request.get("organization") != "None":
-                try:
-                    org_id = int(self.request.get("organization"))
-                except:
-                    self.response.set_status(400)
-                    return
-                org = organization.Organization.get_by_id(org_id)
-                org_key = org.key()
-                if local_admin:
-                    if not org_key.incident.key() == org.incident.key():
-                        self.redirect("/")
-                        return
-            ###########################
-            this_contact = primary_contact_db.Contact.get(db.Key.from_path('Contact', id))
-            if not this_contact.organization.incident.key() == org.incident.key() and org.name != GLOBAL_ADMIN_NAME:
-                self.redirect("/error")
-                return
-            data = primary_contact_db.ContactFormFull(self.request.POST)
-            if data.validate():     
-            
-                contact = this_contact
-                contact.first_name = data.first_name.data
-                contact.last_name = data.last_name.data
-                contact.title = data.title.data
-                contact.phone = data.phone.data
-                contact.email = data.email.data
-                if org_key is not None:
-                    contact.organization = org_key
-                contact.is_primary=bool(data.is_primary.data)
-                primary_contact_db.PutAndCache(contact, ten_minutes)
-                self.redirect("/admin-single-contact?contact=" + self.request.get("edit_contact_final"))
-                return
-            else:
-                try:
-                    id = int(self.request.get("edit_contact_final"))
-                except:
-                    self.response.set_status(400)
-                    return
-                contact = primary_contact_db.Contact.get_by_id(id)
-                form = primary_contact_db.ContactFormFull(
-                    first_name=contact.first_name,
-                    last_name=contact.last_name,
-                    title=contact.title,
-                    phone=contact.phone,
-                    email=contact.email,
-                    is_primary=int(contact.is_primary)
-                )
-                self.response.out.write(template.render(
-                {
-                    "edit_contact_id": id,
-                    "form": form,
-                    "errors": data.errors
-                }))
-                return
-                
-        if self.request.get("create_org"):
-            data = organization.OrganizationFormNoContact(self.request.POST)
-            is_active_bool = False
-            activate = self.request.get("is_active")
-            if activate:
-                is_active_bool = True
-            
-            if data.validate():
-                # create new org
-                new_org_data = data.data
-                event = event_db.Event.get_by_id(int(data.data['choose_event']))
-                new_org_data['incident'] = event.key()
-                new_org = organization.Organization(**new_org_data)
-                organization.PutAndCache(new_org, ten_minutes)
 
-            else:
-                # show the form again
-                self.response.out.write(template.render(
-                {
-                    "form": data,
-                    "errors": data.errors,
-                    "events_list": events_list,
-                    "create_org": True,
-                }))
-                return
-            self.redirect("/admin")
-            return
-            
         if self.request.get("delete_org_id"):
             try:
                 org_by_id = organization.Organization.get(db.Key.from_path('Organization', int(self.request.get("delete_org_id"))))
@@ -327,37 +234,8 @@ class AdminHandler(base.AuthenticatedHandler):
             organization.PutAndCache(org_by_id, 600)
             self.redirect("/admin")
             return
-            
-        if self.request.get("edit_org"):
-	    try:
-	      id = int(self.request.get("edit_org"))
-	    except:
-	      self.response.set_status(400)
-	      return
-	    org_by_id = organization.Organization.get(db.Key.from_path('Organization', id))
-	    org_by_id.name = self.request.get("name")
-	    org_by_id.email = self.request.get("email")
-	    org_by_id.phone = self.request.get("phone")
-	    org_by_id.address = self.request.get("address")
-	    org_by_id.city = self.request.get("city")
-	    org_by_id.state = self.request.get("state")
-	    org_by_id.zip_code = self.request.get("zip_code")
-	    org_by_id.url = self.request.get("url")
-	    org_by_id.twitter = self.request.get("twitter")
-	    org_by_id.facebook = self.request.get("facebook")
-	    org_by_id.publish = bool(self.request.get("publish"))
-	    org_by_id.physical_presence = bool(self.request.get("physical_presence"))
-	    org_by_id.work_area = self.request.get("work_area")
-	    org_by_id.voad_member = bool(self.request.get("voad_member"))
-	    org_by_id.voad_referral = self.request.get("voad_referral")
-	    org_by_id.appropriate_work = bool(self.request.get("appropriate_work"))
 
-	    organization.PutAndCache(org_by_id, 600)
-	    self.redirect("/admin-single-organization?organization=" + self.request.get("edit_org"))
-	    return
-       
-            
-        
+
     def AuthenticatedGet(self, org, event):
         if org.name == GLOBAL_ADMIN_NAME:
             self.response.out.write(template.render({"org": org, "global_admin": True}))

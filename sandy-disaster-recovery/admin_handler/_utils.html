@@ -1,0 +1,7 @@
+{% macro bold_if_true(val) %}
+  {% if val %}
+    <strong>{{ val }}</strong>
+  {% else %}
+    {{ val }}
+  {% endif %}
+{% endmacro %}

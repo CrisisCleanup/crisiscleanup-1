@@ -110,8 +110,5 @@ class AdminCreateIncidentHandler(base.AuthenticatedHandler):
             is_active = True,
             is_admin = True,
             )
-            # set all phase fields true for admin
-            for phase_name in new_admin.get_phase_boolean_names():
-                setattr(new_admin, phase_name, True)
             organization.PutAndCache(new_admin, ten_minutes)
             self.redirect("/admin")

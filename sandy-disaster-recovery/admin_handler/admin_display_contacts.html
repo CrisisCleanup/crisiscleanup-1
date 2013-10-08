@@ -1,17 +1,45 @@
 {% extends "base_template.html" %}
 
 {% block main_title %}
-<h2>Admin Display Contacts</h2>
+<h2>Display Contacts</h2>
 {% endblock %}
 {% block main_content %}
-<br/>
-<br/>
-<a href="/admin-display-contacts?order=first_name">Order by first name. </a>
-<a href="/admin-display-contacts?order=last_name">Order by last name. </a>
+
+<div>
+  <a href="/admin-display-contacts?order=first_name">[Order by first name]</a>
+  &nbsp;
+  <a href="/admin-display-contacts?order=last_name">[Order by last name]</a>
+</div>
+
 {% if contacts %}
-{% for result in contacts %}
-<p>Name: <a href="/admin-single-contact?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/admin-single-organization?organization={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
-{% endfor %}
+  <table style="margin-top: 15px;">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Organization</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in contacts %}
+        <tr>
+          <td>
+            <a href="/admin-single-contact?contact={{result.key().id()}}">
+              {{result.first_name}} {{result.last_name }}
+            </a>
+          </td>
+          <td>
+            {% if result.organization %}
+              <a href="/admin-single-organization?organization={{ result.organization.key().id() }}">
+                {{result.organization.name}}
+              </a>
+            {% else %}
+              No organization
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endif %}
 {% endblock %}
 

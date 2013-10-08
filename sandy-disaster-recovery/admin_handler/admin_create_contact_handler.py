@@ -48,6 +48,7 @@ GLOBAL_ADMIN_NAME = "Admin"
 ten_minutes = 600
 
 class AdminHandler(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
         global_admin = False
         local_admin = False
@@ -61,6 +62,7 @@ class AdminHandler(base.AuthenticatedHandler):
             return
             
         form = primary_contact_db.ContactFormFull()
+
         organization_list = None
         if global_admin:
             query_string = "SELECT * FROM Organization WHERE org_verified = True"

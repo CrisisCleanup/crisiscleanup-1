@@ -5,7 +5,7 @@
 
 {% block main_content%}
 {% if contacts %}
-<p>Contacts</p>
+<h3>Contacts</h3>
 {% if is_admin %}
 {% for contact in contacts %}
 <p>{{contact.contact.first_name}} {{contact.contact.last_name}} | {{contact.contact.email}}</p>
@@ -16,39 +16,24 @@
 {% endfor %}
 
 {% endif %}
-<a href="/export_contacts_handler?organization={{organization.name}}">Export contacts to CSV</a>
-<a href="/export_contacts_handler">Export all contacts to CSV</a>
-    <form method=POST action="/admin">
+
+<div>
+  <a href="/export_contacts_handler?organization={{organization.name}}">[Export contacts to CSV]</a>
+  &nbsp;
+  <a href="/export_contacts_handler">[Export all contacts to CSV]</a>
+</div>
+
+<form method=POST action="/admin">
+
 {% endif %}
 <hr>
 {% if organization %}
-<p>Incident: {{ organization.incident.name }}<p>
-<p>Name: {{ organization.name }}<p>
-<p>Email: {{ organization.email }}<p>
-<p>Phone: {{ organization.phone }}<p>
-<p>URL: {{ organization.url }}<p>
-<p>Twitter: {{ organization.twitter }}<p>
-<p>Facebook: {{ organization.facebook }}<p>
-<p>Organization: {{ organization.name }}<p>
-<p>Address: {{ organization.address }}<p>
-<p>City: {{ organization.city }}<p>
-<p>State: {{ organization.state }}<p>
-<p>Zip Code: {{ organization.zip_code }}<p>
-<p>Physical Presence: {{ organization.physical_presence }}<p>
-<p>Work Area: {{ organization.work_area }}<p>
-<p>Number Of Volunteers: {{ organization.number_volunteers }}<p>
-<p>Voad Member: {{ organization.voad_member }}<p>
-<p>Voad Member urls: {{ organization.voad_member_url }}</p>
-<p>Voad Referrals: {{ organization.voad_referral }}</p>
-
-{# list booleans for phases #}
-{% for bool_field in organization.ACTIVE_PHASE_BOOLEANS %}
-  <p>{{ bool_field.name }}: {{ organization[bool_field.name] }}</p>
-{% endfor %}
-
+  <h3>Organization</h3>
+  {% include "_org_info_table.html" %}
 {% else %}
-<p>Show list of organizations</p>
+  <p>Show list of organizations</p>
 {% endif %}
+
 {% endblock %}
 
 {% block sidebar_content %}

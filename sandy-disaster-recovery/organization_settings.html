@@ -4,44 +4,75 @@
 {% endblock %}
 
 {% block main_content%}
-{% if contacts %}
-<p>Contacts</p>
-<a href="/organization-add-contact">Add Contact</a>
-<a href="/export_contacts_handler?organization={{organization.name}}">Export my contacts to CSV</a>
-<a href="/export_contacts_handler">Export all contacts to CSV</a>
+
+<h3>Contacts</h3>
+
+<div>
+  <a href="/organization-add-contact">[Add Contact]</a>
+  &nbsp;
+  <a href="/export_contacts_handler?organization={{organization.name}}">[Export my contacts to CSV]</a>
+  &nbsp;
+  <a href="/export_contacts_handler">[Export all contacts to CSV]</a>
+</div>
 
 {% if message %}
-<br/>
-<p>{{message}}</p>
-<br/>
+  <br/>
+  <p>{{message}}</p>
+  <br/>
 {% endif %}
 
-{% if is_admin %} 
-{% for contact in contacts %}
-<p>{{contact.contact.first_name}} {{contact.contact.last_name}} | {{contact.contact.email}} <a href="/organization-edit-contact?contact={{contact.contact.key().id()}}">Edit</a></p>
-{% endfor %}
-{% else %}
-{% for contact in contacts %}
-<p>{{contact.first_name}} {{contact.last_name}} | {{contact.email}} <a href="/organization-edit-contact?contact={{contact.key().id()}}">Edit</a></p>
-{% endfor %}
-{% endif %}
-{% endif %}
+<table style="margin-top: 15px">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for contact in contacts %}
+      <tr>
+        <td>
+          {% if is_admin %} {# TODO: remove branch #}
+            {{ contact.contact.first_name }} {{contact.contact.last_name}}
+          {% else %}
+            {{ contact.first_name }} {{ contact.last_name }}
+          {% endif %}
+        </td>
+        <td>
+          {% if is_admin %} {# TODO: remove branch #}
+            {{ contact.contact.email }}
+          {% else %}
+            {{ contact.email }}
+          {% endif %}
+        </td>
+        <td>
+          {% if is_admin %} {# TODO: remove branch #}
+            <a href="/organization-edit-contact?contact={{contact.contact.key().id()}}">[Edit]</a>
+          {% else %}
+            <a href="/organization-edit-contact?contact={{contact.key().id()}}">[Edit]</a>
+          {% endif %}
+        </td>
+      </tr>
+    {% else %}
+      {# no contacts #}
+      <td colspan="2">
+        None yet
+      </td>
+    {% endfor %}
+  </tbody>
+</table>
+
 <hr>
-<a href="organization-edit-info?organization={{organization.key().id()}}">Edit Organization Info</a>
-<p>Incident: {{ organization.incident.name }}<p>
-<p>Name: {{ organization.name }}<p>
-<p>Email: {{ organization.email }}<p>
-<p>Phone: {{ organization.phone }}<p>
-<p>URL: {{ organization.url }}<p>
-<p>Twitter: {{ organization.twitter }}<p>
-<p>Facebook: {{ organization.facebook }}<p>
-<p>Organization: {{ organization.name }}<p>
-<p>Address: {{ organization.address }}<p>
-<p>City: {{ organization.city }}<p>
-<p>State: {{ organization.state }}<p>
-<p>Zip Code: {{ organization.zip_code }}<p>
+
+<h2>My Organization</h2>
+
+<a href="organization-edit-info">[Edit Organization Info]</a>
+
+{% include "_org_info_table.html" %}
 
 {% endblock %}
+
 
 {% block sidebar_content %}
 <ul>

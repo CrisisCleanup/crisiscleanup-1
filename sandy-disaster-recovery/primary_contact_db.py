@@ -15,16 +15,11 @@
 # limitations under the License.
 #
 # System libraries.
-import datetime
 import logging
-import wtforms.ext.dateutil.fields
-import wtforms.fields
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 from google.appengine.api import memcache
-import json
-from google.appengine.ext.db import Query
 
 from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
@@ -33,6 +28,8 @@ import cache
 
 
 ten_minutes = 600
+
+
 def _GetOrganizationName(contact, field):
   """Returns the name of the organization in the given field, if possible.
   """
@@ -132,29 +129,34 @@ def RemoveOrgFromContacts(org):
     # set incident to None
     # putandcache
     
-class ContactForm(model_form(Contact)):
-    first_name = TextField('First Name', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Name must be between 1 and 100 characters")])
-    last_name = TextField('Last Name', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Name must be between 1 and 100 characters")])
-    title = TextField('Title',[wtforms.validators.Length(
-        min=1, max=100, message="Title must be between 1 and 100 characters")])
-    phone = TextField('Phone', [wtforms.validators.Length(min = 1, max = 15,
-    message = "Phone must be between 1 and 15 characters")])
-    email = TextField('Email', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Email must be between 1 and 100 characters"), validators.Email(message="That's not a valid email address.")])
-    
-class ContactFormFull(model_form(Contact)):
-    first_name = TextField('First Name', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Name must be between 1 and 100 characters")])
-    last_name = TextField('Last Name', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Name must be between 1 and 100 characters")])
-    title = TextField('Title',[wtforms.validators.Length(
-        min=1, max=100, message="Title must be between 1 and 100 characters")])
-    phone = TextField('Phone', [wtforms.validators.Length(min = 1, max = 15,
-    message = "Phone must be between 1 and 15 characters")])
-    email = TextField('Email', [wtforms.validators.Length(min = 1, max = 100,
-    message = "Email must be between 1 and 100 characters"), validators.Email(message="That's not a valid email address.")])
-    is_primary = RadioField(
-    choices = [(1, "True"), (0, "False")],
-    coerce = int)
+class ContactForm(model_form(Contact, exclude=['organization'])):
+    first_name = TextField('First Name', [
+        validators.Length(
+            min=1, max=100,
+            message = "Name must be between 1 and 100 characters")
+    ])
+    last_name = TextField('Last Name',[
+        validators.Length(
+            min=1, max=100,
+            message = "Name must be between 1 and 100 characters")
+    ])
+    title = TextField('Title',[
+        validators.Length(
+            min=1, max=100,
+            message="Title must be between 1 and 100 characters")
+    ])
+    phone = TextField('Phone', [
+        validators.Length(
+            min=1, max=15,
+            message = "Phone must be between 1 and 15 characters")
+    ])
+    email = TextField('Email', [
+        validators.Length(
+            min=1, max=100,
+            message = "Email must be between 1 and 100 characters"),
+        validators.Email(message="That's not a valid email address.")
+    ])
+
+
+class ContactFormFull(ContactForm):
+    is_primary = BooleanField()

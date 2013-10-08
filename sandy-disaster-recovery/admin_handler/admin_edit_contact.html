@@ -1,42 +1,24 @@
-<form method="POST" action="/admin">
-{% if errors %}
-<section id="errors">
-  <header>The submission had errors</header>
-  <article>
-    <ul>
-    {% for k in errors %}
-      <li class="error">
-        {% for e in errors[k] %}
-          {{k}}: {{e}}
-        {% endfor %}
-      </li>
+{% extends 'base_template.html' %}
+{% from "_form_utils.html" import render_field_row %}
+
+{% block main_title %}
+<h2>Edit Contact</h2>
+{% endblock %}
+
+{% block main_content %}
+
+<form method="POST">
+  <input type="hidden" name="contact_id" value="{{ contact.key().id() }}">
+  <table>
+    <tr>
+      <td>Organization</td>
+      <td>{{ organization_name }}</td>
+    </tr>
+    {% for field in form %}
+      {{ render_field_row(field) }}
     {% endfor %}
-    </ul>
-  <article>
-</section>
-{% endif %}
-
-  <div>{{ form.first_name.label }}: {{ form.first_name }}</div>
-  <div>{{ form.last_name.label }}: {{ form.last_name }}</div>
-  <div>{{ form.title.label }}: {{ form.title }}</div>
-  <div>{{ form.email.label }}: {{ form.email }}</div>
-  <div>{{ form.phone.label }}: {{ form.phone }}</div>
-  <p>Organization: {{ organization_name }}</p>
-    {% if organization_list %}
-    Edit Organization: 
-  <select name="organization">
-  <option value="None">Choose From Below To Edit</option>
-  {% for result in organization_list %}
-<option value="{{result.key().id()}}">{{result.name}}</option>
-{% endfor %}
-</select><br/><br/>
-{% endif %}
-  <tr>
-    <td>{{ form.is_primary.label }}</td>
-    <td>{{ form.is_primary }}</td>
-  </tr>
-  <p>This cannot be undone</p>
- <input type=hidden name=edit_contact_final value={{edit_contact_id}}>
-
-  <input type=submit value="Submit Edit">
+  </table>
+  <button type="submit">Submit</button>
 </form>
+
+{% endblock %}

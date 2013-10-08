@@ -1,41 +1,49 @@
 {% extends "base_template.html" %}
+{% from 'admin_handler/_form_utils.html' import render_field_row %}
 
 {% block main_title %}
 <h2>Add Contact</h2>
 {% endblock %}
 {% block main_content%}
-<h1>Create Contact</h1>
 
-<form method="POST" action="/organization-add-contact">
-{% if errors %}
-<section id="errors">
-  <header>The submission had errors</header>
-  <article>
-    <ul>
-    {% for k in errors %}
-      <li class="error">
-        {% for e in errors[k] %}
-          {{k}}: {{e}}
+<form method="POST">
+  {% if form.errors %}
+    <section id="errors">
+      <header>The submission had errors</header>
+      <article>
+        <ul>
+        {% for k in form.errors %}
+          <li class="error">
+            {% for e in form.errors[k] %}
+              {{k}}: {{e}}
+            {% endfor %}
+          </li>
         {% endfor %}
-      </li>
+        </ul>
+      <article>
+    </section>
+  {% endif %}
+
+  <p>Choose organization:</p>
+  <select name="choose_organization">
+    {% for result in organization_list %}
+      <option value="{{result.key().id()}}">{{result.name}}</option>
     {% endfor %}
-    </ul>
-  <article>
-</section>
-{% endif %}
-<p>Choose organization</p>
-<select name="choose_organization">
-{% for result in organization_list %}
-<option value="{{result.key().id()}}">{{result.name}}</option>
-{% endfor %}
-</select><br/><br/>
-<div>{{ form.first_name.label }}: {{ form.first_name }}</div>
-<div>{{ form.last_name.label }}: {{ form.last_name }}</div>
-<div>{{ form.email.label }}: {{ form.email }}</div>
-<div>{{ form.phone.label }}: {{ form.phone }}</div>
-<p>Applicant Is Primary Contact for Organization: {{ form.is_primary }}</p>
- <input type=hidden name=create_contact value=True>
-<input type=submit value="Submit Edit">
+  </select><br/><br/>
+
+  <table>
+    {% for field in form if field.name != 'is_primary' %}
+      {{ render_field_row(field) }}
+    {% endfor %}
+  </table>
+
+  <p>
+    <label for="is_primary">Applicant Is Primary Contact for Organization:</label>
+    {{ form.is_primary }}
+  </p>
+
+  <button type=submit value="Submit Edit">Create</button>
+
 </form>
 {% endblock %}
 

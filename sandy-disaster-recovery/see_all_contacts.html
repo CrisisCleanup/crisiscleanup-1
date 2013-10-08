@@ -1,22 +1,46 @@
 {% extends "base_template_without_log_in_checks.html" %}
 {% block main_title %}
-<h2>Contacts</h2>
+<h2>All Contacts</h2>
 {% endblock %}
 
 {% block main_content%}
-<h2>List of all contacts</h2>
-<a href="/see-all-contacts?order=first_name">Order by first name. </a>
-<a href="/see-all-contacts?order=last_name">Order by last name. </a>
-<!-- <a href="/see-all-contacts?order=organization">Order by Organization. </a> -->
 
-{% if contacts %}
-{% for result in contacts %}
-  <p>Name: <a href="/admin-single-contact?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/organization-info?organization={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
+<div>
+  <a href="/see-all-contacts?order=first_name">[Order by first name]</a>
+  &nbsp;
+  <a href="/see-all-contacts?order=last_name">[Order by last name]</a>
+</div>
 
-{% endfor %}
-{% endif %}
+<table style="margin-top: 15px; margin-bottom: 15px;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Organization</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for contact in contacts %}
+      <tr>
+        <td>
+          <a href="/admin-single-contact?contact={{ contact.key().id() }}"> {# links to admin only? #}
+            {{ contact.first_name }} {{ contact.last_name }}
+          </a>
+        </td>
+        <td>
+          {% if contact.organization %}
+            <a href="/organization-info?organization={{ contact.organization.key().id() }}">
+              {{ contact.organization.name}}
+            </a>
+          {% else %}
+            No organization
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
 {% endblock %}
-
 
 
 {% block sidebar_content %}

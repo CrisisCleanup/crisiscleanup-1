@@ -41,10 +41,8 @@ import random_password
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('admin_single_contact.html')
-#CASE_LABELS = settings.CASE_LABELS
-#COUNT = 26
 GLOBAL_ADMIN_NAME = "Admin"
-ten_minutes = 600
+
 
 class AdminHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):

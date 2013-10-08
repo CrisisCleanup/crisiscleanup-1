@@ -1,13 +1,15 @@
-{% extends "admin_base.html" %}
-{% block bodycontent %}
+{% extends "base_template.html" %}
 
+{% block main_content %}
+
+<h2>Contact</h2>
 
 <p>Contact Name: {{ single_contact.first_name }} {{ single_contact.last_name }}</p>
 <p>Title: {{ single_contact.title }}</p>
 <p>Phone: {{ single_contact.phone }}</p>
 <p>Email: {{ single_contact.email }}</p>
 {% if single_contact.organization %}
-<p>Organization: <a href="/admin?org={{ single_contact.organization.key().id() }}">{{ single_contact.organization.name }}</a></p>
+<p>Organization: <a href="/admin-single-organization?organization={{ single_contact.organization.key().id() }}">{{ single_contact.organization.name }}</a></p>
 {% else %}
 <p>Organization: None</p>
 {% endif %}

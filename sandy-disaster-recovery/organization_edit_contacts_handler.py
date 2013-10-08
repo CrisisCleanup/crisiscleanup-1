@@ -47,7 +47,9 @@ template = jinja_environment.get_template('organization_edit_contacts.html')
 GLOBAL_ADMIN_NAME = "Admin"
 ten_minutes = 600
 
+
 class OrganizationEditContactsHandler(base.AuthenticatedHandler):
+
     def AuthenticatedPost(self, org, event):
         try:
             id = int(self.request.get("edit_contact_final"))
@@ -66,7 +68,9 @@ class OrganizationEditContactsHandler(base.AuthenticatedHandler):
                 return
             org = organization.Organization.get_by_id(org_id)
             org_key = org.key()
+
         ###########################
+
         this_contact = primary_contact_db.Contact.get(db.Key.from_path('Contact', id))
         if not this_contact.organization.incident.key() == org.incident.key():
             self.redirect("/")
@@ -100,26 +104,25 @@ class OrganizationEditContactsHandler(base.AuthenticatedHandler):
             }))
             return
         
-    def AuthenticatedGet(self, org, event):
-        if self.request.get("contact"):
-            try:
-                id = int(self.request.get("contact"))
-            except:
-                pass
-            
-            organization_list = None
+    def AuthenticatedGet(self, authenticated_org, event):
+        # get & check contact
+        try:
+            id = int(self.request.get("contact"))
             contact = primary_contact_db.Contact.get_by_id(id)
-            query_string = "SELECT * FROM Organization WHERE name = :1"
-            organization_list = db.GqlQuery(query_string, org.name)
-            form = primary_contact_db.ContactFormFull(first_name = contact.first_name, last_name=contact.last_name, phone = contact.phone, email = contact.email, is_primary=int(contact.is_primary))
-            organization_name = None
-            if contact.organization:
-                organization_name = contact.organization.name
-            self.response.out.write(template.render(
-            {
-                "organization_list": organization_list,
-                "edit_contact_id": id,
-                "form": form,
-                "organization_name": organization_name
-            }))
-            return
+            if contact.organization.key() != authenticated_org.key():
+                self.abort(403)
+        except:
+            self.abort(404)
+       
+        # get contact & org list
+        query_string = "SELECT * FROM Organization WHERE name = :1"
+        organization_list = db.GqlQuery(query_string, authenticated_org.name)
+
+        # construct form
+        form = primary_contact_db.ContactFormFull(None, contact)
+        self.response.out.write(template.render({
+            "organization_list": organization_list,
+            "edit_contact_id": id,
+            "form": form,
+            "organization_name": contact.organization.name if contact.organization else None
+        }))

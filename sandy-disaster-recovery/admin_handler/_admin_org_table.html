@@ -1,0 +1,117 @@
+{# parameters: admin and organization #}
+{% from '_utils.html' import bold_if_true %}
+
+{% for contact in contacts %}
+<table style="margin-bottom: 10px">
+  <tr>
+    <td width="30%">{% if contact.is_primary %}Primary {% endif %}Applicant Name:</td>
+    <td><a href="/admin-single-contact?contact={{contact.key().id()}}">{{ contact.first_name }} {{ contact.last_name }}</a></td>
+  </tr>
+
+  <tr>
+    <td width="30%">{% if contact.is_primary %}Primary {% endif %}Applicant Phone:</td>
+    <td>{{ contact.phone }}</td>
+  </tr>
+
+  <tr>
+    <td width="30%">{% if contact.is_primary %}Primary {% endif %}Applicant Email:</td>
+    <td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
+  </tr>
+</table>
+{% else %}
+  <p>No contacts defined.</p>
+{% endfor %}
+
+<hr>
+
+<table style="margin-bottom: 10px;">
+<tr>
+<td>Incident:</td>
+<td><strong>{{ organization.incident.name }}</strong></td>
+</tr>
+
+<tr>
+<td>Organization:</td>
+<td><a href="{{ organization.url }}">{{ organization.name }}</a></td>
+</tr>
+
+<tr>
+<td>Org Email:</td>
+<td><a href="mailto:{{ organization.email }}">{{ organization.email }}</a></td>
+</tr>
+
+<tr>
+<td>Org Phone:</td>
+<td>{{ organization.phone }}</td>
+</tr>
+
+<tr>
+<td>Org Web:</td>
+<td><a href="{{ organization.url }}">{{ organization.url }}</a></td>
+</tr>
+
+<tr>
+<td>Twitter:</td>
+<td><a href="https://twitter.com/{{ organization.twitter}}">{{ organization.twitter }}</a></td>
+</tr>
+
+<tr>
+<td>Facebook:</td>
+<td><a href="{{ organization.facebook }}">{{ organization.facebook }}</a></td>
+</tr>
+
+<tr>
+<td>Address:</td>
+<td>{{ organization.address }}, {{ organization.city }}, {{ organization.state }}  {{ organization.zip_code }}</td>
+</tr>
+
+<tr>
+  <td>Does Recovery:</td>
+  <td>{{ bold_if_true(organization.does_recovery) }}</td>
+</tr>
+
+<tr>
+  <td>Physical Presence:</td>
+  <td>{{ bold_if_true(organization.physical_presence) }} <em>({{ organization.work_area }})</em></td>
+</tr>
+
+<tr>
+  <td>Reputable:</td>
+  <td>{{ bold_if_true(organization.reputable) }}. Referral: {{ organization.voad_referral }}</td>
+</tr>
+
+<tr>
+  <td>Does Only Co-ordination</td>
+  <td>{{ bold_if_true(organization.does_only_coordination) }}</td>
+</tr>
+
+<tr>
+  <td>Does Only Situational Awarenesss:</td>
+  <td>{{ bold_if_true(organization.does_only_sit_aware) }}</td>
+</tr>
+
+<tr>
+  <td>Does Something Else:</td>
+  <td>{{ bold_if_true(organization.does_something_else) }}</td>
+</tr>
+
+<tr>
+  <td>Not an Organisation:</td>
+  <td>{{ bold_if_true(organization.not_an_org) }}</td>
+</tr>
+
+<tr>
+<td>VOAD Member:</td>
+<td>{{ bold_if_true(organization.voad_member) }}. Referral: {{ organization.voad_referral }}</td>
+</tr>
+
+<tr>
+<td>Publish Info:</td>
+<td>{{ bold_if_true(organization.publish) }}</td>
+</tr>
+
+<tr>
+<td><strong>Password:</strong></td>
+<td><strong>{{ organization.password }}</strong></td>
+</tr>
+</table>

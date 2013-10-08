@@ -33,7 +33,7 @@ FILENAMES = [
     'page.html',
     'about.html',
     'contact.html',
-    'new_new_organization.html',
+    'new_organization.html',
     'public_map.html',
     'terms.html',
     'privacy.html',

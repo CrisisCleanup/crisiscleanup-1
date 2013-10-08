@@ -1,131 +1,20 @@
-<form id="signup_form" method="POST" action="/admin">
-<div name="select_div" id="select_div">
+{% extends "base_template.html" %}
+{% from "_form_utils.html" import render_field_row %}
 
-{% if events_list %}
-  <h1>Choose a Disaster:</h1>
-  <select name="choose_event" id="choose_event">
-    <option value="choose">--Choose One--</option>
-    {% for result in events_list %}
-      <option value="{{result.key().id()}}">{{result.name}}</option>
-    {% endfor %}
-  </select>
-{% endif %}
+{% block main_title %}
+<h2>Edit Organization</h2>
+{% endblock %}
 
-<h2 title="Organization name and contact info is required. Please be as specific as possible. For example, rather than &quot;Americorps,&quot; choose &quot;Americorps Hudson County.&quot;">Organization Information<a href="#0.1_fn2"><sup>2</sup></a></h2>
-<a name="0.1_organization"></a>
-<table>
-	<tr>
-		<td class="question" title="This will be your organization&rsquo;s username."><label for="name">Organization Name</label>*:</td>
-		<td class="answer"><input name="name" id="name" type="text" value="{{ organization.name }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question" title="Lets others contact an official organization email."><label for="email">Organization Email</label>:</td>
-		<td class="answer"><input name="email" id="email" type="text" value="{{ organization.email }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question" title="Official organization phone number."><label for="phone">Organization Phone Number</label>:</td>
-		<td class="answer"><input name="phone" id="phone" type="text" value="{{ organization.phone }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question" title="Official organization address, OR field address for the Incident."><label for="address">Address</label>:</td>
-		<td class="answer"><input name="address" id="address" type="text" value="{{ organization.address }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question"><label for="city">City</label>:</td>
-		<td class="answer"><input name="city" id="city" type="text" value="{{ organization.city }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question"><label for="state">State</label>:</td>
-		<td class="answer"><input name="state" id="state" type="text" value="{{ organization.state }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question"><label for="zip_code">Zip Code</label>:</td>
-		<td class="answer"><input name="zip_code" id="zip_code" type="text" value="{{ organization.zip_code }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question" title="We would love to link to you."><label for="url">Organization URL</label>:</td>
-		<td class="answer"><input name="url" id="url" type="text" value="{{ organization.url }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question" title="We would love to follow you and promote your Twitter feed."><label for="twitter">Organization Twitter</label>:</td>
-		<td class="answer"><input name="twitter" id="twitter" type="text" value="{{ organization.twitter }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question" title="We would love to follow you and promote your Facebook link."><label for="facebook">Facebook link</label>:</td>
-		<td class="answer"><input name="facebook" id="facebook" type="text" value="{{ organization.facebook }}" size="35" /></td>
-	</tr>
-	<tr>
-		<td class="question" title="Organization profile information is optional. If you choose yes, your organization&#39;s contact information (but not personal information) may be published on crisiscleanup.org as a way for volunteers and others to contact your organization."><label for="publish">Publish Organization Profile</label><a href="#0.1_fn3"><sup>3</sup></a>:</td>
-		<td class="answer"><input name="publish" id="publish" type="checkbox" value="1" checked="checked" /></td>
-	</tr>
-</table>
-    
-<h2>Qualifications</h2>
-  
+{% block main_content %}
+
+<form method="POST">
   <table>
- 
-  <tr>
-    <td class="question"><label for="physical_presence">Does your organization have a physical presence in the affected area?</label></td>
-    <td class="answer">
-		<ul id="physical_presence">
-			<li><input id="physical_presence-0" name="physical_presence" type="radio" value="1" {% if organization.physical_presence %} checked {% endif %}/> <label for="physical_presence-0">Yes</label></li>
-			<li><input id="physical_presence-1" name="physical_presence" type="radio" value="0" {% if not  organization.physical_presence %} checked {% endif %}/> <label for="physical_presence-1">No</label></li>
-		</ul>
-	</td>
-  </tr>
-  <tr>
-	<td><label for="work_area">&nbsp;&nbsp;&nbsp;If yes, areas you plan to work:</label></td>
-	<td><input name="work_area" type="text" value="{{ organization.work_area }}" size="75" /></td>
-  </tr>
-
-  <tr>
-    <td class="question"><label for="voad_member">Is your organization a non-profit member of National VOAD, a State VOAD or County VOAD/COAD?</label></td>
-    <td class="answer">
-		<ul id="voad_member">
-			<li><input id="voad_member-0" name="voad_member" type="radio" value="1" {% if organization.voad_member %} checked {% endif %} /> <label for="voad_member-0">Yes</label></li>
-			<li><input id="voad_member-1" name="voad_member" type="radio" value="0" {% if not  organization.appropriate_work %} checked {% endif %}/> <label for="voad_member-1">No</label></li>
-		</ul>
-	</td>
-  </tr>
-
-  <tr>
-	<td class="question"><label for="voad_referral-yes">&nbsp;&nbsp;&nbsp;If yes, how can we best confirm?</label></td>
-	<td class="answer"><input id="voad_referral-yes" name="voad_referral" type="text" value="{{ organization.voad_referral }}" size="75" /></td>
-  </tr>
-
-  <tr>
-	<td class="question"><label for="voad_referral-no">&nbsp;&nbsp;&nbsp;If no, can you refer us to someone who can vouch for your work?</label></td>
-	<td class="answer"> <input id="voad_referral-no" name="voad_referral" type="text" value="{{ organization.voad_referral }}" size="75" /></td>
-  </tr>
-
-  <tr>
-    <td class="question"><label for="appropriate_work">Does your organization do one or more of the following: Canvassing, Assessment, Debris Removal, Muck-outs/ Mud-outs, Tree Removal, Mold Abatement or Control, Rebuilding, or Refurbishing?</label></td>
-    <td class="answer">
-		<ul id="appropriate_work">
-			<li><input id="appropriate_work-0" name="appropriate_work" type="radio" value="1" {% if organization.appropriate_work %} checked {% endif %}> <label for="appropriate_work-0">Yes</label></li>
-			<li><input id="appropriate_work-1" name="appropriate_work" type="radio" value="0" {% if not  organization.appropriate_work %} checked {% endif %}> <label for="appropriate_work-1">No</label></li>
-		</ul>
-	</td>
-  </tr>
-</table>
-
-<table>
-<!--
-	<tr>
-		<td>
-		<label for="TermsOfService">
-		<input type="checkbox" value="yes" name="TermsOfService" id="TermsOfService" />
-		<strong>I agree to the <a target="_blank" id="TOSLink" href="/terms">Terms of Service</a> and <a target="_blank" id="PrivacyLink" href="/privacy">Privacy Policy</a></strong>
-		</label>
-		</td>
-	</tr>
--->   <input type=hidden name=edit_org value={{organization.key().id()}}>
-
-	<tr>
-		<td>
-		<button class="submit">Submit</button>
-		</td>
-	</tr>
-</table>
-</div>
+    <input type="hidden" name="org_id" value="{{ organization.key().id() }}">
+    {% for field in form %}
+      {{ render_field_row(field) }}
+    {% endfor %}
+  </table>
+  <button type="submit" name="submit">Submit</button>
 </form>
+
+{% endblock %}

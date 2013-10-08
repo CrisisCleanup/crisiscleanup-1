@@ -5,39 +5,60 @@
 
 {% block main_content %}
 
-<h1>Create Contact</h1>
-
 <form method="POST" action="/admin">
-{% if errors %}
-<section id="errors">
-  <header>The submission had errors</header>
-  <article>
-    <ul>
-    {% for k in errors %}
-      <li class="error">
-        {% for e in errors[k] %}
-          {{k}}: {{e}}
-        {% endfor %}
-      </li>
-    {% endfor %}
-    </ul>
-  <article>
-</section>
-{% endif %}
-<p>Choose organization</p>
-<select name="choose_organization">
-{% for result in organization_list %}
-<option value="{{result.key().id()}}">{{result.name}}</option>
-{% endfor %}
-</select><br/><br/>
-<div>{{ form.first_name.label }}: {{ form.first_name }}</div>
-<div>{{ form.last_name.label }}: {{ form.last_name }}</div>
-<div>{{ form.title.label }}: {{ form.title }}</div>
-<div>{{ form.email.label }}: {{ form.email }}</div>
-<div>{{ form.phone.label }}: {{ form.phone }}</div>
-<p>Applicant Is Primary Contact for Organization: {{ form.is_primary }}</p>
- <input type=hidden name=create_contact value=True>
-<input type=submit value="Submit Edit">
+  {% if errors %}
+  <section id="errors">
+    <header>The submission had errors</header>
+    <article>
+      <ul>
+      {% for k in errors %}
+        <li class="error">
+          {% for e in errors[k] %}
+            {{k}}: {{e}}
+          {% endfor %}
+        </li>
+      {% endfor %}
+      </ul>
+    <article>
+  </section>
+  {% endif %}
+  <p>Choose organization</p>
+  <select name="choose_organization">
+  {% for result in organization_list %}
+  <option value="{{result.key().id()}}">{{result.name}}</option>
+  {% endfor %}
+  </select><br/><br/>
+
+  <table>
+    <tr>
+      <td>{{ form.first_name.label }}:</td>
+      <td>{{ form.first_name }}</td>
+    <tr>
+      <td>{{ form.last_name.label }}:</td>
+      <td>{{ form.last_name }}</td>
+    </tr>
+    <tr>
+      <td>{{ form.title.label }}:</td>
+      <td>{{ form.title }}</td>
+    </tr>
+    <tr>
+      <td>{{ form.email.label }}:</td>
+      <td>{{ form.email }}</td>
+    </tr>
+    <tr>
+      <td>{{ form.phone.label }}:</td>
+      <td>{{ form.phone }}</td>
+    </tr>
+  </table>
+
+  <p>
+    <label for="is_primary">Applicant Is Primary Contact for Organization:
+    {{ form.is_primary }}
+  </p>
+
+  <input type=hidden name=create_contact value=True>
+  <input type=submit value="Submit Edit">
+
 </form>
 
 {% endblock %}

@@ -35,7 +35,7 @@ from datetime import datetime
 import settings
 
 from google.appengine.ext import db
-import organization
+from organization import Organization, CreateOrganizationForm
 import primary_contact_db
 import random_password
 
@@ -45,10 +45,21 @@ template = jinja_environment.get_template('admin_create_organization.html')
 #CASE_LABELS = settings.CASE_LABELS
 #COUNT = 26
 GLOBAL_ADMIN_NAME = "Admin"
-ten_minutes = 600
+
 
 class AdminHandler(base.AuthenticatedHandler):
-    def AuthenticatedGet(self, org, event):
+
+    def _get_events(self, org, global_admin, local_admin):
+        if global_admin:
+            query_string = "SELECT * FROM Event"
+            return db.GqlQuery(query_string)
+        
+        if local_admin:
+            query_string = "SELECT * FROM Event"
+            events = db.GqlQuery(query_string)
+            return [e for e in events if e.key() == org.incident.key()]
+
+    def AuthenticatedGet(self, org, _):
         global_admin = False
         local_admin = False
         
@@ -60,31 +71,50 @@ class AdminHandler(base.AuthenticatedHandler):
         if global_admin == False and local_admin == False:
             self.redirect("/")
             return
-                
-            
-        form = organization.OrganizationFormNoContact()
-        events_list = None
-        if global_admin:
-            query_string = "SELECT * FROM Event"
-            events_list = db.GqlQuery(query_string)
-        
-        if local_admin:
-            events_list = []
-            query_string = "SELECT * FROM Event"
-            events = db.GqlQuery(query_string)
-            
-            for e in events:
-                if e.key() == org.incident.key():                    
-                    events_list.append(e)
-            
-            
-        auto_password = random_password.generate_password()
-        self.response.out.write(template.render(
-        {
+
+        # create form
+        form = CreateOrganizationForm()
+        events = self._get_events(org, global_admin, local_admin)
+        form.incident.choices = [(str(event.key().id()), event.name) for event in events]
+        form.password.data = random_password.generate_password()
+
+        # render template
+        self.response.out.write(template.render({
             "form": form,
-            "events_list": events_list,
-            "create_org": True,
-            "auto_password": auto_password,
             "global_admin": global_admin,
         }))
-        return
+
+    def AuthenticatedPost(self, org, _):
+        global_admin = False
+        local_admin = False
+        
+        if org.name == GLOBAL_ADMIN_NAME:
+            global_admin = True
+        if org.is_admin == True and global_admin == False:
+            local_admin = True
+            
+        if global_admin == False and local_admin == False:
+            self.redirect("/")
+            return
+
+        # create form
+        form = CreateOrganizationForm(self.request.POST)
+        events = self._get_events(org, global_admin, local_admin)
+        form.incident.choices = [(str(event.key().id()), event.name) for event in events]
+
+        if form.validate() and not form.errors:
+            # create new org
+            event = event_db.Event.get_by_id(int(form.incident.data))
+            new_org = Organization(
+                name=form.name.data,
+                incident=event,
+            )
+            del(form.incident)
+            form.populate_obj(new_org)
+            new_org.save()
+            self.redirect('/admin-single-organization?organization=%d' % new_org.key().id())
+        else:
+            self.response.out.write(template.render({
+                "form": form,
+                "global_admin": global_admin,
+            }))

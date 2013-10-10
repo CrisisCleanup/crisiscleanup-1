@@ -63,6 +63,7 @@ import public_map_handler
 import public_map_ajax_handler
 import get_event_ajax_handler
 import import_co_handler
+import change_password_handler
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
@@ -135,6 +136,7 @@ app = webapp2.WSGIApplication([
     Route(r'/export', export_handler.ExportHandler, 'export'),
     Route(r'/export_all', export_all_handler.ExportAllHandler, 'export_all'),
     Route(r'/get_event_ajax', get_event_ajax_handler.GetEventAjaxHandler, 'get_event_ajax'),
+    Route(r'/change_password', change_password_handler.ChangePasswordHandler, 'change_password'),
 
     Route(r'/logout', LogoutHandler, 'logout'),
     Route(r'/delete', delete_handler.DeleteHandler, 'delete'),

@@ -1,5 +1,3 @@
-#application: sandy-disaster-recovery # ** do not commit this line uncommented **
-#application: crisiscleanup-demo # DISABLE secure directive below if deploying demo # ** do not commit this line uncommented **
 application: $APPLICATION_PLACEHOLDER
 version: 410
 runtime: python27

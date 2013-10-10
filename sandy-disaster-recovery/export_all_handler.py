@@ -33,27 +33,17 @@ class ExportAllHandler(base.AuthenticatedHandler):
   def AuthenticatedPost(self, org, event):
     sites = site_util.BatchSitesFromIds(event)
 
-    filename = 'work_sites.csv'
     self.response.headers['Content-Type'] = 'text/csv'
     self.response.headers['Content-Disposition'] = (
         'attachment; filename="work_sites.csv"')
 
-    #q = db.Query(incident_csv_db.IncidentCSV)
-    #q.filter("incident =", event.key())
-    #query = q.get()
-    #new_list = []
-    
-    #for i in query.incident_csv:
-      #new_list.append(str(i))
-      
-    
     writer = csv.writer(self.response.out)
     #remove normalized, and metaphone from here.
     final_list = []
     
     moore_list = ["request_date","city","county","state","zip_code","work_type","house_affected","outbuilding_affected","exterior_property_affected","rent_or_own","work_without_resident","member_of_assessing_organization","first_responder","older_than_60","special_needs","priority","destruction_level","house_roof_damage","outbuilding_roof_damage","tarps_needed","help_install_tarp","num_trees_down","num_wide_trees","interior_debris_removal","nonvegitative_debris_removal","vegitative_debris_removal","unsalvageable_structure","heavy_machinary_required","damaged_fence_length","fence_type","fence_notes","notes","habitable","electricity","electrical_lines","unsafe_roof","unrestrained_animals","other_hazards","status","status_notes","do_not_work_before"]
     
-    others_list = ["request_date","city", "county", "state", "zip_code", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_assessing_organization", "first_responder", "older_than_60", "disabled", "priority", "flood_height", "floors_affected", "carpet_removal", "hardwood_floor_removal", "drywall_removal", "heavy_item_removal", "appliance_removal", "standing_water", "mold_remediation", "pump_needed", "num_trees_down", "num_wide_trees", "roof_damage", "tarps_needed", "debris_removal_only", "habitable", "electricity", "electrical_lines", "status", "do_not_work_before"]
+    others_list = ["request_date","city", "county", "state", "zip_code", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_assessing_organization", "first_responder", "older_than_60", "disabled", "priority", "flood_height", "floors_affected", "carpet_removal", "hardwood_floor_removal", "drywall_removal", "heavy_item_removal", "appliance_removal", "standing_water", "mold_remediation", "pump_needed", "num_trees_down", "num_wide_trees", "roof_damage", "tarps_needed", "debris_removal_only", "habitable", "electricity", "electrical_lines", "status", "do_not_work_before", "special_needs", "work_requested", "notes"]
 
 
     if event.short_name == "moore":

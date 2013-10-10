@@ -149,7 +149,7 @@ def deploy(app_names_csv_or_all):
     # if deploying to all, check
     if app_names_csv_or_all == 'all':
         if not confirm("Deploy to ALL live applications? Are you sure?", default=False):
-            abort()
+            abort("Deploy to all unconfirmed.")
 
     # get app definitions
     app_defns = get_app_definitions(app_names_csv_or_all)

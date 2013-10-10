@@ -145,8 +145,10 @@ def list():
 @task
 def deploy(app_names_csv_or_all):
     " Deploy to one or more applications (CSV). "
-    # get and check app definitions
+    # get app definitions
     app_defns = get_app_definitions(app_names_csv_or_all)
+
+    # before doing anything, check if *all* are ok to deploy
     map(ok_to_deploy, app_defns)
 
     # deploy to all specified apps

@@ -105,7 +105,7 @@ sandy.form.SetUpValidation = function() {
     goog.dom.getElement('county').onblur = validate;
     goog.dom.getElement('city').onblur = validate;
 
-}
+};
 
 
 var last_city = "";
@@ -120,23 +120,23 @@ function handle_status_changed() {
   var status = goog.dom.getElement('status').value;
   var assigned_to_row = goog.dom.getElement('assigned_to_row');
   if (status == 'Open, unassigned') {
-    assigned_to_row.style['display'] = 'none';
+    assigned_to_row.style.display = 'none';
   } else {
-    assigned_to_row.style['display'] = 'block';
+    assigned_to_row.style.display = 'block';
   }
 }
 
 sandy.form.SetUpAdditionalHandlers = function() {
   // handle status changed
-  goog.dom.getElement('status').onchange = handle_status_changed();
+  goog.dom.getElement('status').onchange = handle_status_changed;
 
   // disable return key
   document.onkeypress = function(e) {
     if (e.which == '13') {
       e.preventDefault();
     }
-  }
-}
+  };
+};
 
 
 function validate() {

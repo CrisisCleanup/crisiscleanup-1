@@ -1,6 +1,6 @@
 #application: sandy-disaster-recovery # ** do not commit this line uncommented **
 #application: crisiscleanup-demo # DISABLE secure directive below if deploying demo # ** do not commit this line uncommented **
-application: sandy-helping-hands
+application: $APPLICATION_PLACEHOLDER
 version: 410
 runtime: python27
 api_version: 1
@@ -32,7 +32,7 @@ handlers:
 
 - url: .*
   script: main.app
-  secure: always
+  secure: $SECURE_PLACEHOLDER
 libraries:
 - name: webapp2
   version: "2.3"

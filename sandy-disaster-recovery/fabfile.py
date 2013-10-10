@@ -137,11 +137,13 @@ def get_app_definitions(app_names_csv_or_all):
         except KeyError, e:
             abort("'%s' is not a known application." % e.message)
 
+
 @task
 def list():
     " List known application names. "
     for name in APPS:
         print name
+
 
 @task
 def deploy(app_names_csv_or_all):
@@ -163,6 +165,12 @@ def deploy(app_names_csv_or_all):
             write_app_yaml(app_defn)
             update()
             delete_app_yaml()
+
+    # output success message
+    print "\nSuccessfully deployed to %s." % ', '.join(
+        app_defn['application'] for app_defn in app_defns
+    )
+
 
 @task
 def write_local_app_yaml():

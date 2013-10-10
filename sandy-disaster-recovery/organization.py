@@ -36,8 +36,6 @@ class Organization(db.Expando):
   # to retrieve them for an organization.
   password = db.StringProperty()
 
-  primary_contact_email = db.StringProperty(default = '') # DEPRECATED - to be removed
-
   # If set, then only session cookies are sent to the
   # user's browser. Otherwise, they'll receive cookies that
   # will expire in 1 week.
@@ -59,7 +57,6 @@ class Organization(db.Expando):
   email = db.StringProperty(required=False)
   incident = db.ReferenceProperty()
   publish = db.BooleanProperty(required=False)
-  appropriate_work = db.BooleanProperty(required=False)
 
   does_recovery = db.BooleanProperty(required=False)
   does_only_coordination = db.BooleanProperty(required=False)
@@ -76,50 +73,6 @@ class Organization(db.Expando):
 
   admin_notes = db.TextProperty(required=False)
   
-  number_volunteers = db.StringProperty(required=False)#|Approximately how many volunteers will your organization utilize for cleanup efforts?
-  voad_member = db.BooleanProperty(required=False)#|Is your organization a member of National VOAD, a State VOAD or County VOAD/COAD?
-  voad_member_url = db.TextProperty(required=False)#|If so, can you provide one or more URLs listing your organizations membership? (This will significantly speed up approval)
-  
-  
-  # PHASES. Note: Phases attach to an incident, not an organization. An organization may complete different phases, depending upon the incident.
-  # Setting defaults to True for schema update. Otherwise all old organizations will have no phases in scope
-  canvass = db.BooleanProperty(required=False)#|Canvass
-  assessment = db.BooleanProperty(required=False)#|Assessment
-  clean_up = db.BooleanProperty(required=False)#|Clean-up
-  water_pumping = db.BooleanProperty(required=False)#|Water Pumping
-  muck_out = db.BooleanProperty(required=False)#|Muck Out
-  interior_debris = db.BooleanProperty(required=False)#|Interior Debris
-  gutting = db.BooleanProperty(required=False)#|Gutting
-  tree_removal = db.BooleanProperty(required=False)#|Tree Removal
-  exterior_debris = db.BooleanProperty(required=False)#|Exterior Debris
-  sanitizing = db.BooleanProperty(required=False)#|Sanitizing
-  mold_treatment = db.BooleanProperty(required=False)#|Mold Treatment
-  design = db.BooleanProperty(required=False)#|Design
-  permits = db.BooleanProperty(required=False)#|Building Permits
-  reconstruction = db.BooleanProperty(required=False)#|Reconstruction
-  replace_appliances = db.BooleanProperty(required=False)#|Replace Appliances
-  replace_furniture = db.BooleanProperty(required=False)#|Replace Furniture
-  mold_abatement = db.BooleanProperty(required=False)#|Mold Abatement
-  refurbishing = db.BooleanProperty(required=False)#|Refurbishing
-
-  _ACTIVE_PHASE_BOOLEANS = [
-    canvass,
-    assessment,
-    water_pumping,
-    muck_out,
-    interior_debris,
-    gutting,
-    tree_removal,
-    exterior_debris,
-    sanitizing,
-    mold_treatment,
-    design,
-    permits,
-    reconstruction,
-    replace_appliances,
-    replace_furniture
-  ]
-
   #OTHER
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
   

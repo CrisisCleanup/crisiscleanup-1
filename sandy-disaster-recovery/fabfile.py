@@ -43,6 +43,11 @@ APPS = {
     d['application']:d for d in yaml.load(MINI_YAML)
 }
 
+LOCAL_APP = {
+    'application': 'local',
+    'secure': 'optiona'
+}
+
 
 # functions
 
@@ -145,3 +150,8 @@ def deploy(app_names_csv_or_all):
             write_app_yaml(app_defn)
             update()
             delete_app_yaml()
+
+@task
+def write_local_app_yaml():
+    " Write out app.yaml for local dev use. "
+    write_app_yaml(LOCAL_APP)

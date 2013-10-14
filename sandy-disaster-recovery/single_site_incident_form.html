@@ -19,6 +19,8 @@
  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
   <script type="text/javascript" src="javascript/populate_edit_form.js"></script>         
     <script type="text/javascript">
+
+{% if post_json %}
         $(function(){
 var post_json = {{post_json}};
 var oFormObject = document.forms['form'];
@@ -85,6 +87,7 @@ Object.keys(post_json).forEach(function(key) {
 //     }
 });
 })
+{% endif %}
 
     </script>
     <!-- The contents of myscript.js will be loaded inside the script tag -->

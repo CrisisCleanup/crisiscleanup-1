@@ -30,6 +30,8 @@ import organization
 import key
 import page_db
 
+from messaging import email_administrators
+
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -118,5 +120,11 @@ class NewOrganizationHandler(base.RequestHandler):
 
         # save
 	organization.PutAndCacheOrganizationAndContact(org, new_contacts)
+
+        # email admin
+        email_administrators(
+            subject="%s has signed up as a new organization" % org.name,
+            body="%s has signed up as a new organization" % org.name,
+        )
 			    
 	self.redirect("/welcome")

@@ -122,9 +122,8 @@ class NewOrganizationHandler(base.RequestHandler):
 	organization.PutAndCacheOrganizationAndContact(org, new_contacts)
 
         # email admin
-        email_administrators(
-            subject="%s has signed up as a new organization" % org.name,
-            body="%s has signed up as a new organization" % org.name,
-        )
+        admin_message = "%s has signed up as a new organization (%s)" % (
+            org.name, chosen_event.name)
+        email_administrators(subject=admin_message, body=admin_message)
 			    
 	self.redirect("/welcome")

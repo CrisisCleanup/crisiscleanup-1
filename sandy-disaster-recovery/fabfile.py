@@ -1,5 +1,8 @@
 
 import os
+from tempfile import mkdtemp
+
+from distutils.dir_util import copy_tree
 
 from fabric.api import env, task, local, abort
 from fabric.colors import yellow
@@ -17,7 +20,7 @@ APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template'
 
 # define env
 
-env.appcfg = '../../google_appengine/appcfg.py'
+env.appcfg = os.path.realpath('../../google_appengine/appcfg.py')
 
 
 # define apps
@@ -156,15 +159,20 @@ def deploy(app_names_csv_or_all):
     # get app definitions
     app_defns = get_app_definitions(app_names_csv_or_all)
 
-    # before doing anything, check if *all* are ok to deploy
+    # before doing anything, check if *all* apps are ok to deploy to
     map(ok_to_deploy, app_defns)
+
+    # copy dir for deployment
+    build_dir = mkdtemp()
+    print "Building to %s" % build_dir
+    copy_tree('.', build_dir)
+    os.chdir(build_dir)
 
     # deploy to all specified apps
     for app_defn in app_defns:
-        if ok_to_deploy(app_defn):
-            write_app_yaml(app_defn)
-            update()
-            delete_app_yaml()
+        write_app_yaml(app_defn)
+        update()
+        delete_app_yaml()
 
     # output success message
     print "\nSuccessfully deployed to %s." % ', '.join(

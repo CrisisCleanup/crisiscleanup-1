@@ -246,7 +246,7 @@ class EditHandler(base.AuthenticatedHandler):
         # in this form, we have to only set those that were explicitly
         # set in the post request.
         in_post = self.request.get(f.name, default_value = None)
-        if not in_post:
+        if in_post is None:
           continue
         setattr(site, f.name, f.data)
       if claim_for_org:

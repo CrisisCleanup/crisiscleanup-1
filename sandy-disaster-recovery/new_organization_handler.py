@@ -19,7 +19,7 @@
 import jinja2
 import os
 from google.appengine.ext import db
-import random_password
+from urlparse import urlparse
 
 
 # Local libraries.
@@ -29,8 +29,9 @@ import primary_contact_db
 import organization
 import key
 import page_db
+import random_password
 
-from messaging import email_administrators
+from messaging import email_administrators, get_application_id
 
 
 jinja_environment = jinja2.Environment(
@@ -122,8 +123,23 @@ class NewOrganizationHandler(base.RequestHandler):
 	organization.PutAndCacheOrganizationAndContact(org, new_contacts)
 
         # email admin
-        admin_message = "%s has signed up as a new organization (%s)" % (
-            org.name, chosen_event.name)
-        email_administrators(subject=admin_message, body=admin_message)
+        admin_subject = "%s %s at %s has requested access to %s for %s" % (
+            new_contacts[0].first_name,
+            new_contacts[0].last_name,
+            org.name,
+            get_application_id(),
+            chosen_event.name
+        )
+        approval_url = "%s://%s/admin-new-organization?new_organization=%d" % (
+            urlparse(self.request.url).scheme,
+            urlparse(self.request.url).netloc,
+            org.key().id()
+        )
+        organization_form = organization.OrganizationForm(None, org)
+        admin_body = '\n'.join(
+            ["To review and approve: %s\n" % approval_url] +
+            ["%s: %s" % (field.label.text, field.data) for field in organization_form]
+        )
+        email_administrators(subject=admin_subject, body=admin_body)
 			    
 	self.redirect("/welcome")

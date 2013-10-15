@@ -23,11 +23,20 @@ ADMINISTRATORS = [
 ]
 
 
+def get_application_id():
+    return app_identity.get_application_id()
+
+
+def get_default_version_hostname():
+    return app_identity.get_default_version_hostname()
+
+
 def get_app_system_email_address():
     return "%s <noreply@%s.appspotmail.com>" % (
         app_identity.get_service_account_name(),
         app_identity.get_application_id()
     )
+
 
 def email_administrators(subject, body):
     """

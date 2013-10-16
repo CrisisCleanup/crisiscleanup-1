@@ -402,14 +402,23 @@ class Site(db.Expando):
     return find_similar(self, event)
 
   def ToCsvLine(self, extra_csv_list):
-    """Returns the site as a list of string values, one per field in
-    CSV_FIELDS."""
+    """
+    Returns the site as a list of string values, one per field in
+    CSV_FIELDS.
+    """
     csv_row = []
     fields_list = extra_csv_list
     for field in fields_list:
+      # get value using looked-up accessor function
       accessor = self._CSV_ACCESSORS.get(field, _GetField)
       value = accessor(self, field)
-      if value is None:
+
+      # append value to row, handling special cases first
+      if field.startswith('Days Waiting From'):
+        csv_row.append(
+            (datetime.datetime.utcnow() - self.request_date).days
+        )
+      elif value is None:
         csv_row.append('')
       else:
         try:

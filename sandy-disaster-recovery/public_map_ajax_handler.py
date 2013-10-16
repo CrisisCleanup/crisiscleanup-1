@@ -18,16 +18,15 @@
 import datetime
 import jinja2
 import json
-import logging
 import os
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.ext.db import Query
 from collections import OrderedDict
-# Local libraries.
+
+# Local libraries
 import base
-import key
 import site_db
 import event_db
 
@@ -38,11 +37,11 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) el
 open_statuses = [s for s in site_db.Site.status.choices if 'Open' in s]
 closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statuses]
 
+
 class PublicMapAjaxHandler(base.RequestHandler):      
+
   def get(self):
-    logging.debug("PublicMapAjaxHandler")
     event_shortname = self.request.get("shortname")
-    logging.debug(event_shortname + " = event")
     page = self.request.get("page")
     page_int = int(page)
 
@@ -55,67 +54,43 @@ class PublicMapAjaxHandler(base.RequestHandler):
 	event = e
 
       
-    logging.debug(event.name)
-    #q = Query(model_class = site_db.Site)#, projection=('latitude', 'longitude','id', 'status', 'claimed_by', 'work_type', 'derechos_work_type', 'case_number', 'floors_affected'))
-
-
     ids = []
-  #filter by event
-    #status = "open"
-    #q.filter("event =", event.key())
-    #q.is_keys_only()
-    #if status == "open":
-	#logging.debug("status == open")
-	#q.filter("status >= ", "Open")
-    #elif status == "closed":
-	#q.filter("status < ", "Open")
-	#logging.debug("status == closed")
-    #logging.debug("status = " + status)
-	
-    #query = q.fetch(PAGE_OFFSET, offset = page_int * PAGE_OFFSET)
-    #for q in query:
-	#ids.append(q.key().id())
-    #q = db.Query(site_db.Site, projection=('latitude', 'longitude','id', 'status', 'claimed_by', 'work_type', 'derechos_work_type', 'case_number', 'floors_affected'), filter('status >=', "open"))
-    #q = site_db.Site.gql("SELECT latitude, longitude, id, claimed_by, work_type, derechos_work_type, case_number, floors_affected WHERE status >= open")
     where_string = "Open"
     q = None
     if event.short_name != 'moore':
-      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2'# WHERE status >= %s", where_string
+      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2'
       q = db.GqlQuery(gql_string, where_string, event.key())
 
     else:
       q = Query(model_class = site_db.Site)
 
-      logging.debug("again" + event.name)
       q.filter("event =", event.key())
       q.is_keys_only()
-      logging.debug("status == open")
       q.filter("status >= ", "Open")
 	  
-      #query = q.fetch(PAGE_OFFSET, offset = page_int * PAGE_OFFSET)
-      #for q in query:
-	  #ids.append(q.key().id())
-	  
       this_offset = page_int * PAGE_OFFSET
-      logging.debug("this_offset = " + str(this_offset))
 	  
       ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
-      logging.debug("ids len = " + str(len(ids)))
            
-
-
     this_offset = page_int * PAGE_OFFSET
-    logging.debug("this_offset = " + str(this_offset))
 	
     ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
-    logging.debug("ids len = " + str(len(ids)))
+
+    def public_site_filter(site):
+        return {
+            'event': site['event'],
+            'id': site['id'],
+            'case_number': site['case_number'],
+            'work_type': site['work_type'],
+            'claimed_by': site['claimed_by'],
+            'status': site['status'],
+            'floors_affected': site['floors_affected'],
+            'blurred_latitude': site['blurred_latitude'],
+            'blurred_longitude': site['blurred_longitude'],
+        }
 	
     output = json.dumps(
-	[s[1] for s in site_db.GetAllCached(event, ids)],
-	default=dthandler)
+	[public_site_filter(s[1]) for s in site_db.GetAllCached(event, ids)],
+	default=dthandler
+    )
     self.response.out.write(output)
-    return
-        
-    #self.response.out.write(output)
-
-    

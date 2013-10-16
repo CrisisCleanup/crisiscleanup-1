@@ -15,15 +15,12 @@
 # limitations under the License.
 #
 # System libraries.
+import datetime
 import csv
 
 # Local libraries.
 import base
-import site_db
 import site_util
-import incident_csv_db
-from google.appengine.ext import db
-
 
 
 class ExportHandler(base.AuthenticatedHandler):
@@ -49,7 +46,19 @@ class ExportHandler(base.AuthenticatedHandler):
       final_list = moore_list
     else:
       final_list = others_list
+
+    # write header/title row
+    writer.writerow([
+        "%s Work Orders. Downloaded %s UTC by %s" % (
+            event.name,
+            str(datetime.datetime.utcnow()).split('.')[0],
+            org.name
+        )
+    ])
+
+    # write column headings
     writer.writerow(final_list)
 
+    # write csv rows
     for site in sites:
       writer.writerow(site.ToCsvLine(final_list))

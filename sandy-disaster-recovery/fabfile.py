@@ -18,9 +18,24 @@ APP_YAML_FILENAME = 'app.yaml'
 APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template'
 
 
+# find GAE appcfg
+
+GAE_APPCFG_POSSIBLE_LOCATIONS = [
+    '../../google_appengine/appcfg.py',
+]
+
+try:
+    _appcfg_path = (
+        path for path in GAE_APPCFG_POSSIBLE_LOCATIONS
+        if os.path.exists(path)
+    ).next()
+except StopIteration:
+    abort('appcfg.py not found - edit GAE_APPCFG_POSSIBLE_LOCATIONS')
+
+
 # define env
 
-env.appcfg = os.path.realpath('../../google_appengine/appcfg.py')
+env.appcfg = os.path.realpath(_appcfg_path)
 
 
 # define apps

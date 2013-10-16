@@ -35,6 +35,7 @@ except StopIteration:
 
 # define env
 
+env.master_branch = "master"
 env.appcfg = os.path.realpath(_appcfg_path)
 
 
@@ -73,11 +74,13 @@ LOCAL_APP = {
 def warn(msg):
     return raw_warn(yellow(msg))
 
+
 def app_yaml_template_present():
     " Check that the app.yaml template is present. "
     if APP_YAML_TEMPLATE_FILENAME not in os.listdir('.'):
         abort("%s not found" % APP_YAML_TEMPLATE_FILENAME)
     return True
+
 
 def working_directory_clean(app_defn):
     " Check that the working directory is clean. "
@@ -89,26 +92,32 @@ def working_directory_clean(app_defn):
             abort("Working directory must be clean to deploy to %s" % app_defn['application'])
     return True
 
+
 def on_master_branch(app_defn):
     " Check master branch is checked out. "
     checked_out_branch = local("git rev-parse --abbrev-ref HEAD", capture=True)
-    if checked_out_branch != 'master':
+    if checked_out_branch != env.master_branch:
         if app_defn.get('allow_unclean_deploy', False):
             warn("Branch is %s (ignoring for %s)" % (checked_out_branch, app_defn['application']))
         else:
-            abort("master branch must be checked out to deploy to %s" % app_defn['application'])
+            abort("%s branch must be checked out to deploy to %s" % (
+                env.master_branch, app_defn['application']))
     return True
+
 
 def master_pushed_to_remote(app_defn):
     " Check that the master branch is pushed to origin. "
-    local_master_ref = local("git rev-parse master", capture=True)
-    origin_master_ref = local("git rev-parse origin/master", capture=True)
+    local_master_ref = local("git rev-parse %s" % env.master_branch, capture=True)
+    origin_master_ref = local("git rev-parse origin/%s" % env.master_branch, capture=True)
     if local_master_ref != origin_master_ref:
         if app_defn.get('allow_unclean_deploy', False):
-            warn("master and origin/master differ (ignoring for %s)" % app_defn['application'])
+            warn("%s and origin/%s differ (ignoring for %s)" % (
+                env.master_branch, env.master_branch, app_defn['application']))
         else:
-            abort("master must be pushed to origin to deploy to %s" % app_defn['application'])
+            abort("%s must be pushed to origin to deploy to %s" % (
+                env.master_branch, app_defn['application']))
     return True
+
 
 def ok_to_deploy(app_defn):
     return (
@@ -117,6 +126,7 @@ def ok_to_deploy(app_defn):
         on_master_branch(app_defn) and
         master_pushed_to_remote(app_defn)
     )
+
 
 def write_app_yaml(app_defn, preamble=None):
     # set preamble
@@ -138,12 +148,15 @@ def write_app_yaml(app_defn, preamble=None):
         app_yaml_fd.write(preamble)
         app_yaml_fd.write(yaml)
 
+
 def delete_app_yaml():
     os.remove(APP_YAML_FILENAME)
+
 
 def update():
     " Update GAE from working dir. "
     local("%(appcfg)s --oauth2 update . " % env)
+
 
 def get_app_definitions(app_names_csv_or_all):
     if app_names_csv_or_all == 'all':

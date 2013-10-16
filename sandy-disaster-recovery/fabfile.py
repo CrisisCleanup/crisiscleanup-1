@@ -35,7 +35,7 @@ except StopIteration:
 
 # define env
 
-env.master_branch = "master"
+env.master_branch = "public-map-hotfix"
 env.appcfg = os.path.realpath(_appcfg_path)
 
 

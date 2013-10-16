@@ -1,0 +1,1 @@
+{{ primary_contact.first_name }} {{ primary_contact.last_name }} at {{ new_organization.name }} has requested access to {{ application_id }} for {{ event.name }}

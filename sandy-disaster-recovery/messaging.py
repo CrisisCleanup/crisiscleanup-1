@@ -15,13 +15,31 @@
 # limitations under the License.
 #
 
+import os
+
 from google.appengine.api import app_identity, mail
+
+import jinja2
 
 
 ADMINISTRATORS = [
     ('Aaron Titus', 'aaron@crisiscleanup.org')
 ]
 
+
+# jinja
+
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(
+        os.path.join(
+            os.path.dirname(__file__),
+            'email_templates'
+        )
+    )
+)
+
+
+# functions
 
 def get_application_id():
     return app_identity.get_application_id()
@@ -52,4 +70,27 @@ def email_administrators(subject, body):
             recipient_address,
             subject,
             body
+        )
+
+
+def email_administrators_using_templates(
+    event, subject_template_name, body_template_name, **kwargs):
+    subject_template = jinja_environment.get_template(subject_template_name)
+    body_template = jinja_environment.get_template(body_template_name)
+
+    kwargs.update({'event': event})
+
+    rendered_subject = subject_template.render(kwargs)
+    rendered_body = body_template.render(kwargs)
+
+    prefixed_subject = "[%s] %s" % (app_identity.get_application_id(), rendered_subject)
+    sender_address = get_app_system_email_address()
+
+    for name, email_address in ADMINISTRATORS:
+        recipient_address = "%s <%s>" % (name, email_address)
+        mail.send_mail(
+            sender_address,
+            recipient_address,
+            prefixed_subject,
+            rendered_body
         )

@@ -1,0 +1,6 @@
+
+To review and approve: {{ approval_url }}
+
+{% for field in organization_form -%}
+{{ field.label.text }}: {{ field.data }}
+{% endfor %}

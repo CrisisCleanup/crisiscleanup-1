@@ -31,7 +31,7 @@ import key
 import page_db
 import random_password
 
-from messaging import email_administrators, get_application_id
+from messaging import email_administrators_using_templates, get_application_id
 
 
 jinja_environment = jinja2.Environment(
@@ -122,24 +122,22 @@ class NewOrganizationHandler(base.RequestHandler):
         # save
 	organization.PutAndCacheOrganizationAndContact(org, new_contacts)
 
-        # email admin
-        admin_subject = "%s %s at %s has requested access to %s for %s" % (
-            new_contacts[0].first_name,
-            new_contacts[0].last_name,
-            org.name,
-            get_application_id(),
-            chosen_event.name
-        )
+        # email administrators
         approval_url = "%s://%s/admin-new-organization?new_organization=%d" % (
             urlparse(self.request.url).scheme,
             urlparse(self.request.url).netloc,
             org.key().id()
         )
         organization_form = organization.OrganizationForm(None, org)
-        admin_body = '\n'.join(
-            ["To review and approve: %s\n" % approval_url] +
-            ["%s: %s" % (field.label.text, field.data) for field in organization_form]
+        email_administrators_using_templates(
+            event=chosen_event,
+            subject_template_name='new_organization.subject.txt',
+            body_template_name='new_organization.body.txt',
+            primary_contact=new_contacts[0],
+            new_organization=org,
+            application_id=get_application_id(),
+            approval_url=approval_url,
+            organization_form=organization_form
         )
-        email_administrators(subject=admin_subject, body=admin_body)
 			    
 	self.redirect("/welcome")

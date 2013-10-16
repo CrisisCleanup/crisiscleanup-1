@@ -21,10 +21,7 @@ from google.appengine.api import app_identity, mail
 
 import jinja2
 
-
-ADMINISTRATORS = [
-    ('Aaron Titus', 'aaron@crisiscleanup.org')
-]
+from admin_handler.admin_identity import get_event_admins
 
 
 # jinja
@@ -56,25 +53,11 @@ def get_app_system_email_address():
     )
 
 
-def email_administrators(subject, body):
-    """
-    Email all ADMINISTRATORS with an email of @body and rewritten
-    @subject of "[myappid] <@subject>"
-    """
-    subject = "[%s] %s" % (app_identity.get_application_id(), subject)
-    sender_address = get_app_system_email_address()
-    for name, email_address in ADMINISTRATORS:
-        recipient_address = "%s <%s>" % (name, email_address)
-        mail.send_mail(
-            sender_address,
-            recipient_address,
-            subject,
-            body
-        )
-
-
 def email_administrators_using_templates(
     event, subject_template_name, body_template_name, **kwargs):
+    """
+    Email all relevant administrators for event, using Jinja2 templates.
+    """
     subject_template = jinja_environment.get_template(subject_template_name)
     body_template = jinja_environment.get_template(body_template_name)
 
@@ -86,8 +69,8 @@ def email_administrators_using_templates(
     prefixed_subject = "[%s] %s" % (app_identity.get_application_id(), rendered_subject)
     sender_address = get_app_system_email_address()
 
-    for name, email_address in ADMINISTRATORS:
-        recipient_address = "%s <%s>" % (name, email_address)
+    for admin_org in get_event_admins(event):
+        recipient_address = "%s <%s>" % (admin_org.email, admin_org.name)
         mail.send_mail(
             sender_address,
             recipient_address,

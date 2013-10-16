@@ -94,11 +94,16 @@ sandy.form.Initialize = function() {
     // add event handlers
     sandy.form.SetUpValidation();
     sandy.form.SetUpAdditionalHandlers();
+
+    // fire necessary change handlers immediately
+    sandy.form.fireFormModificationHandlers();
 };
+
 
 sandy.form.SetUpValidation = function() {
     geocoder = new google.maps.Geocoder();
-    // Set up validation events.
+
+    // Set up validation events
     goog.dom.getElement('address').onblur = validate;
     goog.dom.getElement('zip_code').onblur = validate;
     goog.dom.getElement('state').onblur = validate;
@@ -115,7 +120,8 @@ var last_geocode = "";
 var geocoding = false;
 var marker;
 
-function handle_status_changed() {
+
+sandy.form.handleStatusChanged = function() {
   // show Assigned To field only if status is 'Open, unassigned'
   var status = goog.dom.getElement('status').value;
   var assigned_to_row = goog.dom.getElement('assigned_to_row');
@@ -124,11 +130,12 @@ function handle_status_changed() {
   } else {
     assigned_to_row.style.display = 'block';
   }
-}
+};
+
 
 sandy.form.SetUpAdditionalHandlers = function() {
   // handle status changed
-  goog.dom.getElement('status').onchange = handle_status_changed;
+  goog.dom.getElement('status').onchange = sandy.form.handleStatusChanged;
 
   // disable return key
   document.onkeypress = function(e) {
@@ -136,6 +143,12 @@ sandy.form.SetUpAdditionalHandlers = function() {
       e.preventDefault();
     }
   };
+};
+
+
+sandy.form.fireFormModificationHandlers = function() {
+    // fire handlers that setup initial appearance of the form
+    sandy.form.handleStatusChanged();
 };
 
 

@@ -145,9 +145,9 @@ sandy.main.CloseEdit = function () {
     goog.style.showElement(goog.dom.getElement("legend_div"), true);
 }
 
+
 sandy.main.OpenEdit = function (site) {
     currentEditSite = site;
-    console.log("ID = " + site["id"]);
     goog.net.XhrIo.send('/edit?mode=js&id=' + site["id"],
         function (e) {
             var xhr = e.target;
@@ -161,8 +161,10 @@ sandy.main.OpenEdit = function (site) {
             dialog.setVisible(false);
             goog.style.showElement(formBackground, true);
             sandy.form.SetUpValidation();
-        })
-}
+            sandy.form.SetUpAdditionalHandlers();
+            sandy.form.fireFormModificationHandlers();
+        });
+};
 
 var kCompletionStatusColors = {
     "Open, unassigned":"red",

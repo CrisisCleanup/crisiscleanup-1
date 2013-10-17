@@ -29,6 +29,7 @@ from wtforms import HiddenField
 # constants
 
 FILENAMES = [
+    'base_template.html',
     'map_banner.html',
     'page.html',
     'about.html',

@@ -100,10 +100,7 @@
         </article>
    </section>
   <footer role="contentinfo">
-      <p>
-        <span class="left">Crisis Cleanup is an <a href="https://github.com/aarontitus/crisiscleanup/">open source</a> project of the <a href="http://nj211.org">NJ 2-1-1 Partnership</a>. <a href="#">Top</a> <!-- CSS/HTML Template © 2012 CSS Junction/ Shekhar Sharma (http://www.shekhardesigner.com). Licensed under the Creative Commons Attribution 3.0 License: http://creativecommons.org/licenses/by/3.0/us/--></span>
-        <a href="/home">HOME</a> | <a href="/about">ABOUT</a> | <a href="/public-map">PUBLIC MAP</a> | <a href="http://blog.crisiscleanup.org/">BLOG</a> | <a href="/contact">CONTACT US</a> | <a href="/terms">TERMS</a> | <a href="/privacy">PRIVACY</a> | <a href="/signup">SIGN UP</a> | {% if logged_in %}<a href="/">ASSESSMENT FORM</a> | <a href="/logout">LOG OUT</a> {% else %} <a href="/authentication">LOG IN</a>{% endif %}
-      </p>
+    {{ footer_page_block|safe }}
   </footer>
 
   {# load scripts at the end #}

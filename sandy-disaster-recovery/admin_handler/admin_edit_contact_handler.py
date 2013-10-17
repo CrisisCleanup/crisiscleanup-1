@@ -51,6 +51,12 @@ class AdminHandler(base.AuthenticatedHandler):
             except:
                 pass
             contact = Contact.get_by_id(id)
+
+            # bail if not a relevant local admin
+            if local_admin:
+                if not org.incident.key() == contact.organization.incident.key():
+                    self.redirect("/")
+                    return
             
             # create form
             form = ContactFormFull(None, contact)
@@ -82,6 +88,13 @@ class AdminHandler(base.AuthenticatedHandler):
             # update contact
             contact_id = int(self.request.get("contact_id"))
             contact = Contact.get_by_id(contact_id)
+
+            # bail if not a relevant local admin
+            if local_admin:
+                if not org.incident.key() == contact.organization.incident.key():
+                    self.redirect("/")
+                    return
+
             form.populate_obj(contact)
             contact.save()
             self.redirect('/admin-single-contact?contact=%d' % contact.key().id())

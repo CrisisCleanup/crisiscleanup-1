@@ -53,6 +53,7 @@ class AdminHandler(base.AuthenticatedHandler):
                 
             org_by_id = organization.Organization.get_by_id(id)
                 
+            # bail if not a relevant local admin
             if local_admin:
                 if not org.incident.key() == org_by_id.incident.key():
                     self.redirect("/")
@@ -84,6 +85,13 @@ class AdminHandler(base.AuthenticatedHandler):
             # update org
             org_id = int(self.request.get("org_id"))
             org_by_id = organization.Organization.get_by_id(org_id)
+
+            # bail if not a relevant local admin
+            if local_admin:
+                if not org.incident.key() == org_by_id.incident.key():
+                    self.redirect("/")
+                    return
+
             form.populate_obj(org_by_id)
             org_by_id.save()
             self.redirect('/admin-single-organization?organization=%d' % org_by_id.key().id())

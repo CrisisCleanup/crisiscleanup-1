@@ -15,36 +15,20 @@
 # limitations under the License.
 #
 # System libraries.
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
-
-import cgi
 import jinja2
-import logging
 import os
-import urllib2
-import wtforms.validators
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
-
-from datetime import datetime
-import settings
 
 from google.appengine.ext import db
 import organization
-import primary_contact_db
-import random_password
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('admin_single_organization.html')
-#CASE_LABELS = settings.CASE_LABELS
-#COUNT = 26
 GLOBAL_ADMIN_NAME = "Admin"
-ten_minutes = 600
+
 
 class AdminHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
@@ -75,10 +59,10 @@ class AdminHandler(base.AuthenticatedHandler):
                     self.redirect("/admin")
                     return
             contact_query = None
-            if org_by_id.is_admin:
-                contact_query = db.GqlQuery("SELECT * From IncidentAdmin WHERE incident = :1", org_by_id.incident.key())
-            else:
-                contact_query = db.GqlQuery("SELECT * From Contact WHERE organization = :org_key", org_key = org_key)
+            contact_query = db.GqlQuery(
+                "SELECT * From Contact WHERE organization = :org_key",
+                org_key=org_key
+            )
             self.response.out.write(template.render(
             {
                 "organization": org_by_id,
@@ -89,4 +73,3 @@ class AdminHandler(base.AuthenticatedHandler):
             return
         else:
             self.redirect("/admin")
-            

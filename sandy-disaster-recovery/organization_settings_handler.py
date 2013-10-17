@@ -35,10 +35,10 @@ class OrganizationSettingsHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, authenticated_org, event):
         # decide what org to lookup
         org = organization.Organization.get_by_id(authenticated_org.key().id())  # hardcoded
-        if org.is_admin:
-            contacts = db.GqlQuery("SELECT * From IncidentAdmin WHERE incident = :1", org.incident.key())
-        else:
-            contacts = db.GqlQuery("SELECT * From Contact WHERE organization = :org_key", org_key = org.key())
+        contacts = db.GqlQuery(
+            "SELECT * From Contact WHERE organization = :org_key",
+            org_key=org.key()
+        )
         self.response.out.write(template.render({
             "organization": org,
             "contacts": contacts,

@@ -69,11 +69,10 @@ class OrganizationInfoHandler(base.AuthenticatedHandler):
             return
         org_key = org_by_id.key()
         
-        contact_query = None
-        if org_by_id.is_admin:
-            contact_query = db.GqlQuery("SELECT * From IncidentAdmin WHERE incident = :1", org_by_id.incident.key())
-        else:
-            contact_query = db.GqlQuery("SELECT * From Contact WHERE organization = :org_key", org_key = org_key)
+        contact_query = db.GqlQuery(
+            "SELECT * From Contact WHERE organization = :org_key",
+            org_key=org_key
+        )
         self.response.out.write(template.render(
         {
             "organization": org_by_id,

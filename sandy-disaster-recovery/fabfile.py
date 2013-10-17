@@ -35,7 +35,7 @@ except StopIteration:
 
 # define env
 
-env.master_branch = "master"
+env.master_branch = "v430"
 env.appcfg = os.path.realpath(_appcfg_path)
 
 
@@ -45,6 +45,7 @@ MINI_YAML = """
 - application: sandy-helping-hands
   secure: always
   allow_unclean_deploy: true
+  sandbox: true
 
 - application: sandy-disaster-recovery
   secure: always
@@ -160,7 +161,7 @@ def update():
 
 def get_app_definitions(app_names_csv_or_all):
     if app_names_csv_or_all == 'all':
-        return APPS.values()
+        return [defn for name,defn in APPS.items() if not defn.get('sandbox')]
     else:
         app_names = app_names_csv_or_all.split(',')
         try:
@@ -178,11 +179,11 @@ def list():
 
 @task
 def deploy(app_names_csv_or_all):
-    " Deploy to one or more applications (CSV). "
+    " Deploy to one or more applications (CSV of app names or 'all'). "
     # if deploying to all, check
     if app_names_csv_or_all == 'all':
-        if not confirm("Deploy to ALL live applications? Are you sure?", default=False):
-            abort("Deploy to all unconfirmed.")
+        if not confirm("Deploy to ALL apps, excluding sandbox? Are you sure?", default=False):
+            abort("Deploy to all except sandbox unconfirmed")
 
     # get app definitions
     app_defns = get_app_definitions(app_names_csv_or_all)

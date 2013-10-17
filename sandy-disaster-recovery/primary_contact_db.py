@@ -73,6 +73,10 @@ class Contact(db.Model):
     _CSV_ACCESSORS = {
         'organization': _GetOrganizationName,
     }
+
+    @property
+    def full_name(self):
+        return "%s %s" % (self.first_name, self.last_name)
     
     def ToCsvLine(self):
       """Returns the site as a list of string values, one per field in

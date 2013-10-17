@@ -34,9 +34,12 @@ GLOBAL_ADMIN_NAME = "Admin"
 
 HTML_PARSER = HTMLParser.HTMLParser()
 
+
 class AdminEditPagesHandler(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
-        if not org.name == GLOBAL_ADMIN_NAME:
+        global_admin = (org.name == GLOBAL_ADMIN_NAME)
+        if not global_admin:
             self.redirect("/")
             return
 
@@ -45,10 +48,16 @@ class AdminEditPagesHandler(base.AuthenticatedHandler):
         forms = page_db.construct_forms(page_blocks)
         
         # render page
-        self.response.out.write(template.render(forms=forms))
+        self.response.out.write(
+            template.render(
+                global_admin=global_admin,
+                forms=forms
+            )
+        )
         
     def AuthenticatedPost(self, org, event):
-        if not org.name == GLOBAL_ADMIN_NAME:
+        global_admin = (org.name == GLOBAL_ADMIN_NAME)
+        if not global_admin:
             self.redirect("/")
             return
 
@@ -61,9 +70,12 @@ class AdminEditPagesHandler(base.AuthenticatedHandler):
         self.redirect('/admin-edit-pages')
         return
 
+
 class AdminDownloadPageBlocks(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
-        if not org.name == GLOBAL_ADMIN_NAME:
+        global_admin = (org.name == GLOBAL_ADMIN_NAME)
+        if not global_admin:
             self.redirect("/")
             return
 

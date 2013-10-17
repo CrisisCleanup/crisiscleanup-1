@@ -48,8 +48,8 @@ GLOBAL_ADMIN_NAME = "Admin"
 ten_minutes = 600
 
 
-
 class AdminStatsHandler(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
 	SANDY_TOTAL_SITES = 0
 	MOORE_TOTAL_SITES = 0
@@ -77,6 +77,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 	
         self.response.out.write(template.render(
         {
+            "global_admin": global_admin,
             "SANDY_TOTAL_SITES": SANDY_TOTAL_SITES,
             "MOORE_TOTAL_SITES": MOORE_TOTAL_SITES,
             "HATTIESBURG_TOTAL_SITES": HATTIESBURG_TOTAL_SITES,

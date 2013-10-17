@@ -15,24 +15,15 @@
 # limitations under the License.
 #
 
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
-
 # System libraries.
-import cgi
 import jinja2
-import logging
 import os
-import urllib2
-import wtforms.validators
 import cache
 from google.appengine.ext import db
 
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
 import event_db
 import organization
 import random_password
@@ -47,10 +38,13 @@ GLOBAL_ADMIN_NAME = "Admin"
 
 
 class AdminCreateIncidentHandler(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
-        if not org.name == GLOBAL_ADMIN_NAME:
+        global_admin = (org.name == GLOBAL_ADMIN_NAME)
+        if not global_admin:
             self.redirect("/")
             return
+
         form = event_db.NewEventForm()
         query_string = "SELECT * FROM Event"
         events_list = db.GqlQuery(query_string)
@@ -61,7 +55,8 @@ class AdminCreateIncidentHandler(base.AuthenticatedHandler):
         {
             "auto_password": auto_password,
             "form": form,
-            "case_label": CASE_LABELS[count]
+            "case_label": CASE_LABELS[count],
+            "global_admin": global_admin,
         }))
         
     def AuthenticatedPost(self, org, event):

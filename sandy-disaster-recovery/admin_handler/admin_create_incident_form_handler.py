@@ -58,7 +58,9 @@ HTML_PARSER = HTMLParser.HTMLParser()
 PROPERTIES_LIST = []
 PROPERTIES_TYPES_LIST = []
 
+
 class AdminCreateIncidentFormHandler(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
         global_admin = False
         local_admin = False
@@ -76,6 +78,7 @@ class AdminCreateIncidentFormHandler(base.AuthenticatedHandler):
         self.response.out.write(template.render(
         {
 	  "event_results": events,
+          "global_admin": global_admin,
         }))
         return
         

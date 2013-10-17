@@ -1,3 +1,13 @@
+#
+#
+#
+# DEPRECATED - put POST handler functions in handler classes
+#
+#
+#
+#
+#
+#
 #!/usr/bin/env python
 #
 # Copyright 2012 Andy Gimma

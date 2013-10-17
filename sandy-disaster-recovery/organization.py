@@ -75,6 +75,15 @@ class Organization(db.Expando):
   
   #OTHER
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
+
+  @property
+  def primary_contacts(self):
+    return primary_contact_db.Contact.gql(
+      "WHERE organization = :1 and is_primary = True",
+      self.key()
+    )
+
+
   
 cache_prefix = Organization.__name__ + "-d:"
   

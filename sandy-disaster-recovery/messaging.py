@@ -70,11 +70,12 @@ def email_administrators_using_templates(
     sender_address = get_app_system_email_address()
 
     for admin_org in get_event_admins(event):
-        if admin_org.email:
-            recipient_address = "%s <%s>" % (admin_org.email, admin_org.name)
-            mail.send_mail(
-                sender_address,
-                recipient_address,
-                prefixed_subject,
-                rendered_body
-            )
+        for contact in admin_org.primary_contacts:
+            if contact.email:
+                recipient_address = "%s <%s>" % (contact.email, contact.full_name)
+                mail.send_mail(
+                    sender_address,
+                    recipient_address,
+                    prefixed_subject,
+                    rendered_body
+                )

@@ -61,35 +61,24 @@ class AdminHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
             
-        contacts = None
-        order = None
-        order_string = ""
         if self.request.get("order"):
             order_kind = self.request.get("order")
             order_string = " ORDER BY " + order_kind
+        else:
+            order_string = ""
             
         if global_admin:
-            query_string = "SELECT * FROM Contact" + order_string
+            query_string = "SELECT * FROM Contact " + order_string
             contacts = db.GqlQuery(query_string)    
             
         if local_admin:
-            contacts = []
-            query_string = "SELECT * FROM Contact" + order_string
-            contacts_list = db.GqlQuery(query_string)
-            for c in contacts_list:
-                if c.organization:
-                    if c.organization.incident.key() == org.incident.key():
-                        contacts.append(c)
-               
-        #new_list = sorted(contacts, key=lambda k: k['organization.name']) 
-        #for c in contacts:
-            #if c.organization:
-                #print c.organization.name
-        #if not self.request.get("order") == "organization":
-            #for c in contacts:
-                #print c.organization.name
-            #pass
-                    
+            contacts = [
+                contact for contact in db.GqlQuery(
+                    "SELECT * FROM Contact " + order_string
+                )
+                if contact.organization.incident.key() == org.incident.key()
+            ]
+
         self.response.out.write(template.render(
         {
             "contacts": contacts,

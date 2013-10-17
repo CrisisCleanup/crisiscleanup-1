@@ -15,39 +15,22 @@
 # limitations under the License.
 #
 # System libraries.
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
-
-import cgi
 import jinja2
-import logging
 import os
-import urllib2
-import wtforms.validators
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
-import cache
 
-from datetime import datetime
-import settings
-
-from google.appengine.ext import db
 import organization
-import primary_contact_db
-import random_password
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('admin_all_organizations.html')
-#CASE_LABELS = settings.CASE_LABELS
-#COUNT = 26
 GLOBAL_ADMIN_NAME = "Admin"
-ten_minutes = 600
+
 
 class AdminHandler(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
         global_admin = False
         local_admin = False
@@ -61,22 +44,19 @@ class AdminHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
             
-        query_string = None
-        query = None
-        
+        # get relevant organizations
         if global_admin:
-            query_string = "SELECT * FROM Organization"
-            query = db.GqlQuery(query_string)
+            query = organization.Organization.all()
             
         if local_admin:
-            query = []
-            query_string = "SELECT * FROM Organization"
-            query_first = db.GqlQuery(query_string)
-            for q in query_first:
-                if q.incident.key() == org.incident.key():
-                    query.append(q)
-                
-            
+            query = organization.Organization.all().filter('incident =', org.incident.key())
+
+        # filter on active/inactive
+        if self.request.get('filter') == 'active':
+            query.filter('is_active', True)
+        elif self.request.get('filter') == 'inactive':
+            query.filter('is_active', False)
+
         self.response.out.write(template.render(
         {
             "global_admin": global_admin,

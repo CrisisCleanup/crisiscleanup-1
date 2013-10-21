@@ -18,17 +18,17 @@
 import datetime
 import logging
 import re
-import wtforms.ext.dateutil.fields
-import wtforms.fields
+import random
+
+from wtforms.ext.appengine.db import model_form
+
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
-from wtforms.ext.appengine.db import model_form
 from google.appengine.api import memcache
 from google.appengine.ext.db import Query
 from google.appengine.api import search
 
 # Local libraries.
-import cache
 import event_db
 import organization
 import metaphone
@@ -173,6 +173,14 @@ class Site(db.Expando):
       "Closed, duplicate",
       ],
       default="Open, unassigned")
+
+  def put(self, **kwargs):
+      " On-save "
+      # set blurred co-ordinates
+      self.blurred_latitude = self.latitude + random.uniform(-0.001798, 0.001798)
+      self.blurred_longitude = self.longitude + random.uniform(-0.001798, 0.001798)
+      super(Site, self).put(**kwargs)
+
 
 #class Site(db.Model):
   ## The list of fields that will be included in the CSV output.

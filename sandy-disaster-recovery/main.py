@@ -15,10 +15,12 @@
 # limitations under the License.
 #
 # System libraries.
-import jinja2
 import os
+
+import jinja2
 import webapp2
 from webapp2_extras import routes
+
 
 # Local libraries.
 import authentication_handler
@@ -64,7 +66,7 @@ import public_map_ajax_handler
 import get_event_ajax_handler
 import import_co_handler
 import change_password_handler
-import incident_definition
+from handlers import incident_definition
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler

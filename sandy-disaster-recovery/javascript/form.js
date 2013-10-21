@@ -177,26 +177,35 @@ function validate() {
     last_geocode = address;
     
     geocoder.geocode({ 'address': address }, function(results, status) {
-        
+
         if (status == google.maps.GeocoderStatus.OK) {
+            // upon successful geocoding, add draggable marker and center the map
             map.setCenter(results[0].geometry.location);
-            ll = results[0].geometry.location;
+            latlon = results[0].geometry.location;
             
             if (marker) marker.setMap(null);
-                     marker = new google.maps.Marker({
-                         map: map,
-                         position: ll
-                     });
+            marker = new google.maps.Marker({
+                map: map,
+                position: latlon,
+                draggable: true
+            });
+
+            google.maps.event.addListener(marker, 'dragend', function (event) {
+                // update the form's latlon if the pin is dragged
+                goog.dom.getElement('latitude').value = this.getPosition().lat();
+                goog.dom.getElement('longitude').value = this.getPosition().lng();
+            });
+
             var mapBounds = new google.maps.LatLngBounds(
-                new google.maps.LatLng(ll.lat() - .05, ll.lng() - .02),
-                                                         new google.maps.LatLng(ll.lat() + .05, ll.lng() + .08));
+                new google.maps.LatLng(latlon.lat() - 0.05, latlon.lng() - 0.02),
+                new google.maps.LatLng(latlon.lat() + 0.05, latlon.lng() + 0.08)
+            );
             map.setZoom(10);
             map.fitBounds(mapBounds);
             
-//             searchMatchingLatLng(ll.lat(), ll.lng());
-            
-            goog.dom.getElement('latitude').value =ll.lat();
-            goog.dom.getElement('longitude').value = ll.lng();
+            goog.dom.getElement('latitude').value = latlon.lat();
+            goog.dom.getElement('longitude').value = latlon.lng();
+
             var comps = results[0].address_components;
             for (var i = 0; i < comps.length; ++i) {
                 for (var t = 0; t < comps[i].types.length; ++t) {

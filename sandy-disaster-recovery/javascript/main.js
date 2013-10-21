@@ -138,14 +138,21 @@ sandy.main.SaveEdit = function () {
         "POST",
         content);
 
-}
+};
 
 sandy.main.CloseEdit = function () {
+    // disable site marker dragging and remove listener
+    currentEditSite.marker.setOptions({'draggable': false});
+    google.maps.event.clearListeners(currentEditSite.marker, 'dragend');
+
+    // hide the form
     goog.style.showElement(goog.dom.getElement('form_background'), false);
     if (currentEditSite)
         sandy.main.SelectSite(currentEditSite);
+
+    // show the legend
     goog.style.showElement(goog.dom.getElement("legend_div"), true);
-}
+};
 
 
 sandy.main.OpenEdit = function (site) {
@@ -165,6 +172,14 @@ sandy.main.OpenEdit = function (site) {
             sandy.form.SetUpValidation();
             sandy.form.SetUpAdditionalHandlers();
             sandy.form.fireFormModificationHandlers();
+
+            // make the site marker draggable and add listener
+            currentEditSite.marker.setOptions({'draggable': true});
+            google.maps.event.addListener(currentEditSite.marker, 'dragend', function (event) {
+                // update the form's latlon if the pin is dragged
+                goog.dom.getElement('latitude').value = this.getPosition().lat();
+                goog.dom.getElement('longitude').value = this.getPosition().lng();
+            });
         });
 };
 

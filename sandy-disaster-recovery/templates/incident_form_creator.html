@@ -1,4 +1,3 @@
-
 {% extends "base_template.html" %}
 
 {% block head_content %}
@@ -14,6 +13,116 @@
     $( "#tabs" ).tabs();
   });
   </script>
+  
+  <script>
+  $(function() {
+    hide_divs();
+  
+    var option_html = 'Option:  <input type="text" name="firstname"><br>';
+    var text_html = '<h3>Add Text Input</h3>' +
+    '<form>Label: <input type="text" name="firstname"><br> ' +
+    'Default Value: <input type="text" name="lastname"><br>' + 
+    'Placeholder: <input type="text" name="lastname"><br>' + 
+    'Required: <input type="checkbox" name="required" value="y">' + 
+    'Sensitive: <input type="checkbox" name="sensitive" value="y"><br>';
+        
+    var checkbox_html = '<h3>Add Checkbox</h3>' +
+    '<form>Label: <input type="text" name="firstname"><br> ' +
+    'Default Value:<select name="selectionField">' +
+    '<option value="n" >Unchecked</option>' +
+    '<option value="y" >Checked</option>' + 
+    '</select><br><br>' + 
+    'Required: <input type="checkbox" name="required" value="y">' + 
+    'Sensitive: <input type="checkbox" name="sensitive" value="y"><br>';
+    
+    var select_html = '<h3>Add Select</h3>' + 
+    '<form>Label: <input type="text" name="firstname"><br> ' +
+    'Option:  <input type="text" name="firstname"><br>' + 
+    '<div id="add_options_to_select"></div>' +
+    '<a id="add_option" href="#">Add another option</a><br>' + 
+    'Default Value: <input type="text" name="lastname"><br>';
+
+    $( "#add_option" ).click(function() {
+     $("#add_options_to_select").append(option_html);
+    });
+
+    
+    $( "#add_checkbox" ).click(function() {
+	 hide_divs();
+	 $("#checkbox_div").show();
+    });
+    
+    $( "#add_select" ).click(function() {
+	 hide_divs();
+         $("#select_div").show();
+    });
+    $( "#add_radio" ).click(function() {
+	 hide_divs();
+         $("#radio_div").show();
+    });
+    $( "#add_text" ).click(function() {
+	 hide_divs();
+	 $("#text_div").show();
+    });
+    $( "#add_header" ).click(function() {
+	 hide_divs();
+	 $("#header_div").show();
+    });
+    
+    
+
+  });
+  function hide_divs() {
+    $("#select_div").hide();
+    $("#radio_div").hide();
+    $("#text_div").hide();
+    $("#checkbox_div").hide();
+    $("#header_div").hide();
+}
+
+function clear_options_array(options_array) {
+   return ["options_1"]
+}
+
+function add_option(options_array) {
+   var array_length = options_array.length;
+   var new_length = array_length + 1;
+   var new_options_string = "options_" + new_length;
+   options_array.push(new_options_string);
+   return options_array
+}
+
+function remove_option(options_array) {
+   options_array.pop();
+   return options_array;
+}
+
+function add_text_input(main_json_array) {
+  var label = $("#text_label").val();
+  
+  var text_json = {
+    label: label,
+    
+  }
+  
+  main_json_array.push(text_json);
+  return main_json_array;
+
+}
+
+function add_checkbox_input(main_json_array) {
+
+}
+
+function add_select_input(main_json_array) {
+
+}
+
+function add_radio_input(main_json_array) {
+
+}
+
+</script>
 {% endblock %}
 
 {% block login %}
@@ -30,27 +139,93 @@
 {% endblock %}
 
 {% block sidebar_content %}
+<div id="form_editor">
+</div>
 <h2>Add Inputs to form</h2>
-<a href="#" onclick="checkEach()">header +</a><br>
-<a href="#" onclick="checkEach()">text input +</a><br>
-<a href="#" onclick="checkEach()">checkbox input +</a><br>
-<a href="#" onclick="checkEach()">select input +</a><br>
-<a href="#" onclick="checkEach()">radio input +</a><br>
+<a id="add_header" href="#form_editor"">header +</a><br>
+<a id="add_text" href="#form_editor">text input +</a><br>
+<a id="add_checkbox" href="#form_editor"">checkbox input +</a><br>
+<a id="add_select" href="#form_editor"">select input +</a><br>
+<a id="add_radio" href="#form_editor"">radio input +</a><br>
 
 
-Label: <input type="text" name="firstname"><br>
-Default Value: <input type="text" name="lastname"><br>
+<div id="text_div">
+
+<h3>Add Text Input</h3>
+<form>Label: <input type="text" id="text_label" name="text_label"><br>
+Default Value: <input type="text" name="lastname"><br> 
+Placeholder: <input type="text" name="lastname"><br> 
 Required: <input type="checkbox" name="required" value="y">
 Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
-<p>Display (For advanced users)<br>
-(Everyone else can leave auto defaults)</p>
-InfoBox: <<textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
 Printer: <input type="text" name="lastname"><br>
 Mobile: <input type="text" name="firstname"><br>
 Sms: <input type="text" name="lastname"><br>
+<a href="#" onclick="checkEach()">Add</a></form>
+</div>
 
-<a href="#" onclick="checkEach()">Signup</a>
-</form>
+<div id="checkbox_div">
+<h3>Add Checkbox</h3>
+<form>Label: <input type="text" name="firstname"><br>
+Default Value:<select name="selectionField">
+<option value="n" >Unchecked</option>
+<option value="y" >Checked</option>
+</select><br><br>
+Required: <input type="checkbox" name="required" value="y">
+Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" name="lastname"><br>
+Mobile: <input type="text" name="firstname"><br>
+Sms: <input type="text" name="lastname"><br>
+<a href="#" onclick="checkEach()">Add</a></form>
+</div>
+<div id="select_div">
+
+<h3>Add Select</h3> 
+<form>Label: <input type="text" name="firstname"><br>
+Option:  <input type="text" name="firstname"><br>
+<div id="add_options_to_select"></div>
+<a id="add_option" href="#form_editor">Add another option</a><br>
+Default Value: <input type="text" name="lastname" placeholder="select based on options added"><br>
+Required: <input type="checkbox" name="required" value="y">
+Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" name="lastname"><br>
+Mobile: <input type="text" name="firstname"><br>
+Sms: <input type="text" name="lastname"><br>
+<a href="#" onclick="checkEach()">Add</a></form>
+</div>
+
+<div id="radio_div">
+<h3>Add Radio</h3> 
+<form>Label: <input type="text" name="firstname"><br>
+Option:  <input type="text" name="firstname"><br>
+<div id="add_options_to_select"></div>
+<a id="add_option" href="#form_editor">Add another option</a><br>
+Default Value: <input type="text" name="lastname" placeholder="select based on options added"><br>
+Required: <input type="checkbox" name="required" value="y">
+Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" name="lastname"><br>
+Mobile: <input type="text" name="firstname"><br>
+Sms: <input type="text" name="lastname"><br>
+<a href="#" onclick="checkEach()">Add</a></form>
+</div>
+
+<div id="header_div">
+<h2>Add Header to form</h2>
+
+<form>Label: <input type="text" name="firstname"><br>
+<a href="#" onclick="checkEach()">Add</a></form>
+</div>
 {% endblock %}
 
 {% block main_title %}

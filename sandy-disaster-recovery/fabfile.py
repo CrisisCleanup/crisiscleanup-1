@@ -159,13 +159,12 @@ def update():
     local("%(appcfg)s --oauth2 update . " % env)
 
 
-def get_app_definitions(app_names_csv_or_all):
-    if app_names_csv_or_all == 'all':
+def get_app_definitions(app_names_or_all):
+    if app_names_or_all == ('all',):
         return [defn for name,defn in APPS.items() if not defn.get('sandbox')]
     else:
-        app_names = app_names_csv_or_all.split(',')
         try:
-            return [APPS[name] for name in app_names]
+            return [APPS[name] for name in app_names_or_all]
         except KeyError, e:
             abort("'%s' is not a known application." % e.message)
 
@@ -178,15 +177,15 @@ def list():
 
 
 @task
-def deploy(app_names_csv_or_all):
+def deploy(*app_names_or_all):
     " Deploy to one or more applications (CSV of app names or 'all'). "
     # if deploying to all, check
-    if app_names_csv_or_all == 'all':
+    if app_names_or_all == ('all',):
         if not confirm("Deploy to ALL apps, excluding sandbox? Are you sure?", default=False):
             abort("Deploy to all except sandbox unconfirmed")
 
     # get app definitions
-    app_defns = get_app_definitions(app_names_csv_or_all)
+    app_defns = get_app_definitions(app_names_or_all)
 
     # before doing anything, check if *all* apps are ok to deploy to
     map(ok_to_deploy, app_defns)

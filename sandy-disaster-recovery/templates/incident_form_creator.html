@@ -14,13 +14,6 @@
     $( "#tabs" ).tabs();
   });
   </script>
-<script>
-
-$('#ParentContainer').scroll(function()
-{
-    $('#FixedDiv').css('top': $(this).scrollTop());
-}
-</script>
 {% endblock %}
 
 {% block login %}
@@ -51,7 +44,7 @@ Required: <input type="checkbox" name="required" value="y">
 Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
 <p>Display (For advanced users)<br>
 (Everyone else can leave auto defaults)</p>
-InfoBox: <input type="text" name="firstname"><br>
+InfoBox: <<textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
 Printer: <input type="text" name="lastname"><br>
 Mobile: <input type="text" name="firstname"><br>
 Sms: <input type="text" name="lastname"><br>
@@ -80,7 +73,7 @@ Sms: <input type="text" name="lastname"><br>
   </ul>
   <div id="tabs-1">
       <p>html form here</p>
-            <p>html form here</p>
+      <p>html form here</p>
       <p>html form here</p>
       <p>html form here</p>
       <p>html form here</p>

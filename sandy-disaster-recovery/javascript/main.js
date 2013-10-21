@@ -25,6 +25,8 @@ goog.require('goog.ui.Option');
 goog.require('goog.ui.Select');
 goog.require('goog.style');
 goog.require('goog.dom.forms');
+
+goog.require('sandy.util');
 goog.require('sandy.sites');
 goog.require('sandy.map');
 goog.require('sandy.form');
@@ -451,10 +453,11 @@ var initMap = function() {
 };
 
 sandy.main.initialize = function (siteId, zoomLevel) {
-    var myLatlng = new google.maps.LatLng(39, -86);
+    var country = sandy.util.determineCountry();
+    var mapCenter = sandy.util.MAP_CENTER[country];
     var mapOptions = {
         zoom:6,
-        center:myLatlng,
+        center: mapCenter,
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
 

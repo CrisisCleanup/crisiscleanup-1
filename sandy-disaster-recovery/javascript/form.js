@@ -27,6 +27,7 @@ goog.require('goog.events');
 goog.require('goog.json');
 goog.require('goog.net.cookies');
 
+goog.require('sandy.util');
 goog.require('sandy.sites');
 
 goog.provide("sandy.form");
@@ -60,10 +61,11 @@ var showSimilar = function(matches) {
 
 sandy.form.Initialize = function() {
     // setup google map
-    var myLatlng = new google.maps.LatLng(39.50, -77.35);
+    var country = sandy.util.determineCountry();
+    var mapCenter = sandy.util.MAP_CENTER[country];
     var mapOptions = {
         zoom: 5,
-        center: myLatlng,
+        center: mapCenter,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);

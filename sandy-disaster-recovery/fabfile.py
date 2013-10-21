@@ -58,6 +58,12 @@ MINI_YAML = """
 
 - application: crisis-cleanup-au-demo
   secure: optional
+
+- application: crisis-cleanup-in
+  secure: always
+
+- application: crisis-cleanup-in-demo
+  secure: optional
 """
 
 APPS = {

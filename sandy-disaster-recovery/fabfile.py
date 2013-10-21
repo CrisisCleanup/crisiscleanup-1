@@ -160,7 +160,7 @@ def update():
 
 
 def get_app_definitions(app_names_or_all):
-    if app_names_or_all == ('all',):
+    if app_names_or_all == ['all']:
         return [defn for name,defn in APPS.items() if not defn.get('sandbox')]
     else:
         try:
@@ -177,22 +177,35 @@ def list():
 
 
 @task
-def deploy(*app_names_or_all):
-    " Deploy to one or more applications (CSV of app names or 'all'). "
+def deploy(apps, tag='HEAD'):
+    """
+    Deploy to one or more applications
+    (semicolon-separated values or 'all').
+    """
     # if deploying to all, check
-    if app_names_or_all == ('all',):
+    if apps == 'all':
         if not confirm("Deploy to ALL apps, excluding sandbox? Are you sure?", default=False):
             abort("Deploy to all except sandbox unconfirmed")
 
     # get app definitions
-    app_defns = get_app_definitions(app_names_or_all)
+    app_defns = get_app_definitions(apps.split(';'))
 
     # before doing anything, check if *all* apps are ok to deploy to
     map(ok_to_deploy, app_defns)
 
+    # check tag
+    if not (tag == 'HEAD' or tag in local('git tag -l', capture=True)):
+        abort("Unknown tag '%s'" % tag)
+
+    # log that we are deploying
+    print "\n\n** Deploying %s to %s **\n\n" % (tag, ', '.join(
+        app_defn['application'] for app_defn in app_defns
+    ))
+
     # copy dir for deployment
     build_dir = mkdtemp()
     print "Building to %s" % build_dir
+    local("git archive %s | tar -x -C %s" % (tag, build_dir))
     copy_tree('.', build_dir)
     os.chdir(build_dir)
 

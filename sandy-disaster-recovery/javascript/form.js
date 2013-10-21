@@ -37,6 +37,9 @@ var map;
 
 var geocoder;
 
+var country = sandy.util.determineCountry();
+
+
 var showSimilar = function(matches) {
     // show similarity matches 
     var div = goog.dom.getElement('similars');
@@ -61,7 +64,6 @@ var showSimilar = function(matches) {
 
 sandy.form.Initialize = function() {
     // setup google map
-    var country = sandy.util.determineCountry();
     var mapCenter = sandy.util.MAP_CENTER[country];
     var mapOptions = {
         zoom: 5,
@@ -172,7 +174,7 @@ function validate() {
     if (zip_code != last_zip_code) {
         address += " " + zip_code;
     }
-    address += " USA";
+    address += " " + sandy.util.COUNTRY_NAME[country];
     if (address == last_geocode) return;
     last_geocode = address;
     

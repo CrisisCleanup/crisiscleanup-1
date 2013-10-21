@@ -15,6 +15,13 @@ sandy.util.MAP_CENTER = {
 };
 
 
+sandy.util.COUNTRY_NAME = {
+    'us': 'USA',
+    'au': 'Australia',
+    'in': 'India'
+};
+
+
 sandy.util.determineCountry = function() {
     if (HOSTNAME_TO_COUNTRY[window.location.hostname]) {
         return HOSTNAME_TO_COUNTRY[window.location.hostname];

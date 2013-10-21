@@ -140,6 +140,8 @@ function add_radio_input(main_json_array) {
 
 {% block sidebar_content %}
 <div id="form_editor">
+<a href="#" onclick="checkEach()">Save All Changes</a></form>
+
 </div>
 <h2>Add Inputs to form</h2>
 <a id="add_header" href="#form_editor"">header +</a><br>
@@ -153,70 +155,70 @@ function add_radio_input(main_json_array) {
 
 <h3>Add Text Input</h3>
 <form>Label: <input type="text" id="text_label" name="text_label"><br>
-Default Value: <input type="text" name="lastname"><br> 
-Placeholder: <input type="text" name="lastname"><br> 
-Required: <input type="checkbox" name="required" value="y">
-Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
+Default Value: <input type="text" id="text_default" name="text_default"><br> 
+Placeholder: <input type="text" id="text_placeholder" name="text_placeholder"><br> 
+Required: <input type="checkbox" id="text_required" name="text_required" value="y">
+Sensitive: <input type="checkbox" id="text_sensitive" name="text_sensitive" value="y"><br>
 <h3>Add Display Info</h3>
 *For advanced users<br>
-InfoBox: <textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
-Printer: <input type="text" name="lastname"><br>
-Mobile: <input type="text" name="firstname"><br>
-Sms: <input type="text" name="lastname"><br>
+InfoBox: <textarea id="text_infobox" name="text_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="text_printer" name="text_printer"><br>
+Mobile: <input type="text" id="text_mobile" name="text_mobile"><br>
+Sms: <input type="text" id="text_sms" name="text_sms"><br>
 <a href="#" onclick="checkEach()">Add</a></form>
 </div>
 
 <div id="checkbox_div">
 <h3>Add Checkbox</h3>
-<form>Label: <input type="text" name="firstname"><br>
-Default Value:<select name="selectionField">
+<form>Label: <input type="text" id="checkbox_label" name="checkbox_label"><br>
+Default Value:<select id="checkbox_default" name="checkbox_default">
 <option value="n" >Unchecked</option>
 <option value="y" >Checked</option>
 </select><br><br>
-Required: <input type="checkbox" name="required" value="y">
-Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
+Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y">
+Sensitive: <input type="checkbox" id="checkbox_sensitive" name="checkbox_sensitive" value="y"><br>
 <h3>Add Display Info</h3>
 *For advanced users<br>
-InfoBox: <textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
-Printer: <input type="text" name="lastname"><br>
-Mobile: <input type="text" name="firstname"><br>
-Sms: <input type="text" name="lastname"><br>
+InfoBox: <textarea id="checkbox_infobox" name="checkbox_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="checkbox_printer" name="checkbox_printer"><br>
+Mobile: <input type="text" id="checkbox_mobile" name="checkbox_mobile"><br>
+Sms: <input type="text" id="checkbox_sms" name="checkbox_sms"><br>
 <a href="#" onclick="checkEach()">Add</a></form>
 </div>
 <div id="select_div">
 
 <h3>Add Select</h3> 
-<form>Label: <input type="text" name="firstname"><br>
-Option:  <input type="text" name="firstname"><br>
+<form>Label: <input type="text" id="select_label" name="select_label"><br>
+Option:  <input type="text" id="select_option_1" name="select_option_1"><br>
 <div id="add_options_to_select"></div>
 <a id="add_option" href="#form_editor">Add another option</a><br>
-Default Value: <input type="text" name="lastname" placeholder="select based on options added"><br>
-Required: <input type="checkbox" name="required" value="y">
-Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
+Default Value: <input type="text" id="select_default" name="select_default" placeholder="select based on options added"><br>
+Required: <input type="checkbox" id="select_required" name="select_required" value="y">
+Sensitive: <input type="checkbox" id="select_sensitive" name="select_sensitive" value="y"><br>
 <h3>Add Display Info</h3>
 *For advanced users<br>
-InfoBox: <textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
-Printer: <input type="text" name="lastname"><br>
-Mobile: <input type="text" name="firstname"><br>
-Sms: <input type="text" name="lastname"><br>
+InfoBox: <textarea id="select_textarea" name="select_textarea" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="select_printer" name="select_printer"><br>
+Mobile: <input type="text" id="select_mobile" name="select_mobile"><br>
+Sms: <input type="text" id="select_sms" name="select_sms"><br>
 <a href="#" onclick="checkEach()">Add</a></form>
 </div>
 
 <div id="radio_div">
 <h3>Add Radio</h3> 
-<form>Label: <input type="text" name="firstname"><br>
-Option:  <input type="text" name="firstname"><br>
+<form>Label: <input type="text" id="radio_label" name="radio_label"><br>
+Option:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
 <div id="add_options_to_select"></div>
 <a id="add_option" href="#form_editor">Add another option</a><br>
-Default Value: <input type="text" name="lastname" placeholder="select based on options added"><br>
-Required: <input type="checkbox" name="required" value="y">
-Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
+Default Value: <input type="text" id="radio_default" name="radio_default" placeholder="select based on options added"><br>
+Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
+Sensitive: <input type="checkbox" id="radio_sensitive" name="radio_sensitive" value="y"><br>
 <h3>Add Display Info</h3>
 *For advanced users<br>
-InfoBox: <textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
-Printer: <input type="text" name="lastname"><br>
-Mobile: <input type="text" name="firstname"><br>
-Sms: <input type="text" name="lastname"><br>
+InfoBox: <textarea id="radio_infobox" name="radio_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="radio_printer" name="radio_printer"><br>
+Mobile: <input type="text" id="radio_mobile" name="radio_mobile"><br>
+Sms: <input type="text" id="radio_sms" name="radio_sms"><br>
 <a href="#" onclick="checkEach()">Add</a></form>
 </div>
 

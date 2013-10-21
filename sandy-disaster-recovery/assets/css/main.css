@@ -996,3 +996,8 @@ ol.fourteen > li:before {
 ol.fifteen > li:before {
   content: "15." counters(item, ".") " ";
 }
+
+.float_div {
+    position:fixed;
+    top:20px;
+}

@@ -14,6 +14,13 @@
     $( "#tabs" ).tabs();
   });
   </script>
+<script>
+
+$('#ParentContainer').scroll(function()
+{
+    $('#FixedDiv').css('top': $(this).scrollTop());
+}
+</script>
 {% endblock %}
 
 {% block login %}
@@ -31,24 +38,25 @@
 
 {% block sidebar_content %}
 <h2>Add Inputs to form</h2>
-<p>Add header +</p>
-<p>Add text input +</p>
-<p>Add checkbox input +</p>
-<p>Add select input +</p>
-<p>Add radio input +</p>
+<a href="#" onclick="checkEach()">header +</a><br>
+<a href="#" onclick="checkEach()">text input +</a><br>
+<a href="#" onclick="checkEach()">checkbox input +</a><br>
+<a href="#" onclick="checkEach()">select input +</a><br>
+<a href="#" onclick="checkEach()">radio input +</a><br>
+
 
 Label: <input type="text" name="firstname"><br>
 Default Value: <input type="text" name="lastname"><br>
-Required: <input type="checkbox" name="required" value="y"><br>
-Sensitive Info: <input type="checkbox" name="sensitive" value="y"><br>
-<p>Display (For advanced users)</p>
-<p>(Everyone else can leave auto defaults)</p>
+Required: <input type="checkbox" name="required" value="y">
+Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
+<p>Display (For advanced users)<br>
+(Everyone else can leave auto defaults)</p>
 InfoBox: <input type="text" name="firstname"><br>
 Printer: <input type="text" name="lastname"><br>
 Mobile: <input type="text" name="firstname"><br>
 Sms: <input type="text" name="lastname"><br>
 
-<a href="#" onclick="checkEach()" class="button-icon icon-envelope">Signup</a>
+<a href="#" onclick="checkEach()">Signup</a>
 </form>
 {% endblock %}
 
@@ -67,14 +75,52 @@ Sms: <input type="text" name="lastname"><br>
 <br>
 <div id="tabs">
   <ul>
-    <li><a href="#tabs-1">JSON</a></li>
-    <li><a href="#tabs-2">HTML</a></li>
+    <li><a href="#tabs-1">HTML</a></li>
+    <li><a href="#tabs-2">JSON</a></li>
   </ul>
   <div id="tabs-1">
-      <p>{json:here}</p>
+      <p>html form here</p>
+            <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+      <p>html form here</p>
+
   </div>
   <div id="tabs-2">
-      <p>html form here</p>
+      <p>{json:here}</p>
   </div>
 
 </div>

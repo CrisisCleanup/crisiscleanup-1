@@ -1,0 +1,44 @@
+
+{% extends "base_template.html" %}
+
+{% block head_content %}
+<link href="/stylesheets/default.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block login %}
+{% endblock %}
+
+
+{% block description_title %}
+{% endblock %}
+
+{% block description_subtitle %}
+{% endblock %}
+
+{% block sidebar_title %}
+{% endblock %}
+
+{% block sidebar_content %}
+<h2>Add Inputs to form</h2>
+<p>Add text input +</p>
+<p>Add checkbox input +</p>
+<p>Add select input +</p>
+<p>Add radio input +</p>
+{% endblock %}
+
+{% block main_title %}
+{% endblock %}
+
+{% block main_content %}
+<h2>Incident Form Creator</h2>
+<select id="incident" name="incident">
+    <option value="None">Choose an Incident</option>
+    {% for incident in incidents %}
+    <option value="{{ incident.short_name }}">{{ incident.name }}</option>
+    {% endfor %}
+</select>
+{% endblock %}
+

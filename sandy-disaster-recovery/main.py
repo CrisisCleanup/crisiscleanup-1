@@ -67,6 +67,8 @@ import get_event_ajax_handler
 import import_co_handler
 import change_password_handler
 from handlers import incident_definition
+from handlers import incident_form_creator
+
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
@@ -206,6 +208,7 @@ app = webapp2.WSGIApplication([
     Route(r'/form_ajax_handler', form_ajax_handler.FormAjaxHandler, 'form_ajax_handler'),
 
     Route(r'/incident_definition', incident_definition.IncidentDefinition, 'incident_definition'),
+    Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
     

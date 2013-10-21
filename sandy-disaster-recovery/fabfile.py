@@ -206,7 +206,6 @@ def deploy(apps, tag='HEAD'):
     build_dir = mkdtemp()
     print "Building to %s" % build_dir
     local("git archive %s | tar -x -C %s" % (tag, build_dir))
-    copy_tree('.', build_dir)
     os.chdir(build_dir)
 
     # deploy to all specified apps

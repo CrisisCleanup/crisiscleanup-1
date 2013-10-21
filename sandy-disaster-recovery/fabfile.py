@@ -1,8 +1,7 @@
 
-import os
-from tempfile import mkdtemp
-
-from distutils.dir_util import copy_tree
+import os, shutil
+from glob import glob
+from tempfile import mkdtemp, gettempdir
 
 from fabric.api import env, task, local, abort
 from fabric.colors import yellow
@@ -16,6 +15,7 @@ import yaml
 
 APP_YAML_FILENAME = 'app.yaml'
 APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template'
+BUILD_DIR_PREFIX = 'ccbuild'
 
 
 # find GAE appcfg
@@ -177,6 +177,15 @@ def list():
 
 
 @task
+def clear_build_dirs():
+    " Remove old build directories. "
+    for path in glob(os.path.join(gettempdir(), '%s*' % BUILD_DIR_PREFIX)):
+        if os.path.isdir(path):
+            print "Removing old tmp build dir: %s" % path
+            shutil.rmtree(path)
+
+
+@task
 def deploy(apps, tag='HEAD'):
     """
     Deploy to one or more applications
@@ -202,8 +211,11 @@ def deploy(apps, tag='HEAD'):
         app_defn['application'] for app_defn in app_defns
     ))
 
+    # clear old build dirs
+    clear_build_dirs()
+
     # copy dir for deployment
-    build_dir = mkdtemp()
+    build_dir = mkdtemp(prefix=BUILD_DIR_PREFIX)
     print "Building to %s" % build_dir
     local("git archive %s | tar -x -C %s" % (tag, build_dir))
     os.chdir(build_dir)

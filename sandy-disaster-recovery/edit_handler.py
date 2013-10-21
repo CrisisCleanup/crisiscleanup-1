@@ -34,7 +34,7 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site_incident_form.html')
-logout_template = jinja_environment.get_template('logout.html')
+menubox_template = jinja_environment.get_template('_menubox.html')
 HATTIESBURG_SHORT_NAME = "derechos"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
@@ -173,7 +173,7 @@ class EditHandler(base.AuthenticatedHandler):
     #raise Exception(query.form_html)
     self.response.out.write(template.render(
           {"mode_js": self.request.get("mode") == "js",
-           "logout" : logout_template.render({"org": org, "event": event}),
+           "menubox" : menubox_template.render({"org": org, "event": event}),
            "single_site": single_site,
            "event_name": event.name,
            "form": form,
@@ -307,7 +307,7 @@ class EditHandler(base.AuthenticatedHandler):
         self.response.set_status(400)
       self.response.out.write(template.render(
           {"mode_js": mode_js,
-           "logout" : logout_template.render({"org": org, "event": event}),
+           "menubox" : menubox_template.render({"org": org, "event": event}),
            "errors": data.errors,
            "form": data,
            "single_site": single_site,

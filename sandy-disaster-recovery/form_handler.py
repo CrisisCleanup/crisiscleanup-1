@@ -44,7 +44,7 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site_incident_form.html')
-logout_template = jinja_environment.get_template('logout.html')
+menubox_template = jinja_environment.get_template('_menubox.html')
 HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
@@ -87,7 +87,7 @@ class FormHandler(base.AuthenticatedHandler):
     self.response.out.write(template.render(
         {"version" : os.environ['CURRENT_VERSION_ID'],
          "message" : message,
-         "logout" : logout_template.render({"org": org, "event": event, "admin": org.is_admin}),
+         "menubox" : menubox_template.render({"org": org, "event": event, "admin": org.is_admin}),
          "single_site" : single_site,
          "form": form,
          "id": None,
@@ -240,7 +240,7 @@ class FormHandler(base.AuthenticatedHandler):
          "similar_site": similar_site,
          "version" : os.environ['CURRENT_VERSION_ID'],
          "errors": data.errors,
-         "logout" : logout_template.render({"org": org, "event": event}),
+         "menubox" : menubox_template.render({"org": org, "event": event}),
          "single_site": single_site,
          "form": data,
          "id": None,

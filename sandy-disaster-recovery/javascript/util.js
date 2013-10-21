@@ -4,7 +4,9 @@ goog.provide('sandy.util');
 
 var HOSTNAME_TO_COUNTRY = {
     "www.crisiscleanup.org.au": 'au',
-    "www.crisiscleanup.org.in": 'in'
+    "demo.crisiscleanup.org.au": 'au',
+    "www.crisiscleanup.org.in": 'in',
+    "demo.crisiscleanup.org.in": 'in'
 };
 
 

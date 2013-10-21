@@ -254,7 +254,7 @@ function validate() {
         });
         request.getWithCredentials();
         var str = '?latitude=' + latitude+'&longitude=' + longitude;
-        var url = '/api/site_ajax' + str
+        var url = '/api/site_ajax' + str;
         request.send(url, 'GET');
     }
     
@@ -317,7 +317,7 @@ function validate() {
             }
             if (!checked) return false;
             var location_string = "/edit?id=" + el.value;
-            window.location=location_string
+            window.location=location_string;
             return false;
         }
         

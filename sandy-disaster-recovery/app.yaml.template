@@ -8,8 +8,8 @@ handlers:
 - url: /favicon\.ico
   static_files: favicon.ico
   upload: favicon\.ico
-- url: /test.*
-  script: gaeunit.py
+##- url: /test.*
+##  script: gaeunit.py
 - url: /stylesheets
   static_dir: stylesheets
   expiration: "7d"

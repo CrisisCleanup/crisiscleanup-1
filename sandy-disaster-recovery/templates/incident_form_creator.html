@@ -37,9 +37,18 @@
 <p>Add select input +</p>
 <p>Add radio input +</p>
 
-First name: <input type="text" name="firstname"><br>
-Last name: <input type="text" name="lastname">
-<button class="submit">Add</button>
+Label: <input type="text" name="firstname"><br>
+Default Value: <input type="text" name="lastname"><br>
+Required: <input type="checkbox" name="required" value="y"><br>
+Sensitive Info: <input type="checkbox" name="sensitive" value="y"><br>
+<p>Display (For advanced users)</p>
+<p>(Everyone else can leave auto defaults)</p>
+InfoBox: <input type="text" name="firstname"><br>
+Printer: <input type="text" name="lastname"><br>
+Mobile: <input type="text" name="firstname"><br>
+Sms: <input type="text" name="lastname"><br>
+
+<a href="#" onclick="checkEach()" class="button-icon icon-envelope">Signup</a>
 </form>
 {% endblock %}
 
@@ -54,7 +63,8 @@ Last name: <input type="text" name="lastname">
     <option value="{{ incident.short_name }}">{{ incident.name }}</option>
     {% endfor %}
 </select>
-
+<br>
+<br>
 <div id="tabs">
   <ul>
     <li><a href="#tabs-1">JSON</a></li>

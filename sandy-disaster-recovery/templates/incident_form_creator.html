@@ -2,10 +2,18 @@
 {% extends "base_template.html" %}
 
 {% block head_content %}
-<link href="/stylesheets/default.css" rel="stylesheet">
+
 {% endblock %}
 
 {% block scripts %}
+<link href="/stylesheets/default.css" rel="stylesheet">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+<script>
+  $(function() {
+    $( "#tabs" ).tabs();
+  });
+  </script>
 {% endblock %}
 
 {% block login %}
@@ -23,10 +31,16 @@
 
 {% block sidebar_content %}
 <h2>Add Inputs to form</h2>
+<p>Add header +</p>
 <p>Add text input +</p>
 <p>Add checkbox input +</p>
 <p>Add select input +</p>
 <p>Add radio input +</p>
+
+First name: <input type="text" name="firstname"><br>
+Last name: <input type="text" name="lastname">
+<button class="submit">Add</button>
+</form>
 {% endblock %}
 
 {% block main_title %}
@@ -40,5 +54,21 @@
     <option value="{{ incident.short_name }}">{{ incident.name }}</option>
     {% endfor %}
 </select>
+
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">JSON</a></li>
+    <li><a href="#tabs-2">HTML</a></li>
+  </ul>
+  <div id="tabs-1">
+      <p>{json:here}</p>
+  </div>
+  <div id="tabs-2">
+      <p>html form here</p>
+  </div>
+
+</div>
+
+
 {% endblock %}
 

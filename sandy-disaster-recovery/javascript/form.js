@@ -177,8 +177,9 @@ function validate() {
     address += " " + sandy.util.COUNTRY_NAME[country];
     if (address == last_geocode) return;
     last_geocode = address;
-    
-    geocoder.geocode({ 'address': address }, function(results, status) {
+
+    // call the geocoder
+    geocoder.geocode({'address': address, 'region': country}, function(results, status) {
 
         if (status == google.maps.GeocoderStatus.OK) {
             // upon successful geocoding, add draggable marker and center the map

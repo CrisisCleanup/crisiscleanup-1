@@ -3,6 +3,7 @@ goog.provide('sandy.util');
 
 
 var HOSTNAME_TO_COUNTRY = {
+    // FQDN to ccTLD (*not* ISO 3166, because Google Maps uses ccTLDs)
     "www.crisiscleanup.org.au": 'au',
     "demo.crisiscleanup.org.au": 'au',
     "www.crisiscleanup.org.in": 'in',

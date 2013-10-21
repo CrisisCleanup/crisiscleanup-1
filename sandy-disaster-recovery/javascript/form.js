@@ -65,7 +65,7 @@ sandy.form.Initialize = function() {
     var mapCenter = sandy.util.MAP_CENTER[country];
     var mapOptions = {
         zoom: 5,
-        center: mapCenter,
+        center: new google.maps.LatLng(mapCenter.lat, mapCenter.lon),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);

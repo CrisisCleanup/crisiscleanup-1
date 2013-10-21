@@ -9,9 +9,9 @@ var HOSTNAME_TO_COUNTRY = {
 
 
 sandy.util.MAP_CENTER = {
-    'us': new google.maps.LatLng( 39.50, -77.35),
-    'au': new google.maps.LatLng(-25.96, 136.23),
-    'in': new google.maps.LatLng( 19.32,  84.78)
+    'us': {'lat':  39.50, 'lon': -77.35},
+    'au': {'lat': -25.96, 'lon': 136.23},
+    'in': {'lat':  19.32, 'lon':  84.78}
 };
 
 

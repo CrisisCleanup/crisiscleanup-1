@@ -248,10 +248,21 @@ class AdminHandler(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
         if org.name == GLOBAL_ADMIN_NAME:
-            self.response.out.write(template.render({"org": org, "global_admin": True}))
+            self.response.out.write(
+                template.render({
+                    "org": org,
+                    "global_admin": True,
+                    "message": self.request.get('message'),
+                })
+            )
             return
         elif org.is_admin == True:
-            self.response.out.write(template.render({"org": org}))
+            self.response.out.write(
+                template.render({
+                    "org": org,
+                    "message": self.request.get('message'),
+                })
+            )
             return
         else:
             self.redirect("/")

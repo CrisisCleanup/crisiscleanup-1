@@ -17,33 +17,36 @@
   <script>
   $(function() {
     hide_divs();
-  
-    var option_html = 'Option:  <input type="text" name="firstname"><br>';
-    var text_html = '<h3>Add Text Input</h3>' +
-    '<form>Label: <input type="text" name="firstname"><br> ' +
-    'Default Value: <input type="text" name="lastname"><br>' + 
-    'Placeholder: <input type="text" name="lastname"><br>' + 
-    'Required: <input type="checkbox" name="required" value="y">' + 
-    'Sensitive: <input type="checkbox" name="sensitive" value="y"><br>';
-        
-    var checkbox_html = '<h3>Add Checkbox</h3>' +
-    '<form>Label: <input type="text" name="firstname"><br> ' +
-    'Default Value:<select name="selectionField">' +
-    '<option value="n" >Unchecked</option>' +
-    '<option value="y" >Checked</option>' + 
-    '</select><br><br>' + 
-    'Required: <input type="checkbox" name="required" value="y">' + 
-    'Sensitive: <input type="checkbox" name="sensitive" value="y"><br>';
     
-    var select_html = '<h3>Add Select</h3>' + 
-    '<form>Label: <input type="text" name="firstname"><br> ' +
-    'Option:  <input type="text" name="firstname"><br>' + 
-    '<div id="add_options_to_select"></div>' +
-    '<a id="add_option" href="#">Add another option</a><br>' + 
-    'Default Value: <input type="text" name="lastname"><br>';
+    var select_options_array = [];
+    var radio_options_array = [];
+    
+    var option_html = 'Option:  <input type="text" name="firstname"><br>';
 
-    $( "#add_option" ).click(function() {
-     $("#add_options_to_select").append(option_html);
+    $( "#add_select_option" ).click(function() {
+    
+     add_select_option(select_options_array);
+     var i = select_options_array.length - 1;
+     var option_number = i + 2;
+      var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ select_options_array[i] + '" name="'+ select_options_array[i] + '"><br>';
+      var new_option = '<option value=' + select_options_array[i] + '">Option '+ option_number + '</option>';
+      $("#add_options_to_select").append(new_line);
+      $("#select_default").append(new_option);
+     // add to select options select default div
+     // make a remove option(remove only removes last)
+    });
+    
+    $( "#add_radio_option" ).click(function() {
+    
+     add_radio_option(radio_options_array);
+     var i = radio_options_array.length - 1;
+     var option_number = i + 2;
+      var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ radio_options_array[i] + '" name="'+ radio_options_array[i] + '"><br>';
+      var new_option = '<option value=' + radio_options_array[i] + '">Option '+ option_number + '</option>';
+      $("#add_options_to_radio").append(new_line);
+      $("#radio_default").append(new_option);
+     // add to select options select default div
+     // make a remove option(remove only removes last)
     });
 
     
@@ -84,12 +87,20 @@ function clear_options_array(options_array) {
    return ["options_1"]
 }
 
-function add_option(options_array) {
-   var array_length = options_array.length;
-   var new_length = array_length + 1;
-   var new_options_string = "options_" + new_length;
-   options_array.push(new_options_string);
-   return options_array
+function add_select_option(select_options_array) {
+   var array_length = select_options_array.length;
+   var new_length = array_length + 2;
+   var new_options_string = "select_option_" + new_length;
+   select_options_array.push(new_options_string);
+   return select_options_array;
+}
+
+function add_radio_option(select_options_array) {
+   var array_length = select_options_array.length;
+   var new_length = array_length + 2;
+   var new_options_string = "select_option_" + new_length;
+   select_options_array.push(new_options_string);
+   return select_options_array;
 }
 
 function remove_option(options_array) {
@@ -189,10 +200,15 @@ Sms: <input type="text" id="checkbox_sms" name="checkbox_sms"><br>
 
 <h3>Add Select</h3> 
 <form>Label: <input type="text" id="select_label" name="select_label"><br>
-Option:  <input type="text" id="select_option_1" name="select_option_1"><br>
-<div id="add_options_to_select"></div>
-<a id="add_option" href="#form_editor">Add another option</a><br>
-Default Value: <input type="text" id="select_default" name="select_default" placeholder="select based on options added"><br>
+<div id="add_options_to_select">
+Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>
+</div>
+<a id="add_select_option" href="#form_editor">Add another option</a><br>
+Default: <select id="select_default" name="select_default">
+<option value="select_option_1">Option 1</option>
+</select>
+<br>
+<br>
 Required: <input type="checkbox" id="select_required" name="select_required" value="y">
 Sensitive: <input type="checkbox" id="select_sensitive" name="select_sensitive" value="y"><br>
 <h3>Add Display Info</h3>
@@ -207,11 +223,15 @@ Sms: <input type="text" id="select_sms" name="select_sms"><br>
 <div id="radio_div">
 <h3>Add Radio</h3> 
 <form>Label: <input type="text" id="radio_label" name="radio_label"><br>
-Option:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
-<div id="add_options_to_select"></div>
-<a id="add_option" href="#form_editor">Add another option</a><br>
-Default Value: <input type="text" id="radio_default" name="radio_default" placeholder="select based on options added"><br>
-Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
+<div id="add_options_to_radio">
+Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
+</div>
+<a id="add_radio_option" href="#form_editor">Add another option</a><br>
+Default: <select id="radio_default" name="radio_default">
+<option value="radio_option_1">Option 1</option>
+</select>
+<br>
+<br>Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
 Sensitive: <input type="checkbox" id="radio_sensitive" name="radio_sensitive" value="y"><br>
 <h3>Add Display Info</h3>
 *For advanced users<br>

@@ -86,6 +86,11 @@
         </aside>
         <article class="post content">
             <h2>{% block main_title %}{% endblock %}</h2>
+
+            {% if message %}
+              <p style="font-weight: bold">{{ message }}</p>
+            {% endif %}
+
             {% block main_content %}
             {% endblock %}
         </article>

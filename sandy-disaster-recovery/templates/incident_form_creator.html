@@ -149,7 +149,8 @@
 	 add_select_input(form_json_array, select_options_array);
 	 $("#tabs-2").empty();
 	 $("#select_form").trigger('reset');
-	 clear_select_options();
+	 clear_select_options(select_options_array);
+	 read_json_to_html(form_json_array);
 
 	 var jString = JSON.stringify(form_json_array);
 	 $("#tabs-2").empty();
@@ -166,6 +167,8 @@
 	 var jString = JSON.stringify(form_json_array);
 	 $("#tabs-2").empty();
 	 $("#tabs-2").append(jString);
+	 read_json_to_html(form_json_array);
+
     });      
     
     
@@ -339,6 +342,57 @@ function add_radio_input(form_json_array, radio_options_array) {
 function read_json_to_html(form_json_array) {
   $("#tabs-1").empty();
   for (var i=0; i < form_json_array.length; i++) {
+    if(form_json_array[i].type == "select") {
+      var options_array = [];
+      for (var key in form_json_array[i]) {
+        var key_string = key.toString();
+        if (key_string.indexOf("select_option_") == 0) {
+	    options_array.push(key_string);
+        }
+      }
+      var req = "";
+      if (form_json_array[i].select_required) {
+        req = "*";
+      }
+      var begin_option = form_json_array[i].select_label + req +': <select>';
+      var end_option = "</select>";
+      var select_string = "";
+      
+      for (var j = 0; j < options_array.length; j++) {
+        var option_string = "";
+        if(form_json_array[i].select_default == options_array[j]) {
+	  var option_string = "<option selected>" + form_json_array[i][options_array[j]] + "</option>";
+	  select_string = select_string + option_string;
+        } else {
+	  var option_string = "<option>" + form_json_array[i][options_array[j]] + "</option>";
+	  select_string = select_string + option_string;
+	}
+      }
+      
+      
+      var all_string = begin_option + select_string + end_option;
+      $("#tabs-1").append(all_string);
+//       $("#tabs-1").append(select_string);
+//       $("#tabs-1").append(end_option);
+
+      
+      
+      
+      // for each in options array, create select. increment var select_string. add begin, select, end strings. Pass the html
+      // set default
+      // clear select form and array
+      
+      // create select. create appropriate options. set appropriate default
+      // set options to array
+      // for each in array, create option
+      // if option = default, set default
+    }
+    if(form_json_array[i].type == "radio") {
+      // create select. create appropriate options. set appropriate default
+      // set options to array
+      // for each in array, create option
+      // if option = default, set default
+    }
     if(form_json_array[i].type == "header") {
       var new_header = '<h2>' + form_json_array[i].header + '</h2>';
       $("#tabs-1").append(new_header);
@@ -374,7 +428,7 @@ function read_json_to_html(form_json_array) {
   }
 }
 
-function clear_select_options() {
+function clear_select_options(select_options_array) {
 
   select_options_array = [];
   var new_option = 'Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>';

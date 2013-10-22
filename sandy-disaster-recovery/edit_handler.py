@@ -142,6 +142,7 @@ class EditHandler(base.AuthenticatedHandler):
 	  else:
 	    logging.debug(event.short_name)
 	    logging.debug(k + " is the key")
+            logging.debug(v + " is the value")
 	    id_index = new_inc_form.index('id="' + k)
 	    value_index = new_inc_form[id_index:].index('value="' + str(v))
 	    length = 0

@@ -39,6 +39,34 @@ sandy.sites.loadSitesById = function (id, callBack) {
     sandy.sites.loadSites('/api/site_ajax?id=' + id, callBack);
 };
 
+
+sandy.sites.addSearchTerm = function (site) {
+    if (site.case_number && site.name) {
+        var term = site.case_number + ": <" + site.name + ">";
+        if (site.address) {
+            term += " " + site.address;
+        }
+        if (site.city) {
+            term += " " + site.city;
+        }
+        if (site.state) {
+            term += " " + site.state;
+        }
+        if (site.zip_code) {
+            term += " " + site.zip_code;
+        }
+        if (site.reported_by) {
+            term += " (" + site.reported_by.name + ") ";
+        }
+        if (site.claimed_by) {
+            term += " (" + site.claimed_by.name + ") ";
+        }
+        terms.push(term);
+        siteMap[term] = site;
+    }
+};
+
+
 sandy.sites.loadSites = function (url, callBack) {
     goog.net.XhrIo.send(url, function (e) {
         var xhr = e.target;
@@ -55,23 +83,7 @@ sandy.sites.loadSites = function (url, callBack) {
             }
 
             for (i = 0; i < sites.length; ++i) {
-                if (sites[i].case_number && sites[i].name) {
-                    var term = sites[i].case_number + ": <" + sites[i].name + ">";
-                    if (sites[i].address) {
-                        term += " " + sites[i].address;
-                    }
-                    if (sites[i].city) {
-                        term += " " + sites[i].city;
-                    }
-                    if (sites[i].state) {
-                        term += " " + sites[i].state;
-                    }
-                    if (sites[i].zip_code) {
-                        term += " " + sites[i].zip_code;
-                    }
-                    terms.push(term);
-                    siteMap[term] = sites[i];
-                }
+                sandy.sites.addSearchTerm(sites[i]);
             }
 
             if (callBack) {
@@ -99,27 +111,10 @@ sandy.sites.loadSitesBatch = function (sites_status, page, url, callBack) {
             if (sites.length == 100) {
                 empty = false;
             }
+
             for (i = 0; i < sites.length; ++i) {
-                try {                
-                if (sites[i].case_number && sites[i].name) {
-                    var term = sites[i].case_number + ": <" + sites[i].name + ">";
-                    if (sites[i].address) {
-                        term += " " + sites[i].address;
-                    }
-                    if (sites[i].city) {
-                        term += " " + sites[i].city;
-                    }
-                    if (sites[i].state) {
-                        term += " " + sites[i].state;
-                    }
-                    if (sites[i].zip_code) {
-                        term += " " + sites[i].zip_code;
-                    }
-                    terms.push(term);
-                    siteMap[term] = sites[i];
-                }
-                
-                
+                try {
+                    sandy.sites.addSearchTerm(sites[i]);
                 } catch (err) {
                     txt="Error description: " + err.message + "\n\n";
                     goog.net.XhrIo.send('/js-logs?message=' + txt,

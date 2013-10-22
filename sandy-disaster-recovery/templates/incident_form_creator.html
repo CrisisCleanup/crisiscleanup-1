@@ -20,6 +20,7 @@
     
     var select_options_array = [];
     var radio_options_array = [];
+    var form_json_array = []
     
     var option_html = 'Option:  <input type="text" name="firstname"><br>';
 
@@ -35,6 +36,33 @@
      // add to select options select default div
      // make a remove option(remove only removes last)
     });
+    
+    $("#clear_radio_options").click(function() {
+      radio_options_array = [];
+      var new_option = 'Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>';
+      var new_select = '<option value="radio_option_1">Option 1</option>';
+      $("#add_options_to_radio").empty();
+      $("#radio_default").empty();
+      $("#add_options_to_radio").append(new_option);
+      $("#radio_default").append(new_select);
+    // clear and reset text input
+    // clear and reset default select
+    
+    });
+
+    $("#clear_select_options").click(function() {
+      select_options_array = [];
+      var new_option = 'Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>';
+      var new_select = '<option value="select_option_1">Option 1</option>';
+      $("#add_options_to_select").empty();
+      $("#select_default").empty();
+      $("#add_options_to_select").append(new_option);
+      $("#select_default").append(new_select);
+    // clear and reset text input
+    // clear and reset default select
+    
+    });
+    
     
     $( "#add_radio_option" ).click(function() {
     
@@ -70,6 +98,24 @@
     $( "#add_header" ).click(function() {
 	 hide_divs();
 	 $("#header_div").show();
+    });
+    
+    $( "#add_header_to_form" ).click(function() {
+	 hide_divs();
+	 add_header_input(form_json_array);
+	 $("#header_form").trigger('reset');
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").append(jString);
+    });
+      $( "#add_text_to_form" ).click(function() {
+	 hide_divs();
+	 add_text_input(form_json_array);
+	 $("#tabs-2").empty();
+	 $("#text_form").trigger('reset');
+
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").empty();
+	 $("#tabs-2").append(jString);
     });
     
     
@@ -108,17 +154,39 @@ function remove_option(options_array) {
    return options_array;
 }
 
-function add_text_input(main_json_array) {
-  var label = $("#text_label").val();
+
+function add_header_input(form_json_array){
+  var header_value = $("#header_label").val();
+  var header_json = {
+    "header": header_value,
+  }
+  form_json_array.push(header_json);
+}
+function add_text_input(form_json_array) {
+  var text_label = $("#text_label").val();
+  var text_default = $("#text_default").val();
+  var text_placeholder = $("#text_placeholder").val();
+  var text_required = $('#text_required').prop('checked')
+  var text_sensitive = $('#text_sensitive').prop('checked')
   
-  var text_json = {
-    label: label,
+  var text_infobox = $("#text_infobox").val();
+  var text_printer = $("#text_printer").val();
+  var text_mobile = $("#text_mobile").val();
+  var text_sms = $("#text_sms").val();
     
+  var text_json = {
+    text_label: text_label,
+    text_default: text_default,
+    text_placeholder: text_placeholder,
+    text_required: text_required,
+    text_sensitive: text_sensitive,
+    text_infobox: text_infobox,
+    text_printer: text_printer,
+    text_mobile: text_mobile,
+    text_sms: text_sms,
   }
   
-  main_json_array.push(text_json);
-  return main_json_array;
-
+  form_json_array.push(text_json);
 }
 
 function add_checkbox_input(main_json_array) {
@@ -165,7 +233,8 @@ function add_radio_input(main_json_array) {
 <div id="text_div">
 
 <h3>Add Text Input</h3>
-<form>Label: <input type="text" id="text_label" name="text_label"><br>
+<form id="text_form">
+Label: <input type="text" id="text_label" name="text_label"><br>
 Default Value: <input type="text" id="text_default" name="text_default"><br> 
 Placeholder: <input type="text" id="text_placeholder" name="text_placeholder"><br> 
 Required: <input type="checkbox" id="text_required" name="text_required" value="y">
@@ -176,12 +245,13 @@ InfoBox: <textarea id="text_infobox" name="text_infobox" rows="2" cols="20">Writ
 Printer: <input type="text" id="text_printer" name="text_printer"><br>
 Mobile: <input type="text" id="text_mobile" name="text_mobile"><br>
 Sms: <input type="text" id="text_sms" name="text_sms"><br>
-<a href="#" onclick="checkEach()">Add</a></form>
+<a href="#form_editor" id="add_text_to_form">Add to form</a></form>
 </div>
 
 <div id="checkbox_div">
 <h3>Add Checkbox</h3>
-<form>Label: <input type="text" id="checkbox_label" name="checkbox_label"><br>
+<form id="checkbox_form">
+Label: <input type="text" id="checkbox_label" name="checkbox_label"><br>
 Default Value:<select id="checkbox_default" name="checkbox_default">
 <option value="n" >Unchecked</option>
 <option value="y" >Checked</option>
@@ -194,16 +264,19 @@ InfoBox: <textarea id="checkbox_infobox" name="checkbox_infobox" rows="2" cols="
 Printer: <input type="text" id="checkbox_printer" name="checkbox_printer"><br>
 Mobile: <input type="text" id="checkbox_mobile" name="checkbox_mobile"><br>
 Sms: <input type="text" id="checkbox_sms" name="checkbox_sms"><br>
-<a href="#" onclick="checkEach()">Add</a></form>
+<a href="#form_editor" id="add_checkbox_to_form">Add to form</a></form>
 </div>
 <div id="select_div">
 
 <h3>Add Select</h3> 
-<form>Label: <input type="text" id="select_label" name="select_label"><br>
+<form id="select_form">
+Label: <input type="text" id="select_label" name="select_label"><br>
 <div id="add_options_to_select">
 Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>
 </div>
 <a id="add_select_option" href="#form_editor">Add another option</a><br>
+<a id="clear_select_options">Clear options</a>
+<br>
 Default: <select id="select_default" name="select_default">
 <option value="select_option_1">Option 1</option>
 </select>
@@ -217,16 +290,19 @@ InfoBox: <textarea id="select_textarea" name="select_textarea" rows="2" cols="20
 Printer: <input type="text" id="select_printer" name="select_printer"><br>
 Mobile: <input type="text" id="select_mobile" name="select_mobile"><br>
 Sms: <input type="text" id="select_sms" name="select_sms"><br>
-<a href="#" onclick="checkEach()">Add</a></form>
+<a href="#form_editor" id="add_select_to_form">Add to form</a></form>
 </div>
 
 <div id="radio_div">
 <h3>Add Radio</h3> 
-<form>Label: <input type="text" id="radio_label" name="radio_label"><br>
+<form id="radio_form">
+Label: <input type="text" id="radio_label" name="radio_label"><br>
 <div id="add_options_to_radio">
 Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
 </div>
 <a id="add_radio_option" href="#form_editor">Add another option</a><br>
+<a id="clear_radio_options">Clear options</a>
+<br>
 Default: <select id="radio_default" name="radio_default">
 <option value="radio_option_1">Option 1</option>
 </select>
@@ -239,14 +315,15 @@ InfoBox: <textarea id="radio_infobox" name="radio_infobox" rows="2" cols="20">Wr
 Printer: <input type="text" id="radio_printer" name="radio_printer"><br>
 Mobile: <input type="text" id="radio_mobile" name="radio_mobile"><br>
 Sms: <input type="text" id="radio_sms" name="radio_sms"><br>
-<a href="#" onclick="checkEach()">Add</a></form>
+<a href="#form_editor" id="add_radio_to_form">Add to form</a></form>
 </div>
 
 <div id="header_div">
 <h2>Add Header to form</h2>
 
-<form>Label: <input type="text" name="firstname"><br>
-<a href="#" onclick="checkEach()">Add</a></form>
+<form id="header_form">
+Label: <input type="text" id="header_label" name="header_label"><br>
+<a href="#form_editor" id="add_header_to_form">Add to form</a></form>
 </div>
 {% endblock %}
 
@@ -310,7 +387,6 @@ Sms: <input type="text" id="radio_sms" name="radio_sms"><br>
 
   </div>
   <div id="tabs-2">
-      <p>{json:here}</p>
   </div>
 
 </div>

@@ -36,6 +36,7 @@ except StopIteration:
 # define env
 
 env.master_branch = "master"
+env.gae_version = "live"
 env.appcfg = os.path.realpath(_appcfg_path)
 
 
@@ -82,10 +83,31 @@ def warn(msg):
     return raw_warn(yellow(msg))
 
 
+def warn_or_abort(app_defn, message):
+    if app_defn.get('allow_unclean_deploy', False):
+        warn(message)
+    else:
+        abort(message)
+
+
 def app_yaml_template_present():
     " Check that the app.yaml template is present. "
     if APP_YAML_TEMPLATE_FILENAME not in os.listdir('.'):
         abort("%s not found" % APP_YAML_TEMPLATE_FILENAME)
+    return True
+
+
+def specified_gae_version_ok(app_defn):
+    " Check that the specified version is acceptable. "
+    app_yaml_d = yaml.load(open(APP_YAML_TEMPLATE_FILENAME).read())
+    specified_version = app_yaml_d.get('version')
+    if specified_version != env.gae_version:
+        warn_or_abort(
+            app_defn,
+            "'%s' does not match the expected GAE app version '%s'" % (
+                specified_version, env.gae_version
+            )
+        )
     return True
 
 
@@ -129,6 +151,7 @@ def master_pushed_to_remote(app_defn):
 def ok_to_deploy(app_defn):
     return (
         app_yaml_template_present() and
+        specified_gae_version_ok(app_defn) and
         working_directory_clean(app_defn) and
         on_master_branch(app_defn) and
         master_pushed_to_remote(app_defn)

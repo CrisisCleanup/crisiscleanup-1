@@ -4,9 +4,8 @@ var pollForCSVDownload = function (filename) {
   var downloadUrl = '/export_bulk_download?filename=' + filename;
   $.ajax({
     url: downloadUrl, 
-    type: 'POST',
     complete: function(xhr) {
-      if (xhr.status == 200) {
+      if (xhr.status == 202) {
         // try again shortly
         setTimeout(
           function () {
@@ -14,7 +13,7 @@ var pollForCSVDownload = function (filename) {
           },
           1500
         );
-      } else {
+      } else if (xhr.status == 200) {
         // success: redirect (after race avoidance)
         setTimeout(
           function() {
@@ -39,6 +38,7 @@ $('#filtered-export-btn').click(function () {
   // request export and begin polling
   $.ajax({
       url: '/export_bulk',
+      type: 'POST',
       data: {
         id_list: $('.id_list').val()
       }

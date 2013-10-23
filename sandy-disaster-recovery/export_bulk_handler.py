@@ -18,6 +18,8 @@ from site_db import Site
 
 # constants
 
+SITES_PER_TASK = 100
+
 CSV_FIELDS_LIST = ["claimed_by", "reported_by", "modified_by", "case_number", "Days Waiting From %(today)s", "name", "request_date", "address", "city", "county", "state", "zip_code", "latitude", "longitude", "blurred_latitude", "blurred_longitude","cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_assessing_organization", "first_responder", "older_than_60", "disabled", "priority", "flood_height", "floors_affected", "carpet_removal", "hardwood_floor_removal", "drywall_removal", "heavy_item_removal", "appliance_removal", "standing_water", "mold_remediation", "pump_needed", "num_trees_down", "num_wide_trees", "roof_damage", "tarps_needed", "debris_removal_only", "habitable", "electricity", "electrical_lines", "claim_for_org", "status", "assigned_to", "total_volunteers", "hours_worked_per_volunteer", "initials_of_resident_present", "prepared_by", "do_not_work_before", "special_needs", "work_requested", "notes"]
 
 
@@ -108,7 +110,7 @@ class ExportBulkWorker(webapp2.RequestHandler):
         query = Site.all()
         if start_cursor:
             query.with_cursor(start_cursor)
-        sites = query.run(limit=1)
+        sites = query.fetch(limit=SITES_PER_TASK)
 
         # filter on ids if supplied
         # (GAE: can't do as part of query with cursor...)

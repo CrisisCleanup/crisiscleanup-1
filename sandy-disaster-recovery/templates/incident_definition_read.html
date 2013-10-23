@@ -1,0 +1,65 @@
+
+{% extends "base_template.html" %}
+
+{% block head_content %}
+<link href="/stylesheets/default.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block login %}
+{% endblock %}
+
+
+{% block description_title %}
+{% endblock %}
+
+{% block description_subtitle %}
+{% endblock %}
+
+{% block sidebar_title %}
+{% endblock %}
+
+{% block sidebar_content %}
+{% endblock %}
+
+{% block main_title %}
+{% endblock %}
+
+{% block main_content %}
+<h2>Incident Definition</h2>
+  <p>Version: {{ incident_definition_object.version }}</p>
+  <p>Incident Name: {{ incident_definition_object.full_name }}</p>
+  <p>Short Name: {{ incident_definition_object.short_name }}</p>
+  <p>Time Zone: {{ incident_definition_object.timezone }}</p>
+  <p>Incident Date: {{ incident_definition_object.incident_date }}</p>
+  <p>Start Date: {{ incident_definition_object.start_date }}</p>
+  <p>End Date: {{ incident_definition_object.end_date }}</p>
+  <p>Work Order Prefix: {{ incident_definition_object.work_order_prefix }}</p>
+  <p>Centroid Latitude: {{ incident_definition_object.centroid_lat }}</p>
+  <p>Centroid Longitude: {{ incident_definition_object.centroid_lng }}</p>
+  <p>Camera Latitude: {{ incident_definition_object.camera_lat }}</p>
+  <p>Camera Longitude: {{ incident_definition_object.camera_lng }}</p>
+  <p>Ignore Validation: {{ incident_definition_object.ignore_validation }}</p>
+  <p>Developer Mode: {{ incident_definition_object.developer_mode }}</p>
+  
+  <p>Local Admin Name: {{ incident_definition_object.local_admin_name }}</p>
+  <p>Local Admin Title: {{ incident_definition_object.local_admin_title }}</p>
+  <p>Local Admin Organization: {{ incident_definition_object.local_admin_organization }}</p>
+  <p>Local Admin Email: {{ incident_definition_object.local_admin_email }}</p>
+  <p>Local Admin Cell Phone: {{ incident_definition_object.local_admin_cell_phone }}</p>
+  <p>Local Admin Password: {{ incident_definition_object.local_admin_password }}</p>
+
+  <p>Public Map Title: {{ incident_definition_object.public_map_title }}</p>
+  <p>Public Map URL: {{ incident_definition_object.public_map_url }}</p>
+  <p>Public Map Clusterer: {{ incident_definition_object.public_map_cluster }}</p>
+  <p>Public Map Zoom : {{ incident_definition_object.public_map_zoom }}</p>
+  
+  <p>Internal Map Title: {{ incident_definition_object.internal_map_title }}</p>
+  <p>Internal Map URL: {{ incident_definition_object.internal_map_url }}</p>
+  <p>Internal Map Clusterer: {{ incident_definition_object.internal_map_cluster }}</p>
+  <p>Internal Map Zoom: {{ incident_definition_object.internal_map_zoom }}</p>
+  
+{% endblock %}
+

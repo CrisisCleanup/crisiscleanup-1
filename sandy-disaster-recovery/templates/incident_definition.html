@@ -108,6 +108,13 @@ Camera latitude: (req) <input type = "text" id="camera_latitude" name="camera_la
 Camera longitude: (req) <input type = "text" id="camera_longitude" name="camera_longitude" placeholder="approximate longitude camera of the incident">
 <br/>
 
+Developer Mode: (req) <input type="checkbox" name="developer_mode" value="y">
+<br/>
+
+Ignore Validation: (req) <input type="checkbox" name="ignore_validation" value="y">
+<br/>
+
+
 <h2>Local Admin</h2>
 
 
@@ -158,15 +165,15 @@ Default Zoom Setting: <select name="internal_map_zoom" id="internal_map_zoom">
 
 </select>
 
-<h3>External Map</h3>
-Map Title<input type = "text" id="internal_map_title" name="internal_map_title" placeholder="">
+<h3>Public Map</h3>
+Map Title<input type = "text" id="public_map_title" name="public_map_title" placeholder="">
 <br>
 
-External Map URL: (req) <input type = "text" id="internal_map_url" name="internal_map_url" placeholder="">
+Public Map URL: (req) <input type = "text" id="public_map_url" name="public_map_url" placeholder="">
 <br>
 
-Cluster map (Yes is strongly recommended)| Yes:<input type="checkbox" name="internal_map_cluster" id="internal_map_cluster" value="y" selected><br>
-Default Zoom Setting: <select name="internal_map_zoom" id="internal_map_zoom">
+Cluster map (Yes is strongly recommended)| Yes:<input type="checkbox" name="public_map_cluster" id="public_map_cluster" value="y" selected><br>
+Default Zoom Setting: <select name="public_map_zoom" id="internal_map_zoom">
       <option value="4">4</option>
       <option value="5">5</option>
       <option value="6">6</option>

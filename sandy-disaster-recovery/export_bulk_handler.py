@@ -14,6 +14,7 @@ import webapp2
 
 import base
 from site_db import Site
+from event_db import Event
 
 
 # constants
@@ -74,6 +75,7 @@ class ExportBulkHandler(base.AuthenticatedHandler):
             url='/export_bulk_worker',
             params={
                 'cursor': '',
+                'event': event.key(),
                 'filename': blobstore_filename,
                 'id_list': id_list,
             }
@@ -99,6 +101,7 @@ class ExportBulkWorker(webapp2.RequestHandler):
     def post(self):
         # get args
         start_cursor = self.request.get('cursor')
+        event = Event.get(self.request.get('event'))
         filename = self.request.get('filename')
         id_list = self.request.get('id_list')
         ids = (
@@ -107,7 +110,7 @@ class ExportBulkWorker(webapp2.RequestHandler):
         )
 
         # construct query
-        query = Site.all()
+        query = Site.all().filter('event', event)
         if start_cursor:
             query.with_cursor(start_cursor)
         sites = query.fetch(limit=SITES_PER_TASK)
@@ -129,6 +132,7 @@ class ExportBulkWorker(webapp2.RequestHandler):
                 url='/export_bulk_worker',
                 params={
                     'cursor': end_cursor,
+                    'event': event.key(),
                     'filename': filename,
                     'id_list': id_list,
                 }

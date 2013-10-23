@@ -393,20 +393,24 @@ function add_radio_input(form_json_array, radio_options_array) {
 }
 
 function read_json_to_html(form_json_array) {
-  $("#tabs-1").empty();
+  $("#form_label").empty();
+  $("#form_paragraph").empty();
+  $("#form_table").empty();
+
+//   $("#tabs-1").append('<table id="table1">');
 
   // TODO
   // running 3 loops to make sure things show up in HTML in the right order. Very inefficient!
   for (var i=0; i < form_json_array.length; i++) {
     if(form_json_array[i].type == "label") {
-      $("#tabs-1").append('<h2>' + form_json_array[i].label + '</h2>');
+      $("#form_label").append('<h2>' + form_json_array[i].label + '</h2>');
     
     }
   }
 
   for (var i=0; i < form_json_array.length; i++) {
     if(form_json_array[i].type == "paragraph") {
-      $("#tabs-1").append(form_json_array[i].paragraph + '<br>');
+      $("#form_paragraph").append(form_json_array[i].paragraph + '<br>');
 
     }
   }
@@ -436,7 +440,7 @@ function read_json_to_html(form_json_array) {
 
 	radio_string = radio_string + option_string;
       }
-      $("#tabs-1").append(radio_string);
+      $("#form_table").append(radio_string);
 
     }
     if(form_json_array[i].type == "select") {
@@ -468,11 +472,11 @@ function read_json_to_html(form_json_array) {
       
       
       var all_string = begin_option + select_string + end_option;
-      $("#tabs-1").append(all_string);
+      $("#form_table").append(all_string);
     }
     if(form_json_array[i].type == "header") {
       var new_header = '<h2>' + form_json_array[i].header + '</h2>';
-      $("#tabs-1").append(new_header);
+      $("#form_table").append(new_header);
     }
     
     else if(form_json_array[i].type == "text") {
@@ -483,7 +487,7 @@ function read_json_to_html(form_json_array) {
       } else {
 	var new_text_input = form_json_array[i].text_label + ': <input type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"><br>';
       }
-      $("#tabs-1").append(new_text_input);
+      $("#form_table").append(new_text_input);
     }
     
     else if (form_json_array[i].type == "checkbox") {
@@ -497,12 +501,12 @@ function read_json_to_html(form_json_array) {
         checked = " checked";
       }
       var new_checkbox = form_json_array[i].checkbox_label + required_star + ': <input type="checkbox" id="' + form_json_array.checkbox_label + '" name="'  + form_json_array.checkbox_label + '" value="y"' + checked + '>';
-      $("#tabs-1").append(new_checkbox);
+      $("#form_table").append(new_checkbox);
 
     }
     
-    
   }
+
 }
 
 function clear_select_options(select_options_array) {
@@ -694,7 +698,14 @@ Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
     <li><a href="#tabs-2">JSON</a></li>
   </ul>
   <div id="tabs-1">
-      <p>empty</p>
+      <div id="form_label">
+      </div>
+      <div id="form_paragraph">
+      </div>
+      <div>
+	<table id="form_table">
+	</table>
+      </div>
   </div>
   <div id="tabs-2">
   </div>
@@ -709,18 +720,45 @@ Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
 <!--
 TODO
 
+-- make form fit into current question-answer scheme from current html
 -- create an id_name for each label (lowerCase and replace spaces with underscores)
 
 -- add incident and phase support
 
--- make form fit into current question-answer scheme from current html
-
 -- save to incident. Save button in HTML tab, JSON tab and form creator div
 
+-- separate into files
 
+-- qunit
+
+-- edit an existing form (after you save it)
+
+-- html remove field
+
+-- html add field here
+
+-- add order to the form_json_array? That way, we can have label at 0, paragraph at 1... what happens when one is deleted in place?
+
+__
+
+order
+
+make form fit into current format
+
+add incident support
+
+save to incident
+
+edit form
+
+save to expando
+
+test with lat/lng auto geocode
 _____
 
 -- phases
 -- schema
+
+
 
 -->

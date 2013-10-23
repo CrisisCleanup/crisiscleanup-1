@@ -215,6 +215,15 @@ def clear_build_dirs():
 
 
 @task
+def check(apps):
+    """
+    Check if it is ok to deploy to apps
+    """
+    app_defns = get_app_definitions(apps.split(';'))
+    map(ok_to_deploy, app_defns)
+
+
+@task
 def deploy(apps, tag='HEAD'):
     """
     Deploy to one or more applications

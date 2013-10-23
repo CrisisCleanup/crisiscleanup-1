@@ -4,15 +4,16 @@ var pollForCSVDownload = function (filename) {
   var downloadUrl = '/export_bulk_download?filename=' + filename;
   $.ajax({
     url: downloadUrl, 
+    type: 'POST',
     complete: function(xhr) {
       if (xhr.status == 200) {
         // try again shortly
         setTimeout(
           function () {
-            pollForCSVDownload(filename)
+            pollForCSVDownload(filename);
           },
           1500
-        )
+        );
       } else {
         // success: redirect (after race avoidance)
         setTimeout(

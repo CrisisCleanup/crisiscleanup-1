@@ -58,7 +58,6 @@ MINI_YAML = """
 
 - application: crisis-cleanup-au-demo
   secure: optional
-  allow_unclean_deploy: true
 
 - application: crisis-cleanup-in
   secure: always

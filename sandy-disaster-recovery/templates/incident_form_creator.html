@@ -354,7 +354,7 @@ function read_json_to_html(form_json_array) {
       if (form_json_array[i].select_required) {
         req = "*";
       }
-      var begin_option = form_json_array[i].select_label + req +': <select>';
+      var begin_option = form_json_array[i].select_label + req +': <select id="' +form_json_array[i].select_label + '" name="' +form_json_array[i].select_label + '">';
       var end_option = "</select>";
       var select_string = "";
       
@@ -371,6 +371,7 @@ function read_json_to_html(form_json_array) {
       
       
       var all_string = begin_option + select_string + end_option;
+      alert(all_string);
       $("#tabs-1").append(all_string);
 //       $("#tabs-1").append(select_string);
 //       $("#tabs-1").append(end_option);

@@ -11,7 +11,7 @@ var pollForCSVDownload = function (filename) {
           function () {
             pollForCSVDownload(filename);
           },
-          1500
+          2000
         );
       } else if (xhr.status == 200) {
         // success: redirect (after race avoidance)

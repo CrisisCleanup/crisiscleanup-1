@@ -66,6 +66,8 @@ import public_map_ajax_handler
 import get_event_ajax_handler
 import import_co_handler
 import change_password_handler
+import messaging
+
 from handlers import incident_definition
 from handlers import incident_form_creator
 
@@ -211,5 +213,7 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
+
+    Route(r'/test-email', messaging.EmailTestHandler, 'email_test_handler'),
     
 ], debug=True)

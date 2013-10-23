@@ -100,6 +100,36 @@
 	 $("#header_div").show();
     });
     
+    $("#add_label").click(function() {
+	 hide_divs();
+	 $("#label_div").show();
+    });
+    
+    $("#add_paragraph").click(function() {
+	 hide_divs();
+	 $("#paragraph_div").show();
+    });
+    
+    $("#add_paragraph_to_form").click(function() {
+         hide_divs();
+	 add_paragraph_input(form_json_array);
+	 read_json_to_html(form_json_array);
+	 $("#paragraph_form").trigger('reset');
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").append(jString);
+    
+    });
+    
+    $("#add_label_to_form").click(function() {
+         hide_divs();
+	 add_label_input(form_json_array);
+	 read_json_to_html(form_json_array);
+	 $("#label_form").trigger('reset');
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").append(jString);
+    
+    });
+    
     $( "#add_header_to_form" ).click(function() {
 	 hide_divs();
 	 add_header_input(form_json_array);
@@ -185,8 +215,8 @@
     $("#text_div").hide();
     $("#checkbox_div").hide();
     $("#header_div").hide();
-//     $("#label_div").hide();
-//     $("#paragraph_div").hide();
+    $("#label_div").hide();
+    $("#paragraph_div").hide();
 }
 
 function clear_options_array(options_array) {
@@ -212,6 +242,24 @@ function add_radio_option(select_options_array) {
 function remove_option(options_array) {
    options_array.pop();
    return options_array;
+}
+
+function add_paragraph_input(form_json_array) {
+  var paragraph_value = $("#paragraph").val();
+  var paragraph_json = {
+    "type": "paragraph",
+    "paragraph": paragraph_value,
+  }
+  form_json_array.push(paragraph_json);
+}
+
+function add_label_input(form_json_array) {
+  var label_value = $("#label_name").val();
+  var label_json = {
+    "type": "label",
+    "label": label_value,
+  }
+  form_json_array.push(label_json);
 }
 
 
@@ -346,8 +394,23 @@ function add_radio_input(form_json_array, radio_options_array) {
 
 function read_json_to_html(form_json_array) {
   $("#tabs-1").empty();
+
+  // TODO
+  // running 3 loops to make sure things show up in HTML in the right order. Very inefficient!
   for (var i=0; i < form_json_array.length; i++) {
-  
+    if(form_json_array[i].type == "label") {
+      $("#tabs-1").append('<h2>' + form_json_array[i].label + '</h2>');
+    
+    }
+  }
+
+  for (var i=0; i < form_json_array.length; i++) {
+    if(form_json_array[i].type == "paragraph") {
+      $("#tabs-1").append(form_json_array[i].paragraph + '<br>');
+
+    }
+  }
+  for (var i=0; i < form_json_array.length; i++) {
     if(form_json_array[i].type == "radio") {
       var options_array = []
       for (var key in form_json_array[i]) {
@@ -488,8 +551,8 @@ function clear_radio_options() {
 
 </div>
 <h2>Add Inputs to form</h2>
-<!--<a id="add_label" href="#form_editor">map label + </a><br>
-<a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>-->
+<a id="add_label" href="#form_editor">map label + </a><br>
+<a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>
 <a id="add_header" href="#form_editor">header +</a><br>
 <a id="add_text" href="#form_editor">text input +</a><br>
 <a id="add_checkbox" href="#form_editor"">checkbox input +</a><br>
@@ -595,7 +658,7 @@ Label: <input type="text" id="header_label" name="header_label"><br>
 <a href="#form_editor" id="add_header_to_form">Add to form</a></form>
 </div>
 
-<!--<div id="label_div">
+<div id="label_div">
 <h2>Add Header to form</h2>
 
 <form id="label_form">
@@ -607,9 +670,9 @@ Label: <input type="text" id="label_name" name="label_name"><br>
 <h2>Add Header to form</h2>
 
 <form id="paragraph_form">
-Label: <input type="text" id="paragraph" name="paragraph"><br>
+Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
 <a href="#form_editor" id="add_paragraph_to_form">Add to form</a></form>
-</div>-->
+</div>
 {% endblock %}
 
 {% block main_title %}
@@ -647,10 +710,17 @@ Label: <input type="text" id="paragraph" name="paragraph"><br>
 TODO
 
 -- create an id_name for each label (lowerCase and replace spaces with underscores)
--- add label
--- add paragraph
 
 -- add incident and phase support
 
 -- make form fit into current question-answer scheme from current html
+
+-- save to incident. Save button in HTML tab, JSON tab and form creator div
+
+
+_____
+
+-- phases
+-- schema
+
 -->

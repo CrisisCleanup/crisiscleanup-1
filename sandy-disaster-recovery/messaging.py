@@ -58,6 +58,14 @@ def get_default_version_hostname():
 
 def get_app_system_email_address():
     app_id = app_identity.get_application_id()
+    # HOTFIX START
+    return (
+        "%s <noreply@%s.appspotmail.com>" % (
+            app_identity.get_service_account_name(),
+            app_identity.get_application_id()
+        )
+    )
+    # HOTFIX END
     return APP_ID_TO_SENDER_ADDRESS.get(
         # by app id
         app_id,

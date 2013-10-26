@@ -10,238 +10,222 @@
 <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
 <script>
 $(function() {
+  hide_divs();
+  hide_tabs();
+  $("#tabs-1").show();
+  
+  $("#show_html").click(function() {
+    console.log("show_html");
+    hide_tabs();
+    $("#tabs-1").show();
+  });
+  
+  $("#show_json").click(function() {
+    console.log("show_json");
 
+    hide_tabs();
+    $("#tabs-2").show();
+  });
+
+  
+  var select_options_array = [];
+  var radio_options_array = [];
+  var form_json_array = []
+  
+  var option_html = 'Option:  <input type="text" name="firstname"><br>';
+  
+
+  $( "#add_select_option" ).click(function() {
+  
+    add_select_option(select_options_array);
+    var i = select_options_array.length - 1;
+    var option_number = i + 2;
+    var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ select_options_array[i] + '" name="'+ select_options_array[i] + '"><br>';
+    var new_option = '<option value="' + select_options_array[i] + '">Option '+ option_number + '</option>';
+    $("#add_options_to_select").append(new_line);
+    $("#select_default").append(new_option);
+    // add to select options select default div
+    // make a remove option(remove only removes last)
+  });
+  
+  $("#clear_radio_options").click(function() {
+    radio_options_array = [];
+    var new_option = 'Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>';
+    var new_select = '<option value="radio_option_1">Option 1</option>';
+    $("#add_options_to_radio").empty();
+    $("#radio_default").empty();
+    $("#add_options_to_radio").append(new_option);
+    $("#radio_default").append(new_select);
+  // clear and reset text input
+  // clear and reset default select
+  
+  });
+
+  $("#clear_select_options").click(function() {
+    select_options_array = [];
+    var new_option = 'Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>';
+    var new_select = '<option value="select_option_1">Option 1</option>';
+    $("#add_options_to_select").empty();
+    $("#select_default").empty();
+    $("#add_options_to_select").append(new_option);
+    $("#select_default").append(new_select);
+  // clear and reset text input
+  // clear and reset default select
+  
+  });
+  
+  
+  $( "#add_radio_option" ).click(function() {
+  
+    add_radio_option(radio_options_array);
+    var i = radio_options_array.length - 1;
+    var option_number = i + 2;
+    var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ radio_options_array[i] + '" name="'+ radio_options_array[i] + '"><br>';
+    var new_option = '<option value="' + radio_options_array[i] + '">Option '+ option_number + '</option>';
+    $("#add_options_to_radio").append(new_line);
+    $("#radio_default").append(new_option);
+    // add to select options select default div
+    // make a remove option(remove only removes last)
+  });
+
+//------------------------------------------------------------------------------------------------------------------
+//    Show form Divs
+  $( "#add_checkbox" ).click(function() {
+	hide_divs();
+	$("#checkbox_div").show();
+  });
+  
+  $( "#add_select" ).click(function() {
+	hide_divs();
+	$("#select_div").show();
+  });
+  $( "#add_radio" ).click(function() {
+	hide_divs();
+	$("#radio_div").show();
+  });
+  $( "#add_text" ).click(function() {
+	hide_divs();
+	$("#text_div").show();
+  });
+  $( "#add_header" ).click(function() {
+	hide_divs();
+	$("#header_div").show();
+  });
+  
+  $("#add_label").click(function() {
+	hide_divs();
+	$("#label_div").show();
+  });
+  
+  $("#add_paragraph").click(function() {
+	hide_divs();
+	$("#paragraph_div").show();
+  });
+  
+//------------------------------------------------------------------------------------------------------------------
+// add info from form divs to json
+  
+  $("#add_paragraph_to_form").click(function() {
+	hide_divs();
+	add_paragraph_input(form_json_array);
+	read_json_to_html(form_json_array);
+	$("#paragraph_form").trigger('reset');
+	var jString = JSON.stringify(form_json_array);
+	$("#tabs-2").empty();
+	$("#tabs-2").append(jString);
+  
+  });
+  
+  $("#add_label_to_form").click(function() {
+	hide_divs();
+	add_label_input(form_json_array);
+	read_json_to_html(form_json_array);
+	$("#label_form").trigger('reset');
+	var jString = JSON.stringify(form_json_array);
+	$("#tabs-2").empty();
+	$("#tabs-2").append(jString);
+  
+  });
+  
+  $( "#add_header_to_form" ).click(function() {
+	hide_divs();
+	add_header_input(form_json_array);
+	read_json_to_html(form_json_array);
+	$("#header_form").trigger('reset');
+	var jString = JSON.stringify(form_json_array);
+	$("#tabs-2").empty();
+	$("#tabs-2").append(jString);
+  });
+  $( "#add_text_to_form" ).click(function() {
+      hide_divs();
+      add_text_input(form_json_array);
+      $("#tabs-2").empty();
+      $("#text_form").trigger('reset');
+      
+
+
+      var jString = JSON.stringify(form_json_array);
+      $("#tabs-2").empty();
+      $("#tabs-2").append(jString);
+      read_json_to_html(form_json_array);
+  });
+  $( "#add_checkbox_to_form" ).click(function() {
+      hide_divs();
+      add_checkbox_input(form_json_array);
+      $("#tabs-2").empty();
+      $("#checkbox_form").trigger('reset');
+
+      var jString = JSON.stringify(form_json_array);
+      $("#tabs-2").empty();
+      $("#tabs-2").append(jString);
+      read_json_to_html(form_json_array);
+  });  
+  $( "#add_select_to_form" ).click(function() {
+    hide_divs();
+    add_select_input(form_json_array, select_options_array);
+    $("#tabs-2").empty();
+    $("#select_form").trigger('reset');
+    clear_select_options(select_options_array);
+    // only below clears array
+    select_options_array = [];
+    read_json_to_html(form_json_array);
+
+    var jString = JSON.stringify(form_json_array);
+    $("#tabs-2").empty();
+    $("#tabs-2").append(jString);
+  }); 
+
+    $( "#add_radio_to_form" ).click(function() {
+	hide_divs();
+	add_radio_input(form_json_array, radio_options_array);
+	// only below clears array
+	radio_options_array = [];
+	$("#tabs-2").empty();
+	$("#select_form").trigger('reset');
+	clear_radio_options();
+
+	var jString = JSON.stringify(form_json_array);
+	$("#tabs-2").empty();
+	$("#tabs-2").append(jString);
+	read_json_to_html(form_json_array);
+
+  });      
+  
   
   
 
 });
 
-
-</script>
-  
-  <script>
-  $(function() {
-    hide_divs();
-    hide_tabs();
-    $("#tabs-1").show();
-    
-    $("#show_html").click(function() {
-      console.log("show_html");
-      hide_tabs();
-      $("#tabs-1").show();
-    });
-    
-    $("#show_json").click(function() {
-      console.log("show_json");
-
-      hide_tabs();
-      $("#tabs-2").show();
-    });
-  
-    
-    var select_options_array = [];
-    var radio_options_array = [];
-    var form_json_array = []
-    
-    var option_html = 'Option:  <input type="text" name="firstname"><br>';
-    
-
-    $( "#add_select_option" ).click(function() {
-    
-     add_select_option(select_options_array);
-     var i = select_options_array.length - 1;
-     var option_number = i + 2;
-      var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ select_options_array[i] + '" name="'+ select_options_array[i] + '"><br>';
-      var new_option = '<option value="' + select_options_array[i] + '">Option '+ option_number + '</option>';
-      $("#add_options_to_select").append(new_line);
-      $("#select_default").append(new_option);
-     // add to select options select default div
-     // make a remove option(remove only removes last)
-    });
-    
-    $("#clear_radio_options").click(function() {
-      radio_options_array = [];
-      var new_option = 'Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>';
-      var new_select = '<option value="radio_option_1">Option 1</option>';
-      $("#add_options_to_radio").empty();
-      $("#radio_default").empty();
-      $("#add_options_to_radio").append(new_option);
-      $("#radio_default").append(new_select);
-    // clear and reset text input
-    // clear and reset default select
-    
-    });
-
-    $("#clear_select_options").click(function() {
-      select_options_array = [];
-      var new_option = 'Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>';
-      var new_select = '<option value="select_option_1">Option 1</option>';
-      $("#add_options_to_select").empty();
-      $("#select_default").empty();
-      $("#add_options_to_select").append(new_option);
-      $("#select_default").append(new_select);
-    // clear and reset text input
-    // clear and reset default select
-    
-    });
-    
-    
-    $( "#add_radio_option" ).click(function() {
-    
-     add_radio_option(radio_options_array);
-     var i = radio_options_array.length - 1;
-     var option_number = i + 2;
-      var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ radio_options_array[i] + '" name="'+ radio_options_array[i] + '"><br>';
-      var new_option = '<option value="' + radio_options_array[i] + '">Option '+ option_number + '</option>';
-      $("#add_options_to_radio").append(new_line);
-      $("#radio_default").append(new_option);
-     // add to select options select default div
-     // make a remove option(remove only removes last)
-    });
-
-    
-    $( "#add_checkbox" ).click(function() {
-	 hide_divs();
-	 $("#checkbox_div").show();
-    });
-    
-    $( "#add_select" ).click(function() {
-	 hide_divs();
-         $("#select_div").show();
-    });
-    $( "#add_radio" ).click(function() {
-	 hide_divs();
-         $("#radio_div").show();
-    });
-    $( "#add_text" ).click(function() {
-	 hide_divs();
-	 $("#text_div").show();
-    });
-    $( "#add_header" ).click(function() {
-	 hide_divs();
-	 $("#header_div").show();
-    });
-    
-    $("#add_label").click(function() {
-	 hide_divs();
-	 $("#label_div").show();
-    });
-    
-    $("#add_paragraph").click(function() {
-	 hide_divs();
-	 $("#paragraph_div").show();
-    });
-    
-    $("#add_paragraph_to_form").click(function() {
-         hide_divs();
-	 add_paragraph_input(form_json_array);
-	 read_json_to_html(form_json_array);
-	 $("#paragraph_form").trigger('reset');
-	 var jString = JSON.stringify(form_json_array);
-	 $("#tabs-2").empty();
-	 $("#tabs-2").append(jString);
-    
-    });
-    
-    $("#add_label_to_form").click(function() {
-         hide_divs();
-	 add_label_input(form_json_array);
-	 read_json_to_html(form_json_array);
-	 $("#label_form").trigger('reset');
-	 var jString = JSON.stringify(form_json_array);
-	 $("#tabs-2").empty();
-	 $("#tabs-2").append(jString);
-    
-    });
-    
-    $( "#add_header_to_form" ).click(function() {
-	 hide_divs();
-	 add_header_input(form_json_array);
-	 read_json_to_html(form_json_array);
-	 $("#header_form").trigger('reset');
-	 var jString = JSON.stringify(form_json_array);
-	 $("#tabs-2").empty();
-	 $("#tabs-2").append(jString);
-    });
-/*    
-    $("#add_label_to_form").click(function() {
-	hide_divs()
-	
-	// add label input
-	// read json to html
-	
-	$("#label_form").trigger('reset');
-	 var jString = JSON.stringify(form_json_array);
-	 $("#tabs-2").append(jString);
-    
-    });*/
-      $( "#add_text_to_form" ).click(function() {
-	 hide_divs();
-	 add_text_input(form_json_array);
-	 $("#tabs-2").empty();
-	 $("#text_form").trigger('reset');
-         
-
-
-	 var jString = JSON.stringify(form_json_array);
-	 $("#tabs-2").empty();
-	 $("#tabs-2").append(jString);
-	 read_json_to_html(form_json_array);
-    });
-     $( "#add_checkbox_to_form" ).click(function() {
-	 hide_divs();
-	 add_checkbox_input(form_json_array);
-	 $("#tabs-2").empty();
-	 $("#checkbox_form").trigger('reset');
-
-	 var jString = JSON.stringify(form_json_array);
-	 $("#tabs-2").empty();
-	 $("#tabs-2").append(jString);
-	 read_json_to_html(form_json_array);
-    });  
-     $( "#add_select_to_form" ).click(function() {
-	 hide_divs();
-	 add_select_input(form_json_array, select_options_array);
-	 $("#tabs-2").empty();
-	 $("#select_form").trigger('reset');
-	 clear_select_options(select_options_array);
-	 // only below clears array
-	 select_options_array = [];
-	 read_json_to_html(form_json_array);
-
-	 var jString = JSON.stringify(form_json_array);
-	 $("#tabs-2").empty();
-	 $("#tabs-2").append(jString);
-    }); 
-  
-     $( "#add_radio_to_form" ).click(function() {
-	 hide_divs();
-	 add_radio_input(form_json_array, radio_options_array);
-	 // only below clears array
-	 radio_options_array = [];
-	 $("#tabs-2").empty();
-	 $("#select_form").trigger('reset');
-	 clear_radio_options();
-
-	 var jString = JSON.stringify(form_json_array);
-	 $("#tabs-2").empty();
-	 $("#tabs-2").append(jString);
-	 read_json_to_html(form_json_array);
-
-    });      
-    
-    
-    
-
-  });
-  function hide_divs() {
-    $("#select_div").hide();
-    $("#radio_div").hide();
-    $("#text_div").hide();
-    $("#checkbox_div").hide();
-    $("#header_div").hide();
-    $("#label_div").hide();
-    $("#paragraph_div").hide();
+//------------------------------------------------------------------------------------------------------------------
+// helper functions
+function hide_divs() {
+  $("#select_div").hide();
+  $("#radio_div").hide();
+  $("#text_div").hide();
+  $("#checkbox_div").hide();
+  $("#header_div").hide();
+  $("#label_div").hide();
+  $("#paragraph_div").hide();
 }
 function hide_tabs() {
   $("#tabs-1").hide();
@@ -252,6 +236,9 @@ function clear_options_array(options_array) {
    return ["options_1"]
 }
 
+
+//------------------------------------------------------------------------------------------------------------------
+// add options to select
 function add_select_option(select_options_array) {
    var array_length = select_options_array.length;
    var new_length = array_length + 2;
@@ -259,6 +246,9 @@ function add_select_option(select_options_array) {
    select_options_array.push(new_options_string);
    return select_options_array;
 }
+
+//------------------------------------------------------------------------------------------------------------------
+// add options to radio
 
 function add_radio_option(select_options_array) {
    var array_length = select_options_array.length;
@@ -273,6 +263,8 @@ function remove_option(options_array) {
    return options_array;
 }
 
+//------------------------------------------------------------------------------------------------------------------
+// add get forms, add to json
 function add_paragraph_input(form_json_array) {
   var paragraph_value = $("#paragraph").val();
   var paragraph_json = {
@@ -436,30 +428,15 @@ function add_radio_input(form_json_array, radio_options_array) {
 
 }
 
-function read_json_to_html(form_json_array) {
-  console.log("0");
+//------------------------------------------------------------------------------------------------------------------
+// read from incremented json to the html div. This gives users a chance to see what the div will look like.
 
+function read_json_to_html(form_json_array) {
+  //TODO
   $("#form_label").empty();
   $("#form_paragraph").empty();
   $("#form_table").empty();
 
-//   $("#tabs-1").append('<table id="table1">');
-
-  // TODO
-  // running 3 loops to make sure things show up in HTML in the right order. Very inefficient!
-//   for (var i=0; i < form_json_array.length; i++) {
-//     if(form_json_array[i].type == "label") {
-//       $("#form_label").append('<h2>' + form_json_array[i].label + '</h2>');
-//     
-//     }
-//   }
-// 
-//   for (var i=0; i < form_json_array.length; i++) {
-//     if(form_json_array[i].type == "paragraph") {
-//       $("#form_paragraph").append(form_json_array[i].paragraph + '<br>');
-// 
-//     }
-//   }
   for (var i=0; i < form_json_array.length; i++) {
     if(form_json_array[i].type == "label") {
       $("#form_label").append('<h2>' + form_json_array[i].label + '</h2>');
@@ -488,17 +465,9 @@ function read_json_to_html(form_json_array) {
       console.log(options_array);
       for (var j = 0; j < options_array.length; j++) {
         var options_string = "";
-        console.log(form_json_array[i].radio_default);
-//         console.log(options_array[j]);
 	if(form_json_array[i].radio_default == options_array[j]) {
-	  console.log(options_array[j]);
           var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
-
-// 	  var option_string = '<input type="radio" value="' + form_json_array[i][options_array[j]] + '" name="1" checked="true">' + form_json_array[i][options_array[j]];
 	} else {
-// 	  var option_string = '<input type="radio" value="' + form_json_array[i][options_array[j]] + '" name="1">' + form_json_array[i][options_array[j]];
-	  console.log(options_array[j] + " else");
-
 	  var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
 	}
 
@@ -574,6 +543,9 @@ function read_json_to_html(form_json_array) {
 
 }
 
+//------------------------------------------------------------------------------------------------------------------
+// clear options for select form
+
 function clear_select_options(select_options_array) {
 
   select_options_array = [];
@@ -584,6 +556,9 @@ function clear_select_options(select_options_array) {
   $("#add_options_to_select").append(new_option);
   $("#select_default").append(new_select);
 }
+
+//------------------------------------------------------------------------------------------------------------------
+// clear options for radio form
 
 function clear_radio_options() {
 
@@ -830,7 +805,7 @@ new tabs,
     json
     edit json
 
-autosave(?)
+autosave(?) save progress(?)
 save button
 
 edit form
@@ -841,6 +816,33 @@ edit phases
 test with lat/lng auto geocode
 _____
 
+_____
 
+Phases
+- change div ids for tabs-1, tabs-2
 
+- change left hand to show different forms
+
+Associate with Incident
+
+Save
+-- phases and forms json(s) to incident
+-- save to recycle bin saved within model
+
+Inherit
+- a phase
+- a form
+
+- phases schema
+-- without forms
+-- with forms
+
+Edit html/json
+-- Line _____________  Edit | Remove | Add element above
+
+Refactor JQuery
+
+Move JQuery into separate files
+
+JUnit
 -->

@@ -9,20 +9,42 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
 <script>
-  $(function() {
-    $( "#tabs" ).tabs();
-  });
-  </script>
+$(function() {
+
+  
+  
+
+});
+
+
+</script>
   
   <script>
   $(function() {
     hide_divs();
+    hide_tabs();
+    $("#tabs-1").show();
+    
+    $("#show_html").click(function() {
+      console.log("show_html");
+      hide_tabs();
+      $("#tabs-1").show();
+    });
+    
+    $("#show_json").click(function() {
+      console.log("show_json");
+
+      hide_tabs();
+      $("#tabs-2").show();
+    });
+  
     
     var select_options_array = [];
     var radio_options_array = [];
     var form_json_array = []
     
     var option_html = 'Option:  <input type="text" name="firstname"><br>';
+    
 
     $( "#add_select_option" ).click(function() {
     
@@ -217,6 +239,10 @@
     $("#header_div").hide();
     $("#label_div").hide();
     $("#paragraph_div").hide();
+}
+function hide_tabs() {
+  $("#tabs-1").hide();
+  $("#tabs-2").hide();
 }
 
 function clear_options_array(options_array) {
@@ -741,8 +767,8 @@ Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
 <br>
 <div id="tabs">
   <ul>
-    <li><a href="#tabs-1">HTML</a></li>
-    <li><a href="#tabs-2">JSON</a></li>
+    <li><a href="#" id="show_html">HTML</a></li>
+    <li><a href="#" id="show_json">JSON</a></li>
   </ul>
   <div id="tabs-1">
       <div id="form_label">
@@ -790,7 +816,7 @@ __
 
 order
 
-make form fit into current format
+#make form fit into current format
 
 add subheading (like heading, but with h3)
 add incident support

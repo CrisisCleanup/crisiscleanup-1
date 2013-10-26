@@ -25,7 +25,19 @@ from google.appengine.api import memcache
 import cache
 
 class IncidentDefinition(db.Model):
-  version = db.StringProperty(required=True)
+  # TODO
+
+  # is the next one necessary?
+  #full_definition_json = db.TextProperty(required=True, default="{}")
+  # should we make the next two attributes lists, rather than just json?
+  phases_json = db.TextProperty(required=True, default="{}")
+  # name, definition, order_number, incident reference, incident name
+  forms_json = db.TextProperty(required=True, default="{}")
+  # name, incident reference, incident name, attributes json
+  
+  # removing versions until we know what will likely be inherited
+  
+  #version = db.StringProperty(required=True)
   full_name = db.StringProperty(required=True)
   short_name = db.StringProperty(required=True)
   timezone = db.StringProperty(required=True)
@@ -39,7 +51,6 @@ class IncidentDefinition(db.Model):
   camera_lng = db.StringProperty()
   ignore_validation = db.BooleanProperty()
   developer_mode = db.BooleanProperty()
-  incident_form_json = db.TextProperty()
   
   local_admin_name = db.StringProperty()
   local_admin_title = db.StringProperty()

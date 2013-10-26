@@ -277,6 +277,7 @@ function add_text_input(form_json_array) {
   var text_placeholder = $("#text_placeholder").val();
   var text_required = $('#text_required').prop('checked')
   var text_sensitive = $('#text_sensitive').prop('checked')
+  var text_id = $("#text_id").val();
   
   var text_infobox = $("#text_infobox").val();
   var text_printer = $("#text_printer").val();
@@ -290,6 +291,7 @@ function add_text_input(form_json_array) {
     text_placeholder: text_placeholder,
     text_required: text_required,
     text_sensitive: text_sensitive,
+    text_id: text_id,
     text_infobox: text_infobox,
     text_printer: text_printer,
     text_mobile: text_mobile,
@@ -304,6 +306,9 @@ function add_checkbox_input(form_json_array) {
   var checkbox_default = $("#checkbox_default").val();
   var checkbox_required = $("#checkbox_required").prop('checked');
   var checkbox_sensitive = $("#checkbox_sensitive").prop("checked");
+  var checkbox_id = $("#checkbox_id").val();
+  var checkbox_checked_value = $("#checkbox_checked_value").val();
+  var checkbox_unchecked_value = $("#checkbox_unchecked_value").val();
   var checkbox_infobox = $("#checkbox_infobox").val();
   var checkbox_printer = $("#checkbox_printer").val();
   var checkbox_mobile = $("#checkbox_mobile").val();
@@ -315,6 +320,9 @@ function add_checkbox_input(form_json_array) {
     checkbox_default: checkbox_default,
     checkbox_required: checkbox_required,
     checkbox_sensitive: checkbox_sensitive,
+    checkbox_id: checkbox_id,
+    checkbox_checked_value: checkbox_checked_value,
+    checkbox_unchecked_value: checkbox_unchecked_value,
     checkbox_infobox: checkbox_infobox,
     checkbox_printer: checkbox_printer,
     checkbox_mobile: checkbox_mobile,
@@ -330,6 +338,7 @@ function add_select_input(form_json_array, select_options_array) {
   var select_default = $("#select_default").val();
   var select_required = $("#select_required").prop('checked');
   var select_sensitive = $("#select_sensitive").prop("checked");
+  var select_id = $("#select_id").val();
   var select_infobox = $("#select_infobox").val();
   var select_printer = $("#select_printer").val();
   var select_mobile = $("#select_mobile").val();
@@ -342,6 +351,7 @@ function add_select_input(form_json_array, select_options_array) {
     select_default: select_default,
     select_required: select_required,
     select_sensitive: select_sensitive,
+    select_id: select_id,
     select_infobox: select_infobox,
     select_printer: select_printer,
     select_mobile: select_mobile,
@@ -355,7 +365,6 @@ function add_select_input(form_json_array, select_options_array) {
     
   form_json_array.push(select_json);
   select_options_array = [];
-  alert(select_options_array);
 }
 
 function add_radio_input(form_json_array, radio_options_array) {
@@ -364,6 +373,9 @@ function add_radio_input(form_json_array, radio_options_array) {
   var radio_default = $("#radio_default").val();
   var radio_required = $("#radio_required").prop('checked');
   var radio_sensitive = $("#radio_sensitive").prop("checked");
+  var radio_id = $("#radio_id").val();
+  var radio_low_hint = $("#radio_low_hint").val();
+  var radio_high_hint = $("#radio_high_hint").val();
   var radio_infobox = $("#radio_infobox").val();
   var radio_printer = $("#radio_printer").val();
   var radio_mobile = $("#radio_mobile").val();
@@ -376,6 +388,9 @@ function add_radio_input(form_json_array, radio_options_array) {
     radio_default: radio_default,
     radio_required: radio_required,
     radio_sensitive: radio_sensitive,
+    radio_id: radio_id,
+    radio_low_hint: radio_low_hint,
+    radio_high_hint: radio_high_hint,
     radio_infobox: radio_infobox,
     radio_printer: radio_printer,
     radio_mobile: radio_mobile,
@@ -393,6 +408,8 @@ function add_radio_input(form_json_array, radio_options_array) {
 }
 
 function read_json_to_html(form_json_array) {
+  console.log("0");
+
   $("#form_label").empty();
   $("#form_paragraph").empty();
   $("#form_table").empty();
@@ -401,20 +418,28 @@ function read_json_to_html(form_json_array) {
 
   // TODO
   // running 3 loops to make sure things show up in HTML in the right order. Very inefficient!
+//   for (var i=0; i < form_json_array.length; i++) {
+//     if(form_json_array[i].type == "label") {
+//       $("#form_label").append('<h2>' + form_json_array[i].label + '</h2>');
+//     
+//     }
+//   }
+// 
+//   for (var i=0; i < form_json_array.length; i++) {
+//     if(form_json_array[i].type == "paragraph") {
+//       $("#form_paragraph").append(form_json_array[i].paragraph + '<br>');
+// 
+//     }
+//   }
   for (var i=0; i < form_json_array.length; i++) {
     if(form_json_array[i].type == "label") {
       $("#form_label").append('<h2>' + form_json_array[i].label + '</h2>');
     
     }
-  }
-
-  for (var i=0; i < form_json_array.length; i++) {
     if(form_json_array[i].type == "paragraph") {
       $("#form_paragraph").append(form_json_array[i].paragraph + '<br>');
 
     }
-  }
-  for (var i=0; i < form_json_array.length; i++) {
     if(form_json_array[i].type == "radio") {
       var options_array = []
       for (var key in form_json_array[i]) {
@@ -428,19 +453,30 @@ function read_json_to_html(form_json_array) {
       if (form_json_array[i].radio_required) {
         req = "*";
       }
-      var radio_string = form_json_array[i].radio_label + req + ":";
+      var radio_string = "";
+      var radio_string_start = '</td></tr><tr><td class=question>' + form_json_array[i].radio_label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
+      var radio_string_end = '<td>' + form_json_array[i].radio_high_hint + '</td></tr></table></td></tr>';
+      console.log(options_array);
       for (var j = 0; j < options_array.length; j++) {
         var options_string = "";
+        console.log(form_json_array[i].radio_default);
+//         console.log(options_array[j]);
 	if(form_json_array[i].radio_default == options_array[j]) {
+	  console.log(options_array[j]);
+          var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
 
-	  var option_string = '<input type="radio" value="' + form_json_array[i][options_array[j]] + '" name="1" checked="true">' + form_json_array[i][options_array[j]];
+// 	  var option_string = '<input type="radio" value="' + form_json_array[i][options_array[j]] + '" name="1" checked="true">' + form_json_array[i][options_array[j]];
 	} else {
-	  var option_string = '<input type="radio" value="' + form_json_array[i][options_array[j]] + '" name="1">' + form_json_array[i][options_array[j]];
+// 	  var option_string = '<input type="radio" value="' + form_json_array[i][options_array[j]] + '" name="1">' + form_json_array[i][options_array[j]];
+	  console.log(options_array[j] + " else");
+
+	  var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
 	}
 
 	radio_string = radio_string + option_string;
       }
-      $("#form_table").append(radio_string);
+      var final_radio_string = radio_string_start + radio_string + radio_string_end;
+      $("#form_table").append(final_radio_string);
 
     }
     if(form_json_array[i].type == "select") {
@@ -451,14 +487,16 @@ function read_json_to_html(form_json_array) {
 	    options_array.push(key_string);
         }
       }
+      console.log("1");
       var req = "";
       if (form_json_array[i].select_required) {
         req = "*";
       }
-      var begin_option = form_json_array[i].select_label + req +': <select id="' +form_json_array[i].select_label + '" name="' +form_json_array[i].select_label + '">';
-      var end_option = "</select>";
+      var begin_option = '<tr><td class=question>' + form_json_array[i].select_label + req +'</td><td class="answer"><div class="form_field"><select class="" id="' + form_json_array[i].select_id + '" name="' + form_json_array[i].select_id + '">';
+      var end_option = '</select></div></td></tr>';
       var select_string = "";
-      
+      console.log("2");
+
       for (var j = 0; j < options_array.length; j++) {
         var option_string = "";
         if(form_json_array[i].select_default == options_array[j]) {
@@ -480,27 +518,25 @@ function read_json_to_html(form_json_array) {
     }
     
     else if(form_json_array[i].type == "text") {
-      var new_text_input = "";
-      
-      if (form_json_array[i].text_required == true) {
-	var new_text_input = form_json_array[i].text_label + '*: <input type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"><br>';
-      } else {
-	var new_text_input = form_json_array[i].text_label + ': <input type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"><br>';
+      var required = "";
+      if (form_json_array[i].text_required) {
+        var required = "*";
       }
+      var new_text_input = '<tr><td class=question>' + form_json_array[i].text_label + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + form_json_array[i].text_id + '" name="' + form_json_array[i].text_id + '" type="text" value="' + form_json_array[i].text_default + '" /></div></td></tr>'
       $("#form_table").append(new_text_input);
     }
     
     else if (form_json_array[i].type == "checkbox") {
-      var required_star = "";
+      var required = "";
       var checked = "";
       if (form_json_array[i].checkbox_required == true) {
-        required_star = "*";
+        required = "*";
       }
       
       if (form_json_array[i].checkbox_default == "y") {
         checked = " checked";
       }
-      var new_checkbox = form_json_array[i].checkbox_label + required_star + ': <input type="checkbox" id="' + form_json_array.checkbox_label + '" name="'  + form_json_array.checkbox_label + '" value="y"' + checked + '>';
+      var new_checkbox = '<tr><td class=question><label for="' + form_json_array[i].checkbox_id + '">' + form_json_array[i].checkbox_label + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + form_json_array[i].checkbox_id + '" type="hidden" value="' +form_json_array[i].checkbox_unchecked_value + '" ' + checked + ' /><input class="" id="' + form_json_array[i].checkbox_id + '" name="' + form_json_array[i].checkbox_id + '" type="checkbox" value="' +form_json_array[i].checkbox_checked_value + ' "></div></td></tr>';
       $("#form_table").append(new_checkbox);
 
     }
@@ -573,6 +609,8 @@ Default Value: <input type="text" id="text_default" name="text_default"><br>
 Placeholder: <input type="text" id="text_placeholder" name="text_placeholder"><br> 
 Required: <input type="checkbox" id="text_required" name="text_required" value="y">
 Sensitive: <input type="checkbox" id="text_sensitive" name="text_sensitive" value="y"><br>
+Form Id: <input type="text" id="text_id" name="text_id"><br>
+
 <h3>Add Display Info</h3>
 *For advanced users<br>
 InfoBox: <textarea id="text_infobox" name="text_infobox" rows="2" cols="20">Write something here</textarea><br>
@@ -592,6 +630,10 @@ Default Value:<select id="checkbox_default" name="checkbox_default">
 </select><br><br>
 Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y">
 Sensitive: <input type="checkbox" id="checkbox_sensitive" name="checkbox_sensitive" value="y"><br>
+Form Id: <input type="text" id="checkbox_id" name="checkbox_id"><br>
+Checked Value: <input type="text" id="checkbox_checked_value" name="checkbox_checked_value"><br>
+Unchecked Value: <input type="text" id="checkbox_unchecked_value" name="checkbox_unchecked_value"><br>
+
 <h3>Add Display Info</h3>
 *For advanced users<br>
 InfoBox: <textarea id="checkbox_infobox" name="checkbox_infobox" rows="2" cols="20">Write something here</textarea><br>
@@ -619,6 +661,7 @@ Default: <select id="select_default" name="select_default">
 <br>
 Required: <input type="checkbox" id="select_required" name="select_required" value="y">
 Sensitive: <input type="checkbox" id="select_sensitive" name="select_sensitive" value="y"><br>
+Form Id: <input type="text" id="select_id" name="select_id"><br>
 <h3>Add Display Info</h3>
 *For advanced users<br>
 InfoBox: <textarea id="select_infobox" name="select_infobox" rows="2" cols="20">Write something here</textarea><br>
@@ -645,6 +688,10 @@ Default: <select id="radio_default" name="radio_default">
 <br>
 <br>Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
 Sensitive: <input type="checkbox" id="radio_sensitive" name="radio_sensitive" value="y"><br>
+Form Id: <input type="text" id="radio_id" name="radio_id"><br>
+Low Hint: <input type="text" id="radio_low_hint" name="radio_low_hint"><br>
+High Hint: <input type="text" id="radio_high_hint" name="radio_high_hint"><br>
+
 <h3>Add Display Info</h3>
 *For advanced users<br>
 InfoBox: <textarea id="radio_infobox" name="radio_infobox" rows="2" cols="20">Write something here</textarea><br>
@@ -745,6 +792,7 @@ order
 
 make form fit into current format
 
+add subheading (like heading, but with h3)
 add incident support
 
 new tabs,

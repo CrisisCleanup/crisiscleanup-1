@@ -142,6 +142,7 @@ class EditHandler(base.AuthenticatedHandler):
 	  else:
 	    logging.debug(event.short_name)
 	    logging.debug(k + " is the key")
+            logging.debug(v + " is the value")
 	    id_index = new_inc_form.index('id="' + k)
 	    value_index = new_inc_form[id_index:].index('value="' + str(v))
 	    length = 0
@@ -195,27 +196,8 @@ class EditHandler(base.AuthenticatedHandler):
 
     # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
     data.name.data = site_util.unescape(data.name.data)
-    logging.debug(data.latitude.data)
-    logging.debug(data.longitude.data)
-    lat_string = self.request.get("latitude")
-    decimal_index = lat_string[3:].find('.')
-    lat_string = lat_string[:decimal_index]
-    lat_float = float(lat_string)
-    logging.debug(lat_float)
 
-    lng_string = self.request.get("longitude")
-    logging.debug(lng_string)
-    
 
-    if event.short_name != "black_forest":
-      decimal_index = lng_string[4:].find('.')
-      lng_string = lng_string[:decimal_index]
-      logging.debug(lng_string)
-
-    #lng_float = float(lng_string)
-
-    #data.latitude.data = lat_float
-    #data.longitude.data = lng_float
     data.priority.data = int(data.priority.data)
     data.name.validators = data.name.validators + [wtforms.validators.Length(min = 1, max = 100,
                              message = "Name must be between 1 and 100 characters")]

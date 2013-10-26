@@ -32,7 +32,11 @@
 <h2>Incident</h2>
 Incident Definition Version: (req) <select id="incident_version" name="incident_version">
   <option value="None">Choose a version</option>
-  <option value="1">Verson 1</option>
+  <option value="Custom">Custom</option>
+  <option value="New">Create new version</option>
+  {% for version in versions %}
+  <option value="{{ version }}">Verson {{ version }}</option>
+  {% endfor %}
 </select>
 <br>
 

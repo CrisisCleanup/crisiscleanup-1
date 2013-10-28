@@ -60,9 +60,13 @@ table.select-print-table td {
 }
 
 
-/* hide submit button */
+/* hide controls */
 
 input[type="submit"]{
+  display: none;
+}
+
+#ignore_similar {
   display: none;
 }
 

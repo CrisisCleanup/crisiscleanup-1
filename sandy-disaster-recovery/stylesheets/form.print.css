@@ -23,6 +23,21 @@
 }
 
 
+/* add borders */
+
+input, textarea {
+  border: 1px solid black;
+}
+
+
+/* resize elements */
+
+textarea {
+  height: 8em;
+  width: 20em;
+}
+
+
 /* replace selects with printable tables */
 
 select {

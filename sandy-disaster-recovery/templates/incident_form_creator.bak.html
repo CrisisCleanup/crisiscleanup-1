@@ -5,40 +5,14 @@
 {% endblock %}
 
 {% block scripts %}
+<link href="/stylesheets/default.css" rel="stylesheet">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
 <script>
-var warn_on_leave = false;
-window.onbeforeunload = function(){
-  if(warn_on_leave){
-      return 'Your changes have not been saved. To save, stay on this page and click "save".';
-  }
-};
 $(function() {
-
-
   hide_divs();
   hide_tabs();
-  
   $("#tabs-1").show();
-  $( "#incident" ).change(function() {
-    var incident_full_name = $("#incident").val();
-    get_json(incident_full_name);
-  });
-  
-  $( "#phases_list" ).change(function() {
-    var phase = $("#phases_list").val();
-    var incident_full_name = $("#incident").val();
-    console.log(3);
-//       $("#tabs-1").empty();
-//       $("#tabs-2").empty();
-    get_form_json(phase, incident_full_name);
-  });
-  
-  $( "#add_phase_button" ).click(function() {
-    $("#add_phase_form_div").show();
-  });
-  $( "#close_phase_button" ).click(function() {
-    $("#add_phase_form_div").hide();
-  });
   
   $("#show_html").click(function() {
     console.log("show_html");
@@ -245,8 +219,6 @@ $(function() {
 //------------------------------------------------------------------------------------------------------------------
 // helper functions
 function hide_divs() {
-  $("#first_phase_form_div").hide();
-  $("#add_phase_form_div").hide();
   $("#select_div").hide();
   $("#radio_div").hide();
   $("#text_div").hide();
@@ -256,7 +228,6 @@ function hide_divs() {
   $("#paragraph_div").hide();
 }
 function hide_tabs() {
-  console.log("f l hide");
   $("#tabs-1").hide();
   $("#tabs-2").hide();
 }
@@ -462,9 +433,7 @@ function add_radio_input(form_json_array, radio_options_array) {
 
 function read_json_to_html(form_json_array) {
   //TODO
-  warn_on_leave = true;
   $("#form_label").empty();
-  console.log("f_l empty");
   $("#form_paragraph").empty();
   $("#form_table").empty();
 
@@ -603,108 +572,7 @@ function clear_radio_options() {
   
 }
 
-
-function get_json(incident_short_name) {
-
-  $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name},  function( data ) {
-    console.log(data)
-    if (data.phases_json == "{}") {
-      show_first_phase_form(incident_short_name, incident_short_name);
-    } else {
-      read_phases_json_to_html(data.phases_json, incident_short_name);
-    }
-  });
-}
-
-function get_form_json(phase,incident_short_name) {
-
-  $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name, phase: phase},  function( data ) {
-    console.log(data);
-    if (data.forms_json == "{}") {
-      console.log("empty");
-      $("#tabs-1").empty();
-      console.log("f l 34hide");
-
-      $("#tabs-1").append("empty");
-      $("#tabs-2").append(data.forms_json);
-//       show_first_phase_form(incident_short_name, incident_short_name);
-    } else {
-    $("#tabs-2").append(data.forms_json);
-    var arr = JSON.parse(data.forms_json);
-    form_json_array = arr;
-
-    read_json_to_html(arr);
-
-//       read_phases_json_to_html(data.phases_json, incident_short_name);
-    }
-  });
-}
-
-
-
-function show_first_phase_form(incident_short_name, incident_short_name) {
-  $('#first_phase_form').append('<input type="hidden" name="incident_short_name" value="' + incident_short_name + '" />');
-
-  $("#first_phase_form_div").show();
-}
-
-function read_phases_json_to_html(phases_json_array, incident_short_name) {
-//   window.location.replace("/incident_form_creator")
-  var arr = JSON.parse(phases_json_array);
-
-  for (var i = 0; i < arr.length; i++) {
-    var list_string = '<option value=' + arr[i].phase_name + '>'  + arr[i].phase_name + '</option>';
-    $("#phases_list").append(list_string);
-    
-    $("#add_phase_form").append('<input type="hidden" name="incident_short_name" value="' + incident_short_name + '" />');
-    
-//     var phase_htmls = '<div id=phase_html_' + arr[i].phase_name + '>\
-// 			  <ul>\
-// 			    <li><a href="#" id="show_html' + arr[i].phase_name + '">HTML</a></li>\
-// 			    <li><a href="#" id="show_json' + arr[i].phase_name + '">JSON</a></li>\
-// 			  </ul>\
-// 			  <div id="tabs-1' + arr[i].phase_name + '">\
-// 			      <div id="form_label' + arr[i].phase_name + '">\
-// 			      </div>\
-// 			      <div id="form_paragraph' + arr[i].phase_name + '">\
-// 			      </div>\
-// 			      <div>\
-// 				<table id="form_table' + arr[i].phase_name + '">\
-// 				</table>\
-// 			      </div>\
-// 			  </div>\
-// 			  <div id="tabs-2' + arr[i].phase_name + '">\
-// 			  </div>\
-// 			</div>';
-// 			
-//     $("#phase_htmls").append(phase_htmls);
-    // sort by phase_position
-  }
-
-}
-
 </script>
-
-<script>
-$(function() {
-    hide_divs();
-
-
-
-});
-
-
-
-
-</script>
-
-<script>
-
-// how to check if complete?
-// read to json1, call not complete
-
-</script>
-
 {% endblock %}
 
 {% block login %}
@@ -860,7 +728,6 @@ Label: <input type="text" id="label_name" name="label_name"><br>
 Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
 <a href="#form_editor" id="add_paragraph_to_form">Add to form</a></form>
 </div>
-
 {% endblock %}
 
 {% block main_title %}
@@ -876,54 +743,13 @@ Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
 </select>
 <br>
 <br>
-
-<div id="main_form_nav">
-  <select id="phases_list">
-  <option value="None">Choose a phase</option>
-
-  </select>
-  <br>
-  <a href="#" id="add_phase_button">Add Phase</a>
-  <a href="#" id="close_phase_button">Close Form</a>
-
-
-</div>
-
-<div id="phase_htmls">
-
-
-</div>
-
-<div id="first_phase_form_div">
-  <form id="first_phase_form" action="/incident_create_first_phase" method="POST">
-  Phase Name: <input type="text" name="phase_name"><br>
-  Phase Definition: <input type="text" name="phase_definition"><br>
-  <input type="hidden" name="phase_position" value="0">
-
-  <button class="submit">Submit</button>
-</form>
-</div>
-
-<div id="add_phase_form_div">
-  <form id="add_phase_form" action="/incident_create_first_phase" method="POST">
-  Phase Name: <input type="text" name="phase_name"><br>
-  Phase Definition: <input type="text" name="phase_definition"><br>
-  Phase Position: <input type="text" name="phase_position"><br>
-
-  <input type="hidden" name="add_phase" value="true">
-  <button class="submit">Submit</button>
-</form>
-</div>
-
 <div id="phase1">
+<a href="#" id="add_phase_left">+</a> | { new phases here} | <a href="#" id="add_phase_right">+</a>
 <div id="tabs">
-<!--  <ul>
+  <ul>
     <li><a href="#" id="show_html">HTML</a></li>
     <li><a href="#" id="show_json">JSON</a></li>
-  </ul>-->
-  
-  <a href="#" id="show_html">HTML</a>
-  <a href="#" id="show_json">JSON</a>
+  </ul>
   <div id="tabs-1">
       <div id="form_label">
       </div>
@@ -939,6 +765,7 @@ Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
 
 </div>
 </div>
+
 
 {% endblock %}
 

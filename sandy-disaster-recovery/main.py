@@ -69,6 +69,8 @@ import stats
 
 from handlers import incident_definition
 from handlers import incident_form_creator
+from handlers import incident_definition_ajax
+from handlers import incident_create_first_phase
 
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
@@ -220,6 +222,9 @@ app = webapp2.WSGIApplication([
     Route(r'/form_ajax_handler', form_ajax_handler.FormAjaxHandler, 'form_ajax_handler'),
 
     Route(r'/incident_definition', incident_definition.IncidentDefinition, 'incident_definition'),
+    Route(r'/incident_definition_ajax', incident_definition_ajax.IncidentDefinitionAjax, 'incident_definition_ajax'),
+    Route(r'/incident_create_first_phase', incident_create_first_phase.IncidentCreateFirstPhase, 'incident_create_first_phase'),
+
     Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),

@@ -38,8 +38,12 @@ class IncidentDefinition(db.Model):
   # removing versions until we know what will likely be inherited
   
   #version = db.StringProperty(required=True)
+  incident = db.ReferenceProperty(required=True)
+  # ensure unique
   full_name = db.StringProperty(required=True)
+  # ensure unique
   short_name = db.StringProperty(required=True)
+  # ensure unique
   timezone = db.StringProperty(required=True)
   incident_date = db.DateProperty(required=True)
   start_date = db.DateProperty(required=True)

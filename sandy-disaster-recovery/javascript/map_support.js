@@ -14,12 +14,13 @@ var pollForCSVDownload = function (filename) {
           2000
         );
       } else if (xhr.status == 200) {
-        // success: redirect (after race avoidance)
+        // success: redirect and restore elements (after race avoidance wait)
         setTimeout(
           function() {
             window.location = downloadUrl;
             $('#filtered-export-btn').prop('disabled', false)
               .attr('value', 'Download Spreadsheet (CSV)');
+            $('#filtered-export-wait-message').hide();
           },
           1000
         );
@@ -32,8 +33,9 @@ var pollForCSVDownload = function (filename) {
 // bind filtered export button click
 $('#filtered-export-btn').click(function () {
 
-  // disable button and rewrite button
+  // disable & re-label button and show message
   $('#filtered-export-btn').prop('disabled', true).attr('value', 'Processing... please wait');
+  $('#filtered-export-wait-message').show();
 
   // request export and begin polling
   $.ajax({

@@ -19,26 +19,29 @@ import jinja2
 import os
 import webapp2_extras
 from datetime import datetime
+from google.appengine.ext import db
+import json
 
 # Local libraries.
 import base
 import key
 from models import incident_definition
 
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
-template = jinja_environment.get_template('incident_form_creator.html')
-
 def make_date_object(date_string):
   pass
 
-class IncidentFormCreator(base.RequestHandler):
+class IncidentDefinitionAjax(base.RequestHandler):
   def get(self):
-    incidents = incident_definition.IncidentDefinition.all()
-    data = {
-        "incidents": incidents,
+    incident_short_name = self.request.get("incident_short_name")
+    phase = self.request.get("phase")
+    q = incident_definition.IncidentDefinition.all()
+    q.filter("short_name =", incident_short_name)
+    incident = q.get()
+    
+    incident_data = {
+      "phases_json": incident.phases_json,
+      "forms_json": incident.forms_json
     }
-    self.response.out.write(template.render(data))
-
-  def post(self):
-    pass
+    incident_json = json.dumps(incident_data)
+    
+    self.response.out.write(incident_json)

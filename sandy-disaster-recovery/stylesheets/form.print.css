@@ -1,0 +1,59 @@
+
+/* hide unwanted elements */
+
+#menubox_div {
+  display: none;
+}
+
+#map_canvas {
+  display: none;
+}
+
+#form_background {
+  position: auto;
+  top: auto;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  opacity: 1.0;
+}
+
+#form {
+  width: auto;
+}
+
+
+/* replace selects with printable tables */
+
+select {
+  display: none;
+}
+
+.select-print-table {
+  display: block !important;
+}
+
+table.select-print-table {
+  border-collapse:collapse;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+table.select-print-table td {
+   border: 1px solid black;
+   padding: 3px;
+}
+
+
+/* hide submit button */
+
+input[type="submit"]{
+  display: none;
+}
+
+
+/* manage page breaks */
+input, h1, h2, table.select-print-table, tr, td {
+  page-break-inside: avoid;
+}
+

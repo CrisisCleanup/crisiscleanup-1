@@ -7,6 +7,7 @@
 {% block scripts %}
 <script>
 var warn_on_leave = false;
+var first_run = true;
 window.onbeforeunload = function(){
   if(warn_on_leave){
       return 'Your changes have not been saved. To save, stay on this page and click "save".';
@@ -18,6 +19,15 @@ $(function() {
   hide_divs();
   hide_tabs();
   
+    
+  var select_options_array = [];
+  var radio_options_array = [];
+  var form_json_array = []
+  
+  $("#save_all_changes").click(function() {
+    save_changes(form_json_array);
+  
+  });
   $("#tabs-1").show();
   $( "#incident" ).change(function() {
     var incident_full_name = $("#incident").val();
@@ -27,10 +37,9 @@ $(function() {
   $( "#phases_list" ).change(function() {
     var phase = $("#phases_list").val();
     var incident_full_name = $("#incident").val();
-    console.log(3);
 //       $("#tabs-1").empty();
 //       $("#tabs-2").empty();
-    get_form_json(phase, incident_full_name);
+    get_form_json(phase, incident_full_name, form_json_array);
   });
   
   $( "#add_phase_button" ).click(function() {
@@ -41,23 +50,16 @@ $(function() {
   });
   
   $("#show_html").click(function() {
-    console.log("show_html");
     hide_tabs();
     $("#tabs-1").show();
   });
   
   $("#show_json").click(function() {
-    console.log("show_json");
 
     hide_tabs();
     $("#tabs-2").show();
   });
 
-  
-  var select_options_array = [];
-  var radio_options_array = [];
-  var form_json_array = []
-  
   var option_html = 'Option:  <input type="text" name="firstname"><br>';
   
 
@@ -256,7 +258,6 @@ function hide_divs() {
   $("#paragraph_div").hide();
 }
 function hide_tabs() {
-  console.log("f l hide");
   $("#tabs-1").hide();
   $("#tabs-2").hide();
 }
@@ -462,14 +463,22 @@ function add_radio_input(form_json_array, radio_options_array) {
 
 function read_json_to_html(form_json_array) {
   //TODO
-  warn_on_leave = true;
+  console.log("read_json_to_html");
+  if (first_run) {
+    first_run = false;
+  } else {
+    warn_on_leave = true;
+  }
+  
+  console.log("continue");
   $("#form_label").empty();
-  console.log("f_l empty");
   $("#form_paragraph").empty();
   $("#form_table").empty();
 
   for (var i=0; i < form_json_array.length; i++) {
     if(form_json_array[i].type == "label") {
+    console.log("label");
+    
       $("#form_label").append('<h2>' + form_json_array[i].label + '</h2>');
     
     }
@@ -493,7 +502,6 @@ function read_json_to_html(form_json_array) {
       var radio_string = "";
       var radio_string_start = '</td></tr><tr><td class=question>' + form_json_array[i].radio_label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
       var radio_string_end = '<td>' + form_json_array[i].radio_high_hint + '</td></tr></table></td></tr>';
-      console.log(options_array);
       for (var j = 0; j < options_array.length; j++) {
         var options_string = "";
 	if(form_json_array[i].radio_default == options_array[j]) {
@@ -516,7 +524,6 @@ function read_json_to_html(form_json_array) {
 	    options_array.push(key_string);
         }
       }
-      console.log("1");
       var req = "";
       if (form_json_array[i].select_required) {
         req = "*";
@@ -524,7 +531,6 @@ function read_json_to_html(form_json_array) {
       var begin_option = '<tr><td class=question>' + form_json_array[i].select_label + req +'</td><td class="answer"><div class="form_field"><select class="" id="' + form_json_array[i].select_id + '" name="' + form_json_array[i].select_id + '">';
       var end_option = '</select></div></td></tr>';
       var select_string = "";
-      console.log("2");
 
       for (var j = 0; j < options_array.length; j++) {
         var option_string = "";
@@ -607,7 +613,6 @@ function clear_radio_options() {
 function get_json(incident_short_name) {
 
   $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name},  function( data ) {
-    console.log(data)
     if (data.phases_json == "{}") {
       show_first_phase_form(incident_short_name, incident_short_name);
     } else {
@@ -616,24 +621,59 @@ function get_json(incident_short_name) {
   });
 }
 
-function get_form_json(phase,incident_short_name) {
+function get_form_json(phase,incident_short_name, form_json_array) {
 
   $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name, phase: phase},  function( data ) {
-    console.log(data);
     if (data.forms_json == "{}") {
-      console.log("empty");
-      $("#tabs-1").empty();
-      console.log("f l 34hide");
+    console.log("empty tabs-1");
+//       $("#tabs-1").empty();
 
-      $("#tabs-1").append("empty");
-      $("#tabs-2").append(data.forms_json);
+      $("#form_label").append("No Form Added");
+//       $("#tabs-2").append(data.forms_json);
+      var phases_array = JSON.parse(data.phases_json);
+
+      console.log(phases_array[0].phase_id);
+      var phase_data = {
+	"phase_id": phases_array[0].phase_id,
+	"phase_name": phases_array[0].phase_name,
+	"incident_short_name": incident_short_name,
+	"phase_short_name": phases_array[0].phase_short_name,
+	
+      }
+      form_json_array.push(phase_data);
+      console.log(form_json_array);
+      var jString = JSON.stringify(form_json_array);
+
+      $("#tabs-2").append(jString);
+
+//       form_json_array.push(data.phases_json[0].phase_id);
+//       console.log(form_json_array);
+//       console.log(form_json_array.push(data.phases_json[0].phase_id));
+//       $("#tabs-2").append(form_json_array);
 //       show_first_phase_form(incident_short_name, incident_short_name);
     } else {
-    $("#tabs-2").append(data.forms_json);
     var arr = JSON.parse(data.forms_json);
-    form_json_array = arr;
 
-    read_json_to_html(arr);
+    console.log('length ' + arr[0].length);
+    for (var j = 0; j < arr[0].length; j ++) {
+      console.log(arr);
+      console.log(arr[0][j]['phase_short_name']);
+      console.log(phase);
+      if (arr[0][j]['phase_short_name'] == phase) {
+	console.log("eq");
+// 	form_json_array.push(arr[0]);
+	form_json_array = arr[0];
+	console.log(arr[0]);
+	var jString = JSON.stringify(form_json_array);
+
+	$("#tabs-2").append(jString);
+
+	alert(jString);
+	read_json_to_html(form_json_array);
+
+      }
+    }
+
 
 //       read_phases_json_to_html(data.phases_json, incident_short_name);
     }
@@ -652,8 +692,11 @@ function read_phases_json_to_html(phases_json_array, incident_short_name) {
 //   window.location.replace("/incident_form_creator")
   var arr = JSON.parse(phases_json_array);
 
+  $("#phases_list").empty();
+  $("#phases_list").append('<option value="None">Choose a Phase</option>');
   for (var i = 0; i < arr.length; i++) {
-    var list_string = '<option value=' + arr[i].phase_name + '>'  + arr[i].phase_name + '</option>';
+    var list_string = '<option value=' + arr[i].phase_short_name + '>'  + arr[i].phase_name + '</option>';
+    
     $("#phases_list").append(list_string);
     
     $("#add_phase_form").append('<input type="hidden" name="incident_short_name" value="' + incident_short_name + '" />');
@@ -683,27 +726,21 @@ function read_phases_json_to_html(phases_json_array, incident_short_name) {
 
 }
 
-</script>
+function save_changes(form_json_array) {
+  var jString = JSON.stringify(form_json_array);
+  console.log(jString);
+  alert(jString);
 
-<script>
-$(function() {
-    hide_divs();
+  $.post( "incident_save_form", {form_json_array:jString}, function( data ) {
+    console.log(data);
+    window.location.replace('/incident_form_creator?message="Successfully saved form"')
 
+  });
 
-
-});
-
-
-
-
-</script>
-
-<script>
-
-// how to check if complete?
-// read to json1, call not complete
+}
 
 </script>
+
 
 {% endblock %}
 
@@ -723,7 +760,7 @@ $(function() {
 {% block sidebar_content %}
 <div id="sidebar_form_creator">
 <div id="form_editor">
-<a href="#" onclick="checkEach()">Save All Changes</a></form>
+<a href="#" id="save_all_changes">Save All Changes</a></form>
 
 </div>
 <h2>Add Inputs to form</h2>

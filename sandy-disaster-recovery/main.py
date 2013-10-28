@@ -214,6 +214,6 @@ app = webapp2.WSGIApplication([
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
 
-    Route(r'/test-email', messaging.EmailTestHandler, 'email_test_handler'),
+    ## DISABLED ## Route(r'/test-email', messaging.EmailTestHandler, 'email_test_handler'),
     
 ], debug=True)

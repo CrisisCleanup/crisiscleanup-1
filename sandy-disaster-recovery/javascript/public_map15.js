@@ -9,10 +9,9 @@ $(function(){
     };
     var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
     
-       var markerCluster = new MarkerClusterer(map);
+    MarkerClusterer.IMAGE_PATH = "/icons/m";
+    var markerCluster = new MarkerClusterer(map);
     clusterer = markerCluster;
- 
-
 
     $(".MapIncident").click(function(event) {
       var incident_id = event.target.id;

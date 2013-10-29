@@ -41,10 +41,15 @@ class AdminAuthenticatedHandler(AuthenticatedHandler):
         super(AdminAuthenticatedHandler, self).__init__(*args, **kwargs)
 
     def dispatch(self):
-        # redirect if not authorised
+        " Redirect or forbid if not authorised. "
         org, event = key.CheckAuthorization(self.request)
-        if not org or not (org.is_admin or org.is_global_admin):
-            self.redirect('/')
+        if not org:
+            # redirect to login
+            self.redirect('/authentication?destination=%s' % self.request.path)
+            return
+        elif not (org.is_admin or org.is_global_admin):
+            # forbid
+            self.abort(403)
         super(AdminAuthenticatedHandler, self).dispatch()
 
     def render(self, **kwargs):

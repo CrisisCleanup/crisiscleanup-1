@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Refactored date examples</title>
+ 
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" type="text/css" media="screen">  
+    <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>  
+  <script src="incident_form_creator.js"></script>
+ 
+  <script>
+  test("isEven basics", function() {
+    ok(isEven(0), 'Zero is an even number'); 
+    ok(isEven(2), 'So is two'); 
+    ok(isEven(-4), 'So is negative four'); 
+    ok(!isEven(1), 'One is not an even number'); 
+    ok(!isEven(-7), 'Neither does negative seven'); 
+ 
+    // Fails 
+    ok(isEven(3), 'Three is an even number');  
+  });
+  </script>
+</head>
+<body>
+ 
+<div id="qunit"></div>
+ 
+</body>
+</html>

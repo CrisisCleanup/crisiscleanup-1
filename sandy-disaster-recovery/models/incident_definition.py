@@ -30,9 +30,9 @@ class IncidentDefinition(db.Model):
   # is the next one necessary?
   #full_definition_json = db.TextProperty(required=True, default="{}")
   # should we make the next two attributes lists, rather than just json?
-  phases_json = db.TextProperty(required=True, default="{}")
+  phases_json = db.TextProperty(required=True, default="[]")
   # name, definition, order_number, incident reference, incident name
-  forms_json = db.TextProperty(required=True, default="{}")
+  forms_json = db.TextProperty(required=True, default="[]")
   # name, incident reference, incident name, attributes json
   
   # removing versions until we know what will likely be inherited

@@ -32,15 +32,20 @@ class IncidentSaveForm(base.RequestHandler):
   def post(self):
     form_json_array = self.request.get("form_json_array")
     new_array = json.loads(form_json_array)
-      
+          
     q = incident_definition.IncidentDefinition.all()
     q.filter("short_name =", new_array[0]['incident_short_name'])
     incident = q.get()
     
     forms_array = []
     forms_array.append(new_array)
-
-    incident.forms_json = json.dumps(forms_array)
+    
+    pre_existing_forms_json = incident.forms_json
+    pefj = json.loads(pre_existing_forms_json)
+    
+    pefj.append(new_array)
+    
+    incident.forms_json = json.dumps(pefj)
     incident.put()
     
     

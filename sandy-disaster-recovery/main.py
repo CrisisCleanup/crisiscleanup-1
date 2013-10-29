@@ -87,6 +87,7 @@ from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
 from admin_handler import admin_view_work_orders_handler
 from admin_handler import admin_fix_errors_handler
+from admin_handler import admin_social_media_handler
 from admin_handler import admin_import_csv_handler
 from admin_handler import admin_edit_pages_handler
 from admin_handler import admin_single_organization_handler
@@ -187,6 +188,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-make-admin', admin_make_admin_handler.AdminHandler, 'admin_make_admin_handler'),
     Route(r'/admin-view-work-orders', admin_view_work_orders_handler.AdminViewWorkOrdersHandler, 'admin_view_work_orders'),
     Route(r'/admin-fix-errors', admin_fix_errors_handler.AdminFixErrorsHandler, 'admin_fix_errors'),
+    Route(r'/admin-social-media', admin_social_media_handler.AdminSocialMediaHandler, 'admin_social_media'),
     Route(r'/admin-import-contacts', admin_import_contacts_handler.ImportContactsHandler, 'admin_import_contacts_handler'),
     Route(r'/admin-import-csv', admin_import_csv_handler.ImportCSVHandler, 'admin_import_csv_handler'),
     Route(r'/admin-import-csv/template.csv', admin_import_csv_handler.DownloadCSVTemplateHandler, 'admin_import_csv_handler'),
@@ -195,7 +197,6 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-edit-pages', admin_edit_pages_handler.AdminEditPagesHandler, 'admin_edit_pages_handler'),
     Route(r'/admin-edit-pages/download/defaults', admin_edit_pages_handler.AdminDownloadPageBlocks, 'admin_edit_pages_handler'),
     Route(r'/admin-create-incident-csv', admin_create_incident_csv_handler.AdminCreateIncidentCSVHandler, 'admin_edit_pages_handler'),
-
     Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'),
     Route(r'/import-co-flood-handler', import_co_handler.ImportCOHandler, 'import-co-flood'),
 

@@ -1,0 +1,48 @@
+{% extends "base_template.html" %}
+
+{% block main_title %}
+<h2>Work Orders</h2>
+{% endblock %}
+
+{% block main_content %}
+
+<form method="POST">
+  {{ form.query.label }} {{ form.query() }}
+  {{ form.reporting_org.label }} {{ form.reporting_org() }}
+  {{ form.claiming_org.label }} {{ form.claiming_org() }}
+  <button type="submit">Search</button>
+</form>
+
+{% if sites.count() > 0 %}
+  <table class="sortable" border="1">
+    <thead>
+      <tr>
+        <th>Incident</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Reported by</th>
+        <th>Claimed by</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for site in sites %}
+        <tr>
+          <td>{{ site.event.name }}</td>
+          <td>{{ site.name }}</td>
+          <td>
+            <a href="/edit?id={{ site.key().id() }}">
+              {{ site.full_address }}
+            </a>
+          </td>
+          <td>{{ site.reported_by.name }}</td>
+          <td>{{ site.claimed_by.name }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No work orders found.</p>
+{% endif %}
+
+{% endblock %}
+

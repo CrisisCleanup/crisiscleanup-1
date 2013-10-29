@@ -85,6 +85,7 @@ from admin_handler import admin_printer_templates_handler
 from admin_handler import admin_see_admins_handler
 from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
+from admin_handler import admin_view_work_orders_handler
 from admin_handler import admin_import_csv_handler
 from admin_handler import admin_edit_pages_handler
 from admin_handler import admin_single_organization_handler
@@ -183,6 +184,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-see-admins', admin_see_admins_handler.AdminHandler, 'admin_see_admins_handler'),
     Route(r'/admin-incident-add-admin', admin_incident_add_admin_handler.AdminHandler, 'admin_incident_add_admin_handler'),
     Route(r'/admin-make-admin', admin_make_admin_handler.AdminHandler, 'admin_make_admin_handler'),
+    Route(r'/admin-view-work-orders', admin_view_work_orders_handler.AdminViewWorkOrdersHandler, 'admin_view_work_orders'),
     Route(r'/admin-import-contacts', admin_import_contacts_handler.ImportContactsHandler, 'admin_import_contacts_handler'),
     Route(r'/admin-import-csv', admin_import_csv_handler.ImportCSVHandler, 'admin_import_csv_handler'),
     Route(r'/admin-import-csv/template.csv', admin_import_csv_handler.DownloadCSVTemplateHandler, 'admin_import_csv_handler'),

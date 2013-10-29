@@ -23,6 +23,7 @@
 //   });
 //   
 
+
   test("hide_divs should hide appropriate divs",9, function() {
     hide_divs();
     var first_phase_form_div = $("#first_phase_form_div");
@@ -49,7 +50,7 @@
 
   });
   
-  test("remove_option should remove one option from options_array", function() {
+  test("remove_option should remove one option from options_array", 1, function() {
     var options_array = [1];
     remove_option(options_array);
     var len = options_array.length;
@@ -57,7 +58,7 @@
   });
   
   
-  test("add_select_option should add a new option with the correct number to the select_options_array", function() {
+  test("add_select_option should add a new option with the correct number to the select_options_array", 4,  function() {
     var select_options_array = [];
     add_select_option(select_options_array);
     
@@ -101,7 +102,7 @@
   
   });
   
-  test("remove option should remove one element from options_array", function() {
+  test("remove option should remove one element from options_array", 1, function() {
     options_array = [1];
     remove_option(options_array);
     
@@ -110,12 +111,11 @@
     equal(len, 0, "the length of options_array should be 0")
   });
   
-  test( "test calculation output", function() {
+  test( "add_paragraph_input", 3, function() {
     var form_json_array = [];
     var dummy_paragraph = "This is the paragraph.";
     $( "#paragraph" ).val(dummy_paragraph);
 
-    
     add_paragraph_input(form_json_array);
     var len = form_json_array.length;
     var type = form_json_array[0].type
@@ -124,29 +124,250 @@
     equal(len, 1, "the length of form_json_array should be 1");
     equal(type, "paragraph", "the type of the new form_json_array object should be 'paragraph'");
     equal(paragraph, dummy_paragraph, "the value of the dummy paragraph should equal paragraph");
-
-
-    
-   
-//     $( "#paragraph" ).val(dummy_paragraph);
-//     var event,
-//         $submitButton = $( "#submit" );
-//  
-//     // trigger event
-//     event = $.Event( "click" );
-//     event.keyCode = 9;
-//     $submitButton.trigger( event );
-//  
-//     var monthlyRep = $( "#repaymentAmount" ).val();
-//     var totalRep = $( "#totalToRepay" ).val();
-//     equal(monthlyRep, 457.04, "monthly repayment amount correctly totals" );
-//     equal(totalRep, 712985.68, "total repayment amount correctly totals" );
   });
-  </script>
+  
+  test( "add_label_input", 3, function() {
+    var form_json_array = [];
+    var dummy_label = "This is the label.";
+    $( "#label_name" ).val(dummy_label);
+
+    add_label_input(form_json_array);
+    var len = form_json_array.length;
+    var type = form_json_array[0].type
+    var label = form_json_array[0].label
+    
+    equal(len, 1, "the length of form_json_array should be 1");
+    equal(type, "label", "the type of the new form_json_array object should be 'label'");
+    equal(label, dummy_label, "the value of the dummy label should equal label");
+  });
+</script>
 </head>
 <body>
- 
+<!-- __________________________
+ Sidbar-->
 <div id="qunit"></div>
+<h1 id="qunit-header">jquery-inputs plugin tests</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"> 
+ <div id="sidebar_form_creator">
+<div id="form_editor">
+<a href="#" id="save_all_changes">Save All Changes</a></form>
+
+</div>
+<h2>Add Inputs to form</h2>
+<a id="add_label" href="#form_editor">map label + </a><br>
+<a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>
+<a id="add_header" href="#form_editor">header +</a><br>
+<a id="add_text" href="#form_editor">text input +</a><br>
+<a id="add_checkbox" href="#form_editor"">checkbox input +</a><br>
+<a id="add_select" href="#form_editor"">select input +</a><br>
+<a id="add_radio" href="#form_editor"">radio input +</a><br>
+
+
+<div id="text_div">
+
+<h3>Add Text Input</h3>
+<form id="text_form">
+Label: <input type="text" id="text_label" name="text_label"><br>
+Default Value: <input type="text" id="text_default" name="text_default"><br> 
+Placeholder: <input type="text" id="text_placeholder" name="text_placeholder"><br> 
+Required: <input type="checkbox" id="text_required" name="text_required" value="y">
+Sensitive: <input type="checkbox" id="text_sensitive" name="text_sensitive" value="y"><br>
+Form Id: <input type="text" id="text_id" name="text_id"><br>
+
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea id="text_infobox" name="text_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="text_printer" name="text_printer"><br>
+Mobile: <input type="text" id="text_mobile" name="text_mobile"><br>
+Sms: <input type="text" id="text_sms" name="text_sms"><br>
+<a href="#form_editor" id="add_text_to_form">Add to form</a></form>
+</div>
+
+<div id="checkbox_div">
+<h3>Add Checkbox</h3>
+<form id="checkbox_form">
+Label: <input type="text" id="checkbox_label" name="checkbox_label"><br>
+Default Value:<select id="checkbox_default" name="checkbox_default">
+<option value="n" >Unchecked</option>
+<option value="y" >Checked</option>
+</select><br><br>
+Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y">
+Sensitive: <input type="checkbox" id="checkbox_sensitive" name="checkbox_sensitive" value="y"><br>
+Form Id: <input type="text" id="checkbox_id" name="checkbox_id"><br>
+Checked Value: <input type="text" id="checkbox_checked_value" name="checkbox_checked_value"><br>
+Unchecked Value: <input type="text" id="checkbox_unchecked_value" name="checkbox_unchecked_value"><br>
+
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea id="checkbox_infobox" name="checkbox_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="checkbox_printer" name="checkbox_printer"><br>
+Mobile: <input type="text" id="checkbox_mobile" name="checkbox_mobile"><br>
+Sms: <input type="text" id="checkbox_sms" name="checkbox_sms"><br>
+<a href="#form_editor" id="add_checkbox_to_form">Add to form</a></form>
+</div>
+<div id="select_div">
+
+<h3>Add Select</h3> 
+<form id="select_form">
+Label: <input type="text" id="select_label" name="select_label"><br>
+<div id="add_options_to_select">
+Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>
+</div>
+<a id="add_select_option" href="#form_editor">Add another option</a>
+<br>
+<a id="clear_select_options">Clear options</a>
+<br>
+Default: <select id="select_default" name="select_default">
+<option value="select_option_1">Option 1</option>
+</select>
+<br>
+<br>
+Required: <input type="checkbox" id="select_required" name="select_required" value="y">
+Sensitive: <input type="checkbox" id="select_sensitive" name="select_sensitive" value="y"><br>
+Form Id: <input type="text" id="select_id" name="select_id"><br>
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea id="select_infobox" name="select_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="select_printer" name="select_printer"><br>
+Mobile: <input type="text" id="select_mobile" name="select_mobile"><br>
+Sms: <input type="text" id="select_sms" name="select_sms"><br>
+<a href="#form_editor" id="add_select_to_form">Add to form</a></form>
+</div>
+
+<div id="radio_div">
+<h3>Add Radio</h3> 
+<form id="radio_form">
+Label: <input type="text" id="radio_label" name="radio_label"><br>
+<div id="add_options_to_radio">
+Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
+</div>
+<a id="add_radio_option" href="#form_editor">Add another option</a>
+<br>
+<a id="clear_radio_options">Clear options</a>
+<br>
+Default: <select id="radio_default" name="radio_default">
+<option value="radio_option_1">Option 1</option>
+</select>
+<br>
+<br>Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
+Sensitive: <input type="checkbox" id="radio_sensitive" name="radio_sensitive" value="y"><br>
+Form Id: <input type="text" id="radio_id" name="radio_id"><br>
+Low Hint: <input type="text" id="radio_low_hint" name="radio_low_hint"><br>
+High Hint: <input type="text" id="radio_high_hint" name="radio_high_hint"><br>
+
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea id="radio_infobox" name="radio_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="radio_printer" name="radio_printer"><br>
+Mobile: <input type="text" id="radio_mobile" name="radio_mobile"><br>
+Sms: <input type="text" id="radio_sms" name="radio_sms"><br>
+<a href="#form_editor" id="add_radio_to_form">Add to form</a></form>
+</div>
+
+<div id="header_div">
+<h2>Add Header to form</h2>
+
+<form id="header_form">
+Label: <input type="text" id="header_label" name="header_label"><br>
+<a href="#form_editor" id="add_header_to_form">Add to form</a></form>
+</div>
+
+<div id="label_div">
+<h2>Add Header to form</h2>
+
+<form id="label_form">
+Label: <input type="text" id="label_name" name="label_name"><br>
+<a href="#form_editor" id="add_label_to_form">Add to form</a></form>
+</div>
+
+<div id="paragraph_div">
+<h2>Add Header to form</h2>
+
+<form id="paragraph_form">
+Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
+<a href="#form_editor" id="add_paragraph_to_form">Add to form</a></form>
+</div>
+</div>
  
+ 
+<!--__________________________
+Main-->
+
+<h2>Incident Form Creator</h2>
+<select id="incident" name="incident">
+    <option value="None">Choose an Incident</option>
+    {% for incident in incidents %}
+    <option value="{{ incident.short_name }}">{{ incident.full_name }}</option>
+    {% endfor %}
+</select>
+<br>
+<br>
+
+<div id="main_form_nav">
+  <select id="phases_list">
+  <option value="None">Choose a phase</option>
+
+  </select>
+  <br>
+  <a href="#" id="add_phase_button">Add Phase</a>
+  <a href="#" id="close_phase_button">Close Form</a>
+
+
+</div>
+
+<div id="phase_htmls">
+
+
+</div>
+
+<div id="first_phase_form_div">
+  <form id="first_phase_form" action="/incident_create_first_phase" method="POST">
+  Phase Name: <input type="text" name="phase_name"><br>
+  Phase Definition: <input type="text" name="phase_definition"><br>
+  <input type="hidden" name="phase_position" value="0">
+
+  <button class="submit">Submit</button>
+</form>
+</div>
+
+<div id="add_phase_form_div">
+  <form id="add_phase_form" action="/incident_create_first_phase" method="POST">
+  Phase Name: <input type="text" name="phase_name"><br>
+  Phase Definition: <input type="text" name="phase_definition"><br>
+  Phase Position: <input type="text" name="phase_position"><br>
+
+  <input type="hidden" name="add_phase" value="true">
+  <button class="submit">Submit</button>
+</form>
+</div>
+
+<div id="phase1">
+<div id="tabs">
+<!--  <ul>
+    <li><a href="#" id="show_html">HTML</a></li>
+    <li><a href="#" id="show_json">JSON</a></li>
+  </ul>-->
+  
+  <a href="#" id="show_html">HTML</a>
+  <a href="#" id="show_json">JSON</a>
+  <div id="tabs-1">
+      <div id="form_label">
+      </div>
+      <div id="form_paragraph">
+      </div>
+      <div>
+	<table id="form_table">
+	</table>
+      </div>
+  </div>
+  <div id="tabs-2">
+  </div>
+
+</div>
+</div>
 </body>
 </html>

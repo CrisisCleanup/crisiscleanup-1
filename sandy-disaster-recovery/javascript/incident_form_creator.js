@@ -563,7 +563,7 @@ function read_json_to_html(form_json_array) {
       if (form_json_array[i].checkbox_default == "y") {
         checked = " checked";
       }
-      var new_checkbox = '<tr><td class=question><label for="' + form_json_array[i].checkbox_id + '">' + form_json_array[i].checkbox_label + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + form_json_array[i].checkbox_id + '" type="hidden" value="' +form_json_array[i].checkbox_unchecked_value + '"/><input class="" id="' + form_json_array[i].checkbox_id + '" name="' + form_json_array[i].checkbox_id + '" type="checkbox" value="' +form_json_array[i].checkbox_checked_value + checked + ' "></div></td></tr>';
+      var new_checkbox = '<tr><td class=question><label for="' + form_json_array[i].checkbox_id + '">' + form_json_array[i].checkbox_label + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + form_json_array[i].checkbox_id + '" type="hidden" value="' +form_json_array[i].checkbox_unchecked_value + '"/><input class="" id="' + form_json_array[i].checkbox_id + '" name="' + form_json_array[i].checkbox_id + '" type="checkbox" value="' +form_json_array[i].checkbox_checked_value + '"' + checked + '></div></td></tr>';
       $("#form_table").append(new_checkbox);
 
     }
@@ -614,7 +614,6 @@ function get_json(incident_short_name) {
 }
 
 function get_form_json(phase,incident_short_name, form_json_array) {
-
   $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name, phase: phase},  function( data ) {
     if (data.forms_json == "[]") {
     console.log("empty tabs-1");
@@ -648,7 +647,7 @@ function get_form_json(phase,incident_short_name, form_json_array) {
     var any_equal = false;
     for (var k = 0; k < arr.length; k++) {
         console.log(k);
-        alert(arr[k]);
+//         alert(arr[k]);
       for (var j = 0; j < arr[k].length; j ++) {
         
 //         console.log(j);
@@ -661,7 +660,7 @@ function get_form_json(phase,incident_short_name, form_json_array) {
   // 	form_json_array.push(arr[0]);
 	  form_json_array = arr[k];
 	  var jString = JSON.stringify(form_json_array);
-
+	  $("#tabs-2").empty();
 	  $("#tabs-2").append(jString);
 
 // 	  alert(jString);

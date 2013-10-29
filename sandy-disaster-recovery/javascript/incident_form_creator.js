@@ -777,6 +777,6 @@ function save_changes(form_json_array) {
 
 
 // added for qunit testing purposes
-function isEven(val) {  
-    return val % 2 === 0;  
-}  
+// function isEven(val) {  
+//     return val % 2 === 0;  
+// }  

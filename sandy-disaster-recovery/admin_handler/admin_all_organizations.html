@@ -5,14 +5,37 @@
 
 {% block main_content %}
 
-<p>
+<div>
   [<a href="?">All</a>]
   [<a href="?filter=active">Active only</a>]
   [<a href="?filter=inactive">Inactive only</a>]
-</p>
+</div>
 
-{% for result in org_query %}
-  <p><a href="{{url}}{{ result.key().id()}}">{{ result.name }}</a></p>
-{% endfor %}
+<table class="sortable" border="1">
+  <thead>
+    <tr>
+      <th>Incident</th>
+      <th>Org Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for org in org_query %}
+      <tr>
+        <td>
+          {{ org.incident.name }}
+        </td>
+        <td>
+          <a href="{{ url }}{{ org.key().id()}}">
+            {{ org.name }}
+          </a>
+        </td>
+      </tr>
+    {% else %}
+      <tr>
+        <td colspan="2">No orgs found.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock %}

@@ -3,21 +3,144 @@
 <head>
   <meta charset="utf-8">
   <title>Refactored date examples</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
  
     <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" type="text/css" media="screen">  
     <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>  
   <script src="incident_form_creator.js"></script>
  
   <script>
-  test("isEven basics", function() {
-    ok(isEven(0), 'Zero is an even number'); 
-    ok(isEven(2), 'So is two'); 
-    ok(isEven(-4), 'So is negative four'); 
-    ok(!isEven(1), 'One is not an even number'); 
-    ok(!isEven(-7), 'Neither does negative seven'); 
- 
-    // Fails 
-    ok(isEven(3), 'Three is an even number');  
+//   test("isEven basics", function() {
+//     ok(isEven(0), 'Zero is an even number'); 
+//     ok(isEven(2), 'So is two'); 
+//     ok(isEven(-4), 'So is negative four'); 
+//     ok(!isEven(1), 'One is not an even number'); 
+//     ok(!isEven(-7), 'Neither does negative seven'); 
+//  
+//     // Fails 
+// //     ok(isEven(3), 'Three is an even number');  
+//   });
+//   
+
+  test("hide_divs should hide appropriate divs",9, function() {
+    hide_divs();
+    var first_phase_form_div = $("#first_phase_form_div");
+    var add_phase_form_div = $("#add_phase_form_div");
+    var select_div = $("#select_div");
+    var radio_div = $("#radio_div");
+    var text_div = $("#text_div");
+    var checkbox_div = $("#checkbox_div");
+    var header_div = $("#header_div");
+    var label_div = $("#label_div");
+    var paragraph_div = $("#paragraph_div");
+    
+    
+    equal( false, first_phase_form_div.is( ":visible" ), "should hide first_phase_form_div" );
+    equal( false, add_phase_form_div.is( ":visible" ), "should hide add_phase_form_div" );
+    equal( false, select_div.is( ":visible" ), "should hide select_div" );
+    equal( false, radio_div.is( ":visible" ), "should hide radio_div" );
+    equal( false, text_div.is( ":visible" ), "should hide text_div" );
+    equal( false, checkbox_div.is( ":visible" ), "should hide checkbox_div" );
+    equal( false, header_div.is( ":visible" ), "should hide header_div" );
+    equal( false, label_div.is( ":visible" ), "should hide label_div" );
+    equal( false, paragraph_div.is( ":visible" ), "should hide paragraph_div" );
+  
+
+  });
+  
+  test("remove_option should remove one option from options_array", function() {
+    var options_array = [1];
+    remove_option(options_array);
+    var len = options_array.length;
+    equal(len, 0, "We expect the value to be 0");
+  });
+  
+  
+  test("add_select_option should add a new option with the correct number to the select_options_array", function() {
+    var select_options_array = [];
+    add_select_option(select_options_array);
+    
+    var len = select_options_array.length;
+    var new_array_element = select_options_array[0];
+
+    equal(len, 1, "We expect the value to be 1");
+    equal(new_array_element, "select_option_2", "We expect the first array value to be 'select_option_2'");
+    
+    
+    var select_options_array = ["select_option_2"];
+    add_select_option(select_options_array);
+    var len = select_options_array.length;
+    var new_array_element = select_options_array[1];
+
+
+    equal(len, 2, "We expect the second pass value to be 2");
+    equal(new_array_element, "select_option_3", "We expect the second array value to be 'select_option_3'");
+  
+  });
+  
+  test("add_radio_option should add a new option with the correct number to the radio_options_array", function() {
+    var radio_options_array = [];
+    add_radio_option(radio_options_array);
+    
+    var len = radio_options_array.length;
+    var new_array_element = radio_options_array[0];
+
+    equal(len, 1, "We expect the value to be 1");
+    equal(new_array_element, "radio_option_2", "We expect the first array value to be 'radio_option_2'");
+    
+    
+    var radio_options_array = ["radio_option_2"];
+    add_radio_option(radio_options_array);
+    var len = radio_options_array.length;
+    var new_array_element = radio_options_array[1];
+
+
+    equal(len, 2, "We expect the second pass value to be 2");
+    equal(new_array_element, "radio_option_3", "We expect the second array value to be 'radio_option_3'");
+  
+  });
+  
+  test("remove option should remove one element from options_array", function() {
+    options_array = [1];
+    remove_option(options_array);
+    
+    len = options_array.length;
+    
+    equal(len, 0, "the length of options_array should be 0")
+  });
+  
+  test( "test calculation output", function() {
+    var form_json_array = [];
+    var dummy_paragraph = "This is the paragraph.";
+    $( "#paragraph" ).val(dummy_paragraph);
+
+    
+    add_paragraph_input(form_json_array);
+    var len = form_json_array.length;
+    var type = form_json_array[0].type
+    var paragraph = form_json_array[0].paragraph
+    
+    equal(len, 1, "the length of form_json_array should be 1");
+    equal(type, "paragraph", "the type of the new form_json_array object should be 'paragraph'");
+    equal(paragraph, dummy_paragraph, "the value of the dummy paragraph should equal paragraph");
+
+
+    
+   
+//     $( "#paragraph" ).val(dummy_paragraph);
+//     var event,
+//         $submitButton = $( "#submit" );
+//  
+//     // trigger event
+//     event = $.Event( "click" );
+//     event.keyCode = 9;
+//     $submitButton.trigger( event );
+//  
+//     var monthlyRep = $( "#repaymentAmount" ).val();
+//     var totalRep = $( "#totalToRepay" ).val();
+//     equal(monthlyRep, 457.04, "monthly repayment amount correctly totals" );
+//     equal(totalRep, 712985.68, "total repayment amount correctly totals" );
   });
   </script>
 </head>

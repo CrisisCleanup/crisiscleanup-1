@@ -81,6 +81,7 @@ from admin_handler import admin_single_contact_handler
 from admin_handler import admin_create_incident_handler
 from admin_handler import admin_view_incidents_handler
 from admin_handler import admin_approve_incidents_handler
+from admin_handler import admin_printer_templates_handler
 from admin_handler import admin_see_admins_handler
 from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
@@ -166,6 +167,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'),
     Route(r'/admin-view-incidents', admin_view_incidents_handler.AdminViewIncidentsHandler, 'admin-view-incidents'),
     Route(r'/admin-approve-incidents', admin_approve_incidents_handler.AdminApproveIncidentsHandler, 'admin-approve-incidents'),
+    Route(r'/admin-printer-templates', admin_printer_templates_handler.AdminPrinterTemplatesHandler, 'admin-printer-templates'),
     Route(r'/admin-create-organization', admin_create_organization_handler.AdminHandler, 'admin_create_organization_handler'),
     Route(r'/admin-new-organization', admin_new_organization_handler.AdminHandler, 'admin_new_organization_handler'),
     Route(r'/admin-organization-requests', admin_organization_requests_handler.AdminHandler, 'admin_organization_requests_handler'),

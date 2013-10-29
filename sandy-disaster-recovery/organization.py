@@ -81,6 +81,10 @@ class Organization(db.Expando):
       return self.name == "Admin"
 
   @property
+  def is_local_admin(self):
+      return self.is_admin and not self.is_global_admin
+
+  @property
   def primary_contacts(self):
     return primary_contact_db.Contact.gql(
       "WHERE organization = :1 and is_primary = True",

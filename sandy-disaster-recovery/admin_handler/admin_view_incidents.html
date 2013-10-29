@@ -1,0 +1,33 @@
+{% extends "base_template.html" %}
+
+{% block main_title %}
+<h2>View Incidents</h2>
+{% endblock %}
+
+{% block main_content %}
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Incident</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for event in events %}
+      <tr>
+        <td>
+          <a href="#" onclick="alert('TODO: link to incident definition editor'); return False;">
+            {{ event.name }}
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="/admin-create-incident">
+  <button>Create</button>
+</a>
+
+{% endblock %}

@@ -79,6 +79,7 @@ from admin_handler import admin_create_contact_handler
 from admin_handler import admin_display_contacts_handler
 from admin_handler import admin_single_contact_handler
 from admin_handler import admin_create_incident_handler
+from admin_handler import admin_view_incidents_handler
 from admin_handler import admin_see_admins_handler
 from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
@@ -160,8 +161,9 @@ app = webapp2.WSGIApplication([
     Route(r'/problems', problem_handler.ProblemHandler, 'problems'),
     Route(r'/sites', sites_handler.SitesHandler, 'sites'),
     Route(r'/signup', new_organization_handler.NewOrganizationHandler, 'new_organization'),
-    Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'),
     Route(r'/admin', admin_handler.AdminHandler, 'admin_handler'),
+    Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'),
+    Route(r'/admin-view-incidents', admin_view_incidents_handler.AdminViewIncidentsHandler, 'admin-view-incidents'),
     Route(r'/admin-create-organization', admin_create_organization_handler.AdminHandler, 'admin_create_organization_handler'),
     Route(r'/admin-new-organization', admin_new_organization_handler.AdminHandler, 'admin_new_organization_handler'),
     Route(r'/admin-organization-requests', admin_organization_requests_handler.AdminHandler, 'admin_organization_requests_handler'),

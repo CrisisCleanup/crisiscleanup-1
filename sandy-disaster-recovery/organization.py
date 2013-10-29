@@ -77,6 +77,10 @@ class Organization(db.Expando):
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
 
   @property
+  def is_global_admin(self):
+      return self.name == "Admin"
+
+  @property
   def primary_contacts(self):
     return primary_contact_db.Contact.gql(
       "WHERE organization = :1 and is_primary = True",

@@ -34,6 +34,7 @@
 {% for incident in incidents %}
 <a href="/incident_definition?id={{ incident.key().id() }}"> {{ incident.full_name }}</a>
 <br>
+<p>{{ incident.phases_json }}</p>
 {% endfor %}
 
 {% endblock %}

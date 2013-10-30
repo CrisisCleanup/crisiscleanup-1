@@ -10,6 +10,8 @@ $(function() {
 
   hide_divs();
   hide_tabs();
+  hide_sidebar_form_creator();
+  hide_phases_list();
   
     
   var select_options_array = [];
@@ -22,6 +24,8 @@ $(function() {
   });
   $("#tabs-1").show();
   $( "#incident" ).change(function() {
+    show_phases_list();
+
     var incident_full_name = $("#incident").val();
     get_json(incident_full_name);
   });
@@ -314,6 +318,7 @@ function add_header_input(form_json_array){
   }
   form_json_array.push(header_json);
 }
+
 function add_text_input(form_json_array) {
   var text_label = $("#text_label").val();
   var text_default = $("#text_default").val();
@@ -709,7 +714,7 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 //       }
 //     }
 
-
+      show_sidebar_form_creator();
 //       read_phases_json_to_html(data.phases_json, incident_short_name);
     }
   });
@@ -779,3 +784,23 @@ function save_changes(form_json_array) {
 // function isEven(val) {  
 //     return val % 2 === 0;  
 // }  
+
+function hide_sidebar_form_creator() {
+  $("#sidebar_form_creator").hide();
+  $("#phases").hide();
+  $("#add_phase_button").hide();
+}
+
+function show_sidebar_form_creator() {
+  $("#sidebar_form_creator").show();
+  $("#phases").show();
+  $("#add_phase_button").show();
+}
+
+function hide_phases_list() {
+  $("#phases_list").hide();
+}
+
+function show_phases_list() {
+  $("#phases_list").show();
+}

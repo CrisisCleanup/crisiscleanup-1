@@ -20,6 +20,7 @@ import os
 import webapp2_extras
 from datetime import datetime
 from google.appengine.ext import db
+import json
 
 # Local libraries.
 import base
@@ -28,9 +29,27 @@ from models import incident_definition
 import event_db
 import cache
 
+
+def show_phases_from_json(phases_json):
+    as_json = json.loads(phases_json)
+    
+    length = len(as_json)
+    string = ""
+    
+    for obj in as_json:
+      #raise Exception(obj)
+      phase_string = '<p>Phase Name: ' + obj['phase_name'] + '</p>'
+      def_string = '<p>Phase Definition: ' + obj['phase_definition'] + '</p>'
+      string += phase_string + def_string
+    return string
+
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
+
+jinja_environment.filters['show_phases_from_json'] = show_phases_from_json
+
 template = jinja_environment.get_template('/incident_list.html')
+
 
 class IncidentList(base.RequestHandler):
   def get(self):

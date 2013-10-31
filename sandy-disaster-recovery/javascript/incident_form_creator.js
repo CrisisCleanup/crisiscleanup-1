@@ -714,9 +714,10 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 //       }
 //     }
 
-      show_sidebar_form_creator();
 //       read_phases_json_to_html(data.phases_json, incident_short_name);
     }
+  show_sidebar_form_creator();
+
   });
 }
 
@@ -786,12 +787,14 @@ function save_changes(form_json_array) {
 // }  
 
 function hide_sidebar_form_creator() {
+  console.log("hide_sidebar_form_creator");
   $("#sidebar_form_creator").hide();
   $("#phases").hide();
   $("#add_phase_button").hide();
 }
 
 function show_sidebar_form_creator() {
+  console.log("show_sidebar_form_creator");
   $("#sidebar_form_creator").show();
   $("#phases").show();
   $("#add_phase_button").show();

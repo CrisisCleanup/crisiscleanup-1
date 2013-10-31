@@ -107,7 +107,6 @@ from admin_handler import admin_create_incident_csv_handler
 from admin_handler import admin_stats_handler
 
 
-
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 

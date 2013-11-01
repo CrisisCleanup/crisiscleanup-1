@@ -47,11 +47,6 @@ MINI_YAML = """
   allow_unclean_deploy: true
   sandbox: true
 
-- application: crisis-cleanup-new-admin-templ
-  secure: always
-  allow_unclean_deploy: true
-  sandbox: true
-
 - application: sandy-disaster-recovery
   secure: always
 

@@ -29,6 +29,8 @@
 
 {% block main_content %}
 <a href="/incident_form_creator">Go to forms</a>
+<br>
+<a href="/incident_edit?id={{ incident_definition_object.key().id() }}">Edit</a>
 <h2>Incident Definition</h2>
   <p>Version: {{ incident_definition_object.version }}</p>
   <p>Incident Name: {{ incident_definition_object.full_name }}</p>

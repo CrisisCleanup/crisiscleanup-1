@@ -356,7 +356,225 @@
 
   
   });
+    
+  test("add_select_input should increment form_json_array appropriately", 20, function() {
+    var form_json_array = [];
+    var select_options_array = [];
+    var dummy_select_label = "Text Label";
+    $("#select_required").attr("checked", "checked");
+    $("#select_sensitive").attr("checked", "checked");
+    
+    var dummy_select_id = "Text Id";
+    
+    var dummy_select_infobox = "Text InfoBox";
+    var dummy_select_printer = "Text Printer";
+    var dummy_select_mobile = "Text Mobile";
+    var dummy_select_sms = "Text SMS";
+    
+    $("#select_label").val(dummy_select_label);
+    $("#select_infobox").val(dummy_select_infobox);
+    $("#select_printer").val(dummy_select_printer);
+    $("#select_id").val(dummy_select_id);
+    $("#select_mobile").val(dummy_select_mobile);
+    $("#select_sms").val(dummy_select_sms); 
+    
+    add_select_input(form_json_array, select_options_array);
+    var len = form_json_array.length;
+    var type = form_json_array[0].type;
+    var label = form_json_array[0].select_label;
+    var required = $('#select_required').prop('checked');
+    var sensitive = $('#select_sensitive').prop('checked');
+    var _id = form_json_array[0].select_id;
+    var infobox = form_json_array[0].select_infobox;
+    var printer = form_json_array[0].select_printer;
+    var mobile = form_json_array[0].select_mobile;
+    var sms = form_json_array[0].select_sms;
+    
+    equal(len, 1, "the length of form_json_array should be 1");
+    equal(type, "select", "the type of the new form_json_array object should be 'select'");
+    equal(label, dummy_select_label, "the value of the dummy label should equal label");
+    equal(_id, dummy_select_id, "the value of the dummy id should equal _id");
+    equal(infobox, dummy_select_infobox, "the value of the dummy infobox should equal infobox");
+    equal(printer, dummy_select_printer, "the value of the dummy printer should equal printer");
+    equal(mobile, dummy_select_mobile, "the value of the dummy mobile should equal mobile");
+    equal(sms, dummy_select_sms, "the value of the dummy sms should equal sms");
+    equal(sensitive, true, "the value of sensitive should equal true");
+    equal(required, true, "the value of required should equal true");
+
+    var form_json_array = [];
+    var select_options_array = [];
+    var dummy_select_label = "Text Label";
+    $("#select_required").attr("checked", false);
+    $("#select_sensitive").attr("checked", false);
+    
+    var dummy_select_id = "Text Id";
+    
+    var dummy_select_infobox = "Text InfoBox";
+    var dummy_select_printer = "Text Printer";
+    var dummy_select_mobile = "Text Mobile";
+    var dummy_select_sms = "Text SMS";
+    
+    $("#select_label").val(dummy_select_label);
+    $("#select_infobox").val(dummy_select_infobox);
+    $("#select_printer").val(dummy_select_printer);
+    $("#select_id").val(dummy_select_id);
+    $("#select_mobile").val(dummy_select_mobile);
+    $("#select_sms").val(dummy_select_sms); 
+    
+    add_select_input(form_json_array, select_options_array);
+    var len = form_json_array.length;
+    var type = form_json_array[0].type;
+    var label = form_json_array[0].select_label;
+    var _default = form_json_array[0].select_default;
+    var required = $('#select_required').prop('checked');
+    var sensitive = $('#select_sensitive').prop('checked');
+    var _id = form_json_array[0].select_id;
+    var infobox = form_json_array[0].select_infobox;
+    var printer = form_json_array[0].select_printer;
+    var mobile = form_json_array[0].select_mobile;
+    var sms = form_json_array[0].select_sms;
+    
+    equal(len, 1, "the length of form_json_array should be 1");
+    equal(type, "select", "the type of the new form_json_array object should be 'select'");
+    equal(label, dummy_select_label, "the value of the dummy label should equal label");
+    equal(_id, dummy_select_id, "the value of the dummy id should equal _id");
+    equal(infobox, dummy_select_infobox, "the value of the dummy infobox should equal infobox");
+    equal(printer, dummy_select_printer, "the value of the dummy printer should equal printer");
+    equal(mobile, dummy_select_mobile, "the value of the dummy mobile should equal mobile");
+    equal(sms, dummy_select_sms, "the value of the dummy sms should equal sms");
+    equal(sensitive, false, "the value of sensitive should equal false");
+    equal(required, false, "the value of required should equal false");
+
+  });
+
   
+  test("add_radio_input should increment form_json_array appropriately", 20, function() {
+    var form_json_array = [];
+    var radio_options_array = [];
+    var dummy_radio_label = "Text Label";
+    $("#radio_required").attr("checked", "checked");
+    $("#radio_sensitive").attr("checked", "checked");
+    
+    var dummy_radio_id = "Text Id";
+    
+    var dummy_radio_infobox = "Text InfoBox";
+    var dummy_radio_printer = "Text Printer";
+    var dummy_radio_mobile = "Text Mobile";
+    var dummy_radio_sms = "Text SMS";
+    
+    $("#radio_label").val(dummy_radio_label);
+    $("#radio_infobox").val(dummy_radio_infobox);
+    $("#radio_printer").val(dummy_radio_printer);
+    $("#radio_id").val(dummy_radio_id);
+    $("#radio_mobile").val(dummy_radio_mobile);
+    $("#radio_sms").val(dummy_radio_sms); 
+    
+    add_radio_input(form_json_array, radio_options_array);
+    var len = form_json_array.length;
+    var type = form_json_array[0].type;
+    var label = form_json_array[0].radio_label;
+    var required = $('#radio_required').prop('checked');
+    var sensitive = $('#radio_sensitive').prop('checked');
+    var _id = form_json_array[0].radio_id;
+    var infobox = form_json_array[0].radio_infobox;
+    var printer = form_json_array[0].radio_printer;
+    var mobile = form_json_array[0].radio_mobile;
+    var sms = form_json_array[0].radio_sms;
+    
+    equal(len, 1, "the length of form_json_array should be 1");
+    equal(type, "radio", "the type of the new form_json_array object should be 'radio'");
+    equal(label, dummy_radio_label, "the value of the dummy label should equal label");
+    equal(_id, dummy_radio_id, "the value of the dummy id should equal _id");
+    equal(infobox, dummy_radio_infobox, "the value of the dummy infobox should equal infobox");
+    equal(printer, dummy_radio_printer, "the value of the dummy printer should equal printer");
+    equal(mobile, dummy_radio_mobile, "the value of the dummy mobile should equal mobile");
+    equal(sms, dummy_radio_sms, "the value of the dummy sms should equal sms");
+    equal(sensitive, true, "the value of sensitive should equal true");
+    equal(required, true, "the value of required should equal true");
+
+    var form_json_array = [];
+    var radio_options_array = [];
+    var dummy_radio_label = "Text Label";
+    $("#radio_required").attr("checked", false);
+    $("#radio_sensitive").attr("checked", false);
+    
+    var dummy_radio_id = "Text Id";
+    
+    var dummy_radio_infobox = "Text InfoBox";
+    var dummy_radio_printer = "Text Printer";
+    var dummy_radio_mobile = "Text Mobile";
+    var dummy_radio_sms = "Text SMS";
+    
+    $("#radio_label").val(dummy_radio_label);
+    $("#radio_infobox").val(dummy_radio_infobox);
+    $("#radio_printer").val(dummy_radio_printer);
+    $("#radio_id").val(dummy_radio_id);
+    $("#radio_mobile").val(dummy_radio_mobile);
+    $("#radio_sms").val(dummy_radio_sms); 
+    
+    add_radio_input(form_json_array, radio_options_array);
+    var len = form_json_array.length;
+    var type = form_json_array[0].type;
+    var label = form_json_array[0].radio_label;
+    var _default = form_json_array[0].radio_default;
+    var required = $('#radio_required').prop('checked');
+    var sensitive = $('#radio_sensitive').prop('checked');
+    var _id = form_json_array[0].radio_id;
+    var infobox = form_json_array[0].radio_infobox;
+    var printer = form_json_array[0].radio_printer;
+    var mobile = form_json_array[0].radio_mobile;
+    var sms = form_json_array[0].radio_sms;
+    
+    equal(len, 1, "the length of form_json_array should be 1");
+    equal(type, "radio", "the type of the new form_json_array object should be 'radio'");
+    equal(label, dummy_radio_label, "the value of the dummy label should equal label");
+    equal(_id, dummy_radio_id, "the value of the dummy id should equal _id");
+    equal(infobox, dummy_radio_infobox, "the value of the dummy infobox should equal infobox");
+    equal(printer, dummy_radio_printer, "the value of the dummy printer should equal printer");
+    equal(mobile, dummy_radio_mobile, "the value of the dummy mobile should equal mobile");
+    equal(sms, dummy_radio_sms, "the value of the dummy sms should equal sms");
+    equal(sensitive, false, "the value of sensitive should equal false");
+    equal(required, false, "the value of required should equal false");
+
+  });
+  
+  test("hide_phases_list hides the correct divs", 1, function() {
+    hide_phases_list();
+    var phases_list_div = $("#phases_list");
+    equal( false, phases_list_div.is( ":visible" ), "should hide phases_list" );
+  });
+  
+  test("show_phases_list shows the correct divs", 1, function() {
+    show_phases_list();
+    var phases_list_div = $("#phases_list");
+    equal( true, phases_list_div.is( ":visible" ), "should show phases_list" );
+  });
+  
+  test("show_sidebar_form_creator shows the correct divs", 3, function() {
+    show_sidebar_form_creator();
+    var sidebar_form_creator_div = $("#sidebar_form_creator");
+    var phases_div = $("#phases");
+    var add_phase_button = $("#add_phase_button");
+    var edit_phase_button = $("edit_phase_button");
+    equal( true, sidebar_form_creator_div.is( ":visible" ), "should show phases_list" );
+    equal( true, phases_div.is( ":visible" ), "should show phases_list" );
+    equal( true, add_phase_button.is( ":visible" ), "should show phases_list" );
+//     equal( true, edit_phase_button.is(":visible"), "should show edit_phase_button");
+  });
+  
+  test("hide_sidebar_form_creator shows the correct divs", 4, function() {
+    hide_sidebar_form_creator();
+    var sidebar_form_creator_div = $("#sidebar_form_creator");
+    var phases_div = $("#phases");
+    var add_phase_button = $("#add_phase_button");
+    var edit_phase_button = $("edit_phase_button");
+    equal( false, sidebar_form_creator_div.is( ":visible" ), "should show phases_list" );
+    equal( false, phases_div.is( ":visible" ), "should show phases_list" );
+    equal( false, add_phase_button.is( ":visible" ), "should show phases_list" );
+    equal( false, edit_phase_button.is( ":visible" ), "should show phases_listw" );
+  });
+  
+
 
 </script>
 </head>
@@ -533,6 +751,7 @@ Main-->
   </select>
   <br>
   <a href="#" id="add_phase_button">Add Phase</a>
+  <a href="#" id="edit_phase_button">Edit Phases</a>
 </div>
 
 <div id="phase_htmls">

@@ -74,6 +74,8 @@ from handlers import incident_definition_ajax
 from handlers import incident_create_first_phase
 from handlers import incident_save_form
 from handlers import incident_list
+from handlers import incident_edit_phase
+from handlers import incident_edit
 
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
@@ -218,6 +220,10 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_save_form', incident_save_form.IncidentSaveForm, 'incident_save_form'),
     Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
     Route(r'/incident_list', incident_list.IncidentList, 'incident_list'),
+    Route(r'/incident_edit_phase', incident_edit_phase.IncidentEditPhase, 'incident_edit_phase'),
+    Route(r'/incident_edit', incident_edit.IncidentEdit, 'incident_edit'),
+
+
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
 
     Route(r'/test-email', messaging.EmailTestHandler, 'email_test_handler'),

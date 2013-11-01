@@ -49,6 +49,7 @@ class IncidentDefinition(base.RequestHandler):
       }
       self.response.out.write(read_template.render(data))
     else:
+      form = incident_definition.IncidentDefinitionForm()
       work_order_prefix = "Set from event_db"
       query_string = "SELECT * FROM Event"
       events_list = db.GqlQuery(query_string)
@@ -57,74 +58,84 @@ class IncidentDefinition(base.RequestHandler):
       data = {
 	"work_order_prefix": CASE_LABELS[count],
 	"current_date": current_date,
+	"form": form
       }
       self.response.out.write(template.render(data))
 
   def post(self):
-    incident_version = self.request.get("incident_version")
-    incident_full_name = self.request.get("incident_full_name")
-    incident_short_name = self.request.get("incident_short_name")
-    timezone = self.request.get("timezone")
-    incident_date = self.request.get("incident_date")
-    start_date = self.request.get("incident_start_date")
-    end_date = self.request.get("incident_end_date")
-    work_order_prefix = self.request.get("work_order_prefix")
-    centroid_latitude = self.request.get("centroid_latitude")
-    centroid_longitude = self.request.get("centroid_longitude")
-    camera_latitude = self.request.get("camera_latitude")
-    camera_longitude = self.request.get("camera_longitude")
-    developer_mode = bool(self.request.get("developer_mode"))
-    ignore_validation = bool(self.request.get("ignore_validation"))
-    
-    local_admin_name = self.request.get("local_admin_name")
-    local_admin_title = self.request.get("local_admin_title")
-    local_admin_organization = self.request.get("local_admin_organization")
-    local_admin_email = self.request.get("local_admin_email")
-    local_admin_cell_phone = self.request.get("local_admin_cell_phone")
-    local_admin_password = self.request.get("local_admin_password")
-  
-  
-    public_map_title = self.request.get("public_map_title")
-    public_map_url = self.request.get("public_map_url")
-    public_map_cluster = bool(self.request.get("public_map_cluster"))
-    public_map_zoom = self.request.get("public_map_zoom")
-    
-    internal_map_title = self.request.get("internal_map_title")
-    internal_map_url = self.request.get("internal_map_url")
-    internal_map_cluster = bool(self.request.get("internal_map_cluster"))
-    internal_map_zoom = self.request.get("internal_map_zoom")
-  
-    start_date_object = datetime.strptime(start_date, "%m/%d/%Y").date()
-    end_date_object = datetime.strptime(end_date, "%m/%d/%Y").date()
-    incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
-    
-    # create new version and associate with inc def
-    #if incident_version == "New":
-      #inc_def = incident_definition.IncidentDefinition(is_schema_version = True, version = incident_version, full_name = incident_full_name, short_name = incident_short_name, timezone = timezone, start_date = start_date_object, end_date = end_date_object, incident_date = incident_date_object, work_order_prefix = work_order_prefix, centroid_lat = centroid_latitude, centroid_lng = centroid_longitude, camera_latitude = camera_latitude, camera_longitude = camera_longitude, developer_mode = developer_mode, ignore_validation = ignore_validation, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, public_map_cluster = public_map_cluster, public_map_title = public_map_title, public_map_url = public_map_url, public_map_zoom = public_map_zoom, internal_map_cluster = internal_map_cluster, internal_map_title = internal_map_title, internal_map_url = internal_map_url, internal_map_zoom = internal_map_zoom)
+    data = incident_definition.IncidentDefinitionForm(self.request.POST)
+    timezone = data.timezone.data
+    if not data.validate():
+      self.response.out.write(template.render(
+	{
+	  "form": data,
+	  "errors": data.errors,
+      }))
+    else:
+      #incident_version = self.request.get("incident_version")
+      incident_full_name = data.full_name.data
+      incident_short_name = data.short_name.data
       
-
-
-    ### TODO
-    # Make this happen atomically
-        
-    query_string = "SELECT * FROM Event"
-    events_list = db.GqlQuery(query_string)
-    count = events_list.count()
-    this_event = event_db.Event(name = incident_full_name,
-			short_name = incident_short_name,
-			case_label = CASE_LABELS[count],
-		      )
-    ten_minutes = 600
-    cache.PutAndCache(this_event, ten_minutes)
+      incident_date = data.incident_date.data
+      start_date = data.start_date.data
+      end_date = data.end_date.data
+      work_order_prefix = data.work_order_prefix.data
+      centroid_latitude = data.centroid_lat.data
+      centroid_longitude = data.centroid_lng.data
+      camera_latitude = data.camera_lat.data
+      camera_longitude = data.camera_lng.data
+      developer_mode = data.developer_mode.data
+      ignore_validation = data.ignore_validation.data
+      
+      local_admin_name = data.local_admin_name.data
+      local_admin_title = data.local_admin_title.data
+      local_admin_organization = data.local_admin_organization.data
+      local_admin_email = data.local_admin_email.data
+      local_admin_cell_phone = data.local_admin_cell_phone.data
+      local_admin_password = data.local_admin_password.data
     
-    # add this version = incident_version
-    inc_def = incident_definition.IncidentDefinition(full_name = incident_full_name, short_name = incident_short_name, timezone = timezone, start_date = start_date_object, end_date = end_date_object, incident_date = incident_date_object, work_order_prefix = work_order_prefix, centroid_lat = centroid_latitude, centroid_lng = centroid_longitude, camera_latitude = camera_latitude, camera_longitude = camera_longitude, developer_mode = developer_mode, ignore_validation = ignore_validation, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, public_map_cluster = public_map_cluster, public_map_title = public_map_title, public_map_url = public_map_url, public_map_zoom = public_map_zoom, internal_map_cluster = internal_map_cluster, internal_map_title = internal_map_title, internal_map_url = internal_map_url, internal_map_zoom = internal_map_zoom, incident = this_event.key())
-    inc_def.put()
-
     
-    self.redirect("/incident_definition?id=" + str(inc_def.key().id()))
-
+      public_map_title = data.public_map_title.data
+      public_map_url = data.public_map_url.data
+      public_map_cluster = data.public_map_cluster.data
+      public_map_zoom = data.public_map_zoom.data
+      
+      internal_map_title = data.internal_map_title.data
+      internal_map_url = data.internal_map_url.data
+      internal_map_cluster = data.internal_map_cluster.data
+      internal_map_zoom = data.internal_map_zoom.data
     
+      start_date_object = datetime.strptime(start_date, "%m/%d/%Y").date()
+      end_date_object = datetime.strptime(end_date, "%m/%d/%Y").date()
+      incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
+      
+      # create new version and associate with inc def
+      #if incident_version == "New":
+	#inc_def = incident_definition.IncidentDefinition(is_schema_version = True, version = incident_version, full_name = incident_full_name, short_name = incident_short_name, timezone = timezone, start_date = start_date_object, end_date = end_date_object, incident_date = incident_date_object, work_order_prefix = work_order_prefix, centroid_lat = centroid_latitude, centroid_lng = centroid_longitude, camera_latitude = camera_latitude, camera_longitude = camera_longitude, developer_mode = developer_mode, ignore_validation = ignore_validation, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, public_map_cluster = public_map_cluster, public_map_title = public_map_title, public_map_url = public_map_url, public_map_zoom = public_map_zoom, internal_map_cluster = internal_map_cluster, internal_map_title = internal_map_title, internal_map_url = internal_map_url, internal_map_zoom = internal_map_zoom)
+	
+
+
+      ### TODO
+      # Make this happen atomically
+	  
+      query_string = "SELECT * FROM Event"
+      events_list = db.GqlQuery(query_string)
+      count = events_list.count()
+      this_event = event_db.Event(name = incident_full_name,
+			  short_name = incident_short_name,
+			  case_label = data.work_order_prefix.data,
+			)
+      ten_minutes = 600
+      cache.PutAndCache(this_event, ten_minutes)
+      
+      # add this version = incident_version
+      inc_def = incident_definition.IncidentDefinition(full_name = incident_full_name, short_name = incident_short_name, timezone = timezone, start_date = start_date_object, end_date = end_date_object, incident_date = incident_date_object, work_order_prefix = work_order_prefix, centroid_lat = centroid_latitude, centroid_lng = centroid_longitude, camera_latitude = camera_latitude, camera_longitude = camera_longitude, developer_mode = developer_mode, ignore_validation = ignore_validation, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, public_map_cluster = public_map_cluster, public_map_title = public_map_title, public_map_url = public_map_url, public_map_zoom = public_map_zoom, internal_map_cluster = internal_map_cluster, internal_map_title = internal_map_title, internal_map_url = internal_map_url, internal_map_zoom = internal_map_zoom, incident = this_event.key())
+      inc_def.put()
+
+      
+      self.redirect("/incident_definition?id=" + str(inc_def.key().id()))
+
+      
   
     # make dates date objects
     # use make_date_object

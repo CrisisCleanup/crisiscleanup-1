@@ -14,15 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-## System libraries.
+import datetime
 import logging
+import wtforms.ext.dateutil.fields
+import wtforms.fields
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 from google.appengine.api import memcache
+import json
+from google.appengine.ext.db import Query
 
-## Local libraries
+from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 import cache
+
+CASE_LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+def get_case_label():
+  work_order_prefix = "Set from event_db"
+  query_string = "SELECT * FROM Event"
+  events_list = db.GqlQuery(query_string)
+  count = events_list.count()
+  return CASE_LABELS[count]
+
 
 class IncidentDefinition(db.Model):
   # TODO
@@ -30,15 +43,15 @@ class IncidentDefinition(db.Model):
   # is the next one necessary?
   #full_definition_json = db.TextProperty(required=True, default="{}")
   # should we make the next two attributes lists, rather than just json?
-  phases_json = db.TextProperty(required=True, default="[]")
+  phases_json = db.TextProperty(default="[]")
   # name, definition, order_number, incident reference, incident name
-  forms_json = db.TextProperty(required=True, default="[]")
+  forms_json = db.TextProperty(default="[]")
   # name, incident reference, incident name, attributes json
   
   # removing versions until we know what will likely be inherited
   
   #version = db.StringProperty(required=True)
-  incident = db.ReferenceProperty(required=True)
+  incident = db.ReferenceProperty(required=False)
   # ensure unique
   full_name = db.StringProperty(required=True)
   # ensure unique
@@ -72,3 +85,51 @@ class IncidentDefinition(db.Model):
   internal_map_url = db.StringProperty()
   internal_map_cluster = db.BooleanProperty()
   internal_map_zoom = db.StringProperty()
+  
+class IncidentDefinitionForm(model_form(IncidentDefinition)):
+  full_name = TextField('Full Name', [wtforms.validators.Length(min = 1, max = 100,
+  message = "Name must be between 1 and 100 characters")])
+  short_name = TextField('Location', [wtforms.validators.Length(min = 1, max = 100,
+  message = "Name must be between 1 and 100 characters")])
+  timezone = wtforms.fields.SelectField(
+    choices = [("-12", "(GMT -12:00) Eniwetok, Kwajalein"), ("-11", "(GMT -11:00) Midway Island, Samoa"), ("-10", "(GMT -10:00) Hawaii"),
+	       ("-9", "(GMT -9:00) Alaska"), ("-8", "Pacific Time (US and Canada)"), ("-7", "Mountain Time (US &amp; Canada)"),
+	       ("-6", "Central Time (US and Canada), Mexico City"), ("-5", "Eastern Time (US and Canada), Bogota, Lima"), 
+	       ("-4", "Atlantic Time (Canada), Caracas, La Paz"), ("-3.5", "Newfoundland"), ("-3", "Brazil, Buenos Aires, Georgetown"), 
+	       ("-2", "Mid-Atlantic"), ("-1", "Azores, Cape Verde Islands"), ("0", "Western Europe Time, London, Lisbon, Casablanca"), 
+	       ("1", "Brussels, Copenhagen, Madrid, Paris"), ("2", "Kaliningrad, South Africa"), ("3", "Baghdad, Riyadh, Moscow, St. Petersburg"),
+	       ("3.5", "Tehran"), ("4", "Abu Dhabi, Muscat, Baku, Tbilisi"), ("4.5", "Kabul"), ("5", "Ekaterinburg, Islamabad, Karachi, Tashkent"),
+	       ("5.75", "Kathmandu"), ("6", "Almaty, Dhaka, Colombo"), ("7", "Bangkok, Hanoi, Jakarta"), ("8", "Beijing, Perth, Singapore, Hong Kong"),
+	       ("9", "Tokyo, Seoul, Osaka, Sapporo, Yakutsk"), ("9.5", "Adelaide, Darwin"), ("10", "Eastern Australia, Guam, Vladivostok"), 
+	       ("11", "Magadan, Solomon Islands, New Caledonia"), ("12", "Auckland, Wellington, Fiji, Kamchatka") ],
+    default = 0)
+  incident_date = TextField('Incident Date (mm/dd/yyyy)', [wtforms.validators.Length(min = 1, max = 10,
+  message = "Name must be between 1 and 10 characters")])
+  start_date = TextField('Start Date (mm/dd/yyyy)')
+  end_date = TextField('End Date (mm/dd/yyyy)')
+  work_order_prefix = TextField('Work Order Prefix', default = get_case_label())
+  centroid_lat = TextField('Centroid Latitude')
+  centroid_lng = TextField('Centroid Longitude')
+  camera_lat = TextField('Camera Latitude')
+  camera_lng = TextField('Camera Longitude')
+  ignore_validation = BooleanField("Ignore Validation", default=False)
+  developer_mode = BooleanField("Developer Mode", default=False)
+  
+  local_admin_name = TextField('Local Admin Name', default="12")
+  local_admin_title = TextField('Local Admin Title')
+  local_admin_organization = TextField('Local Admin Organization')
+  local_admin_email = TextField('Local Admin Email')
+  local_admin_cell_phone = TextField('Local Admin Cell Phone')
+  local_admin_password = TextField('Local Admin Password')
+
+  public_map_title = TextField('Public Map Title')
+  public_map_url = TextField('Public Map URL')
+  public_map_cluster = BooleanField("Public Map Cluster", default=True)
+  public_map_zoom = TextField('Public Map Zoom')
+  
+  internal_map_title = TextField('Internal Map Zoom')
+  internal_map_url = TextField('Internal Map Zoom')
+  internal_map_cluster = BooleanField("Internal Map Cluster", default=True)
+  internal_map_zoom = TextField('Internal Map Zoom')
+
+

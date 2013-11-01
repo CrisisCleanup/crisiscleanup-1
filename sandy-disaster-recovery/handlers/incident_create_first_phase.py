@@ -48,7 +48,8 @@ class IncidentCreateFirstPhase(base.RequestHandler):
      "phase_definition": phase_definition,
      "phase_position": phase_position,
      "phase_short_name": phase_short_name,
-     "phase_id": os.urandom(16).encode("hex") #?
+     "phase_id": os.urandom(16).encode("hex"),
+     "incident_short_name": incident_short_name
     }
     
     phase_array = []

@@ -112,7 +112,9 @@ class AdminHandler(base.AuthenticatedHandler):
             del(form.incident)
             form.populate_obj(new_org)
             new_org.save()
-            self.redirect('/admin-single-organization?organization=%d' % new_org.key().id())
+
+            # redirect to the add contact page
+            self.redirect('/admin-create-contact?selected_org=%d' % new_org.key().id())
         else:
             self.response.out.write(template.render({
                 "form": form,

@@ -103,8 +103,7 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
 	       ("9", "Tokyo, Seoul, Osaka, Sapporo, Yakutsk"), ("9.5", "Adelaide, Darwin"), ("10", "Eastern Australia, Guam, Vladivostok"), 
 	       ("11", "Magadan, Solomon Islands, New Caledonia"), ("12", "Auckland, Wellington, Fiji, Kamchatka") ],
     default = 0)
-  incident_date = TextField('Incident Date (mm/dd/yyyy)', [wtforms.validators.Length(min = 1, max = 10,
-  message = "Name must be between 1 and 10 characters")])
+  incident_date = TextField('Incident Date (mm/dd/yyyy)')
   start_date = TextField('Start Date (mm/dd/yyyy)')
   end_date = TextField('End Date (mm/dd/yyyy)')
   work_order_prefix = TextField('Work Order Prefix', default = get_case_label())
@@ -132,4 +131,4 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   internal_map_cluster = BooleanField("Internal Map Cluster", default=True)
   internal_map_zoom = TextField('Internal Map Zoom')
 
-
+  #incident = ReferenceProperty()

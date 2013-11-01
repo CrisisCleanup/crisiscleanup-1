@@ -1,10 +1,10 @@
 var warn_on_leave = false;
 var first_run = true;
-window.onbeforeunload = function(){
-  if(warn_on_leave){
-      return 'Your changes have not been saved. To save, stay on this page and click "save".';
-  }
-};
+// window.onbeforeunload = function(){
+//   if(warn_on_leave){
+//       return 'Your changes have not been saved. To save, stay on this page and click "save".';
+//   }
+// };
 $(function() {
 
 
@@ -16,7 +16,8 @@ $(function() {
     
   var select_options_array = [];
   var radio_options_array = [];
-  var form_json_array = []
+  var form_json_array = [];
+  var phases_json_array = [];
   
   $("#save_all_changes").click(function() {
     save_changes(form_json_array);
@@ -27,7 +28,7 @@ $(function() {
     show_phases_list();
 
     var incident_full_name = $("#incident").val();
-    get_json(incident_full_name);
+    get_json(incident_full_name, phases_json_array);
   });
   
   $( "#phases_list" ).change(function() {
@@ -40,6 +41,10 @@ $(function() {
   
   $( "#add_phase_button" ).click(function() {
     $("#add_phase_form_div").show();
+  });
+  
+  $("#edit_phase_button").click(function() {
+    window.location.replace('/incident_edit_phase?incident=' + phases_json_array[0][0].incident_short_name);
   });
   $( "#close_phase_button" ).click(function() {
     $("#add_phase_form_div").hide();
@@ -607,9 +612,9 @@ function clear_radio_options() {
 }
 
 
-function get_json(incident_short_name) {
-
+function get_json(incident_short_name, phases_json_array) {
   $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name},  function( data ) {
+    phases_json_array.push(JSON.parse(data.phases_json));
     if (data.phases_json == "[]") {
       show_first_phase_form(incident_short_name, incident_short_name);
     } else {
@@ -730,7 +735,6 @@ function show_first_phase_form(incident_short_name, incident_short_name) {
 }
 
 function read_phases_json_to_html(phases_json_array, incident_short_name) {
-//   window.location.replace("/incident_form_creator")
   var arr = JSON.parse(phases_json_array);
 
   $("#phases_list").empty();
@@ -791,10 +795,13 @@ function hide_sidebar_form_creator() {
   $("#sidebar_form_creator").hide();
   $("#phases").hide();
   $("#add_phase_button").hide();
+  $("#edit_phase_button").hide();
+
 }
 
 function show_sidebar_form_creator() {
   console.log("show_sidebar_form_creator");
+  $("#edit_phase_button").show();
   $("#sidebar_form_creator").show();
   $("#phases").show();
   $("#add_phase_button").show();

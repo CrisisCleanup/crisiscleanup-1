@@ -41,8 +41,6 @@ import site_ajax_handler
 import site_api_handler
 import sites_handler
 import new_organization_handler
-import update_handler
-import update_event_handler
 import welcome_handler
 import organization_ajax_handler
 import export_all_handler
@@ -196,14 +194,12 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'),
     Route(r'/import-co-flood-handler', import_co_handler.ImportCOHandler, 'import-co-flood'),
 
-    Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),
     Route(r'/contact-info', contact_info_handler.ContactInfoHandler, 'contact_info_handler'),
     Route(r'/organization-settings', organization_settings_handler.OrganizationSettingsHandler, 'organization_settings_handler'),
     Route(r'/export_contacts_handler', export_contacts_handler.ExportContactsHandler, 'export_contacts_handler'),
     Route(r'/organization-add-contact', organization_add_contacts_handler.OrganizationAddContactsHandler, 'organization_add_contacts_handler'),   
     Route(r'/organization-edit-contact', organization_edit_contacts_handler.OrganizationEditContactsHandler, 'organization_edit_contacts_handler'),   
-    Route(r'/update_event_handler', update_event_handler.UpdateHandler, 'update_event_handler'),
     Route(r'/welcome', welcome_handler.WelcomeHandler, 'welcome_handler'),
     Route(r'/organization_ajax_handler', organization_ajax_handler.OrganizationAjaxHandler, 'organization_ajax_handler'),
     Route(r'/organization-edit-info', organization_edit_info_handler.OrganizationEditInfoHandler, 'new_organization'),
@@ -226,6 +222,6 @@ app = webapp2.WSGIApplication([
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
 
-    Route(r'/test-email', messaging.EmailTestHandler, 'email_test_handler'),
+    ## DISABLED ## Route(r'/test-email', messaging.EmailTestHandler, 'email_test_handler'),
     
 ], debug=True)

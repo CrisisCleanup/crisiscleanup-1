@@ -150,8 +150,32 @@ sandy.form.SetUpAdditionalHandlers = function() {
 };
 
 
+sandy.form.addPrintableTables = function() {
+    // add a hidden, printable table beneath each <select>
+    $('select').each(function() {
+        var $el = $(this);
+        var $options = $el.find('option');
+        var $printTable = $('<table></table>')
+            .addClass('select-print-table')
+            .css('display', 'none');
+        $options.each(function() {
+            var $option = $(this);
+            if ($option.text().indexOf('Choose') == -1) {
+                var $row = $(
+                    '<tr><td>' + $option.text() + '</td>' + 
+                    '<td>&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>'
+                );
+                $printTable.append($row);
+            }
+        });
+        $el.after($printTable);
+    });
+};
+
+
 sandy.form.fireFormModificationHandlers = function() {
     // fire handlers that setup initial appearance of the form
+    sandy.form.addPrintableTables();
     sandy.form.handleStatusChanged();
 };
 

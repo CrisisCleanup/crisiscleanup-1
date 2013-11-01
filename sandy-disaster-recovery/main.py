@@ -28,6 +28,7 @@ import base
 import delete_handler
 import edit_handler
 import export_handler
+import export_bulk_handler
 import form_handler
 import import_handler
 import key
@@ -140,6 +141,9 @@ app = webapp2.WSGIApplication([
           'auth'),
     Route(r'/export', export_handler.ExportHandler, 'export'),
     Route(r'/export_all', export_all_handler.ExportAllHandler, 'export_all'),
+    Route(r'/export_bulk', export_bulk_handler.ExportBulkHandler, 'export_bulk'),
+    Route(r'/export_bulk_worker', export_bulk_handler.ExportBulkWorker, 'export_bulk_worker'),
+    Route(r'/export_bulk_download', export_bulk_handler.DownloadBulkExportHandler, 'export_bulk_download'),
     Route(r'/get_event_ajax', get_event_ajax_handler.GetEventAjaxHandler, 'get_event_ajax'),
     Route(r'/change_password', change_password_handler.ChangePasswordHandler, 'change_password'),
 

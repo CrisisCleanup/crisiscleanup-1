@@ -36,7 +36,7 @@ except StopIteration:
 # define env
 
 env.master_branch = "master"
-env.gae_version = "live"
+env.gae_version = "export-bulk"
 env.appcfg = os.path.realpath(_appcfg_path)
 
 

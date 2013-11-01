@@ -35,7 +35,7 @@ jinja_environment = jinja2.Environment(
 class AdminAuthenticatedHandler(AuthenticatedHandler):
 
     def __init__(self, *args, **kwargs):
-        # load jinja template if specified
+        # load jinja template if specified as class var
         if hasattr(self, 'template'):
             self.jinja_template = jinja_environment.get_template(self.template)
         super(AdminAuthenticatedHandler, self).__init__(*args, **kwargs)
@@ -53,7 +53,7 @@ class AdminAuthenticatedHandler(AuthenticatedHandler):
         super(AdminAuthenticatedHandler, self).dispatch()
 
     def render(self, **kwargs):
-        " Render jinja template  to response out. "
+        " Render jinja template to response out. "
         self.response.out.write(
             self.jinja_template.render(kwargs)
         )

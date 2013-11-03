@@ -31,7 +31,7 @@ edit phase
 {% block sidebar_content %}
 <div id="sidebar_form_creator">
   <div id="form_editor">
-    <a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>
+    <a href="#" id="save_all_changes1" class="button button-icon icon icon-envelope">Save All Changes</a>
   </div>
   <h2>Add Inputs to form</h2>
   <a id="add_label" href="#form_editor">map label + </a><br>
@@ -48,7 +48,7 @@ edit phase
     <form id="text_form">
       Label: <input type="text" id="text_label" name="text_label"><br>
       Default Value: <input type="text" id="text_default" name="text_default"><br> 
-      Placeholder: <input type="text" id="text_placeholder" name="text_placeholder"><br> 
+      Hint: <input type="text" id="text_placeholder" name="text_placeholder"><br> 
       Required: <input type="checkbox" id="text_required" name="text_required" value="y">
       Sensitive: <input type="checkbox" id="text_sensitive" name="text_sensitive" value="y"><br>
       Form Id: <input type="text" id="text_id" name="text_id"><br>
@@ -171,6 +171,8 @@ edit phase
       <a href="#form_editor" id="add_paragraph_to_form">Add to form</a>
     </form>
   </div>
+      <a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>
+
 </div>
 {% endblock %}
 

@@ -49,8 +49,8 @@ class IncidentDefinition(db.Model):
   # name, incident reference, incident name, attributes json
   
   # removing versions until we know what will likely be inherited
-  
-  #version = db.StringProperty(required=True)
+  is_version = db.BooleanProperty()
+  version = db.StringProperty(required=False)
   incident = db.ReferenceProperty(required=False)
   # ensure unique
   full_name = db.StringProperty(required=True)
@@ -86,7 +86,18 @@ class IncidentDefinition(db.Model):
   internal_map_cluster = db.BooleanProperty()
   internal_map_zoom = db.StringProperty()
   
+  
 class IncidentDefinitionForm(model_form(IncidentDefinition)):
+  q = IncidentDefinition.all()
+  q.filter("is_version =", True)
+  versions = q.run()
+  choices_array = [("-1", "Choose a Version")]    
+  i = 0
+  for v in versions:
+    new_choice = (str(i), v.version)
+    choices_array.push(new_choice)
+  version = wtforms.fields.SelectField(choices = choices_array, default = 0)
+
   full_name = TextField('Full Name', [wtforms.validators.Length(min = 1, max = 100,
   message = "Name must be between 1 and 100 characters")])
   short_name = TextField('Location', [wtforms.validators.Length(min = 1, max = 100,
@@ -114,7 +125,7 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   ignore_validation = BooleanField("Ignore Validation", default=False)
   developer_mode = BooleanField("Developer Mode", default=False)
   
-  local_admin_name = TextField('Local Admin Name', default="12")
+  local_admin_name = TextField('Local Admin Name')
   local_admin_title = TextField('Local Admin Title')
   local_admin_organization = TextField('Local Admin Organization')
   local_admin_email = TextField('Local Admin Email')
@@ -126,8 +137,8 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   public_map_cluster = BooleanField("Public Map Cluster", default=True)
   public_map_zoom = TextField('Public Map Zoom')
   
-  internal_map_title = TextField('Internal Map Zoom')
-  internal_map_url = TextField('Internal Map Zoom')
+  internal_map_title = TextField('Internal Map Title')
+  internal_map_url = TextField('Internal Map URL')
   internal_map_cluster = BooleanField("Internal Map Cluster", default=True)
   internal_map_zoom = TextField('Internal Map Zoom')
 

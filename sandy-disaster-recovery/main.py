@@ -75,6 +75,7 @@ from handlers import incident_save_form
 from handlers import incident_list
 from handlers import incident_edit_phase
 from handlers import incident_edit
+from handlers import incident_create_definition_version
 
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
@@ -232,6 +233,7 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_list', incident_list.IncidentList, 'incident_list'),
     Route(r'/incident_edit_phase', incident_edit_phase.IncidentEditPhase, 'incident_edit_phase'),
     Route(r'/incident_edit', incident_edit.IncidentEdit, 'incident_edit'),
+    Route(r'/incident_create_definition_version', incident_create_definition_version.IncidentCreateDefinitionVersion, 'incident_create_definition_version'),
 
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),

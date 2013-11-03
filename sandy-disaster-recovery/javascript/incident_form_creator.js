@@ -559,7 +559,7 @@ function read_json_to_html(form_json_array) {
       if (form_json_array[i].text_required) {
         var required = "*";
       }
-      var new_text_input = '<tr><td class=question>' + form_json_array[i].text_label + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + form_json_array[i].text_id + '" name="' + form_json_array[i].text_id + '" type="text" value="' + form_json_array[i].text_default + '" /></div></td></tr>'
+      var new_text_input = '<tr><td class=question>' + form_json_array[i].text_label + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + form_json_array[i].text_id + '" name="' + form_json_array[i].text_id + '" type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"/></div></td></tr>'
       $("#form_table").append(new_text_input);
     }
     
@@ -629,7 +629,7 @@ function get_form_json(phase,incident_short_name, form_json_array) {
     console.log("empty tabs-1");
 //       $("#tabs-1").empty();
 
-      $("#form_label").append("No Form Added");
+      $("#form_label").append("<h2>Create a form by using the controls on the left</h2>");
 //       $("#tabs-2").append(data.forms_json);
       var phases_array = JSON.parse(data.phases_json);
 
@@ -681,7 +681,7 @@ function get_form_json(phase,incident_short_name, form_json_array) {
     }
     
     if (!any_equal) {
-      $("#form_label").append("No Form Added");
+      $("#form_label").append("<h2>Create a form by using the controls on the left</h2>");
 //       $("#tabs-2").append(data.forms_json);
       var phases_array = JSON.parse(data.phases_json);
       

@@ -28,7 +28,7 @@
 {% endblock %}
 
 {% block main_content %}
-<h2>New Incident Definition</h2>
+<h2>New Incident Definition Version</h2>
 {% if errors %}
 <section id="errors">
   <header>The submission had errors</header>
@@ -48,7 +48,7 @@
 <a href="/incident_create_definition_version">Create a new standard version</a>
 <h3>Basic Information</h3>
 <form action="/incident_definition" method="POST">
-<div>{{ form.version.label }}: {{ form.version}}</div>
+<div>Version: <input type="text" name="version" value="{{ version }}"></div>
 <div>{{ form.full_name.label }}: {{ form.full_name}}</div>
 <div>{{ form.short_name.label }}: {{ form.short_name}}</div>
 <div>{{ form.timezone.label }}: {{ form.timezone }}</div>

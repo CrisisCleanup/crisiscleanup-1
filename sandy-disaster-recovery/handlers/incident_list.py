@@ -35,13 +35,10 @@ def show_phases_from_json(phases_json):
     
     length = len(as_json)
     string = ""
-    
     for obj in as_json:
       #raise Exception(obj)
-      phase_string = '<p>Phase Name: ' + obj['phase_name'] + '</p>'
-      def_string = '<p>Phase Definition: ' + obj['phase_definition'] + '</p>'
-      string += phase_string + def_string
-    return string
+      def_string = '<p>>' + obj['phase_name'] + ': ' + obj['phase_definition'] + '</p>'
+    return def_string
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
@@ -59,6 +56,5 @@ class IncidentList(base.RequestHandler):
     data = {
       "incidents": incidents,
     }
-    
     self.response.out.write(template.render(data))
     

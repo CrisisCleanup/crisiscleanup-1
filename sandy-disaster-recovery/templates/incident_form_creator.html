@@ -169,7 +169,7 @@ edit phase
       <h2>Add Header to form</h2>
 
       <form id="paragraph_form">
-      Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
+      Paragraph:<br><textarea rows="10" cols="30" id="paragraph" name="paragraph"></textarea><br>
       <h3><a href="#form_editor" id="add_paragraph_to_form">Add to form</a></h3>
     </form>
   </div>
@@ -198,8 +198,9 @@ edit phase
 
   </select>
   <br>
-  <a href="#" id="add_phase_button">Add Phase</a>
-  <a href="#" id="edit_phase_button">Edit Phases</a>
+  <br>
+  <h3 class="horizontal"><a href="#" id="add_phase_button">Add Phase</a></h3>
+  <h3 class="horizontal"><a href="#" id="edit_phase_button">Edit Phases</a></h3>
 </div>
 
 <div id="phase_htmls">
@@ -220,8 +221,7 @@ edit phase
 <div id="add_phase_form_div">
     <form id="add_phase_form" action="/incident_create_first_phase" method="POST">
     Phase Name: <input type="text" name="phase_name"><br>
-    Phase Definition: <input type="text" name="phase_definition"><br>
-    Phase Position: <input type="text" name="phase_position"><br>
+    Phase Description: <input type="text" name="phase_definition"><br>
 
     <input type="hidden" name="add_phase" value="true">
     <button class="submit">Submit</button>
@@ -237,8 +237,8 @@ edit phase
       <li><a href="#" id="show_json">JSON</a></li>
     </ul>-->
     
-    <a href="#" id="show_html">HTML</a>
-    <a href="#" id="show_json">JSON</a>
+    <h3 class="horizontal"><a href="#" id="show_html">HTML</a></h3>
+    <h3 class="horizontal"><a href="#" id="show_json">JSON</a></h3>
     <div id="tabs-1">
 	<div id="form_label">
 	</div>

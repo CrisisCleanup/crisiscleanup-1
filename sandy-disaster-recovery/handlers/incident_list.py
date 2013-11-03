@@ -38,7 +38,8 @@ def show_phases_from_json(phases_json):
     for obj in as_json:
       #raise Exception(obj)
       def_string = '<p>>' + obj['phase_name'] + ': ' + obj['phase_definition'] + '</p>'
-    return def_string
+      string = string + def_string
+    return string
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))

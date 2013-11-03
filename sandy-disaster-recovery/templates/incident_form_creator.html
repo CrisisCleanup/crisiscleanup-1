@@ -59,7 +59,7 @@ edit phase
       Printer: <input type="text" id="text_printer" name="text_printer"><br>
       Mobile: <input type="text" id="text_mobile" name="text_mobile"><br>
       Sms: <input type="text" id="text_sms" name="text_sms"><br>
-      <a href="#form_editor" id="add_text_to_form">Add to form</a>
+      <h3><a href="#form_editor" id="add_text_to_form">Add to form</a></h3>
     </form>
   </div>
 
@@ -83,7 +83,7 @@ edit phase
     Printer: <input type="text" id="checkbox_printer" name="checkbox_printer"><br>
     Mobile: <input type="text" id="checkbox_mobile" name="checkbox_mobile"><br>
     Sms: <input type="text" id="checkbox_sms" name="checkbox_sms"><br>
-    <a href="#form_editor" id="add_checkbox_to_form">Add to form</a>
+    <h3><a href="#form_editor" id="add_checkbox_to_form">Add to form</a></h3>
   </form>
   </div>
   <div id="select_div">
@@ -112,7 +112,7 @@ edit phase
       Printer: <input type="text" id="select_printer" name="select_printer"><br>
       Mobile: <input type="text" id="select_mobile" name="select_mobile"><br>
       Sms: <input type="text" id="select_sms" name="select_sms"><br>
-      <a href="#form_editor" id="add_select_to_form">Add to form</a>
+      <h3><a href="#form_editor" id="add_select_to_form">Add to form</a></h3>
     </form>
   </div>
 
@@ -143,7 +143,7 @@ edit phase
       Printer: <input type="text" id="radio_printer" name="radio_printer"><br>
       Mobile: <input type="text" id="radio_mobile" name="radio_mobile"><br>
       Sms: <input type="text" id="radio_sms" name="radio_sms"><br>
-      <a href="#form_editor" id="add_radio_to_form">Add to form</a>
+      <h3><a href="#form_editor" id="add_radio_to_form">Add to form</a></h3>
     </form>
   </div>
 
@@ -152,7 +152,8 @@ edit phase
 
     <form id="header_form">
       Label: <input type="text" id="header_label" name="header_label"><br>
-      <a href="#form_editor" id="add_header_to_form">Add to form</a></form>
+      <h3><a href="#form_editor" id="add_header_to_form">Add to form</a></h3>
+      </form>
       </div>
 
       <div id="label_div">
@@ -160,7 +161,8 @@ edit phase
 
       <form id="label_form">
       Label: <input type="text" id="label_name" name="label_name"><br>
-      <a href="#form_editor" id="add_label_to_form">Add to form</a></form>
+      <h3><a href="#form_editor" id="add_label_to_form">Add to form</a></h3>
+      </form>
       </div>
 
       <div id="paragraph_div">
@@ -168,7 +170,7 @@ edit phase
 
       <form id="paragraph_form">
       Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
-      <a href="#form_editor" id="add_paragraph_to_form">Add to form</a>
+      <h3><a href="#form_editor" id="add_paragraph_to_form">Add to form</a></h3>
     </form>
   </div>
       <a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>
@@ -184,7 +186,7 @@ edit phase
 <select id="incident" name="incident">
     <option value="None">Choose an Incident</option>
     {% for incident in incidents %}
-    <option value="{{ incident.short_name }}">{{ incident.full_name }}</option>
+    <option value="{{ incident.short_name }}">{{ incident.name }}</option>
     {% endfor %}
 </select>
 <br>

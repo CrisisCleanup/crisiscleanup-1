@@ -65,7 +65,6 @@ $(function() {
   <article>
 </section>
 {% endif %}
-<a href="/incident_create_definition_version">Create a new standard version</a>
 <h3>Basic Information</h3>
 <form action="/incident_definition" method="POST">
 <div>{{ form.name.label }}: {{ form.name}}</div>
@@ -83,6 +82,8 @@ $(function() {
 <div>{{ form.local_admin_email.label }}: {{ form.local_admin_email }}</div>
 <div>{{ form.local_admin_cell_phone.label }}: {{ form.local_admin_cell_phone }}</div>
 <div>{{ form.local_admin_password.label }}: {{ form.local_admin_password }}</div>
+<div>{{ form.local_admin_password.label }}: {{ form.local_admin_password }}</div>
+
 
 <button class="submit">Submit</button>
 </form>

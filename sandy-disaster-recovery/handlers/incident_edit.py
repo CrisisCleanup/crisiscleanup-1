@@ -60,8 +60,8 @@ class IncidentEdit(base.RequestHandler):
     cleanup_end_date = form.cleanup_end_date.data
     form.incident_date.data = datetime.strptime(incident_date, "%Y-%m-%d").date()
     form.cleanup_start_date.data = datetime.strptime(cleanup_start_date, "%Y-%m-%d").date()
-    form.organization_map_latitude = form.incident_lat
-    form.organization_map_longitude = form.incident_lng
+    form.organization_map_latitude.data = form.incident_lat.data
+    form.organization_map_longitude.data = form.incident_lng.data
     form.public_map_latitude.data = form.incident_lat.data
     form.public_map_longitude.data = form.incident_lat.data
     #form.incident.data = form.incident.data.key()

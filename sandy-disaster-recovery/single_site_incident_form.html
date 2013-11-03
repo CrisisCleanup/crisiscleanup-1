@@ -91,4 +91,11 @@ Object.keys(post_json).forEach(function(key) {
 
     </script>
     <!-- The contents of myscript.js will be loaded inside the script tag -->
-{{ incident_form_block }}
+
+
+ <table id="form_table">
+ <h2>{{ label }}</h2>
+ <p>{{ paragraph }}</p>
+ {{ incident_form_block }}
+
+</table>

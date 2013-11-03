@@ -64,7 +64,8 @@ class IncidentDefinition(base.RequestHandler):
 
   def post(self):
     data = incident_definition.IncidentDefinitionForm(self.request.POST)
-    timezone = data.timezone.data
+    version = data.name.data
+    #raise Exception(version)
     if not data.validate():
       self.response.out.write(template.render(
 	{
@@ -73,20 +74,17 @@ class IncidentDefinition(base.RequestHandler):
       }))
     else:
       #incident_version = self.request.get("incident_version")
-      incident_full_name = data.full_name.data
+      incident_name = data.name.data
       incident_short_name = data.short_name.data
+      timezone = data.timezone.data
+      location = data.location.data
       
       incident_date = data.incident_date.data
-      start_date = data.start_date.data
-      end_date = data.end_date.data
+      cleanup_start_date = data.cleanup_start_date.data
       work_order_prefix = data.work_order_prefix.data
-      centroid_latitude = data.centroid_lat.data
-      centroid_longitude = data.centroid_lng.data
-      camera_latitude = data.camera_lat.data
-      camera_longitude = data.camera_lng.data
-      developer_mode = data.developer_mode.data
-      ignore_validation = data.ignore_validation.data
-      
+      incident_latitude = data.incident_lat.data
+      incident_longitude = data.incident_lng.data
+
       local_admin_name = data.local_admin_name.data
       local_admin_title = data.local_admin_title.data
       local_admin_organization = data.local_admin_organization.data
@@ -95,19 +93,18 @@ class IncidentDefinition(base.RequestHandler):
       local_admin_password = data.local_admin_password.data
     
     
-      public_map_title = data.public_map_title.data
-      public_map_url = data.public_map_url.data
-      public_map_cluster = data.public_map_cluster.data
-      public_map_zoom = data.public_map_zoom.data
+      #public_map_title = data.public_map_title.data
+      #public_map_url = data.public_map_url.data
+      #public_map_cluster = data.public_map_cluster.data
+      #public_map_zoom = data.public_map_zoom.data
       
-      internal_map_title = data.internal_map_title.data
-      internal_map_url = data.internal_map_url.data
-      internal_map_cluster = data.internal_map_cluster.data
-      internal_map_zoom = data.internal_map_zoom.data
+      #internal_map_title = data.internal_map_title.data
+      #internal_map_url = data.internal_map_url.data
+      #internal_map_cluster = data.internal_map_cluster.data
+      #internal_map_zoom = data.internal_map_zoom.data
     
-      start_date_object = datetime.strptime(start_date, "%m/%d/%Y").date()
-      end_date_object = datetime.strptime(end_date, "%m/%d/%Y").date()
       incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
+      start_date_object = datetime.strptime(cleanup_start_date, "%m/%d/%Y").date()
       
       # create new version and associate with inc def
       #if incident_version == "New":
@@ -121,7 +118,7 @@ class IncidentDefinition(base.RequestHandler):
       query_string = "SELECT * FROM Event"
       events_list = db.GqlQuery(query_string)
       count = events_list.count()
-      this_event = event_db.Event(name = incident_full_name,
+      this_event = event_db.Event(name = incident_name,
 			  short_name = incident_short_name,
 			  case_label = data.work_order_prefix.data,
 			)
@@ -129,7 +126,7 @@ class IncidentDefinition(base.RequestHandler):
       cache.PutAndCache(this_event, ten_minutes)
       
       # add this version = incident_version
-      inc_def = incident_definition.IncidentDefinition(full_name = incident_full_name, short_name = incident_short_name, timezone = timezone, start_date = start_date_object, end_date = end_date_object, incident_date = incident_date_object, work_order_prefix = work_order_prefix, centroid_lat = centroid_latitude, centroid_lng = centroid_longitude, camera_latitude = camera_latitude, camera_longitude = camera_longitude, developer_mode = developer_mode, ignore_validation = ignore_validation, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, public_map_cluster = public_map_cluster, public_map_title = public_map_title, public_map_url = public_map_url, public_map_zoom = public_map_zoom, internal_map_cluster = internal_map_cluster, internal_map_title = internal_map_title, internal_map_url = internal_map_url, internal_map_zoom = internal_map_zoom, incident = this_event.key())
+      inc_def = incident_definition.IncidentDefinition(organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = incident_name, short_name = incident_name.lower().replace(" ", "_"), timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = work_order_prefix, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key())
       inc_def.put()
 
       

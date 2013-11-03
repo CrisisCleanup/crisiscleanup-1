@@ -2,10 +2,30 @@
 {% extends "base_template.html" %}
 
 {% block head_content %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <link href="/stylesheets/default.css" rel="stylesheet">
+<link href="/stylesheets/glDatePicker.default.css" rel="stylesheet" type="text/css">
+
 {% endblock %}
 
 {% block scripts %}
+<script src="../javascript/glDatePicker.min.js"></script>
+
+<script>
+$(function() {
+  $('#incident_date').glDatePicker();
+  $('#cleanup_start_date').glDatePicker();
+//   $('#work_order_prefix').attr("disabled", true);
+  
+  $("#edit_work_order_prefix").click(function() {
+    
+    $('#work_order_prefix').attr("disabled", false);
+
+  });
+
+
+});
+</script>
 {% endblock %}
 
 {% block login %}
@@ -48,20 +68,14 @@
 <a href="/incident_create_definition_version">Create a new standard version</a>
 <h3>Basic Information</h3>
 <form action="/incident_definition" method="POST">
-<div>{{ form.version.label }}: {{ form.version}}</div>
-<div>{{ form.full_name.label }}: {{ form.full_name}}</div>
-<div>{{ form.short_name.label }}: {{ form.short_name}}</div>
+<div>{{ form.name.label }}: {{ form.name}}</div>
+<div>{{ form.location.label }}: {{ form.location}}</div>
 <div>{{ form.timezone.label }}: {{ form.timezone }}</div>
 <div>{{ form.incident_date.label }}: {{ form.incident_date}}</div>
-<div>{{ form.start_date.label }}: {{ form.start_date}}</div>
-<div>{{ form.end_date.label }}: {{ form.end_date}}</div>
-<div>{{ form.work_order_prefix.label }}: {{ form.work_order_prefix }}</div>
-<div>{{ form.centroid_lat.label }}: {{ form.centroid_lat }}</div>
-<div>{{ form.centroid_lng.label }}: {{ form.centroid_lng }}</div>
-<div>{{ form.camera_lat.label }}: {{ form.camera_lat }}</div>
-<div>{{ form.camera_lng.label }}: {{ form.camera_lng }}</div>
-<div>{{ form.ignore_validation.label }}: {{ form.ignore_validation }}</div>
-<div>{{ form.developer_mode.label }}: {{ form.developer_mode }}</div>
+<div>{{ form.cleanup_start_date.label }}: {{ form.cleanup_start_date}}</div>
+<div>{{ form.work_order_prefix.label }}: {{ form.work_order_prefix }}<a href="#" id="edit_work_order_prefix">Edit</a></div>
+<div>{{ form.incident_lat.label }}: {{ form.incident_lat }}</div>
+<div>{{ form.incident_lng.label }}: {{ form.incident_lng }}</div>
 <h3>Local Admin Information</h3>
 <div>{{ form.local_admin_name.label }}: {{ form.local_admin_name }}</div>
 <div>{{ form.local_admin_title.label }}: {{ form.local_admin_title }}</div>
@@ -69,16 +83,6 @@
 <div>{{ form.local_admin_email.label }}: {{ form.local_admin_email }}</div>
 <div>{{ form.local_admin_cell_phone.label }}: {{ form.local_admin_cell_phone }}</div>
 <div>{{ form.local_admin_password.label }}: {{ form.local_admin_password }}</div>
-<h3>Internal Map Information</h3>
-<div>{{ form.internal_map_title.label }}: {{ form.internal_map_title }}</div>
-<div>{{ form.internal_map_url.label }}: {{ form.internal_map_url }}</div>
-<div>{{ form.internal_map_cluster.label }}: {{ form.internal_map_cluster }}</div>
-<div>{{ form.internal_map_zoom.label }}: {{ form.internal_map_zoom }}</div>
-<h3>Public Map Information</h3>
-<div>{{ form.public_map_title.label }}: {{ form.public_map_title }}</div>
-<div>{{ form.public_map_url.label }}: {{ form.public_map_url }}</div>
-<div>{{ form.public_map_cluster.label }}: {{ form.public_map_cluster }}</div>
-<div>{{ form.public_map_zoom.label }}: {{ form.public_map_zoom }}</div>
 
 <button class="submit">Submit</button>
 </form>

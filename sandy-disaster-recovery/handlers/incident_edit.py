@@ -56,11 +56,14 @@ class IncidentEdit(base.RequestHandler):
     form = incident_definition.IncidentDefinitionForm(self.request.POST, obj=incident)
     del form.incident
     incident_date = form.incident_date.data
-    start_date = form.start_date.data
-    end_date = form.end_date.data
-    form.start_date.data = datetime.strptime(start_date, "%Y-%m-%d").date()
-    form.end_date.data = datetime.strptime(end_date, "%Y-%m-%d").date()
+    cleanup_start_date = form.cleanup_start_date.data
+    cleanup_end_date = form.cleanup_end_date.data
     form.incident_date.data = datetime.strptime(incident_date, "%Y-%m-%d").date()
+    form.cleanup_start_date.data = datetime.strptime(cleanup_start_date, "%Y-%m-%d").date()
+    form.organization_map_latitude = form.incident_lat
+    form.organization_map_longitude = form.incident_lng
+    form.public_map_latitude.data = form.incident_lat.data
+    form.public_map_longitude.data = form.incident_lat.data
     #form.incident.data = form.incident.data.key()
     #raise Exception(form.incident.data)
     if not form.validate():

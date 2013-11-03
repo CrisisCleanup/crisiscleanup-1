@@ -53,21 +53,18 @@ class IncidentDefinition(db.Model):
   version = db.StringProperty(required=False)
   incident = db.ReferenceProperty(required=False)
   # ensure unique
-  full_name = db.StringProperty(required=True)
+  name = db.StringProperty(required=True)
   # ensure unique
-  short_name = db.StringProperty(required=True)
+  short_name = db.StringProperty(required=False)
   # ensure unique
   timezone = db.StringProperty(required=True)
+  location = db.StringProperty(required=True)
   incident_date = db.DateProperty(required=True)
-  start_date = db.DateProperty(required=True)
-  end_date = db.DateProperty(required=True)
+  cleanup_start_date = db.DateProperty(required=True)
+  cleanup_end_date = db.DateProperty(required=False)
   work_order_prefix = db.StringProperty(required=True)
-  centroid_lat = db.StringProperty(required=True)
-  centroid_lng = db.StringProperty(required=True)
-  camera_lat = db.StringProperty()
-  camera_lng = db.StringProperty()
-  ignore_validation = db.BooleanProperty()
-  developer_mode = db.BooleanProperty()
+  incident_lat = db.StringProperty(required=True)
+  incident_lng = db.StringProperty(required=True)
   
   local_admin_name = db.StringProperty()
   local_admin_title = db.StringProperty()
@@ -78,30 +75,41 @@ class IncidentDefinition(db.Model):
 
   public_map_title = db.StringProperty()
   public_map_url = db.StringProperty()
-  public_map_cluster = db.BooleanProperty()
-  public_map_zoom = db.StringProperty()
+  public_map_cluster = db.BooleanProperty(default=True)
+  public_map_zoom = db.StringProperty(default="7")
+  public_map_latitude = db.StringProperty()
+  public_map_longitude = db.StringProperty()
   
-  internal_map_title = db.StringProperty()
-  internal_map_url = db.StringProperty()
-  internal_map_cluster = db.BooleanProperty()
-  internal_map_zoom = db.StringProperty()
+  organization_map_title = db.StringProperty()
+  organization_map_url = db.StringProperty()
+  organization_map_cluster = db.BooleanProperty(default=True)
+  organization_map_zoom = db.StringProperty(default="7")
+  organization_map_latitude = db.StringProperty()
+  organization_map_longitude = db.StringProperty()
+  
+  ignore_validation = db.BooleanProperty()
+  developer_mode = db.BooleanProperty()
   
   
 class IncidentDefinitionForm(model_form(IncidentDefinition)):
-  q = IncidentDefinition.all()
-  q.filter("is_version =", True)
-  versions = q.run()
-  choices_array = [("-1", "Choose a Version")]    
-  i = 0
-  for v in versions:
-    new_choice = (str(i), v.version)
-    choices_array.push(new_choice)
-  version = wtforms.fields.SelectField(choices = choices_array, default = 0)
+  #q = IncidentDefinition.all()
+  #q.filter("is_version =", True)
+  #versions = q.run()
+  #choices_array = [("-1", "Choose a Version")]    
+  #i = 0
+  #for v in versions:
+    #new_choice = (str(i), v.version)
+    #choices_array.push(new_choice)
+  #version = wtforms.fields.SelectField(choices = choices_array, default = 0)
 
-  full_name = TextField('Full Name', [wtforms.validators.Length(min = 1, max = 100,
+  name = TextField('Incident Name', [wtforms.validators.Length(min = 1, max = 100,
   message = "Name must be between 1 and 100 characters")])
-  short_name = TextField('Location', [wtforms.validators.Length(min = 1, max = 100,
+  location = TextField('Location', [wtforms.validators.Length(min = 1, max = 100,
   message = "Name must be between 1 and 100 characters")])
+
+
+  #short_name = TextField('Location', [wtforms.validators.Length(min = 1, max = 100,
+  #message = "Name must be between 1 and 100 characters")])
   timezone = wtforms.fields.SelectField(
     choices = [("-12", "(GMT -12:00) Eniwetok, Kwajalein"), ("-11", "(GMT -11:00) Midway Island, Samoa"), ("-10", "(GMT -10:00) Hawaii"),
 	       ("-9", "(GMT -9:00) Alaska"), ("-8", "Pacific Time (US and Canada)"), ("-7", "Mountain Time (US &amp; Canada)"),
@@ -115,15 +123,13 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
 	       ("11", "Magadan, Solomon Islands, New Caledonia"), ("12", "Auckland, Wellington, Fiji, Kamchatka") ],
     default = 0)
   incident_date = TextField('Incident Date (mm/dd/yyyy)')
-  start_date = TextField('Start Date (mm/dd/yyyy)')
-  end_date = TextField('End Date (mm/dd/yyyy)')
+  cleanup_start_date = TextField('Cleanup Start Date (mm/dd/yyyy)')
+  #cleanup_end_date = TextField('Cleanup End Date (mm/dd/yyyy)')
   work_order_prefix = TextField('Work Order Prefix', default = get_case_label())
-  centroid_lat = TextField('Centroid Latitude')
-  centroid_lng = TextField('Centroid Longitude')
-  camera_lat = TextField('Camera Latitude')
-  camera_lng = TextField('Camera Longitude')
-  ignore_validation = BooleanField("Ignore Validation", default=False)
-  developer_mode = BooleanField("Developer Mode", default=False)
+  incident_lat = TextField('Incident Latitude')
+  incident_lng = TextField('Incident Longitude')
+  #ignore_validation = BooleanField("Ignore Validation", default=False)
+  #developer_mode = BooleanField("Developer Mode", default=False)
   
   local_admin_name = TextField('Local Admin Name')
   local_admin_title = TextField('Local Admin Title')
@@ -132,14 +138,6 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   local_admin_cell_phone = TextField('Local Admin Cell Phone')
   local_admin_password = TextField('Local Admin Password')
 
-  public_map_title = TextField('Public Map Title')
-  public_map_url = TextField('Public Map URL')
-  public_map_cluster = BooleanField("Public Map Cluster", default=True)
-  public_map_zoom = TextField('Public Map Zoom')
-  
-  internal_map_title = TextField('Internal Map Title')
-  internal_map_url = TextField('Internal Map URL')
-  internal_map_cluster = BooleanField("Internal Map Cluster", default=True)
-  internal_map_zoom = TextField('Internal Map Zoom')
+
 
   #incident = ReferenceProperty()

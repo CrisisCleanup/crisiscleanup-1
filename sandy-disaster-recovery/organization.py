@@ -18,7 +18,7 @@ from google.appengine.ext import db
 
 import wtforms
 from wtforms.ext.appengine.db import model_form
-from wtforms import TextField, validators, SelectField
+from wtforms import TextField, validators, SelectField, DateTimeField
 from google.appengine.api import memcache
 from google.appengine.ext.db import to_dict
 
@@ -229,7 +229,11 @@ class OrganizationForm(
         OrganizationValidatorsMixIn
     ): 
     """ All fields, for admin use. """
-    pass
+
+    timestamp_login = DateTimeField(
+        "Last logged in",
+        [validators.optional()]
+    )
 
 
 class CreateOrganizationForm(OrganizationForm):

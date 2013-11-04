@@ -29,6 +29,7 @@ edit phase
 {% endblock %}
 
 {% block sidebar_content %}
+
 <div id="sidebar_form_creator">
   <div id="form_editor">
     <a href="#" id="save_all_changes1" class="button button-icon icon icon-envelope">Save All Changes</a>
@@ -37,7 +38,9 @@ edit phase
   <a id="add_label" href="#form_editor">map label + </a><br>
   <a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>
   <a id="add_header" href="#form_editor">header +</a><br>
+  <a id="add_subheader" href="#form_editor">subheader +</a><br>
   <a id="add_text" href="#form_editor">text input +</a><br>
+  <a id="add_textarea" href="#form_editor">textarea input +</a><br>
   <a id="add_checkbox" href="#form_editor"">checkbox input +</a><br>
   <a id="add_select" href="#form_editor"">select input +</a><br>
   <a id="add_radio" href="#form_editor"">radio input +</a><br>
@@ -153,27 +156,45 @@ edit phase
     <form id="header_form">
       Label: <input type="text" id="header_label" name="header_label"><br>
       <h3><a href="#form_editor" id="add_header_to_form">Add to form</a></h3>
-      </form>
-      </div>
+    </form>
+  </div>
 
-      <div id="label_div">
-      <h2>Add Header to form</h2>
+  <div id="subheader_div">
+    <h2>Add Subheader to form</h2>
 
-      <form id="label_form">
+    <form id="subheader_form">
+      Label: <input type="text" id="subheader_label" name="subheader_label"><br>
+      <h3><a href="#form_editor" id="add_subheader_to_form">Add to form</a></h3>
+    </form>
+  </div>
+  <div id="textarea_div">
+    <h2>Add Textarea to form</h2>
+
+    <form id="textarea_form">
+      Name: <input type="text" id="textarea_label" name="textarea_label"><br>
+      Id: <input type="text" id="textarea_id" name="textarea_id"><br>
+      <h3><a href="#form_editor" id="add_textarea_to_form">Add to form</a></h3>
+    </form>
+  </div>
+  
+  <div id="label_div">
+    <h2>Add Header to form</h2>
+
+    <form id="label_form">
       Label: <input type="text" id="label_name" name="label_name"><br>
       <h3><a href="#form_editor" id="add_label_to_form">Add to form</a></h3>
-      </form>
-      </div>
+    </form>
+  </div>
 
-      <div id="paragraph_div">
-      <h2>Add Header to form</h2>
+  <div id="paragraph_div">
+    <h2>Add Header to form</h2>
 
-      <form id="paragraph_form">
+    <form id="paragraph_form">
       Paragraph:<br><textarea rows="10" cols="30" id="paragraph" name="paragraph"></textarea><br>
       <h3><a href="#form_editor" id="add_paragraph_to_form">Add to form</a></h3>
     </form>
   </div>
-      <a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>
+<a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>
 
 </div>
 {% endblock %}

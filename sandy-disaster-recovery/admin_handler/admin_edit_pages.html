@@ -1,11 +1,28 @@
 {% extends "base_template.html" %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+
+$('textarea').keyup(function() {
+  var submitButton = $(this).closest('form').find('button[type=submit]')[0];
+  $('textarea').not(this).attr('disabled', true);
+  $('button[type=submit]').not(submitButton).attr('disabled', true);
+});
+
+});
+</script>
+{% endblock %}
+
 {% block main_title %}
 <h2>Edit Pages (Blocks)</h2>
 {% endblock %}
 
 {% block main_content %}
 
-<p>Edit page blocks. All HTML is allowed. <strong style="background-color: yellow">Only edit and save one textarea at a time.<strong></p>
+<p>Edit page blocks. All HTML is allowed.</p>
+
+<p>You can only edit one textarea at a time &ndash; ensure to save after each change.</p>
 
 <p><a href="/admin-edit-pages/download/defaults">Download New Defaults File</a></p>
 

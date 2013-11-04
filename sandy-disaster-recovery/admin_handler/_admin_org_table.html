@@ -101,7 +101,7 @@
 
 <tr>
   <td>Last Login:</td>
-  <td>{{ organization.timestamp_login.strftime('%Y-%m-%d %H:%M') }}</td>
+  <td>{{ organization.timestamp_login.strftime('%Y-%m-%d %H:%M') if organization.timestamp_login else None}}</td>
 </tr>
 
 <tr>

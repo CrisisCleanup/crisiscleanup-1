@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 # System libraries.
+import datetime
 from wtforms import Form, TextField, IntegerField, SelectField
 
 # Local libraries.
@@ -58,6 +59,12 @@ class AdminAllOrgsHandler(AdminAuthenticatedHandler):
             query.filter('is_active', form.active.data)
         if form.verified.data is not None:
             query.filter('is_verified', form.verified.data)
+        if form.logged_in_days.data is not None:
+            earliest_date = (
+                datetime.datetime.utcnow() - 
+                datetime.timedelta(days=int(form.logged_in_days.data))
+            )
+            query.filter('timestamp_login >=', earliest_date)
 
         self.render(
             form=form,

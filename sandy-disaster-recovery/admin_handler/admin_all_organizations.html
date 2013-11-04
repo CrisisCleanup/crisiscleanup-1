@@ -9,7 +9,7 @@
   {{ form.name.label }} {{ form.name(placeholder="To be implemented", disabled=True) }}
   {{ form.active.label }} {{ form.active() }}
   {{ form.verified.label }} {{ form.verified() }}
-  {{ form.logged_in_days.label }} {{ form.logged_in_days(placeholder="To be implemented", disabled=True) }}
+  {{ form.logged_in_days.label }} {{ form.logged_in_days(size=3) }}
   <button type="submit">Search</button>
 </form>
 
@@ -20,6 +20,7 @@
     <tr>
       <th>Incident</th>
       <th>Org Name</th>
+      <th>Last Login</th>
     </tr>
   </thead>
   <tbody>
@@ -32,6 +33,9 @@
           <a href="{{ url }}{{ org.key().id()}}">
             {{ org.name }}
           </a>
+        </td>
+        <td>
+          {{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }}
         </td>
       </tr>
     {% else %}

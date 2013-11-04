@@ -6,8 +6,9 @@
 
 {% block main_content %}
 
-<form method="POST">
-  {{ form.query.label }} {{ form.query() }}
+<form method="GET">
+  {{ form.offset }}
+  {{ form.query.label }} {{ form.query(placeholder="Not yet implemented", disabled=True) }}
   {{ form.reporting_org.label }} {{ form.reporting_org() }}
   {{ form.claiming_org.label }} {{ form.claiming_org() }}
   {{ form.work_type.label }} {{ form.work_type() }}
@@ -15,7 +16,7 @@
   <button type="submit">Search</button>
 </form>
 
-{% if sites.count() > 0 %}
+{% if sites|length > 0 %}
   <table class="sortable" border="1">
     <thead>
       <tr>
@@ -44,6 +45,19 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <div>
+    {% if prev_offset >=0 %}
+      <a href="#" onclick="$('input[name=offset]').val('{{prev_offset}}').parent('form').submit()">
+        Previous
+      </a>
+    &nbsp;&nbsp;&nbsp;
+    {% endif %}
+    <a href="#" onclick="$('input[name=offset]').val('{{next_offset}}').parent('form').submit()">
+      Next
+    </a>
+  </div>
+
 {% else %}
   <p>No work orders found.</p>
 {% endif %}

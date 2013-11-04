@@ -20,12 +20,13 @@ from admin_base import AdminAuthenticatedHandler
 from site_db import Site
 from organization import Organization
 
-from wtforms import Form, TextField, SelectField
+from wtforms import Form, TextField, HiddenField, SelectField
 from wtforms.ext.appengine.fields import ReferencePropertyField
 
 
 class WorkOrderSearchForm(Form):
 
+    offset = HiddenField(default="0")
     query = TextField("Search")
     reporting_org = ReferencePropertyField(
         reference_class=Organization,
@@ -37,61 +38,58 @@ class WorkOrderSearchForm(Form):
         label_attr='name',
         allow_blank=True
     )
-    work_type = SelectField()  # dynamic
-    status = SelectField(choices=[('', '')] + [
-        (s, s) for s in Site.status.choices
-    ])
+    work_type = SelectField(default='')  # dynamic
+    status = SelectField(
+        choices=[('', '')] + [
+            (s, s) for s in Site.status.choices
+        ],
+        default=''
+    )
 
 
 class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
 
     template = "admin_view_work_orders.html"
 
-    def AuthenticatedGet(self, org, event):
-        return self.AuthenticatedPost(org, event)
+    MAX_PER_PAGE = 10
 
-    def AuthenticatedPost(self, org, event):
-        form = WorkOrderSearchForm(self.request.POST)
+    def AuthenticatedGet(self, org, event):
+        form = WorkOrderSearchForm(self.request.GET)
         form.work_type.choices = [('', '')] + [
             (site.work_type, site.work_type) for site 
             in Site.all(projection=['work_type'], distinct=True)
+            if site.work_type
         ]
         form.validate()
 
         # begin constructing query 
-        sites = Site.all()
+        query = Site.all()
 
         # if a local admin, filter to logged in event
         if org.is_local_admin:
-            sites.filter('event', event.key())
+            query.filter('event', event.key())
 
         # apply filters if set 
         if form.reporting_org.data:
-            sites.filter('reported_by', form.reporting_org.data)
+            query.filter('reported_by', form.reporting_org.data)
         if form.claiming_org.data:
-            sites.filter('claimed_by', form.claiming_org.data)
+            query.filter('claimed_by', form.claiming_org.data)
         if form.work_type.data:
-            sites.filter('work_type', form.work_type.data)
+            query.filter('work_type', form.work_type.data)
         if form.status.data:
-            sites.filter('status', form.status.data)
+            query.filter('status', form.status.data)
 
-        # if search terms specified, naively search in multiple fields
-        search_terms = self.request.get('q', '').strip().lower().split()
-        if sites and search_terms:
-            sites = [
-                site for site in sites if any(
-                    any(
-                        term in field.lower() for field in [
-                            site.name,
-                            site.full_address,
-                            site.reported_by.name,
-                            site.claimed_by.name,
-                        ]
-                    ) for term in search_terms
-                )
-            ]
+        # page using offset
+        offset=int(self.request.get('offset', 0))
+        sites = query.fetch(
+            limit=self.MAX_PER_PAGE,
+            offset=offset,
+        )
 
         self.render(
+            request=self.request,
             form=form,
-            sites=sites
+            sites=sites,
+            prev_offset=offset - self.MAX_PER_PAGE,
+            next_offset=offset + self.MAX_PER_PAGE,
         )

@@ -8,6 +8,7 @@
 
 <form method="GET">
   {{ form.offset }}
+  {{ form.order }}
   {{ form.query.label }} {{ form.query(placeholder="Not yet implemented", disabled=True) }}
   {{ form.reporting_org.label }} {{ form.reporting_org() }}
   {{ form.claiming_org.label }} {{ form.claiming_org() }}
@@ -17,15 +18,15 @@
 </form>
 
 {% if sites|length > 0 %}
-  <table class="sortable" border="1">
+  <table border="1">
     <thead>
       <tr>
         <th>Incident</th>
-        <th>Name</th>
+        <th data-field="name">Name</th>
         <th>Address</th>
-        <th>Reported by</th>
-        <th>Claimed by</th>
-        <th>Work Type</th>
+        <th data-field="reported_by">Reported by</th>
+        <th data-field="claimed_by">Claimed by</th>
+        <th data-field="work_type">Work Type</th>
       </tr>
     </thead>
     <tbody>
@@ -63,4 +64,26 @@
 {% endif %}
 
 {% endblock %}
+{% block scripts %}
+<style type="text/css">
+/* set cursor for sortable-fields */
+th[data-field] {
+  cursor: pointer;
+}
+</style>
+<script type="text/javascript">
+$(function() {
 
+$('th[data-field]').click(function(event) {
+  // flip or set the sort order
+  var orderField = $(this).attr('data-field');
+  if (orderField) {
+    var currentOrder = $('input[name=order]').val();
+    var newOrder = orderField != currentOrder ? orderField : '-' + orderField;
+    $('input[name=order]').val(newOrder).parent('form').submit();
+  }
+});
+
+});
+</script>
+{% endblock %}

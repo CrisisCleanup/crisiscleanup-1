@@ -27,6 +27,7 @@ from wtforms.ext.appengine.fields import ReferencePropertyField
 class WorkOrderSearchForm(Form):
 
     offset = HiddenField(default="0")
+    order = HiddenField()
     query = TextField("Search")
     reporting_org = ReferencePropertyField(
         reference_class=Organization,
@@ -78,6 +79,10 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
             query.filter('work_type', form.work_type.data)
         if form.status.data:
             query.filter('status', form.status.data)
+
+        # apply order
+        if form.order.data:
+            query.order(form.order.data)
 
         # page using offset
         offset=int(self.request.get('offset', 0))

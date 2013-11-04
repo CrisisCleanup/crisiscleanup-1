@@ -16,10 +16,12 @@
 #
 # System libraries.
 import datetime
+from google.appengine.ext.db import Key
 from wtforms import Form, TextField, IntegerField, SelectField
 
 # Local libraries.
 from admin_base import AdminAuthenticatedHandler
+import event_db
 import organization
 
 
@@ -28,6 +30,7 @@ class OrganizationFilterForm(Form):
     def _ternary_coerce(val):
         return {'1': True, '0': False}.get(val, None)
 
+    event = SelectField(default='')
     name = TextField()
     active = SelectField(
         choices=[('', ''), ('1', 'Yes'), ('0', 'No')],
@@ -47,14 +50,21 @@ class AdminAllOrgsHandler(AdminAuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
         form = OrganizationFilterForm(self.request.GET)
 
-        # get relevant organizations
+        # get relevant organizations and incidents
         if org.is_global_admin:
             query = organization.Organization.all()
-            
-        if org.is_local_admin:
+            events = event_db.Event.all()
+        elif org.is_local_admin:
             query = organization.Organization.all().filter('incident', org.incident.key())
+            events = [event_db.Event.get(org.incident.key())]
 
-        # filter on active/inactive
+        form.event.choices = [('', '')] + [
+            (e.key(), e.name) for e in events
+        ]
+
+        # apply filters
+        if form.event.data:
+            query.filter('incident', Key(form.event.data))
         if form.active.data is not None:
             query.filter('is_active', form.active.data)
         if form.verified.data is not None:

@@ -6,6 +6,9 @@
 {% block main_content %}
 
 <form>
+  {% if form.event.choices|length > 2 %}
+    {{ form.event.label }} {{ form.event }}
+  {% endif %}
   {{ form.name.label }} {{ form.name(placeholder="To be implemented", disabled=True) }}
   {{ form.active.label }} {{ form.active() }}
   {{ form.verified.label }} {{ form.verified() }}

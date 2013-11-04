@@ -73,7 +73,6 @@ from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
 from admin_handler import admin_all_organizations_handler
-from admin_handler import admin_inactive_organizations_handler
 from admin_handler import admin_create_admin_handler
 from admin_handler import admin_create_contact_handler
 from admin_handler import admin_display_contacts_handler
@@ -173,9 +172,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-create-organization', admin_create_organization_handler.AdminHandler, 'admin_create_organization_handler'),
     Route(r'/admin-new-organization', admin_new_organization_handler.AdminHandler, 'admin_new_organization_handler'),
     Route(r'/admin-organization-requests', admin_organization_requests_handler.AdminHandler, 'admin_organization_requests_handler'),
-    Route(r'/admin-all-organizations', admin_all_organizations_handler.AdminHandler, 'admin_all_organizations_handler'),
-    Route(r'/admin-all-organizations', admin_all_organizations_handler.AdminHandler, 'admin_all_organizations_handler'),
-    Route(r'/admin-inactive-organizations', admin_inactive_organizations_handler.AdminHandler, 'admin_all_organizations_handler'),
+    Route(r'/admin-all-organizations', admin_all_organizations_handler.AdminAllOrgsHandler, 'admin_all_organizations_handler'),
     Route(r'/admin-create-admin', admin_create_admin_handler.AdminHandler, 'admin_create_admin_handler'),
     Route(r'/admin-create-contact', admin_create_contact_handler.AdminHandler, 'admin_create_contact_handler'),
     Route(r'/admin-display-contacts', admin_display_contacts_handler.AdminHandler, 'admin_display_contacts_handler'),

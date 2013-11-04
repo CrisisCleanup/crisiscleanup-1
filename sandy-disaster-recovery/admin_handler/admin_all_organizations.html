@@ -5,11 +5,15 @@
 
 {% block main_content %}
 
-<div>
-  [<a href="?">All</a>]
-  [<a href="?filter=active">Active only</a>]
-  [<a href="?filter=inactive">Inactive only</a>]
-</div>
+<form>
+  {{ form.name.label }} {{ form.name(placeholder="To be implemented", disabled=True) }}
+  {{ form.active.label }} {{ form.active() }}
+  {{ form.verified.label }} {{ form.verified() }}
+  {{ form.logged_in_days.label }} {{ form.logged_in_days(placeholder="To be implemented", disabled=True) }}
+  <button type="submit">Search</button>
+</form>
+
+<br>
 
 <table class="sortable" border="1">
   <thead>

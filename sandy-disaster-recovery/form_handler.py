@@ -90,7 +90,7 @@ class FormHandler(base.AuthenticatedHandler):
     
     # set it as form_stub
     # send to single site
-
+    submit_button = '<input type="submit" value="Submit request">'
     inc_form = None
     if query:
       inc_form = query.form_html
@@ -117,6 +117,11 @@ class FormHandler(base.AuthenticatedHandler):
           #"label": label,
           #"paragraph": paragraph,
 	#})
+          "incident_form_block": string,
+          "label": label,
+          "paragraph": paragraph,
+          "submit_button": submit_button
+	})
     self.response.out.write(template.render(
         {"version" : os.environ['CURRENT_VERSION_ID'],
          "message" : message,
@@ -286,7 +291,7 @@ def populate_incident_form(IncidentForm, form_json):
   string = ""
   label = ""
   paragraph = ""
-  for obj in form_json[3]:
+  for obj in form_json[6]:
     i+=1
     if "type" in obj and obj["type"] == "text":
       required = ""
@@ -296,6 +301,19 @@ def populate_incident_form(IncidentForm, form_json):
       string += new_text_input
     elif "type" in obj and obj["type"] == "label":
       label = obj['label']
+    elif "type" in obj and obj["type"] == "header":
+      new_header = '<tr><td class="question"><h2>' + obj['header'] + '</h2></tr></td>'
+      string += new_header
+      
+    elif "type" in obj and obj["type"] == "subheader":
+      new_subheader = '<tr><td class="question"><h3>' + obj['subheader'] + '</h3></tr></td>'
+      string += new_subheader
+    elif "type" in obj and obj["type"] == "textarea":
+      new_textarea = '<tr><td class=question>' + obj['textarea_label'] + ':</td><td class="answer">\
+      <div class="form_field"><textarea class="" id="' + obj['textarea_id'] + '" name="' + obj['textarea_id'] + '"></textarea></div>\
+      </td></tr>'
+      string += new_textarea
+    
     elif "type" in obj and obj["type"] == "paragraph":
       paragraph = obj["paragraph"]
     elif "type" in obj and obj["type"] == "checkbox":

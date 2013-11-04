@@ -19,6 +19,8 @@ $(function() {
   var form_json_array = [];
   var phases_json_array = [];
   
+  
+
   $("#save_all_changes").click(function() {
     save_changes(form_json_array);
   
@@ -140,7 +142,10 @@ $(function() {
 	hide_divs();
 	$("#header_div").show();
   });
-  
+  $( "#add_subheader" ).click(function() {
+	hide_divs();
+	$("#subheader_div").show();
+  });
   $("#add_label").click(function() {
 	hide_divs();
 	$("#label_div").show();
@@ -149,6 +154,11 @@ $(function() {
   $("#add_paragraph").click(function() {
 	hide_divs();
 	$("#paragraph_div").show();
+  });
+  
+  $("#add_textarea").click(function() {
+      hide_divs();
+      $("#textarea_div").show();
   });
   
 //------------------------------------------------------------------------------------------------------------------
@@ -185,6 +195,28 @@ $(function() {
 	$("#tabs-2").empty();
 	$("#tabs-2").append(jString);
   });
+  
+  
+    $( "#add_textarea_to_form" ).click(function() {
+	hide_divs();
+	add_textarea_input(form_json_array);
+	read_json_to_html(form_json_array);
+	$("#textarea_form").trigger('reset');
+	var jString = JSON.stringify(form_json_array);
+	$("#tabs-2").empty();
+	$("#tabs-2").append(jString);
+  });
+    
+  $( "#add_subheader_to_form" ).click(function() {
+	hide_divs();
+	add_subheader_input(form_json_array);
+	read_json_to_html(form_json_array);
+	$("#subheader_form").trigger('reset');
+	var jString = JSON.stringify(form_json_array);
+	$("#tabs-2").empty();
+	$("#tabs-2").append(jString);
+  });
+  
   $( "#add_text_to_form" ).click(function() {
       hide_divs();
       add_text_input(form_json_array);
@@ -240,7 +272,15 @@ $(function() {
 
   });      
   
-  
+  $("#form_table").on( "click", ".move_one_position_up",  function() {
+    order_number = $(this).attr("id");
+    form_json_array = move_one_position_up(parseInt(order_number));
+    
+    var jString = JSON.stringify(form_json_array);
+    $("#tabs-2").empty();
+    $("#tabs-2").append(jString);
+    read_json_to_html(form_json_array);
+  });
   
 
 });
@@ -257,6 +297,8 @@ function hide_divs() {
   $("#header_div").hide();
   $("#label_div").hide();
   $("#paragraph_div").hide();
+  $("#subheader_div").hide();
+  $("#textarea_div").hide();
 }
 function hide_tabs() {
   $("#tabs-1").hide();
@@ -298,18 +340,25 @@ function remove_option(options_array) {
 // add get forms, add to json
 function add_paragraph_input(form_json_array) {
   var paragraph_value = $("#paragraph").val();
+  order_number = form_json_array.length;
+
   var paragraph_json = {
     "type": "paragraph",
     "paragraph": paragraph_value,
+    "order_number": order_number,
+
   }
   form_json_array.push(paragraph_json);
 }
 
 function add_label_input(form_json_array) {
   var label_value = $("#label_name").val();
+  order_number = form_json_array.length;
   var label_json = {
     "type": "label",
     "label": label_value,
+    "order_number": order_number,
+
   }
   form_json_array.push(label_json);
 }
@@ -317,12 +366,46 @@ function add_label_input(form_json_array) {
 
 function add_header_input(form_json_array){
   var header_value = $("#header_label").val();
+  order_number = form_json_array.length;
+
   var header_json = {
     "type": "header",
     "header": header_value,
+    order_number: order_number,
+
   }
   form_json_array.push(header_json);
 }
+
+function add_subheader_input(form_json_array){
+  var subheader_value = $("#subheader_label").val();
+  order_number = form_json_array.length;
+
+  var header_json = {
+    "type": "subheader",
+    "subheader": subheader_value,
+    "order_number": order_number,
+
+  }
+  form_json_array.push(header_json);
+}
+
+
+function add_textarea_input(form_json_array) {
+  var textarea_label = $("#textarea_label").val();
+  var textarea_id = $("#textarea_id").val();
+  order_number = form_json_array.length;
+
+  var header_json = {
+    "type": "textarea",
+    "textarea_label": textarea_label,
+    "textarea_id": textarea_id,
+    "order_number": order_number,
+  }
+  form_json_array.push(header_json);
+  
+}
+
 
 function add_text_input(form_json_array) {
   var text_label = $("#text_label").val();
@@ -336,6 +419,9 @@ function add_text_input(form_json_array) {
   var text_printer = $("#text_printer").val();
   var text_mobile = $("#text_mobile").val();
   var text_sms = $("#text_sms").val();
+  
+  order_number = form_json_array.length;
+
     
   var text_json = {
     type: "text",
@@ -349,6 +435,8 @@ function add_text_input(form_json_array) {
     text_printer: text_printer,
     text_mobile: text_mobile,
     text_sms: text_sms,
+    order_number: order_number,
+
   }
   
   form_json_array.push(text_json);
@@ -367,6 +455,8 @@ function add_checkbox_input(form_json_array) {
   var checkbox_mobile = $("#checkbox_mobile").val();
   var checkbox_sms = $("#checkbox_sms").val();
   
+  order_number = form_json_array.length;
+  
   var checkbox_json = {
     type: "checkbox",
     checkbox_label: checkbox_label,
@@ -380,6 +470,7 @@ function add_checkbox_input(form_json_array) {
     checkbox_printer: checkbox_printer,
     checkbox_mobile: checkbox_mobile,
     checkbox_sms: checkbox_sms,
+    order_number: order_number,
   }
   
   form_json_array.push(checkbox_json);
@@ -396,6 +487,7 @@ function add_select_input(form_json_array, select_options_array) {
   var select_printer = $("#select_printer").val();
   var select_mobile = $("#select_mobile").val();
   var select_sms = $("#select_sms").val();
+  var order_number = form_json_array.length;
        
   var select_json = {
     type: "select",
@@ -409,6 +501,7 @@ function add_select_input(form_json_array, select_options_array) {
     select_printer: select_printer,
     select_mobile: select_mobile,
     select_sms: select_sms,
+    order_number: order_number,
   }
   
   for (var i = 0; i < select_options_array.length; i++) {
@@ -433,6 +526,7 @@ function add_radio_input(form_json_array, radio_options_array) {
   var radio_printer = $("#radio_printer").val();
   var radio_mobile = $("#radio_mobile").val();
   var radio_sms = $("#radio_sms").val();
+  var order_number = form_json_array.length
     
   var radio_json = {
     type: "radio",
@@ -448,6 +542,7 @@ function add_radio_input(form_json_array, radio_options_array) {
     radio_printer: radio_printer,
     radio_mobile: radio_mobile,
     radio_sms: radio_sms,
+    order_number: order_number,
   }
   
   for (var i = 0; i < radio_options_array.length; i++) {
@@ -465,30 +560,38 @@ function add_radio_input(form_json_array, radio_options_array) {
 
 function read_json_to_html(form_json_array) {
   //TODO
-  console.log("read_json_to_html");
+  //console.log("read_json_to_html");
+  form_json_array.sort(function (a, b) {
+    return a.order_number > b.order_number;
+  });
   if (first_run) {
     first_run = false;
   } else {
     warn_on_leave = true;
   }
   
-  console.log("continue");
+  //console.log("continue");
   $("#form_label").empty();
   $("#form_paragraph").empty();
   $("#form_table").empty();
+  
 
   for (var i=0; i < form_json_array.length; i++) {
     if(form_json_array[i].type == "label") {
-    console.log("label");
+    buttons_string = add_edit_buttons(form_json_array[i].order_number);
+
+    //console.log("label");
     
-      $("#form_label").append('<h2>' + form_json_array[i].label + '</h2>');
+      $("#form_table").append('<h2>' + buttons_string + form_json_array[i].label + '</h2>');
     
     }
     if(form_json_array[i].type == "paragraph") {
-      $("#form_paragraph").append(form_json_array[i].paragraph + '<br>');
+      buttons_string = add_edit_buttons(form_json_array[i].order_number);
+      $("#form_table").append( buttons_string + form_json_array[i].paragraph + '<br>');
 
     }
     if(form_json_array[i].type == "radio") {
+      buttons_string = add_edit_buttons(form_json_array[i].order_number);
       var options_array = []
       for (var key in form_json_array[i]) {
         var key_string = key.toString();
@@ -502,7 +605,7 @@ function read_json_to_html(form_json_array) {
         req = "*";
       }
       var radio_string = "";
-      var radio_string_start = '</td></tr><tr><td class=question>' + form_json_array[i].radio_label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
+      var radio_string_start = '</td></tr><tr><td class=question>' + buttons_string  + form_json_array[i].radio_label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
       var radio_string_end = '<td>' + form_json_array[i].radio_high_hint + '</td></tr></table></td></tr>';
       for (var j = 0; j < options_array.length; j++) {
         var options_string = "";
@@ -519,6 +622,7 @@ function read_json_to_html(form_json_array) {
 
     }
     if(form_json_array[i].type == "select") {
+      buttons_string = add_edit_buttons(form_json_array[i].order_number);
       var options_array = [];
       for (var key in form_json_array[i]) {
         var key_string = key.toString();
@@ -530,7 +634,7 @@ function read_json_to_html(form_json_array) {
       if (form_json_array[i].select_required) {
         req = "*";
       }
-      var begin_option = '<tr><td class=question>' + form_json_array[i].select_label + req +'</td><td class="answer"><div class="form_field"><select class="" id="' + form_json_array[i].select_id + '" name="' + form_json_array[i].select_id + '">';
+      var begin_option = '<tr><td class=question>' + buttons_string + form_json_array[i].select_label + req +'</td><td class="answer"><div class="form_field"><select class="" id="' + form_json_array[i].select_id + '" name="' + form_json_array[i].select_id + '">';
       var end_option = '</select></div></td></tr>';
       var select_string = "";
 
@@ -550,20 +654,38 @@ function read_json_to_html(form_json_array) {
       $("#form_table").append(all_string);
     }
     if(form_json_array[i].type == "header") {
-      var new_header = '<h2>' + form_json_array[i].header + '</h2>';
+      buttons_string = add_edit_buttons(form_json_array[i].order_number);
+      var new_header = '<tr><td class="question"><h2>' + buttons_string + form_json_array[i].header + '</h2></tr></td>';
       $("#form_table").append(new_header);
     }
     
+    if(form_json_array[i].type == "textarea") {
+      buttons_string = add_edit_buttons(form_json_array[i].order_number);
+
+      var new_textarea = '<tr><td class=question>'+ buttons_string + form_json_array[i].textarea_label + ':</td><td class="answer">\
+      <div class="form_field"><textarea class="" id="' + form_json_array[i].textarea_id + '" name="' + form_json_array[i].textarea_id + '"></textarea></div>\
+      </td></tr>'
+      $("#form_table").append(new_textarea);
+    }
+    
+    if(form_json_array[i].type == "subheader") {
+      buttons_string = add_edit_buttons(form_json_array[i].order_number);
+      var new_subheader = '<tr><td class="question"><h3>' + buttons_string + form_json_array[i].subheader + '</tr></td></h3>';
+      $("#form_table").append(new_subheader);
+    }
+    
     else if(form_json_array[i].type == "text") {
+      buttons_string = add_edit_buttons(form_json_array[i].order_number);
       var required = "";
       if (form_json_array[i].text_required) {
         var required = "*";
       }
-      var new_text_input = '<tr><td class=question>' + form_json_array[i].text_label + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + form_json_array[i].text_id + '" name="' + form_json_array[i].text_id + '" type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"/></div></td></tr>'
+      var new_text_input = '<tr><td class=question>' + buttons_string + form_json_array[i].text_label + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + form_json_array[i].text_id + '" name="' + form_json_array[i].text_id + '" type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"/></div></td></tr>'
       $("#form_table").append(new_text_input);
     }
     
     else if (form_json_array[i].type == "checkbox") {
+      buttons_string = add_edit_buttons(form_json_array[i].order_number);
       var required = "";
       var checked = "";
       if (form_json_array[i].checkbox_required == true) {
@@ -573,7 +695,7 @@ function read_json_to_html(form_json_array) {
       if (form_json_array[i].checkbox_default == "y") {
         checked = " checked";
       }
-      var new_checkbox = '<tr><td class=question><label for="' + form_json_array[i].checkbox_id + '">' + form_json_array[i].checkbox_label + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + form_json_array[i].checkbox_id + '" type="hidden" value="' +form_json_array[i].checkbox_unchecked_value + '"/><input class="" id="' + form_json_array[i].checkbox_id + '" name="' + form_json_array[i].checkbox_id + '" type="checkbox" value="' +form_json_array[i].checkbox_checked_value + '"' + checked + '></div></td></tr>';
+      var new_checkbox = '<tr><td class=question><label for="' + form_json_array[i].checkbox_id + '">' + buttons_string + form_json_array[i].checkbox_label + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + form_json_array[i].checkbox_id + '" type="hidden" value="' +form_json_array[i].checkbox_unchecked_value + '"/><input class="" id="' + form_json_array[i].checkbox_id + '" name="' + form_json_array[i].checkbox_id + '" type="checkbox" value="' +form_json_array[i].checkbox_checked_value + '"' + checked + '></div></td></tr>';
       $("#form_table").append(new_checkbox);
 
     }
@@ -626,14 +748,14 @@ function get_json(incident_short_name, phases_json_array) {
 function get_form_json(phase,incident_short_name, form_json_array) {
   $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name, phase: phase},  function( data ) {
     if (data.forms_json == "[]") {
-    console.log("empty tabs-1");
+    //console.log("empty tabs-1");
 //       $("#tabs-1").empty();
 
       $("#form_label").append("<h2>Create a form by using the controls on the left</h2>");
 //       $("#tabs-2").append(data.forms_json);
       var phases_array = JSON.parse(data.phases_json);
 
-      console.log(phases_array[0].phase_id);
+      //console.log(phases_array[0].phase_id);
       var phase_data = {
 	"phase_id": phases_array[0].phase_id,
 	"phase_name": phases_array[0].phase_name,
@@ -647,25 +769,25 @@ function get_form_json(phase,incident_short_name, form_json_array) {
       $("#tabs-2").append(jString);
 
 //       form_json_array.push(data.phases_json[0].phase_id);
-//       console.log(form_json_array);
-//       console.log(form_json_array.push(data.phases_json[0].phase_id));
+//       //console.log(form_json_array);
+//       //console.log(form_json_array.push(data.phases_json[0].phase_id));
 //       $("#tabs-2").append(form_json_array);
 //       show_first_phase_form(incident_short_name, incident_short_name);
     } else {
     var arr = JSON.parse(data.forms_json);
-    console.log(arr.length);
+    //console.log(arr.length);
     var any_equal = false;
     for (var k = 0; k < arr.length; k++) {
-        console.log(k);
+        //console.log(k);
 //         alert(arr[k]);
       for (var j = 0; j < arr[k].length; j ++) {
         
-//         console.log(j);
-        console.log(arr[k][j]);
-	console.log(arr[k][j]['phase_short_name'] + '=:');
-	console.log(phase.toString() + '=:=');
+//         //console.log(j);
+        //console.log(arr[k][j]);
+	//console.log(arr[k][j]['phase_short_name'] + '=:');
+	//console.log(phase.toString() + '=:=');
 	if (arr[k][j]['phase_short_name'] == phase) {
-	  console.log("eq");
+	  //console.log("eq");
 	  any_equal = true;
   // 	form_json_array.push(arr[0]);
 	  form_json_array = arr[k];
@@ -687,7 +809,7 @@ function get_form_json(phase,incident_short_name, form_json_array) {
       
       for (var n = 0; n < phases_array.length; n++) {
 	if (phase == phases_array[n].phase_short_name) {
-	  console.log(phases_array[n].phase_short_name);
+	  //console.log(phases_array[n].phase_short_name);
 	  var phase_data = {
 	    "phase_id": phases_array[n].phase_id,
 	    "phase_name": phases_array[n].phase_name,
@@ -704,22 +826,6 @@ function get_form_json(phase,incident_short_name, form_json_array) {
       }
 
     }
-//     for (var j = 0; j < arr[0].length; j ++) {
-//       if (arr[0][j]['phase_short_name'] == phase) {
-// 	console.log("eq");
-// // 	form_json_array.push(arr[0]);
-// 	form_json_array = arr[0];
-// 	var jString = JSON.stringify(form_json_array);
-// 
-// 	$("#tabs-2").append(jString);
-// 
-// 	alert(jString);
-// 	read_json_to_html(form_json_array);
-// 
-//       }
-//     }
-
-//       read_phases_json_to_html(data.phases_json, incident_short_name);
     }
   show_sidebar_form_creator();
 
@@ -745,53 +851,27 @@ function read_phases_json_to_html(phases_json_array, incident_short_name) {
     $("#phases_list").append(list_string);
     
     $("#add_phase_form").append('<input type="hidden" name="incident_short_name" value="' + incident_short_name + '" />');
-    
-//     var phase_htmls = '<div id=phase_html_' + arr[i].phase_name + '>\
-// 			  <ul>\
-// 			    <li><a href="#" id="show_html' + arr[i].phase_name + '">HTML</a></li>\
-// 			    <li><a href="#" id="show_json' + arr[i].phase_name + '">JSON</a></li>\
-// 			  </ul>\
-// 			  <div id="tabs-1' + arr[i].phase_name + '">\
-// 			      <div id="form_label' + arr[i].phase_name + '">\
-// 			      </div>\
-// 			      <div id="form_paragraph' + arr[i].phase_name + '">\
-// 			      </div>\
-// 			      <div>\
-// 				<table id="form_table' + arr[i].phase_name + '">\
-// 				</table>\
-// 			      </div>\
-// 			  </div>\
-// 			  <div id="tabs-2' + arr[i].phase_name + '">\
-// 			  </div>\
-// 			</div>';
-// 			
-//     $("#phase_htmls").append(phase_htmls);
-    // sort by phase_position
   }
-
 }
 
 function save_changes(form_json_array) {
+  form_json_array.sort(function (a, b) {
+    return a.order_number > b.order_number;
+  });
   var jString = JSON.stringify(form_json_array);
-  console.log(jString);
+  //console.log(jString);
 //   alert(jString);
 
   $.post( "incident_save_form", {form_json_array:jString}, function( data ) {
-    console.log(data);
+    //console.log(data);
     window.location.replace('/incident_form_creator?message="Successfully saved form"')
 
   });
 
 }
 
-
-// added for qunit testing purposes
-// function isEven(val) {  
-//     return val % 2 === 0;  
-// }  
-
 function hide_sidebar_form_creator() {
-  console.log("hide_sidebar_form_creator");
+  //console.log("hide_sidebar_form_creator");
   $("#sidebar_form_creator").hide();
   $("#phases").hide();
   $("#add_phase_button").hide();
@@ -800,7 +880,7 @@ function hide_sidebar_form_creator() {
 }
 
 function show_sidebar_form_creator() {
-  console.log("show_sidebar_form_creator");
+  //console.log("show_sidebar_form_creator");
   $("#edit_phase_button").show();
   $("#sidebar_form_creator").show();
   $("#phases").show();
@@ -813,4 +893,47 @@ function hide_phases_list() {
 
 function show_phases_list() {
   $("#phases_list").show();
+}
+
+function add_edit_buttons(order_number) {
+ buttons_string = '<a href="#' + order_number + '" class="move_one_position_up" id="' + order_number + '">+</a>\
+		   <a href="#' + order_number + '" class="move_one_position_down" id="' + order_number + '">-</a>\
+		   <a href="#' + order_number + '" class="delete_by_position" id="' + order_number + '">X</a>';
+ return buttons_string;
+}
+
+function move_one_position_up(order_number, form_json_array) {
+  for (var i = 0; i < form_json_array.length; i++) {
+   if (form_json_array[i].order_number == order_number) {
+     form_json_array[i].order_number = form_json_array.order_number - 1
+   }
+  if (form_json_array[i].order_number == order_number - 1) {
+     form_json_array[i].order_number = form_json_array.order_number + 1
+   }
+  }
+  return form_json_array
+}
+
+function move_one_position_down(order_number, form_json_array) {
+  for (var i = 0; i < form_json_array.length; i++) {
+   if (form_json_array[i].order_number == order_number) {
+     form_json_array[i].order_number = form_json_array.order_number + 1
+   }
+  if (form_json_array[i].order_number == order_number + 1) {
+     form_json_array[i].order_number = form_json_array.order_number - 1
+   }
+  }
+}
+
+function delete_by_position(order_number, form_json_array) {
+  for (var i = 0; i < form_json_array.length; i++) {
+    if (form_json_array[i].order_number == order_number) {
+      delete form_json_array[i];
+    }
+    
+    if (form_json_array[i].order_number > order_number) {
+      form_json_array[i].order_number = form_json_array[i].order_number - 1; 
+      
+    }
+  }  
 }

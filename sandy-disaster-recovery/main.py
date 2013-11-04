@@ -85,6 +85,7 @@ from admin_handler import admin_see_admins_handler
 from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
 from admin_handler import admin_view_work_orders_handler
+from admin_handler import admin_export_work_orders_handler
 from admin_handler import admin_fix_errors_handler
 from admin_handler import admin_social_media_handler
 from admin_handler import admin_website_alerts_handler
@@ -185,6 +186,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-incident-add-admin', admin_incident_add_admin_handler.AdminHandler, 'admin_incident_add_admin_handler'),
     Route(r'/admin-make-admin', admin_make_admin_handler.AdminHandler, 'admin_make_admin_handler'),
     Route(r'/admin-view-work-orders', admin_view_work_orders_handler.AdminViewWorkOrdersHandler, 'admin_view_work_orders'),
+    Route(r'/admin-export-work-orders', admin_export_work_orders_handler.AdminExportWorkOrdersHandler, 'admin_export_work_orders'),
     Route(r'/admin-fix-errors', admin_fix_errors_handler.AdminFixErrorsHandler, 'admin_fix_errors'),
     Route(r'/admin-social-media', admin_social_media_handler.AdminSocialMediaHandler, 'admin_social_media'),
     Route(r'/admin-website-alerts', admin_website_alerts_handler.AdminWebsiteAlertsHandler, 'admin_website_alerts'),

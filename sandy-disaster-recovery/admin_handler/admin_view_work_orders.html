@@ -10,6 +10,8 @@
   {{ form.query.label }} {{ form.query() }}
   {{ form.reporting_org.label }} {{ form.reporting_org() }}
   {{ form.claiming_org.label }} {{ form.claiming_org() }}
+  {{ form.work_type.label }} {{ form.work_type() }}
+  {{ form.status.label }} {{ form.status() }}
   <button type="submit">Search</button>
 </form>
 
@@ -22,6 +24,7 @@
         <th>Address</th>
         <th>Reported by</th>
         <th>Claimed by</th>
+        <th>Work Type</th>
       </tr>
     </thead>
     <tbody>
@@ -36,6 +39,7 @@
           </td>
           <td>{{ site.reported_by.name }}</td>
           <td>{{ site.claimed_by.name }}</td>
+          <td>{{ site.work_type }}</td>
         </tr>
       {% endfor %}
     </tbody>

@@ -20,7 +20,7 @@ from admin_base import AdminAuthenticatedHandler
 from site_db import Site
 from organization import Organization
 
-from wtforms import Form, TextField
+from wtforms import Form, TextField, SelectField
 from wtforms.ext.appengine.fields import ReferencePropertyField
 
 
@@ -37,6 +37,10 @@ class WorkOrderSearchForm(Form):
         label_attr='name',
         allow_blank=True
     )
+    work_type = SelectField()  # dynamic
+    status = SelectField(choices=[('', '')] + [
+        (s, s) for s in Site.status.choices
+    ])
 
 
 class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
@@ -48,7 +52,11 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
 
     def AuthenticatedPost(self, org, event):
         form = WorkOrderSearchForm(self.request.POST)
-        assert form.validate()
+        form.work_type.choices = [('', '')] + [
+            (site.work_type, site.work_type) for site 
+            in Site.all(projection=['work_type'], distinct=True)
+        ]
+        form.validate()
 
         # begin constructing query 
         sites = Site.all()
@@ -57,11 +65,15 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
         if org.is_local_admin:
             sites.filter('event', event.key())
 
-        # if orgs selected, filter on those field
+        # apply filters if set 
         if form.reporting_org.data:
             sites.filter('reported_by', form.reporting_org.data)
         if form.claiming_org.data:
             sites.filter('claimed_by', form.claiming_org.data)
+        if form.work_type.data:
+            sites.filter('work_type', form.work_type.data)
+        if form.status.data:
+            sites.filter('status', form.status.data)
 
         # if search terms specified, naively search in multiple fields
         search_terms = self.request.get('q', '').strip().lower().split()

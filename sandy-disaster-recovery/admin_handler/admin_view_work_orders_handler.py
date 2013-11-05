@@ -15,19 +15,23 @@
 # limitations under the License.
 #
 
-from admin_base import AdminAuthenticatedHandler
-
-from site_db import Site
-from organization import Organization
+from google.appengine.ext.db import Query, Key
 
 from wtforms import Form, TextField, HiddenField, SelectField
 from wtforms.ext.appengine.fields import ReferencePropertyField
+
+from admin_base import AdminAuthenticatedHandler
+
+import event_db
+from site_db import Site
+from organization import Organization
 
 
 class WorkOrderSearchForm(Form):
 
     offset = HiddenField(default="0")
     order = HiddenField()
+    event = SelectField(default='')
     query = TextField("Search")
     reporting_org = ReferencePropertyField(
         reference_class=Organization,
@@ -61,11 +65,33 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
         form = WorkOrderSearchForm(self.request.GET)
-        form.work_type.choices = [('', '')] + [
-            (site.work_type, site.work_type) for site 
-            in Site.all(projection=['work_type'], distinct=True)
-            if site.work_type
+
+        # get relevant organizations and incidents
+        if org.is_global_admin:
+            events = event_db.Event.all()
+            query = Site.all()
+            work_types = [
+                site.work_type for site 
+                in Query(Site, projection=['work_type'], distinct=True)
+            ]
+        elif org.is_local_admin:
+            events = [event_db.Event.get(org.incident.key())]
+            query = Site.all().filter('event', org.incident.key())
+            work_types = [
+                site.work_type for site
+                in Query(Site, projection=['work_type'], distinct=True) \
+                    .filter('event', org.incident.key())
+            ]
+
+        # set form choices
+        form.event.choices = [('', '')] + [
+            (e.key(), e.name) for e in events
         ]
+        form.work_type.choices = [('', '')] + [
+            (work_type, work_type) for work_type in work_types
+        ]
+
+        # validate form
         form.validate()
 
         # begin constructing query 
@@ -76,6 +102,8 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
             query.filter('event', event.key())
 
         # apply filters if set 
+        if form.event.data:
+            query.filter('event', Key(form.event.data))
         if form.reporting_org.data:
             query.filter('reported_by', form.reporting_org.data)
         if form.claiming_org.data:

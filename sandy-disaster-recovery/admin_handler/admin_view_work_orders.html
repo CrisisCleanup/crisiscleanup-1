@@ -9,6 +9,9 @@
 <form method="GET" style="margin-bottom: 15px;">
   {{ form.offset }}
   {{ form.order }}
+  {% if form.event.choices|length > 2 %}
+    {{ form.event.label }} {{ form.event() }}
+  {% endif %}
   {{ form.query.label }} {{ form.query(placeholder="Not yet implemented", disabled=True) }}
   {{ form.reporting_org.label }} {{ form.reporting_org() }}
   {{ form.claiming_org.label }} {{ form.claiming_org() }}

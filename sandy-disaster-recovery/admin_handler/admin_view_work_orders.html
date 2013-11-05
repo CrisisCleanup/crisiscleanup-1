@@ -29,6 +29,10 @@
   <table class="table table-bordered">
     <thead>
       <tr>
+        {% comment %}
+          data-field => sortable server-side
+          Note: update indexes (index.yaml) upon adding more
+        {% endcomment %}
         <th>Incident</th>
         <th data-field="case_number">Case</th>
         <th data-field="name">Name</th>

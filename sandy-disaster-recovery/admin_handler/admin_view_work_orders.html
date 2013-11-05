@@ -20,7 +20,7 @@
 
 {% if count > 0 %}
   <p>{{ offset + 1}} to {{ offset + sites|length }} of {{ count }} work orders.</p>
-{% else %}
+{% endif %}
 
 {% if sites|length > 0 %}
   <table class="table table-bordered">
@@ -78,6 +78,7 @@
 </div>
 
 {% endblock %}
+
 {% block scripts %}
 <style type="text/css">
 /* set cursor for sortable-fields */

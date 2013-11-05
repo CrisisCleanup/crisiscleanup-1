@@ -46,13 +46,18 @@ class WorkOrderSearchForm(Form):
         ],
         default=''
     )
+    per_page = SelectField(
+        choices=[
+            (n, n) for n in [10, 50, 100, 500]
+        ],
+        coerce=int,
+        default=10
+    )
 
 
 class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
 
     template = "admin_view_work_orders.html"
-
-    MAX_PER_PAGE = 10
 
     def AuthenticatedGet(self, org, event):
         form = WorkOrderSearchForm(self.request.GET)
@@ -87,8 +92,9 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
         # page using offset
         count = query.count()
         offset = int(self.request.get('offset', 0))
+        per_page = form.per_page.data
         sites = query.fetch(
-            limit=self.MAX_PER_PAGE,
+            limit=per_page,
             offset=offset,
         )
 
@@ -98,6 +104,6 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
             sites=sites,
             count=count,
             offset=offset,
-            prev_offset=offset - self.MAX_PER_PAGE,
-            next_offset=offset + self.MAX_PER_PAGE,
+            prev_offset=offset - per_page,
+            next_offset=offset + per_page,
         )

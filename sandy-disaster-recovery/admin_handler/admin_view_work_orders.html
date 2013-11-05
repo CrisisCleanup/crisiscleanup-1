@@ -65,13 +65,13 @@
 
 <div>
   {% if prev_offset >=0 %}
-    <a href="#" onclick="$('input[name=offset]').val('{{prev_offset}}').parent('form').submit()">
+    <a href="#" onclick="$('input[name=offset]').val('{{prev_offset}}').parent('form').submit(); return false;">
       Previous
     </a>
   &nbsp;&nbsp;&nbsp;
   {% endif %}
   {% if next_offset %}
-    <a href="#" onclick="$('input[name=offset]').val('{{next_offset}}').parent('form').submit()">
+    <a href="#" onclick="$('input[name=offset]').val('{{next_offset}}').parent('form').submit(); return false;">
       Next
     </a>
   {% endif %}

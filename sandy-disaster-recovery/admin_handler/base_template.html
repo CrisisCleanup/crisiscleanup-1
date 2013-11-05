@@ -1,105 +1,182 @@
-<!doctype html>
-<html class="no-js" lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Crisis Cleanup</title>
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="MobileOptimized" content="320" />
-  <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no" name="viewport" />
-  <meta name="description" content="">
-  <link rel="stylesheet" href="../assets/css/style.css">
-  <link  href="http://fonts.googleapis.com/css?family=Oswald:regular" rel="stylesheet" type="text/css" >
-  <link href='http://fonts.googleapis.com/css?family=Junge' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="../assets/fonts/raphaelicons.css">
-  <link rel="stylesheet" href="../assets/css/main.css">
-  <script src="../assets/js/libs/modernizr-2.5.2.min.js"></script>
-  <script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-	
-	  ga('create', 'UA-42924421-1', 'crisiscleanup.org');
-	  ga('send', 'pageview');
-	
-  </script>
-  {% block head_content %}
-  {% endblock %}
-</head>
-<!--[if lt IE 7]> <body class="ie6 oldies"> <![endif]-->
-<!--[if IE 7]>    <body class="ie7 oldies"> <![endif]-->
-<!--[if IE 8]>    <body class="ie8 oldies"> <![endif]-->
-<!--[if gt IE 8]><!--><body><!--<![endif]-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CrisisCleanup Administration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" media="screen" />
 
-<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-  {% include "map_banner.html" %} 
-  <header class="clearfix">
-      <div class="container">
-        <a id="logo" href="/"><img src="../assets/images/crisis-cleanup-logo.png" title="Crisis Cleanup Logo" border="0" /></a>
-        <ul class="social-icons">
-          <li><a href="https://www.facebook.com/pages/Crisis-Cleanup/437690172982553?fref=ts" class="icon flip">^</a></li>
-          <!--<li><a href="" class="icon">T</a></li>-->
-          <li><a href="/contact" class="icon" title="Contact Us">M</a></li>
-          <li><a href="http://www.twitter.com/crisiscleanup" class="icon" title="Crisis Cleanup on Twitter">^</a></li>
-        </ul>
-        <nav class="clearfix">
-          <ul role="navigation">
-            <li>
-              <a {% block home %}{% endblock %} href="/home"><span class="icon">S</span>Home</a>
-            </li>
-            <li>
-              <a {% block about %}{% endblock %} href="/about"><span class="icon">Û</span>About</a>
-            </li>
-            <li>
-              <a {% block publicmap %}{% endblock %} href="/public-map"><span class="icon">5</span>Map</a>
-            </li>
-            <li>
-              <a {% block blog %}{% endblock %} href="http://blog.crisiscleanup.org/"><span class="icon">?</span>Blog</a>
-            </li>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    {% block head_content %}
+    {% endblock %}
+    <style type="text/css">
+      /* open dropdown menus on hover */
+      ul.nav li.dropdown:hover > ul.dropdown-menu {
+        display: block;    
+      }
 
-	          <li>
-              <a {% block signup %}{% endblock %} href="/signup"><span class="icon">@</span>Sign Up</a>
-            </li>
-            <li>
-	    <a href="/"><span class="icon">5</span>Assessment Form</a>
-	    </li>
-            <li>
-            <a href="/logout"><span class="icon">L</span>Log Out</a>
-	    </li>
-          </ul>
-        </nav>
+      /* modify navbar */
+      .navbar {
+        border: none !important;
+        border-radius: 0 !important;
+      }
+    </style>
+  </head>
+  <body>
+
+  <div class="navbar navbar-inverse" style="margin: 0">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/map">
+          CrisisCleanup 
+        </a>
       </div>
-  </header>
-   <section role="banner">
-       <hgroup>
-           <h1>{% block description_title %}{% endblock %}</h1>
-           <h2>{% block description_subtitle %}{% endblock %}</h2>
-       </hgroup>
-       {% block banner %}
-       {% endblock %}
+      <form class="navbar-form form-inline navbar-right">
+        <div class="form-group">
+          <input class="input-sm" type="search" class="form-control" placeholder="Search">
+        </div>
+        <div class="form-group">
+          <select class="form-control input-sm">
+            <option value="">All</option>
+            <option value="">Incidents</option>
+            <option value="">Organizations</option>
+            <option value="">Contacts</option>
+            <option value="">Work Orders</option>
+            <option value="">Communications</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-sm" disabled>Submit</button>
+      </form>
 
-   </section> <!-- // banner ends -->
-   <section class="container clearfix">
-        <aside role="complementary">
-            <h2>Admin Options</h2>
-            {% include "_admin_menu.html" %}
-        </aside>
-        <article class="post content">
-            <h2>{% block main_title %}{% endblock %}</h2>
-            {% block main_content %}
-            {% endblock %}
-        </article>
-   </section>
-  <footer role="contentinfo">
-     {# note: hardcoded pending sending pageblocks to all admin templates #}
-      <p>
-        <span class="left">Crisis Cleanup is an <a href="https://github.com/aarontitus/crisiscleanup/">open source</a> project of the <a href="http://nj211.org">NJ 2-1-1 Partnership</a>. <a href="#">Top</a> <!-- CSS/HTML Template © 2012 CSS Junction/ Shekhar Sharma (http://www.shekhardesigner.com). Licensed under the Creative Commons Attribution 3.0 License: http://creativecommons.org/licenses/by/3.0/us/--></span>
-        <a href="/home">HOME</a> | <a href="/about">ABOUT</a> | <a href="/public-map">PUBLIC MAP</a> | <a href="http://blog.crisiscleanup.org/">BLOG</a> | <a href="/contact">CONTACT US</a> | <a href="/terms">TERMS</a> | <a href="/privacy">PRIVACY</a> | <a href="/signup">SIGN UP</a> | {% if logged_in %}<a href="/">ASSESSMENT FORM</a> | <a href="/logout">LOG OUT</a> {% else %} <a href="/authentication">LOG IN</a>{% endif %}
-      </p>
-  </footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.10.2.min.js"><\/script>')</script>
-  <script src="assets/js/script.js"></script>
-</body>
+    </div>
+  </div>
+
+  <div class="navbar navbar-inverse">
+    <div class="container">
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          {# Dashboard menu #}
+          <li class="dropdown">
+            <a href="/admin-stats">
+              Dashboard <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/admin-stats">Site Stats</a></li>
+              <li><a href="/admin-stats">Incident Stats</a></li>
+              <li><a href="/admin-stats">Organization Stats</a></li>
+              <li><a href="/admin-stats">Work Order Stats</a></li>
+              <li><a href="/admin-stats">Volunteer Stats</a></li>
+              <li><a href="#/admin-system-activity">System Activity</a></li>
+              <li class="divider"></li>
+              <li><a href="/logout">Logout</a></li>
+            </ul>
+          </li>
+
+          {# Incidents menu #}
+          <li class="dropdown">
+            <a href="/admin-view-incidents">
+              Incidents <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/admin-view-incidents">View/Edit</a></li>
+              <li><a href="/admin-create-incident">Create</a></li>
+              <li><a href="/admin-approve-incidents">Approve</a></li>
+              <li><a href="#incident_print_template_view.html">Printer Templates</a></li>
+            </ul>
+          </li>
+          
+          {# Organizations menu#}
+          <li class="dropdown">
+            <a href="/admin-all-organizations">
+              Organizations <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/admin-all-organizations">View/Edit Orgs</a></li>
+              <li><a href="/admin-create-organization">Create Org</a></li>
+              <li><a href="/admin-organization-requests">Approve Org</a></li>
+              <li><a href="/admin-display-contacts">Contacts</a></li>
+              <li><a href="/admin-display-contacts">Approve Contacts</a></li>
+              <li><a href="/admin-validation-questions">Validation Questions</a></li>
+            </ul>
+          </li>
+
+          {# Work Orders menu #}
+          <li class="dropdown">
+            <a href="/admin-view-work-orders">
+              Work Orders <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/admin-view-work-orders">View/Edit</a></li>
+              <li><a href="/admin-import-csv">Import</a></li>
+              <li><a href="/admin-export-work-orders">Export</a></li>
+              <li><a href="/admin-fix-errors">Find &amp; Fix Errors</a></li>
+            </ul>
+          </li>
+
+          {# Communications menu #}
+          <li class="dropdown">
+            <a href="/admin-communications" >
+              Communications <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="#contact_export.html">Export Org Contacts</a></li>
+              <li><a href="/admin-social-media">Social Media</a></li>
+              <li><a href="#com_email_template.html">Email Templates</a></li>
+              <li><a href="/admin-website-alerts">Website Alerts</a></li>
+            </ul>
+          </li>
+
+          {# Settings menu #}
+          <li class="dropdown">
+            <a href="/admin-website-settings" >
+              Settings <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/admin-website-settings">Global Admin</a></li>
+              <li><a href="#settings_web_analytics.html">Web Analytics</a></li>
+              <li><a href="#settings_display.html">Display Settings</a></li>
+              <li><a href="/admin-edit-pages">Content Settings</a></li>
+              <li><a href="#settings_other.html">Other Settings</a></li>
+            </ul>
+          </li>
+
+          {# Maintenance menu #}
+          <li class="dropdown">
+            <a href="#maint.html">
+              Maintenance <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="#maint_backup.html">System Backup</a></li>
+              <li><a href="#maint_restore.html">System Restore</a></li>
+              <li><a href="#incident_import.html">Import Incidents</a></li>
+              <li><a href="#incident_export.html">Export Incidents</a></li>
+              <li><a href="/admin-import-csv">Import Work Orders</a></li>
+              <li><a href="#work_order_export.html">Export Work Orders</a></li>
+              <li><a href="#maint_revert_work_order.html">Revert Work Order</a></li>
+            </ul>
+          </li>
+      </div>
+    </div>
+  </div>
+    
+    
+  <div class="container">
+
+    <h1>{% block main_title %}{% endblock %}</h1>
+
+    {% block main_content %}
+    {% endblock %}
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="/assets/js/libs/bootstrap.min.js"></script>
+  </div>
+
+  {% block scripts %}
+  {% endblock %}
+  </body>
 </html>
-  

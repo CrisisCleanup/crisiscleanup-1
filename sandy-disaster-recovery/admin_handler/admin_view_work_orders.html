@@ -24,6 +24,7 @@
     <thead>
       <tr>
         <th>Incident</th>
+        <th data-field="case_number">Case</th>
         <th data-field="name">Name</th>
         <th>Address</th>
         <th data-field="reported_by">Reported by</th>
@@ -35,6 +36,7 @@
       {% for site in sites %}
         <tr>
           <td>{{ site.event.name }}</td>
+          <td>{{ site.case_number }}</td>
           <td>{{ site.name }}</td>
           <td>
             <a href="/edit?id={{ site.key().id() }}">

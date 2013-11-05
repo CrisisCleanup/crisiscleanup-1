@@ -6,7 +6,7 @@
 
 {% block main_content %}
 
-<form method="GET">
+<form method="GET" style="margin-bottom: 15px;">
   {{ form.offset }}
   {{ form.order }}
   {{ form.query.label }} {{ form.query(placeholder="Not yet implemented", disabled=True) }}
@@ -18,7 +18,7 @@
 </form>
 
 {% if sites|length > 0 %}
-  <table border="1">
+  <table class="table table-bordered">
     <thead>
       <tr>
         <th>Incident</th>
@@ -47,21 +47,24 @@
     </tbody>
   </table>
 
-  <div>
-    {% if prev_offset >=0 %}
-      <a href="#" onclick="$('input[name=offset]').val('{{prev_offset}}').parent('form').submit()">
-        Previous
-      </a>
-    &nbsp;&nbsp;&nbsp;
-    {% endif %}
+{% else %}
+  <p>No work orders found.</p>
+  {% set next_offset = None %}
+{% endif %}
+
+<div>
+  {% if prev_offset >=0 %}
+    <a href="#" onclick="$('input[name=offset]').val('{{prev_offset}}').parent('form').submit()">
+      Previous
+    </a>
+  &nbsp;&nbsp;&nbsp;
+  {% endif %}
+  {% if next_offset %}
     <a href="#" onclick="$('input[name=offset]').val('{{next_offset}}').parent('form').submit()">
       Next
     </a>
-  </div>
-
-{% else %}
-  <p>No work orders found.</p>
-{% endif %}
+  {% endif %}
+</div>
 
 {% endblock %}
 {% block scripts %}

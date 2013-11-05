@@ -17,6 +17,8 @@
   <button type="submit">Search</button>
 </form>
 
+<p>{{ offset + 1}} to {{ offset + sites|length }} of {{ count }} work orders.</p>
+
 {% if sites|length > 0 %}
   <table class="table table-bordered">
     <thead>

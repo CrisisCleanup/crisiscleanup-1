@@ -85,7 +85,8 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
             query.order(form.order.data)
 
         # page using offset
-        offset=int(self.request.get('offset', 0))
+        count = query.count()
+        offset = int(self.request.get('offset', 0))
         sites = query.fetch(
             limit=self.MAX_PER_PAGE,
             offset=offset,
@@ -95,6 +96,8 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
             request=self.request,
             form=form,
             sites=sites,
+            count=count,
+            offset=offset,
             prev_offset=offset - self.MAX_PER_PAGE,
             next_offset=offset + self.MAX_PER_PAGE,
         )

@@ -14,7 +14,9 @@ class="activePage"
 
 <form method=GET action="/admin-edit-organization">
   <input type=hidden name="organization" value={{organization.key().id()}}>
-  <input type=submit value="Edit Organization">
+  <button class="btn" type=submit value="Edit Organization">
+    Edit Organization
+  </button>
 </form>
 
 <h2>Delete Organization</h2>
@@ -23,6 +25,8 @@ class="activePage"
 
 <form method="POST" action="/admin" onsubmit="return confirm('Are you sure you want to delete this organization?');">
   <input type="hidden" name="delete_org_id" value="{{organization.key().id()}}">
-  <input type="submit" value="Permanently delete this organization">
+  <button class="btn btn-danger" type="submit" value="Permanently delete this organization">
+    Permanently delete this organization
+  </button>
 </form>
 {% endblock %}

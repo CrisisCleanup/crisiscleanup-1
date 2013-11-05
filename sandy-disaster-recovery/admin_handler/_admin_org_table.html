@@ -1,7 +1,7 @@
 {# parameters: admin and organization #}
 {% from '_utils.html' import bold_if_true %}
 
-<table style="margin-bottom: 10px;">
+<table class="table" style="width: auto">
 <tr>
 <td>Incident:</td>
 <td><strong>{{ organization.incident.name }}</strong></td>
@@ -115,7 +115,7 @@
 
 <h3>Contacts</h3>
 
-<table class="sortable" border="1" style="margin-bottom: 10px">
+<table class="table sortable" style="width: auto">
   <thead>
     <tr>
       <th>Name</th>

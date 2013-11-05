@@ -6,12 +6,12 @@
 {% block main_content %}
 
 <form method="get" action="admin-create-contact">
-  <button>Add Contact</button>
+  <button class="btn">Add Contact</button>
 </form>
 <br>
 
 {% if contacts %}
-  <table class="sortable" border="1" style="margin-top: 15px;">
+  <table class="table sortable">
     <thead>
       <tr>
         <th>Name</th>

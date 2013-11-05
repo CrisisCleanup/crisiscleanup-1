@@ -18,7 +18,9 @@
   <button type="submit">Search</button>
 </form>
 
-<p>{{ offset + 1}} to {{ offset + sites|length }} of {{ count }} work orders.</p>
+{% if count > 0 %}
+  <p>{{ offset + 1}} to {{ offset + sites|length }} of {{ count }} work orders.</p>
+{% else %}
 
 {% if sites|length > 0 %}
   <table class="table table-bordered">
@@ -53,8 +55,12 @@
   </table>
 
 {% else %}
-  <p>No work orders found.</p>
   {% set next_offset = None %}
+  {% if count > 0 %}
+    <p>No more work orders found.</p>
+  {% else %}
+    <p>No work orders found.</p>
+  {% endif %}
 {% endif %}
 
 <div>

@@ -30,6 +30,7 @@
         <th data-field="case_number">Case</th>
         <th data-field="name">Name</th>
         <th>Address</th>
+        <th data-field="request_date">Date</th>
         <th data-field="reported_by">Reported by</th>
         <th data-field="claimed_by">Claimed by</th>
         <th data-field="work_type">Work Type</th>
@@ -46,6 +47,7 @@
               {{ site.full_address }}
             </a>
           </td>
+          <td nowrap>{{ site.request_date.strftime('%Y-%m-%d') }}</td>
           <td>{{ site.reported_by.name }}</td>
           <td>{{ site.claimed_by.name }}</td>
           <td>{{ site.work_type }}</td>

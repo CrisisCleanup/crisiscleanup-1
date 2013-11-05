@@ -90,7 +90,7 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
             query.order(form.order.data)
 
         # page using offset
-        count = query.count()
+        count = query.count(limit=1000000)
         offset = int(self.request.get('offset', 0))
         per_page = form.per_page.data
         sites = query.fetch(

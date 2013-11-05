@@ -175,8 +175,13 @@
 
   <div style="height: 40px;"></div>
 
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://code.jquery.com/jquery.js"></script>
+  <!-- libs -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script>
+    if (!window.jQuery) {
+        document.write('<script src="/assets/js/libs/jquery-1.10.2.min.js"><\/script>');
+    }
+  </script>
   <script src="/assets/js/libs/bootstrap.min.js"></script>
 
   {% block scripts %}

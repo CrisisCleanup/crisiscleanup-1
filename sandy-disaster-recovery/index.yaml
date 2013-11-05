@@ -39,6 +39,22 @@ indexes:
 
 - kind: Site
   properties:
+  - name: claimed_by
+  - name: reported_by
+  - name: status
+  - name: work_type
+  - name: case_number
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: reported_by
+  - name: status
+  - name: work_type
+  - name: name
+
+- kind: Site
+  properties:
   - name: county
   - name: event
   - name: status

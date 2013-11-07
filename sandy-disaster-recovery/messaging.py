@@ -36,6 +36,16 @@ jinja_environment = jinja2.Environment(
 )
 
 
+# constants
+
+APP_ID_TO_SENDER_ADDRESS = {
+    'sandy-helping-hands': 'CrisisCleanup <help@crisiscleanup.org>',
+    'sandy-disaster-recovery': 'CrisisCleanup <help@crisiscleanup.org>',
+    'crisis-cleanup-au': 'CrisisCleanup <help@crisiscleanup.org.au>',
+    'crisis-cleanup-in': 'CrisisCleanup <help@crisiscleanup.org.in>',
+}
+
+
 # functions
 
 def get_application_id():
@@ -47,10 +57,41 @@ def get_default_version_hostname():
 
 
 def get_app_system_email_address():
-    return "%s <noreply@%s.appspotmail.com>" % (
-        app_identity.get_service_account_name(),
-        app_identity.get_application_id()
+    app_id = app_identity.get_application_id()
+    # HOTFIX START
+    return (
+        "%s <noreply@%s.appspotmail.com>" % (
+            app_identity.get_service_account_name(),
+            app_identity.get_application_id()
+        )
     )
+    # HOTFIX END
+    return APP_ID_TO_SENDER_ADDRESS.get(
+        # by app id
+        app_id,
+
+        # or else use default
+        "%s <noreply@%s.appspotmail.com>" % (
+            app_identity.get_service_account_name(),
+            app_identity.get_application_id()
+        )
+    )
+
+
+def email_administrators(event, subject, body):
+    prefixed_subject = "[%s] %s" % (app_identity.get_application_id(), subject)
+    sender_address = get_app_system_email_address()
+
+    for admin_org in get_event_admins(event):
+        for contact in admin_org.primary_contacts:
+            if contact.email:
+                recipient_address = "%s <%s>" % (contact.email, contact.full_name)
+                mail.send_mail(
+                    sender_address,
+                    recipient_address,
+                    prefixed_subject,
+                    body
+                )
 
 
 def email_administrators_using_templates(
@@ -66,16 +107,33 @@ def email_administrators_using_templates(
     rendered_subject = subject_template.render(kwargs)
     rendered_body = body_template.render(kwargs)
 
-    prefixed_subject = "[%s] %s" % (app_identity.get_application_id(), rendered_subject)
-    sender_address = get_app_system_email_address()
+    email_administrators(event, rendered_subject, rendered_body)
 
-    for admin_org in get_event_admins(event):
-        for contact in admin_org.primary_contacts:
-            if contact.email:
-                recipient_address = "%s <%s>" % (contact.email, contact.full_name)
-                mail.send_mail(
-                    sender_address,
-                    recipient_address,
-                    prefixed_subject,
-                    rendered_body
-                )
+
+
+import base
+import key
+
+GLOBAL_ADMIN_NAME = "Admin"
+
+class EmailTestHandler(base.RequestHandler):
+
+    def get(self):
+        org, event = key.CheckAuthorization(self.request)
+	if not (org and org.name == GLOBAL_ADMIN_NAME):
+            self.response.out.write("Must be global admin.")
+            return
+
+        to_addr = self.request.get("to")
+        from_addr = self.request.get("from")
+
+        if to_addr and from_addr:
+            mail.send_mail(
+                from_addr,
+                to_addr,
+                "Test email",
+                "This is a test email."
+            )
+            self.response.out.write("Test email sent.")
+        else:
+            self.response.out.write("Need to and from addresses")

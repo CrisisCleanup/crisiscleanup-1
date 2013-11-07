@@ -33,7 +33,9 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) el
 
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('main.html')
-logout_template = jinja_environment.get_template('logout.html')
+menubox_template = jinja_environment.get_template('_menubox.html')
+
+
 class MapHandler(base.RequestHandler):
   def get(self):
     filters = [
@@ -67,7 +69,7 @@ class MapHandler(base.RequestHandler):
           #"uncompiled" : True,
           "counties" : event.counties,
           "org" : org,
-          "logout" : logout_template.render({"org": org,
+          "menubox" : menubox_template.render({"org": org,
                                              "event": event,
                                              "include_search": True,
                                              "admin": org.is_admin,

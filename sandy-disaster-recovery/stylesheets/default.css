@@ -24,7 +24,7 @@ html, body {
   width: 40%;
   z-index: 2;
 }
-#logout_div {
+#menubox_div {
   position: absolute;
   left: 100px;
   top: 20px;

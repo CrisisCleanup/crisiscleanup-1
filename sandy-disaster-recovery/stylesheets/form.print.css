@@ -1,0 +1,78 @@
+
+/* hide unwanted elements */
+
+#menubox_div {
+  display: none;
+}
+
+#map_canvas {
+  display: none;
+}
+
+#form_background {
+  position: auto;
+  top: auto;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  opacity: 1.0;
+}
+
+#form {
+  width: auto;
+}
+
+
+/* add borders */
+
+input, textarea {
+  border: 1px solid black;
+}
+
+
+/* resize elements */
+
+textarea {
+  height: 8em;
+  width: 20em;
+}
+
+
+/* replace selects with printable tables */
+
+select {
+  display: none;
+}
+
+.select-print-table {
+  display: block !important;
+}
+
+table.select-print-table {
+  border-collapse:collapse;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+table.select-print-table td {
+   border: 1px solid black;
+   padding: 3px;
+}
+
+
+/* hide controls */
+
+input[type="submit"]{
+  display: none;
+}
+
+#ignore_similar {
+  display: none;
+}
+
+
+/* manage page breaks */
+input, h1, h2, table.select-print-table, tr, td {
+  page-break-inside: avoid;
+}
+

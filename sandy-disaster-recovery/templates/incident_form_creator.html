@@ -1,4 +1,3 @@
-
 {% extends "base_template.html" %}
 
 {% block head_content %}
@@ -14,6 +13,445 @@
     $( "#tabs" ).tabs();
   });
   </script>
+  
+  <script>
+  $(function() {
+    hide_divs();
+    
+    var select_options_array = [];
+    var radio_options_array = [];
+    var form_json_array = []
+    
+    var option_html = 'Option:  <input type="text" name="firstname"><br>';
+
+    $( "#add_select_option" ).click(function() {
+    
+     add_select_option(select_options_array);
+     var i = select_options_array.length - 1;
+     var option_number = i + 2;
+      var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ select_options_array[i] + '" name="'+ select_options_array[i] + '"><br>';
+      var new_option = '<option value="' + select_options_array[i] + '">Option '+ option_number + '</option>';
+      $("#add_options_to_select").append(new_line);
+      $("#select_default").append(new_option);
+     // add to select options select default div
+     // make a remove option(remove only removes last)
+    });
+    
+    $("#clear_radio_options").click(function() {
+      radio_options_array = [];
+      var new_option = 'Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>';
+      var new_select = '<option value="radio_option_1">Option 1</option>';
+      $("#add_options_to_radio").empty();
+      $("#radio_default").empty();
+      $("#add_options_to_radio").append(new_option);
+      $("#radio_default").append(new_select);
+    // clear and reset text input
+    // clear and reset default select
+    
+    });
+
+    $("#clear_select_options").click(function() {
+      select_options_array = [];
+      var new_option = 'Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>';
+      var new_select = '<option value="select_option_1">Option 1</option>';
+      $("#add_options_to_select").empty();
+      $("#select_default").empty();
+      $("#add_options_to_select").append(new_option);
+      $("#select_default").append(new_select);
+    // clear and reset text input
+    // clear and reset default select
+    
+    });
+    
+    
+    $( "#add_radio_option" ).click(function() {
+    
+     add_radio_option(radio_options_array);
+     var i = radio_options_array.length - 1;
+     var option_number = i + 2;
+      var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ radio_options_array[i] + '" name="'+ radio_options_array[i] + '"><br>';
+      var new_option = '<option value="' + radio_options_array[i] + '">Option '+ option_number + '</option>';
+      $("#add_options_to_radio").append(new_line);
+      $("#radio_default").append(new_option);
+     // add to select options select default div
+     // make a remove option(remove only removes last)
+    });
+
+    
+    $( "#add_checkbox" ).click(function() {
+	 hide_divs();
+	 $("#checkbox_div").show();
+    });
+    
+    $( "#add_select" ).click(function() {
+	 hide_divs();
+         $("#select_div").show();
+    });
+    $( "#add_radio" ).click(function() {
+	 hide_divs();
+         $("#radio_div").show();
+    });
+    $( "#add_text" ).click(function() {
+	 hide_divs();
+	 $("#text_div").show();
+    });
+    $( "#add_header" ).click(function() {
+	 hide_divs();
+	 $("#header_div").show();
+    });
+    
+    $( "#add_header_to_form" ).click(function() {
+	 hide_divs();
+	 add_header_input(form_json_array);
+	 read_json_to_html(form_json_array);
+	 $("#header_form").trigger('reset');
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").append(jString);
+    });
+/*    
+    $("#add_label_to_form").click(function() {
+	hide_divs()
+	
+	// add label input
+	// read json to html
+	
+	$("#label_form").trigger('reset');
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").append(jString);
+    
+    });*/
+      $( "#add_text_to_form" ).click(function() {
+	 hide_divs();
+	 add_text_input(form_json_array);
+	 $("#tabs-2").empty();
+	 $("#text_form").trigger('reset');
+         
+
+
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").empty();
+	 $("#tabs-2").append(jString);
+	 read_json_to_html(form_json_array);
+    });
+     $( "#add_checkbox_to_form" ).click(function() {
+	 hide_divs();
+	 add_checkbox_input(form_json_array);
+	 $("#tabs-2").empty();
+	 $("#checkbox_form").trigger('reset');
+
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").empty();
+	 $("#tabs-2").append(jString);
+	 read_json_to_html(form_json_array);
+    });  
+     $( "#add_select_to_form" ).click(function() {
+	 hide_divs();
+	 add_select_input(form_json_array, select_options_array);
+	 $("#tabs-2").empty();
+	 $("#select_form").trigger('reset');
+	 clear_select_options(select_options_array);
+	 read_json_to_html(form_json_array);
+
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").empty();
+	 $("#tabs-2").append(jString);
+    }); 
+  
+     $( "#add_radio_to_form" ).click(function() {
+	 hide_divs();
+	 add_radio_input(form_json_array, radio_options_array);
+	 $("#tabs-2").empty();
+	 $("#select_form").trigger('reset');
+	 clear_radio_options();
+
+	 var jString = JSON.stringify(form_json_array);
+	 $("#tabs-2").empty();
+	 $("#tabs-2").append(jString);
+	 read_json_to_html(form_json_array);
+
+    });      
+    
+    
+    
+
+  });
+  function hide_divs() {
+    $("#select_div").hide();
+    $("#radio_div").hide();
+    $("#text_div").hide();
+    $("#checkbox_div").hide();
+    $("#header_div").hide();
+//     $("#label_div").hide();
+//     $("#paragraph_div").hide();
+}
+
+function clear_options_array(options_array) {
+   return ["options_1"]
+}
+
+function add_select_option(select_options_array) {
+   var array_length = select_options_array.length;
+   var new_length = array_length + 2;
+   var new_options_string = "select_option_" + new_length;
+   select_options_array.push(new_options_string);
+   return select_options_array;
+}
+
+function add_radio_option(select_options_array) {
+   var array_length = select_options_array.length;
+   var new_length = array_length + 2;
+   var new_options_string = "radio_option_" + new_length;
+   select_options_array.push(new_options_string);
+   return select_options_array;
+}
+
+function remove_option(options_array) {
+   options_array.pop();
+   return options_array;
+}
+
+
+function add_header_input(form_json_array){
+  var header_value = $("#header_label").val();
+  var header_json = {
+    "type": "header",
+    "header": header_value,
+  }
+  form_json_array.push(header_json);
+}
+function add_text_input(form_json_array) {
+  var text_label = $("#text_label").val();
+  var text_default = $("#text_default").val();
+  var text_placeholder = $("#text_placeholder").val();
+  var text_required = $('#text_required').prop('checked')
+  var text_sensitive = $('#text_sensitive').prop('checked')
+  
+  var text_infobox = $("#text_infobox").val();
+  var text_printer = $("#text_printer").val();
+  var text_mobile = $("#text_mobile").val();
+  var text_sms = $("#text_sms").val();
+    
+  var text_json = {
+    type: "text",
+    text_label: text_label,
+    text_default: text_default,
+    text_placeholder: text_placeholder,
+    text_required: text_required,
+    text_sensitive: text_sensitive,
+    text_infobox: text_infobox,
+    text_printer: text_printer,
+    text_mobile: text_mobile,
+    text_sms: text_sms,
+  }
+  
+  form_json_array.push(text_json);
+}
+
+function add_checkbox_input(form_json_array) {
+  var checkbox_label = $("#checkbox_label").val();
+  var checkbox_default = $("#checkbox_default").val();
+  var checkbox_required = $("#checkbox_required").prop('checked');
+  var checkbox_sensitive = $("#checkbox_sensitive").prop("checked");
+  var checkbox_infobox = $("#checkbox_infobox").val();
+  var checkbox_printer = $("#checkbox_printer").val();
+  var checkbox_mobile = $("#checkbox_mobile").val();
+  var checkbox_sms = $("#checkbox_sms").val();
+  
+  var checkbox_json = {
+    type: "checkbox",
+    checkbox_label: checkbox_label,
+    checkbox_default: checkbox_default,
+    checkbox_required: checkbox_required,
+    checkbox_sensitive: checkbox_sensitive,
+    checkbox_infobox: checkbox_infobox,
+    checkbox_printer: checkbox_printer,
+    checkbox_mobile: checkbox_mobile,
+    checkbox_sms: checkbox_sms,
+  }
+  
+  form_json_array.push(checkbox_json);
+}
+
+function add_select_input(form_json_array, select_options_array) {
+  var select_label = $("#select_label").val();
+  var select_option_1 = $("#select_option_1").val();
+  var select_default = $("#select_default").val();
+  var select_required = $("#select_required").prop('checked');
+  var select_sensitive = $("#select_sensitive").prop("checked");
+  var select_infobox = $("#select_infobox").val();
+  var select_printer = $("#select_printer").val();
+  var select_mobile = $("#select_mobile").val();
+  var select_sms = $("#select_sms").val();
+       
+  var select_json = {
+    type: "select",
+    select_label: select_label,
+    select_option_1: select_option_1,
+    select_default: select_default,
+    select_required: select_required,
+    select_sensitive: select_sensitive,
+    select_infobox: select_infobox,
+    select_printer: select_printer,
+    select_mobile: select_mobile,
+    select_sms: select_sms,
+  }
+  
+  for (var i = 0; i < select_options_array.length; i++) {
+    var element = '#' + select_options_array[i];
+    select_json[select_options_array[i]] = $('#' + select_options_array[i] +'').val();
+  }
+    
+  form_json_array.push(select_json);
+
+}
+
+function add_radio_input(form_json_array, radio_options_array) {
+  var radio_label = $("#radio_label").val();
+  var radio_option_1 = $("#radio_option_1").val();
+  var radio_default = $("#radio_default").val();
+  var radio_required = $("#radio_required").prop('checked');
+  var radio_sensitive = $("#radio_sensitive").prop("checked");
+  var radio_infobox = $("#radio_infobox").val();
+  var radio_printer = $("#radio_printer").val();
+  var radio_mobile = $("#radio_mobile").val();
+  var radio_sms = $("#radio_sms").val();
+    
+  var radio_json = {
+    type: "radio",
+    radio_label: radio_label,
+    radio_option_1: radio_option_1,
+    radio_default: radio_default,
+    radio_required: radio_required,
+    radio_sensitive: radio_sensitive,
+    radio_infobox: radio_infobox,
+    radio_printer: radio_printer,
+    radio_mobile: radio_mobile,
+    radio_sms: radio_sms,
+  }
+  
+  for (var i = 0; i < radio_options_array.length; i++) {
+    var element = '#' + radio_options_array[i];
+    radio_json[radio_options_array[i]] = $('#' + radio_options_array[i] +'').val();
+  }
+    
+  
+  form_json_array.push(radio_json);
+
+}
+
+function read_json_to_html(form_json_array) {
+  $("#tabs-1").empty();
+  for (var i=0; i < form_json_array.length; i++) {
+    if(form_json_array[i].type == "select") {
+      var options_array = [];
+      for (var key in form_json_array[i]) {
+        var key_string = key.toString();
+        if (key_string.indexOf("select_option_") == 0) {
+	    options_array.push(key_string);
+        }
+      }
+      var req = "";
+      if (form_json_array[i].select_required) {
+        req = "*";
+      }
+      var begin_option = form_json_array[i].select_label + req +': <select>';
+      var end_option = "</select>";
+      var select_string = "";
+      
+      for (var j = 0; j < options_array.length; j++) {
+        var option_string = "";
+        if(form_json_array[i].select_default == options_array[j]) {
+	  var option_string = "<option selected>" + form_json_array[i][options_array[j]] + "</option>";
+	  select_string = select_string + option_string;
+        } else {
+	  var option_string = "<option>" + form_json_array[i][options_array[j]] + "</option>";
+	  select_string = select_string + option_string;
+	}
+      }
+      
+      
+      var all_string = begin_option + select_string + end_option;
+      $("#tabs-1").append(all_string);
+//       $("#tabs-1").append(select_string);
+//       $("#tabs-1").append(end_option);
+
+      
+      
+      
+      // for each in options array, create select. increment var select_string. add begin, select, end strings. Pass the html
+      // set default
+      // clear select form and array
+      
+      // create select. create appropriate options. set appropriate default
+      // set options to array
+      // for each in array, create option
+      // if option = default, set default
+    }
+    if(form_json_array[i].type == "radio") {
+      // create select. create appropriate options. set appropriate default
+      // set options to array
+      // for each in array, create option
+      // if option = default, set default
+    }
+    if(form_json_array[i].type == "header") {
+      var new_header = '<h2>' + form_json_array[i].header + '</h2>';
+      $("#tabs-1").append(new_header);
+    }
+    
+    else if(form_json_array[i].type == "text") {
+      var new_text_input = "";
+      
+      if (form_json_array[i].text_required == true) {
+	var new_text_input = form_json_array[i].text_label + '*: <input type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"><br>';
+      } else {
+	var new_text_input = form_json_array[i].text_label + ': <input type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"><br>';
+      }
+      $("#tabs-1").append(new_text_input);
+    }
+    
+    else if (form_json_array[i].type == "checkbox") {
+      var required_star = "";
+      var checked = "";
+      if (form_json_array[i].checkbox_required == true) {
+        required_star = "*";
+      }
+      
+      if (form_json_array[i].checkbox_default == "y") {
+        checked = " checked";
+      }
+      var new_checkbox = form_json_array[i].checkbox_label + required_star + ': <input type="checkbox" id="' + form_json_array.checkbox_label + '" name="'  + form_json_array.checkbox_label + '" value="y"' + checked + '>';
+      $("#tabs-1").append(new_checkbox);
+
+    }
+    
+    
+  }
+}
+
+function clear_select_options(select_options_array) {
+
+  select_options_array = [];
+  var new_option = 'Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>';
+  var new_select = '<option value="select_option_1">Option 1</option>';
+  $("#add_options_to_select").empty();
+  $("#select_default").empty();
+  $("#add_options_to_select").append(new_option);
+  $("#select_default").append(new_select);
+}
+
+function clear_radio_options() {
+
+  radio_options_array = [];
+  var new_option = 'Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>';
+  var new_select = '<option value="radio_option_1">Option 1</option>';
+  $("#add_options_to_radio").empty();
+  $("#radio_default").empty();
+  $("#add_options_to_radio").append(new_option);
+  $("#radio_default").append(new_select);
+  
+}
+
+</script>
 {% endblock %}
 
 {% block login %}
@@ -30,27 +468,133 @@
 {% endblock %}
 
 {% block sidebar_content %}
+<div id="sidebar_form_creator">
+<div id="form_editor">
+<a href="#" onclick="checkEach()">Save All Changes</a></form>
+
+</div>
 <h2>Add Inputs to form</h2>
-<a href="#" onclick="checkEach()">header +</a><br>
-<a href="#" onclick="checkEach()">text input +</a><br>
-<a href="#" onclick="checkEach()">checkbox input +</a><br>
-<a href="#" onclick="checkEach()">select input +</a><br>
-<a href="#" onclick="checkEach()">radio input +</a><br>
+<!--<a id="add_label" href="#form_editor">map label + </a><br>
+<a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>-->
+<a id="add_header" href="#form_editor">header +</a><br>
+<a id="add_text" href="#form_editor">text input +</a><br>
+<a id="add_checkbox" href="#form_editor"">checkbox input +</a><br>
+<a id="add_select" href="#form_editor"">select input +</a><br>
+<a id="add_radio" href="#form_editor"">radio input +</a><br>
 
 
-Label: <input type="text" name="firstname"><br>
-Default Value: <input type="text" name="lastname"><br>
-Required: <input type="checkbox" name="required" value="y">
-Sensitive: <input type="checkbox" name="sensitive" value="y"><br>
-<p>Display (For advanced users)<br>
-(Everyone else can leave auto defaults)</p>
-InfoBox: <<textarea name="textarea" rows="2" cols="20">Write something here</textarea><br>
-Printer: <input type="text" name="lastname"><br>
-Mobile: <input type="text" name="firstname"><br>
-Sms: <input type="text" name="lastname"><br>
+<div id="text_div">
 
-<a href="#" onclick="checkEach()">Signup</a>
-</form>
+<h3>Add Text Input</h3>
+<form id="text_form">
+Label: <input type="text" id="text_label" name="text_label"><br>
+Default Value: <input type="text" id="text_default" name="text_default"><br> 
+Placeholder: <input type="text" id="text_placeholder" name="text_placeholder"><br> 
+Required: <input type="checkbox" id="text_required" name="text_required" value="y">
+Sensitive: <input type="checkbox" id="text_sensitive" name="text_sensitive" value="y"><br>
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea id="text_infobox" name="text_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="text_printer" name="text_printer"><br>
+Mobile: <input type="text" id="text_mobile" name="text_mobile"><br>
+Sms: <input type="text" id="text_sms" name="text_sms"><br>
+<a href="#form_editor" id="add_text_to_form">Add to form</a></form>
+</div>
+
+<div id="checkbox_div">
+<h3>Add Checkbox</h3>
+<form id="checkbox_form">
+Label: <input type="text" id="checkbox_label" name="checkbox_label"><br>
+Default Value:<select id="checkbox_default" name="checkbox_default">
+<option value="n" >Unchecked</option>
+<option value="y" >Checked</option>
+</select><br><br>
+Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y">
+Sensitive: <input type="checkbox" id="checkbox_sensitive" name="checkbox_sensitive" value="y"><br>
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea id="checkbox_infobox" name="checkbox_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="checkbox_printer" name="checkbox_printer"><br>
+Mobile: <input type="text" id="checkbox_mobile" name="checkbox_mobile"><br>
+Sms: <input type="text" id="checkbox_sms" name="checkbox_sms"><br>
+<a href="#form_editor" id="add_checkbox_to_form">Add to form</a></form>
+</div>
+<div id="select_div">
+
+<h3>Add Select</h3> 
+<form id="select_form">
+Label: <input type="text" id="select_label" name="select_label"><br>
+<div id="add_options_to_select">
+Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>
+</div>
+<a id="add_select_option" href="#form_editor">Add another option</a>
+<br>
+<a id="clear_select_options">Clear options</a>
+<br>
+Default: <select id="select_default" name="select_default">
+<option value="select_option_1">Option 1</option>
+</select>
+<br>
+<br>
+Required: <input type="checkbox" id="select_required" name="select_required" value="y">
+Sensitive: <input type="checkbox" id="select_sensitive" name="select_sensitive" value="y"><br>
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea id="select_infobox" name="select_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="select_printer" name="select_printer"><br>
+Mobile: <input type="text" id="select_mobile" name="select_mobile"><br>
+Sms: <input type="text" id="select_sms" name="select_sms"><br>
+<a href="#form_editor" id="add_select_to_form">Add to form</a></form>
+</div>
+
+<div id="radio_div">
+<h3>Add Radio</h3> 
+<form id="radio_form">
+Label: <input type="text" id="radio_label" name="radio_label"><br>
+<div id="add_options_to_radio">
+Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
+</div>
+<a id="add_radio_option" href="#form_editor">Add another option</a><br>
+<a id="clear_radio_options">Clear options</a>
+<br>
+Default: <select id="radio_default" name="radio_default">
+<option value="radio_option_1">Option 1</option>
+</select>
+<br>
+<br>Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
+Sensitive: <input type="checkbox" id="radio_sensitive" name="radio_sensitive" value="y"><br>
+<h3>Add Display Info</h3>
+*For advanced users<br>
+InfoBox: <textarea id="radio_infobox" name="radio_infobox" rows="2" cols="20">Write something here</textarea><br>
+Printer: <input type="text" id="radio_printer" name="radio_printer"><br>
+Mobile: <input type="text" id="radio_mobile" name="radio_mobile"><br>
+Sms: <input type="text" id="radio_sms" name="radio_sms"><br>
+<a href="#form_editor" id="add_radio_to_form">Add to form</a></form>
+</div>
+
+<div id="header_div">
+<h2>Add Header to form</h2>
+
+<form id="header_form">
+Label: <input type="text" id="header_label" name="header_label"><br>
+<a href="#form_editor" id="add_header_to_form">Add to form</a></form>
+</div>
+
+<!--<div id="label_div">
+<h2>Add Header to form</h2>
+
+<form id="label_form">
+Label: <input type="text" id="label_name" name="label_name"><br>
+<a href="#form_editor" id="add_label_to_form">Add to form</a></form>
+</div>
+
+<div id="paragraph_div">
+<h2>Add Header to form</h2>
+
+<form id="paragraph_form">
+Label: <input type="text" id="paragraph" name="paragraph"><br>
+<a href="#form_editor" id="add_paragraph_to_form">Add to form</a></form>
+</div>-->
 {% endblock %}
 
 {% block main_title %}
@@ -72,48 +616,9 @@ Sms: <input type="text" name="lastname"><br>
     <li><a href="#tabs-2">JSON</a></li>
   </ul>
   <div id="tabs-1">
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-      <p>html form here</p>
-
+      <p>empty</p>
   </div>
   <div id="tabs-2">
-      <p>{json:here}</p>
   </div>
 
 </div>

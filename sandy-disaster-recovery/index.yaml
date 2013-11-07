@@ -136,3 +136,9 @@ indexes:
   - name: latitude
   - name: longitude
   - name: work_type
+
+- kind: __BlobInfo__
+  properties:
+  - name: filename
+  - name: creation
+    direction: desc

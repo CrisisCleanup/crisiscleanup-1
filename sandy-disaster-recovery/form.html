@@ -5,6 +5,7 @@
 <head>
 <title>Crisis Cleanup</title>
 <link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
+<link href="/stylesheets/form.print.css?v={{version}}" rel="stylesheet" type="text/css" media="print">
 <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
 
@@ -210,7 +211,8 @@ Object.keys(post_json).forEach(function(key) {
 {% endif %}
 </div>
 </div>
-{{ logout }}
+
+{{ menubox }}
 
 <div id="map_canvas"></div>
 <div id="wrapper"></div>

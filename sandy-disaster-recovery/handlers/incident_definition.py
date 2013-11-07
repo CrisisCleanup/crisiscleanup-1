@@ -19,6 +19,7 @@ import jinja2
 import os
 import webapp2_extras
 from datetime import datetime
+from google.appengine.ext import db
 
 # Local libraries.
 import base
@@ -29,18 +30,33 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
 template = jinja_environment.get_template('/incident_definition.html')
 
+read_template = jinja_environment.get_template('/incident_definition_read.html')
+
+CASE_LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+
 def make_date_object(date_string):
   pass
 
 class IncidentDefinition(base.RequestHandler):
   def get(self):
-    work_order_prefix = "Set from event_db"
-    current_date = None
-    data = {
-      "work_order_prefix": work_order_prefix,
-      "current_date": current_date,
-    }
-    self.response.out.write(template.render(data))
+    id = self.request.get("id")
+    if id:
+      incident_definition_object = incident_definition.IncidentDefinition.get_by_id(int(id))
+      data = {
+	"incident_definition_object": incident_definition_object,
+      }
+      self.response.out.write(read_template.render(data))
+    else:
+      work_order_prefix = "Set from event_db"
+      query_string = "SELECT * FROM Event"
+      events_list = db.GqlQuery(query_string)
+      count = events_list.count()
+      current_date = None
+      data = {
+	"work_order_prefix": CASE_LABELS[count],
+	"current_date": current_date,
+      }
+      self.response.out.write(template.render(data))
 
   def post(self):
     incident_version = self.request.get("incident_version")
@@ -53,6 +69,10 @@ class IncidentDefinition(base.RequestHandler):
     work_order_prefix = self.request.get("work_order_prefix")
     centroid_latitude = self.request.get("centroid_latitude")
     centroid_longitude = self.request.get("centroid_longitude")
+    camera_latitude = self.request.get("camera_latitude")
+    camera_longitude = self.request.get("camera_longitude")
+    developer_mode = bool(self.request.get("developer_mode"))
+    ignore_validation = bool(self.request.get("ignore_validation"))
     
     local_admin_name = self.request.get("local_admin_name")
     local_admin_title = self.request.get("local_admin_title")
@@ -61,12 +81,25 @@ class IncidentDefinition(base.RequestHandler):
     local_admin_cell_phone = self.request.get("local_admin_cell_phone")
     local_admin_password = self.request.get("local_admin_password")
   
+  
+    public_map_title = self.request.get("public_map_title")
+    public_map_url = self.request.get("public_map_url")
+    public_map_cluster = bool(self.request.get("public_map_cluster"))
+    public_map_zoom = self.request.get("public_map_zoom")
+    
+    internal_map_title = self.request.get("internal_map_title")
+    internal_map_url = self.request.get("internal_map_url")
+    internal_map_cluster = bool(self.request.get("internal_map_cluster"))
+    internal_map_zoom = self.request.get("internal_map_zoom")
+  
     start_date_object = datetime.strptime(start_date, "%m/%d/%Y").date()
     end_date_object = datetime.strptime(end_date, "%m/%d/%Y").date()
     incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
 
-    inc_def = incident_definition.IncidentDefinition(version = incident_version, full_name = incident_full_name, short_name = incident_short_name, timezone = timezone, start_date = start_date_object, end_date = end_date_object, incident_date = incident_date_object, work_order_prefix = work_order_prefix, centroid_lat = centroid_latitude, centroid_lng = centroid_longitude)
+    inc_def = incident_definition.IncidentDefinition(version = incident_version, full_name = incident_full_name, short_name = incident_short_name, timezone = timezone, start_date = start_date_object, end_date = end_date_object, incident_date = incident_date_object, work_order_prefix = work_order_prefix, centroid_lat = centroid_latitude, centroid_lng = centroid_longitude, camera_latitude = camera_latitude, camera_longitude = camera_longitude, developer_mode = developer_mode, ignore_validation = ignore_validation, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, public_map_cluster = public_map_cluster, public_map_title = public_map_title, public_map_url = public_map_url, public_map_zoom = public_map_zoom, internal_map_cluster = internal_map_cluster, internal_map_title = internal_map_title, internal_map_url = internal_map_url, internal_map_zoom = internal_map_zoom)
     inc_def.put()
+    
+    self.redirect("/incident_definition?id=" + str(inc_def.key().id()))
 
     
   

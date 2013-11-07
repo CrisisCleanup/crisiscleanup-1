@@ -84,21 +84,13 @@ class EditHandler(base.AuthenticatedHandler):
     post_json = json.dumps(post_json2)
     #raise Exception(post_json)
     
-    
-    q = db.Query(form_db.IncidentForm)
-    q.filter("incident =", event.key())
-    query = q.get()
+
 
     # set it as form_stub
     # send to single site
 
     inc_form = None
     form=None
-    
-    
-    q = db.Query(form_db.IncidentForm)
-    q.filter("incident =", event.key())
-    query = q.get()
     
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
@@ -110,96 +102,19 @@ class EditHandler(base.AuthenticatedHandler):
       pass
 
     inc_form, label, paragraph= populate_incident_form(json.loads(inc_def_query.forms_json), phase_id)
-    if query:
-      inc_form = query.form_html
-    new_inc_form = inc_form.replace("checked ", "")
-    if 1==1:
-      new_inc_form = new_inc_form.replace('<input type="checkbox" id="ignore_similar" name="ignore_similar">', "")
-      new_inc_form = new_inc_form.replace('Ignore similar matches', '')
-      new_inc_form = new_inc_form.replace('<input type=submit value="Submit request">', '')
-  
-      #raise Exception(post_json2)
 
-      for k, v in post_json2.iteritems():
-	if k in ["request_date", "name", "city", 'county', 'country', 'state', 'address', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'time_to_call', 'tarps_needed', 'damaged_fence_length', 'fence_type', 'fence_notes', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'prepared_by', 'do_not_work_before', 'flood_height']:
-	  try:
-	    id_index = new_inc_form.index('id="' + k)
-	    value_index = new_inc_form[id_index:].index("value")
-	    if k in ["latitude", "longitude"] and event.short_name != "moore":
-	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+10:] 
-	    else:
-	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 
-	  except:
-	    pass
-	elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes" or k== 'goods_and_services' or k=="work_requested":
-	  try:
-	    id_index = new_inc_form.index('id="' + k)
-	    value_index = new_inc_form[id_index:].index(">")
-	    new_inc_form = new_inc_form[:id_index + value_index+1] + str(v) + new_inc_form[id_index + value_index+1:] 
-	  except:
-	    pass
-
-	elif k in ['house_affected', 'outbuilding_affected', 'exterior_property_affected', 'work_without_resident', 'member_of_assessing_organization', 'first_responder', 'older_than_60', 'house_roof_damage', 'outbuilding_roof_damage', 'help_install_tarp', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinery_required', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'claim_for_org', 'disabled', 'hardwood_floor_removal', 'drywall_removal', 'heavy_item_removal', 'appliance_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'roof_damage', "debris_removal_only", "broken_glass", "carpet_removal"]:
-	  try:
-	    if v == "y":
-	      id_index = new_inc_form.index('id="' + k)
-	      value_index = new_inc_form[id_index:].index(">")
-	      new_inc_form = new_inc_form[:id_index + value_index] + "checked" + new_inc_form[id_index + value_index:] 
-	  except:
-	    pass
-	    
-	    
-	#TODO
-	#
-	# Below deleted pending correct form. Make a real form
-	#
-	
-	
-	#elif k=="priority" or k=="destruction_level":
-	  ##try:
-	  #id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
-	  ##new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
-
-	  #new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
-	#elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
-	  #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME] and k == "floors_affected":
-	    #pass
-	  #else:
-	    #logging.debug(event.short_name)
-	    #logging.debug(k + " is the key")
-            #logging.debug(v + " is the value")
-	    #id_index = new_inc_form.index('id="' + k)
-	    #value_index = new_inc_form[id_index:].index('value="' + str(v))
-	    #length = 0
-	    #if v != None:
-	      #length = len(str(v))
-	    
-	    #new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
-
-	  
-
-
-	
-	#raise Exception(new_inc_form[:id_index + 380])
-	#except:
-	  #pass      # find 'id=" + k
-      # find type=", (index)
-      # find ", (index)
-      # What's in between is the type.
-      # If the type == Checkbox, and value == y
-      # find >, (index)
-      # add "checked" just before
     submit_button = '<input type="submit" value="Submit request">'
 
+
+    
     single_site = single_site_template.render(
         { "form": form,
           "org": org,
-	  "incident_form_block": new_inc_form,
+	  "incident_form_block": inc_form,
 	  "post_json": post_json,
 	  "submit_button": submit_button
           })
     
-    #raise Exception(query.form_html)
     self.response.out.write(template.render(
           {"mode_js": self.request.get("mode") == "js",
            "menubox" : menubox_template.render({"org": org, "event": event}),
@@ -305,6 +220,7 @@ class EditHandler(base.AuthenticatedHandler):
 	#"reported_by": str(site.reported_by.name),
       #}
       post_json = json.dumps(post_json2)
+      
 
       single_site = single_site_template.render(
           { "form": data,
@@ -367,8 +283,6 @@ def populate_incident_form(form_json, phase_id):
       checked = ""
       if obj["checkbox_required"] == True:
 	required = "*"
-      if obj["checkbox_default"] == "y":
-	checked = " checked"
       new_checkbox = '<tr><td class=question><label for="' + obj['checkbox_id'] + '">' + obj['checkbox_label'] + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + obj['checkbox_id'] + '" type="hidden" value="' +obj['checkbox_unchecked_value'] + '"/><input class="" id="' + obj['checkbox_id'] + '" name="' + obj['checkbox_id'] + '" type="checkbox" value="' +obj['checkbox_checked_value'] + '"' + checked + '></div></td></tr>';
       string += new_checkbox
     elif "type" in obj and obj["type"] == "select":
@@ -410,9 +324,9 @@ def populate_incident_form(form_json, phase_id):
       for option in options_array:
 	options_string = ""
 	if obj['radio_default'] == option:
-	  option_string = '<td><input id="' + obj[option] + '" name="' + obj['radio_label'] + '" type="radio" value="' + obj[option] + '" checked="true"></td>'
+	  option_string = '<td><input id="' + obj['radio_id'] + '" name="' + obj['radio_id'] + '" type="radio" value="' + obj[option] + '"></td>'
 	else:
-	  option_string = '<td><input id="' + obj['radio_label'] + '" name="' + obj['radio_label'] + '" type="radio" value="' + obj['radio_label'] + '"></td>';
+	  option_string = '<td><input id="' + obj['radio_id'] + '" name="' + obj['radio_id'] + '" type="radio" value="' + obj[option] + '"></td>';
   
         radio_string = radio_string + option_string
         

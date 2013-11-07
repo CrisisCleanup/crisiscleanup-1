@@ -258,18 +258,22 @@ class FormHandler(base.AuthenticatedHandler):
     q = db.Query(form_db.IncidentForm)
     q.filter("incident =", event.key())
     query = q.get()
-
-    # set it as form_stub
-    # send to single site
-
     inc_form = None
     if query:
       inc_form = query.form_html
       
+      
+    phase_number = self.request.get("phase_number")
+
+    q = db.Query(incident_definition.IncidentDefinition)
+    q.filter("incident =", event.key())
+    inc_def_query = q.get()
+    string, label, paragraph= populate_incident_form(IncidentForm, json.loads(inc_def_query.forms_json), phase_number)
+
     single_site = single_site_template.render(
         { "form": data,
           "org": org,
-          "incident_form_block": inc_form,
+          "incident_form_block": string,
           })
     self.response.out.write(template.render(
         {"message": message,
@@ -382,9 +386,9 @@ def populate_incident_form(IncidentForm, form_json, phase_number):
       for option in options_array:
 	options_string = ""
 	if obj['radio_default'] == option:
-	  option_string = '<td><input id="' + obj[option] + '" name="' + obj['radio_label'] + '" type="radio" value="' + obj[option] + '" checked="true"></td>'
+	  option_string = '<td><input id="' + obj['radio_id'] + '" name="' + obj['radio_id'] + '" type="radio" value="' + obj[option] + '" checked="true"></td>'
 	else:
-	  option_string = '<td><input id="' + obj['radio_label'] + '" name="' + obj['radio_label'] + '" type="radio" value="' + obj['radio_label'] + '"></td>';
+	  option_string = '<td><input id="' + obj['radio_id'] + '" name="' + obj['radio_id'] + '" type="radio" value="' + obj[option] + '"></td>';
   
         radio_string = radio_string + option_string
         

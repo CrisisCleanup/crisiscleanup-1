@@ -504,4 +504,4 @@ def _filter_non_digits(s):
 
 
 class StandardSiteForm(model_form(Site)):
-    pass
+  pass

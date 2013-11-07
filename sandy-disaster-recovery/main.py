@@ -159,6 +159,8 @@ app = webapp2.WSGIApplication([
     Route(r'/dev', form_handler.FormHandler, 'dev'),
     Route(r'/', form_handler.FormHandler, 'dev'),
     Route(r'/dev/map', map_handler.MapHandler, 'map'),
+    Route(r'/phase/', form_handler.FormHandler, 'dev'),
+
     Route(r'/dev/maps', redirect_to_name='map', name='maps_redirect'),
     Route(r'/map', map_handler.MapHandler, 'map'),
     Route(r'/maps', redirect_to_name='map', name='maps_redirect'),

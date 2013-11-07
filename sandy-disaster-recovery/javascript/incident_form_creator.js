@@ -464,8 +464,8 @@ function add_checkbox_input(form_json_array) {
     checkbox_required: checkbox_required,
     checkbox_sensitive: checkbox_sensitive,
     checkbox_id: checkbox_id,
-    checkbox_checked_value: checkbox_checked_value,
-    checkbox_unchecked_value: checkbox_unchecked_value,
+    checkbox_checked_value: "y",
+    checkbox_unchecked_value: "n",
     checkbox_infobox: checkbox_infobox,
     checkbox_printer: checkbox_printer,
     checkbox_mobile: checkbox_mobile,
@@ -752,6 +752,7 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 //       $("#tabs-1").empty();
 
       $("#form_label").append("<h2>Create a form by using the controls on the left</h2>");
+
 //       $("#tabs-2").append(data.forms_json);
       var phases_array = JSON.parse(data.phases_json);
 
@@ -774,6 +775,10 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 //       $("#tabs-2").append(form_json_array);
 //       show_first_phase_form(incident_short_name, incident_short_name);
     } else {
+//     hide_sidebar_form_creator();
+    $("#form_label").append('<h2><a href="/incident_edit_form">Edit Form</a></h2>');
+
+    
     var arr = JSON.parse(data.forms_json);
     //console.log(arr.length);
     var any_equal = false;
@@ -797,12 +802,16 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 
 // 	  alert(jString);
 	  read_json_to_html(form_json_array);
+// 	      hide_sidebar_form_creator();
+    $("#form_label").append('<h2><a href="/incident_edit_form">Edit Form</a></h2>');
 
 	}
       }
     }
     
     if (!any_equal) {
+        show_sidebar_form_creator();
+
       $("#form_label").append("<h2>Create a form by using the controls on the left</h2>");
 //       $("#tabs-2").append(data.forms_json);
       var phases_array = JSON.parse(data.phases_json);
@@ -827,9 +836,9 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 
     }
     }
+  });
   show_sidebar_form_creator();
 
-  });
 }
 
 
@@ -860,7 +869,6 @@ function save_changes(form_json_array) {
   });
   var jString = JSON.stringify(form_json_array);
   //console.log(jString);
-//   alert(jString);
 
   $.post( "incident_save_form", {form_json_array:jString}, function( data ) {
     //console.log(data);
@@ -871,7 +879,7 @@ function save_changes(form_json_array) {
 }
 
 function hide_sidebar_form_creator() {
-  //console.log("hide_sidebar_form_creator");
+  console.log("hide_sidebar_form_creator");
   $("#sidebar_form_creator").hide();
   $("#phases").hide();
   $("#add_phase_button").hide();
@@ -880,11 +888,19 @@ function hide_sidebar_form_creator() {
 }
 
 function show_sidebar_form_creator() {
-  //console.log("show_sidebar_form_creator");
-  $("#edit_phase_button").show();
+  console.log("show_sidebar_form_creator");
   $("#sidebar_form_creator").show();
   $("#phases").show();
   $("#add_phase_button").show();
+  $("#edit_phase_button").show();
+
+}
+
+function show_form_controls() {
+  console.log("show_form_controls");
+    $("#phases").show();
+  $("#add_phase_button").show();
+  $("#edit_phase_button").show();
 }
 
 function hide_phases_list() {
@@ -896,10 +912,11 @@ function show_phases_list() {
 }
 
 function add_edit_buttons(order_number) {
- buttons_string = '<a href="#' + order_number + '" class="move_one_position_up" id="' + order_number + '">+</a>\
-		   <a href="#' + order_number + '" class="move_one_position_down" id="' + order_number + '">-</a>\
-		   <a href="#' + order_number + '" class="delete_by_position" id="' + order_number + '">X</a>';
- return buttons_string;
+//  buttons_string = '<a href="#' + order_number + '" class="move_one_position_up" id="' + order_number + '">+</a>\
+// 		   <a href="#' + order_number + '" class="move_one_position_down" id="' + order_number + '">-</a>\
+// 		   <a href="#' + order_number + '" class="delete_by_position" id="' + order_number + '">X</a>';
+//  return buttons_string;
+  return " ";
 }
 
 function move_one_position_up(order_number, form_json_array) {

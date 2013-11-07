@@ -55,7 +55,7 @@ HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 
-class IncidentForm(Form):
+class IncidentForm(site_db.Site):
   pass
 
 class FormHandler(base.AuthenticatedHandler):
@@ -68,7 +68,7 @@ class FormHandler(base.AuthenticatedHandler):
     #if not event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME, "sandy"]:
       #single_site_template = jinja_environment.get_template('single_site_incident_form.html')
 
-      
+    phase_number = self.request.get("phase_number")
     message = cgi.escape(self.request.get("message"))
     if len(message) == 0:
       message = None
@@ -87,7 +87,8 @@ class FormHandler(base.AuthenticatedHandler):
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
-    string, label, paragraph= populate_incident_form(IncidentForm, json.loads(inc_def_query.forms_json))
+    string, label, paragraph= populate_incident_form(IncidentForm, json.loads(inc_def_query.forms_json), phase_number)
+    phases_links = populate_phase_links(json.loads(inc_def_query.phases_json))
     #raise Exception(th)
     
     # set it as form_stub
@@ -102,7 +103,8 @@ class FormHandler(base.AuthenticatedHandler):
           "incident_form_block": string,
           "label": label,
           "paragraph": paragraph,
-          "submit_button": submit_button
+          "submit_button": submit_button,
+          "phases_links": phases_links,
 	})
     self.response.out.write(template.render(
         {"version" : os.environ['CURRENT_VERSION_ID'],
@@ -271,14 +273,30 @@ class FormHandler(base.AuthenticatedHandler):
 
 
 
-def populate_incident_form(IncidentForm, form_json):
+def populate_incident_form(IncidentForm, form_json, phase_number):
+  #raise Exception(phase_number)
+  if phase_number:
+    phase_number = int(str(phase_number))
+  else:
+    phase_number = 0
+    
 
   i = 0
   string = ""
   label = ""
   paragraph = ""
-  for obj in form_json[6]:
+  try:  
+    form_json[phase_number]
+  except:
+    string = "<h2>No Form Added"
+    label = ""
+    paragraph=""
+    return string, label, paragraph
+  for obj in form_json[phase_number]:
+    #raise Exception(form_json[phase_number])
     i+=1
+    if "phase_id" in obj:
+      string += '<input type="hidden" name="phase_id" value="' + obj['phase_id'] + '">'
     if "type" in obj and obj["type"] == "text":
       required = ""
       if obj["text_required"] == True:
@@ -414,3 +432,13 @@ def populate_incident_form(IncidentForm, form_json):
       #try:
 	#if i == 5:
 	  #raise Exception(34)
+	  
+def populate_phase_links(phases_json):
+  links = ""
+  i = 0
+  for phase in phases_json:
+    num = str(i).replace('"', '')
+    links = links + '<a href="/?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    i+=1
+    
+  return links

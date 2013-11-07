@@ -29,6 +29,7 @@ import base
 import site_db
 import site_util
 import form_db
+from models import incident_definition
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -71,6 +72,7 @@ class EditHandler(base.AuthenticatedHandler):
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #form = site_db.DerechosSiteForm(self.request.POST, site)
     post_json2 = site_db.SiteToDict(site)
+
     date_string = str(post_json2['request_date'])
     post_json2['request_date'] = date_string
     post_json2['event'] = site.event.name
@@ -92,10 +94,26 @@ class EditHandler(base.AuthenticatedHandler):
 
     inc_form = None
     form=None
+    
+    
+    q = db.Query(form_db.IncidentForm)
+    q.filter("incident =", event.key())
+    query = q.get()
+    
+    q = db.Query(incident_definition.IncidentDefinition)
+    q.filter("incident =", event.key())
+    inc_def_query = q.get()
+    phase_id = None
+    try:
+      phase_id = post_json2['phase_id']
+    except:
+      pass
+
+    inc_form, label, paragraph= populate_incident_form(json.loads(inc_def_query.forms_json), phase_id)
     if query:
       inc_form = query.form_html
     new_inc_form = inc_form.replace("checked ", "")
-    if mode_js:
+    if 1==1:
       new_inc_form = new_inc_form.replace('<input type="checkbox" id="ignore_similar" name="ignore_similar">', "")
       new_inc_form = new_inc_form.replace('Ignore similar matches', '')
       new_inc_form = new_inc_form.replace('<input type=submit value="Submit request">', '')
@@ -130,26 +148,33 @@ class EditHandler(base.AuthenticatedHandler):
 	  except:
 	    pass
 	    
-	elif k=="priority" or k=="destruction_level":
-	  #try:
-	  id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
-	  #new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
-
-	  new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
-	elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
-	  if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME] and k == "floors_affected":
-	    pass
-	  else:
-	    logging.debug(event.short_name)
-	    logging.debug(k + " is the key")
-            logging.debug(v + " is the value")
-	    id_index = new_inc_form.index('id="' + k)
-	    value_index = new_inc_form[id_index:].index('value="' + str(v))
-	    length = 0
-	    if v != None:
-	      length = len(str(v))
 	    
-	    new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
+	#TODO
+	#
+	# Below deleted pending correct form. Make a real form
+	#
+	
+	
+	#elif k=="priority" or k=="destruction_level":
+	  ##try:
+	  #id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
+	  ##new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
+
+	  #new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
+	#elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
+	  #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME] and k == "floors_affected":
+	    #pass
+	  #else:
+	    #logging.debug(event.short_name)
+	    #logging.debug(k + " is the key")
+            #logging.debug(v + " is the value")
+	    #id_index = new_inc_form.index('id="' + k)
+	    #value_index = new_inc_form[id_index:].index('value="' + str(v))
+	    #length = 0
+	    #if v != None:
+	      #length = len(str(v))
+	    
+	    #new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
 
 	  
 
@@ -164,11 +189,14 @@ class EditHandler(base.AuthenticatedHandler):
       # If the type == Checkbox, and value == y
       # find >, (index)
       # add "checked" just before
+    submit_button = '<input type="submit" value="Submit request">'
+
     single_site = single_site_template.render(
         { "form": form,
           "org": org,
 	  "incident_form_block": new_inc_form,
 	  "post_json": post_json,
+	  "submit_button": submit_button
           })
     
     #raise Exception(query.form_html)
@@ -296,3 +324,142 @@ class EditHandler(base.AuthenticatedHandler):
            "id": id,
 	   "post_json": post_json,
            "page": "/edit"}))
+
+
+def populate_incident_form(form_json, phase_id):
+
+  i = 0
+  string = ""
+  label = ""
+  paragraph = ""
+  phase_number = 0
+  i = 0
+  for obj in form_json:
+    for o in obj:
+      if "phase_id" in o and o['phase_id'] == phase_id:
+	phase_number = i
+    i+=1
+  for obj in form_json[phase_number]:
+    i+=1
+    if "type" in obj and obj["type"] == "text":
+      required = ""
+      if obj["text_required"] == True:
+	required = "*"
+      new_text_input = '<tr><td class=question>' + obj['text_label'] + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + obj['text_id'] + '" name="' + obj['text_id'] + '" type="text" value="' + obj['text_default'] + '" placeholder="' + obj['text_placeholder'] + '"/></div></td></tr>'
+      string += new_text_input
+    elif "type" in obj and obj["type"] == "label":
+      label = obj['label']
+    elif "type" in obj and obj["type"] == "header":
+      new_header = '<tr><td class="question"><h2>' + obj['header'] + '</h2></tr></td>'
+      string += new_header
+      
+    elif "type" in obj and obj["type"] == "subheader":
+      new_subheader = '<tr><td class="question"><h3>' + obj['subheader'] + '</h3></tr></td>'
+      string += new_subheader
+    elif "type" in obj and obj["type"] == "textarea":
+      new_textarea = '<tr><td class=question>' + obj['textarea_label'] + ':</td><td class="answer">\
+      <div class="form_field"><textarea class="" id="' + obj['textarea_id'] + '" name="' + obj['textarea_id'] + '"></textarea></div>\
+      </td></tr>'
+      string += new_textarea
+    
+    elif "type" in obj and obj["type"] == "paragraph":
+      paragraph = obj["paragraph"]
+    elif "type" in obj and obj["type"] == "checkbox":
+      required = ""
+      checked = ""
+      if obj["checkbox_required"] == True:
+	required = "*"
+      if obj["checkbox_default"] == "y":
+	checked = " checked"
+      new_checkbox = '<tr><td class=question><label for="' + obj['checkbox_id'] + '">' + obj['checkbox_label'] + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + obj['checkbox_id'] + '" type="hidden" value="' +obj['checkbox_unchecked_value'] + '"/><input class="" id="' + obj['checkbox_id'] + '" name="' + obj['checkbox_id'] + '" type="checkbox" value="' +obj['checkbox_checked_value'] + '"' + checked + '></div></td></tr>';
+      string += new_checkbox
+    elif "type" in obj and obj["type"] == "select":
+      options_array = []
+      required = ""
+      for key in obj:
+	if "select_option_" in key:
+	  options_array.append(key)
+      if obj["select_required"]:
+	required = "*"
+      begin_option = '<tr><td class=question>' + obj['select_label'] + required +'</td><td class="answer"><div class="form_field"><select class="" id="' + obj['select_id'] + '" name="' + obj['select_id'] + '">';
+      end_option = '</select></div></td></tr>';
+      select_string = "";
+      
+      options_array.sort()
+      for option in options_array:
+	option_string = ""
+	if obj['select_default'] == option:
+	  option_string = "<option selected>" + obj[option] + "</option>"
+	else:
+	  option_string = "<option>" + obj[option] + "</option>";
+	select_string = select_string + option_string
+
+      new_select = begin_option + select_string + end_option
+      string += new_select
+    elif "type" in obj and obj["type"] == "radio":
+      options_array = []
+      required = ""
+      for key in obj:
+	if "radio_option_" in key:
+	  options_array.append(key)
+      if obj["radio_required"]:
+	      required = "*"
+      radio_string = "";
+      radio_string_start = '</td></tr><tr><td class=question>' + obj['radio_label'] + required + '</td><td class="answer"><table><tr><td>' + obj['radio_low_hint'] + '</td><td>';
+      radio_string_end = '<td>' + obj['radio_high_hint'] + '</td></tr></table></td></tr>';
+      
+      options_array.sort()
+      for option in options_array:
+	options_string = ""
+	if obj['radio_default'] == option:
+	  option_string = '<td><input id="' + obj[option] + '" name="' + obj['radio_label'] + '" type="radio" value="' + obj[option] + '" checked="true"></td>'
+	else:
+	  option_string = '<td><input id="' + obj['radio_label'] + '" name="' + obj['radio_label'] + '" type="radio" value="' + obj['radio_label'] + '"></td>';
+  
+        radio_string = radio_string + option_string
+        
+      string = string + radio_string_start + radio_string + radio_string_end;
+  
+      #for (var j = 0; j < options_array.length; j++) {
+        #var options_string = "";
+	#if(form_json_array[i].radio_default == options_array[j]) {
+          #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
+	#} else {
+	  #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
+	#}
+
+	#radio_string = radio_string + option_string;
+      #}
+
+    #if(form_json_array[i].type == "radio") {
+      #var options_array = []
+      #for (var key in form_json_array[i]) {
+        #var key_string = key.toString();
+        #if (key_string.indexOf("radio_option_") == 0) {
+	    #options_array.push(key_string);
+        #}
+      #}
+      
+      #var req = "";
+      #if (form_json_array[i].radio_required) {
+        #req = "*";
+      #}
+      #var radio_string = "";
+      #var radio_string_start = '</td></tr><tr><td class=question>' + form_json_array[i].radio_label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
+      #var radio_string_end = '<td>' + form_json_array[i].radio_high_hint + '</td></tr></table></td></tr>';
+      #for (var j = 0; j < options_array.length; j++) {
+        #var options_string = "";
+	#if(form_json_array[i].radio_default == options_array[j]) {
+          #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
+	#} else {
+	  #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
+	#}
+
+	#radio_string = radio_string + option_string;
+      #}
+      #var final_radio_string = radio_string_start + radio_string + radio_string_end;
+      #$("#form_table").append(final_radio_string);
+
+    #}
+
+  return string, label, paragraph

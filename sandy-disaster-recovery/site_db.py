@@ -27,6 +27,7 @@ from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.ext.db import Query
 from google.appengine.api import search
+from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
 # Local libraries.
 import event_db
@@ -687,6 +688,3 @@ def GetAllCached(event, ids = None):
 
 def _filter_non_digits(s):
     return ''.join(filter(lambda x: x.isdigit(), s))
-
-class StandardSiteForm(model_form(Site)):
-    pass

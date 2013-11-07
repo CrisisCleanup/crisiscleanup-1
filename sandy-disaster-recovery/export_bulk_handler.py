@@ -43,7 +43,6 @@ class ExportBulkHandler(base.AuthenticatedHandler):
         self.handle(org, event)
 
     def handle(self, org, event):
-        import pdb; pdb.set_trace()
         if self.request.get('download') == 'selected':
             id_list = self.request.get('id_list')
         else:

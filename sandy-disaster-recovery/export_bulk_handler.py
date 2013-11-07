@@ -37,11 +37,17 @@ def get_csv_fields_list():
 class ExportBulkHandler(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
-        id_list = self.request.get('id_list')
-        self.start_export(org, event, id_list)
+        self.handle(org, event)
 
     def AuthenticatedPost(self, org, event):
-        id_list = self.request.get('id_list')
+        self.handle(org, event)
+
+    def handle(self, org, event):
+        import pdb; pdb.set_trace()
+        if self.request.get('download') == 'selected':
+            id_list = self.request.get('id_list')
+        else:
+            id_list = []
         self.start_export(org, event, id_list)
 
     def start_export(self, org, event, id_list):

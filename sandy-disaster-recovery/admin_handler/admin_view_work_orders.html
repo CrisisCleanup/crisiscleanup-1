@@ -6,12 +6,10 @@
 
 {% block main_content %}
 
-<form method="GET" style="margin-bottom: 15px;">
+<form id="search-form" method="GET" style="margin-bottom: 15px;">
   {{ form.offset }}
   {{ form.order }}
-  {% if form.event.choices|length > 2 %}
-    {{ form.event.label }} {{ form.event() }}
-  {% endif %}
+  {{ form.event.label }} {{ form.event() }}
   {{ form.query.label }} {{ form.query(placeholder="Not yet implemented", disabled=True) }}
   {{ form.reporting_org.label }} {{ form.reporting_org() }}
   {{ form.claiming_org.label }} {{ form.claiming_org() }}
@@ -22,7 +20,23 @@
 </form>
 
 {% if count > 0 %}
-  <p>{{ offset + 1}} to {{ offset + sites|length }} of {{ count }} work orders.</p>
+  <div>
+    {{ offset + 1}} to {{ offset + sites|length }} of {{ count }} work orders
+    <form id="export-form" method="POST" style="display: inline-block">
+      <div style="display: none">
+        {{ form.offset }}
+        {{ form.order }}
+        {{ form.event() }}
+        {{ form.query(placeholder="Not yet implemented", disabled=True) }}
+        {{ form.reporting_org() }}
+        {{ form.claiming_org() }}
+        {{ form.work_type() }}
+        {{ form.status() }}
+        {{ form.per_page() }}
+      </div>
+      <button id="export-results-btn">Export Results</button>
+    </form>
+  </div>
 {% endif %}
 
 {% if sites|length > 0 %}
@@ -95,8 +109,12 @@ th[data-field] {
   cursor: pointer;
 }
 </style>
+<script src="/javascript/download_polling.js"></script>
 <script type="text/javascript">
 $(function() {
+
+$searchForm = $('form#search-form');
+$exportForm = $('form#export-form');
 
 $('th[data-field]').click(function(event) {
   // flip or set the sort order
@@ -106,6 +124,27 @@ $('th[data-field]').click(function(event) {
     var newOrder = orderField != currentOrder ? orderField : '-' + orderField;
     $('input[name=order]').val(newOrder).parent('form').submit();
   }
+});
+
+
+$exportResultsButton = $('#export-results-btn');
+
+
+$exportResultsButton.click(function(event) {
+  event.preventDefault();
+  $exportResultsButton.attr('disabled', true);
+  $.ajax({
+    url: '/admin-export-work-orders-bulk',
+    type: 'POST',
+    data: $exportForm.serialize(),
+  }).done(function(data) {
+    pollForCSVDownload(
+      data.filename,
+      function() {
+        $exportResultsButton.attr('disabled', false)
+      }
+    );
+  });
 });
 
 });

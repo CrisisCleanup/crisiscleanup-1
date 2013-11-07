@@ -34,21 +34,7 @@ def get_csv_fields_list():
     return [field % subs for field in CSV_FIELDS_LIST]
 
 
-class ExportBulkHandler(base.AuthenticatedHandler):
-
-    def AuthenticatedGet(self, org, event):
-        self.handle(org, event)
-
-    def AuthenticatedPost(self, org, event):
-        self.handle(org, event)
-
-    def handle(self, org, event):
-        import pdb; pdb.set_trace()
-        if self.request.get('download') == 'selected':
-            id_list = self.request.get('id_list')
-        else:
-            id_list = []
-        self.start_export(org, event, id_list)
+class AbstractExportBulkHandler(object):
 
     def start_export(self, org, event, id_list):
         # create filename
@@ -76,12 +62,18 @@ class ExportBulkHandler(base.AuthenticatedHandler):
             ])
             writer.writerow(get_csv_fields_list())
 
+        # select event filter based on user
+        if org.is_global_admin:
+            filtering_event_key = ''
+        else:
+            filtering_event_key = event.key()
+
         # start first task
         taskqueue.add(
             url='/export_bulk_worker',
             params={
                 'cursor': '',
-                'event': event.key(),
+                'event': filtering_event_key,
                 'filename': blobstore_filename,
                 'id_list': id_list,
             }
@@ -96,6 +88,22 @@ class ExportBulkHandler(base.AuthenticatedHandler):
         )
 
 
+class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
+
+    def AuthenticatedGet(self, org, event):
+        self.handle(org, event)
+
+    def AuthenticatedPost(self, org, event):
+        self.handle(org, event)
+
+    def handle(self, org, event):
+        if self.request.get('download') == 'selected':
+            id_list = self.request.get('id_list')
+        else:
+            id_list = []
+        self.start_export(org, event, id_list)
+
+
 class ExportBulkWorker(webapp2.RequestHandler):
 
     def _write_csv_rows(self, fd, sites):
@@ -107,7 +115,7 @@ class ExportBulkWorker(webapp2.RequestHandler):
     def post(self):
         # get args
         start_cursor = self.request.get('cursor')
-        event = Event.get(self.request.get('event'))
+        filtering_event_key = self.request.get('event')
         filename = self.request.get('filename')
         id_list = self.request.get('id_list')
         ids = (
@@ -116,7 +124,9 @@ class ExportBulkWorker(webapp2.RequestHandler):
         )
 
         # construct query
-        query = Site.all().filter('event', event)
+        query = Site.all()
+        if filtering_event_key:
+            query.filter('event', Event.get(filtering_event_key))
         if start_cursor:
             query.with_cursor(start_cursor)
         sites = query.fetch(limit=SITES_PER_TASK)
@@ -138,7 +148,7 @@ class ExportBulkWorker(webapp2.RequestHandler):
                 url='/export_bulk_worker',
                 params={
                     'cursor': end_cursor,
-                    'event': event.key(),
+                    'event': filtering_event_key,
                     'filename': filename,
                     'id_list': id_list,
                 }

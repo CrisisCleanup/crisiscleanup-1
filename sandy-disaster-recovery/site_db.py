@@ -688,3 +688,7 @@ def GetAllCached(event, ids = None):
 
 def _filter_non_digits(s):
     return ''.join(filter(lambda x: x.isdigit(), s))
+
+
+class StandardSiteForm(model_form(Site)):
+    pass

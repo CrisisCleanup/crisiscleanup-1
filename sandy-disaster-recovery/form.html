@@ -29,8 +29,6 @@ goog.require("sandy.form");
 {% endif %}
 </script>
 <script>
-
-
 {% if post_json %}
 $(function(){
 var post_json = {{post_json}};
@@ -38,56 +36,10 @@ var oFormObject = document.forms['form'];
 
 Object.keys(post_json).forEach(function(key) {
     var this_element = document.getElementById(key);
-//     alert(this_element);
-//     console.log(this_element);
-    if (key == "priority") {
-      var which_button = null;
-      if (post_json[key] == "5") {
-	which_button = "0";
-      }
-      if (post_json[key] == "4") {
-	which_button = "1";
-      }
-      if (post_json[key] == "3") {
-	which_button = "2";
-      }
-      if (post_json[key] == "2") {
-	which_button = "3";
-      }
-      if (post_json[key] == "1") {
-	which_button = "4";
-      }
-      
-      var new_key = "priority-" + which_button;
-      this_element = document.getElementById(new_key);
-    }
-    if (key == "destruction_level") {
-    console.error(post_json[key]);
-      var which_button = null;
-      if (post_json[key] == "Complete") {
-	which_button = "4";
-      }
-      if (post_json[key] == "Severe") {
-	which_button = "3";
-      }
-      if (post_json[key] == "Medium") {
-	which_button = "2";
-      }
-      if (post_json[key] == "2") {
-	which_button = "1";
-      }
-      if (post_json[key] == "Low") {
-	which_button = "0";
-      }
-      
-      var new_key = "destruction_level-" + which_button;
-      this_element = document.getElementById(new_key);
-    }
     var type = null;
     try
     {
       var type = this_element.type;	
-//       console.log("TYPE: " + type);
       if (type == "text") {
 	this_element.value = post_json[key];
       }
@@ -103,15 +55,17 @@ Object.keys(post_json).forEach(function(key) {
 	  this_element.checked = true;
 	}
       }
-      
       if (type == "radio") {
+        console.log(post_json[key]);
+        console.log(this_element);
 	this_element.checked = true;
+	$(':radio[value=' + post_json[key] + '][id=' + key + ']').click();
       }
 
     }
   catch(err)
     {
-      console.log("ERROR, ELEMENT = " + key + err + err.message);
+//       console.log("ERROR, ELEMENT = " + key + err + err.message);
       
     }
 
@@ -124,6 +78,8 @@ Object.keys(post_json).forEach(function(key) {
 })
 
 {% endif %}
+
+
 </script>
   <script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

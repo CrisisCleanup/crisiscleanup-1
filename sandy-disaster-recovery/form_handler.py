@@ -472,14 +472,15 @@ def populate_phase_links(phases_json):
     
   return links
 
-
+class BaseForm(wtforms.Form):
+    @classmethod
+    def append_field(cls, name, field):
+	setattr(cls, name, field)
+	return cls
 
 def build_form(form_json):
-  
-  #for field in form_json:
-    ## setattr
+  class DynamicForm(wtforms.Form): pass                      
 
-  class DynamicForm(Form): pass
   name = "name"
   setattr(DynamicForm, name, TextField(name.title(), [wtforms.validators.Length(min = 1, max = 100,
   message = "New Thing must be between 1 and 100 characters")]))

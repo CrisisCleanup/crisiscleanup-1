@@ -41,6 +41,8 @@ $(function() {
     var incident_full_name = $("#incident").val();
 
     get_form_json(phase, incident_full_name, form_json_array);
+    console.log(form_json_array);
+
   });
   
   $( "#add_phase_button" ).click(function() {
@@ -276,14 +278,37 @@ $(function() {
   
   $("#form_table").on( "click", ".move_one_position_up",  function() {
     order_number = $(this).attr("id");
-    form_json_array = move_one_position_up(parseInt(order_number));
+    console.log	(order_number);
+//     form_json_array = move_one_position_up(parseInt(order_number), form_json_array);
+    console.log(form_json_array);
+    if (swap_order_numbers_up(order_number, form_json_array)) {
+
+    form_json_array.move_up(parseInt(order_number));
+    console.log(form_json_array);
+
     
     var jString = JSON.stringify(form_json_array);
     $("#tabs-2").empty();
     $("#tabs-2").append(jString);
     read_json_to_html(form_json_array);
+    }
   });
   
+  
+  $("#form_table").on( "click", ".move_one_position_down",  function() {
+    order_number = $(this).attr("id");
+    if (swap_order_numbers_down(order_number, form_json_array)) {
+
+    form_json_array.move_down(parseInt(order_number));
+    console.log(form_json_array);
+
+    
+    var jString = JSON.stringify(form_json_array);
+    $("#tabs-2").empty();
+    $("#tabs-2").append(jString);
+    read_json_to_html(form_json_array);
+    }
+  });
 
 });
 
@@ -782,6 +807,7 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 
     
     var arr = JSON.parse(data.forms_json);
+
     //console.log(arr.length);
     var any_equal = false;
     for (var k = 0; k < arr.length; k++) {
@@ -797,13 +823,16 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 	  //console.log("eq");
 	  any_equal = true;
   // 	form_json_array.push(arr[0]);
-	  form_json_array = arr[k];
+	  form_json_arr = arr[k];
 	  var jString = JSON.stringify(form_json_array);
 	  $("#tabs-2").empty();
 	  $("#tabs-2").append(jString);
 
 // 	  alert(jString);
-	  read_json_to_html(form_json_array);
+	  read_json_to_html(form_json_arr);
+	  for (var b = 0; b < arr[k].length; b++) {
+	    form_json_array.push(arr[k][b]);
+	  }
 // 	      hide_sidebar_form_creator();
     $("#form_label").append('<h2><a href="/incident_edit_form">Edit Form</a></h2>');
 
@@ -930,10 +959,10 @@ function show_phases_buttons() {
 
 
 function add_edit_buttons(order_number) {
-//  buttons_string = '<a href="#' + order_number + '" class="move_one_position_up" id="' + order_number + '">+</a>\
-// 		   <a href="#' + order_number + '" class="move_one_position_down" id="' + order_number + '">-</a>\
-// 		   <a href="#' + order_number + '" class="delete_by_position" id="' + order_number + '">X</a>';
-//  return buttons_string;
+ buttons_string = '<a href="#' + order_number + '" class="move_one_position_up" id="' + order_number + '">+</a>\
+		   <a href="#' + order_number + '" class="move_one_position_down" id="' + order_number + '">-</a>\
+		   <a href="#' + order_number + '" class="delete_by_position" id="' + order_number + '">X</a>';
+ return buttons_string;
   return " ";
 }
 
@@ -946,6 +975,7 @@ function move_one_position_up(order_number, form_json_array) {
      form_json_array[i].order_number = form_json_array.order_number + 1
    }
   }
+  console.log(form_json_array)
   return form_json_array
 }
 
@@ -971,4 +1001,50 @@ function delete_by_position(order_number, form_json_array) {
       
     }
   }  
+}
+
+
+Array.prototype.swap = function (x,y) {
+  var b = this[x];
+  this[x] = this[y];
+  this[y] = b;
+  return this;
+}
+
+Array.prototype.move_up = function(order_number) {
+    var tmp = this[order_number - 1];
+    this[order_number - 1] = this[order_number];
+    this[order_number] = tmp;
+   
+}
+
+Array.prototype.move_down = function(order_number) {
+    var tmp = this[order_number + 1];
+    this[order_number + 1] = this[order_number];
+    this[order_number] = tmp;
+   
+}
+
+function swap_order_numbers_down(order_number, form_json_array) {
+  if (order_number < form_json_array.length - 1) {
+    console.log(order_number)
+    console.log(form_json_array.length);
+    form_json_array[order_number].order_number = parseInt(order_number) + 1;
+    console.log(form_json_array);
+    form_json_array[parseInt(order_number) + 1].order_number = order_number;
+
+    return true;
+  }
+  return false;
+  
+}
+function swap_order_numbers_up(order_number, form_json_array) {
+  if (order_number > 0) {
+    console.log(order_number)
+    form_json_array[order_number].order_number = order_number - 1;
+    form_json_array[order_number - 1].order_number = order_number;
+
+    return true;
+  }
+  return false;
 }

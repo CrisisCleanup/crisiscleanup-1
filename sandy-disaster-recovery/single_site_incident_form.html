@@ -16,7 +16,6 @@
     {{ field }}
 {% endmacro %}
 {% endif %}
-<<<<<<< HEAD
  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
 <script type="text/javascript">
 // Avoid `console` errors in browsers that lack a console.
@@ -120,14 +119,13 @@ Object.keys(post_json).forEach(function(key) {
 <!-- <table id="form_table">
  <p>{{phases_links}}</p>
  <table>
-<!--  {{ incident_form_block }} -->
+ {{ incident_form_block }}
 </table>
 
-{{ new_form.name.label}}{{new_form.name}}
+{{ new_form.name.label }} {{ new_form.name }}
 
 
 {{submit_button}}
 
 
 {{ standard_site_form }}
-

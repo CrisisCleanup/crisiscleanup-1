@@ -58,6 +58,7 @@ class IncidentForm(site_db.Site):
 class FormHandler(base.AuthenticatedHandler):
 
   def AuthenticatedGet(self, org, event):
+    new_form = build_form(None)
     #single_site_template = jinja_environment.get_template('single_site.html')
       
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
@@ -123,6 +124,7 @@ class FormHandler(base.AuthenticatedHandler):
           "paragraph": paragraph,
           "submit_button": submit_button,
           "phases_links": phases_links,
+          "new_form": new_form
 	})
     self.response.out.write(template.render(
         {"version" : os.environ['CURRENT_VERSION_ID'],
@@ -261,15 +263,23 @@ class FormHandler(base.AuthenticatedHandler):
     inc_form = None
     if query:
       inc_form = query.form_html
-      
-      
-    phase_number = self.request.get("phase_number")
 
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
-    string, label, paragraph= populate_incident_form(IncidentForm, json.loads(inc_def_query.forms_json), phase_number)
+    
+    phase_id = self.request.get("phase_id")
+    forms_array = json.loads(inc_def_query.forms_json)
+    phase_number = 0
+    i = 0
+    for form in forms_array:
+      for obj in form:
+	if phase_id in str(obj):
+	  phase_number = i
+	#raise Exception(phase_number)
+      i += 1
 
+    string, label, paragraph= populate_incident_form(IncidentForm, json.loads(inc_def_query.forms_json), phase_number)
     single_site = single_site_template.render(
         { "form": data,
           "org": org,
@@ -461,3 +471,18 @@ def populate_phase_links(phases_json):
     i+=1
     
   return links
+
+
+
+def build_form(form_json):
+  
+  #for field in form_json:
+    ## setattr
+
+  class DynamicForm(Form): pass
+  name = "name"
+  setattr(DynamicForm, name, TextField(name.title(), [wtforms.validators.Length(min = 1, max = 100,
+  message = "New Thing must be between 1 and 100 characters")]))
+  
+  
+  return DynamicForm

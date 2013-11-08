@@ -30,11 +30,14 @@ from models import incident_definition
 
 class IncidentSaveForm(base.RequestHandler):
   def post(self):
+    id_array = None
     form_json_array = self.request.get("form_json_array")
     new_array = json.loads(form_json_array)
-          
     q = incident_definition.IncidentDefinition.all()
-    q.filter("short_name =", new_array[0]['incident_short_name'])
+    for array in new_array:
+      if "incident_short_name" in array:
+	id_array = array
+    q.filter("short_name =", id_array['incident_short_name'])
     incident = q.get()
     
     forms_array = []

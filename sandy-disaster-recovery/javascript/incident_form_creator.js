@@ -28,6 +28,9 @@ $(function() {
   $("#tabs-1").show();
   $( "#incident" ).change(function() {
     show_phases_list();
+    show_phases_buttons();
+      $("#add_phase_button").show();
+  $("#edit_phase_button").show();
 
     var incident_full_name = $("#incident").val();
     get_json(incident_full_name, phases_json_array);
@@ -36,8 +39,7 @@ $(function() {
   $( "#phases_list" ).change(function() {
     var phase = $("#phases_list").val();
     var incident_full_name = $("#incident").val();
-//       $("#tabs-1").empty();
-//       $("#tabs-2").empty();
+
     get_form_json(phase, incident_full_name, form_json_array);
   });
   
@@ -561,9 +563,9 @@ function add_radio_input(form_json_array, radio_options_array) {
 function read_json_to_html(form_json_array) {
   //TODO
   //console.log("read_json_to_html");
-  form_json_array.sort(function (a, b) {
-    return a.order_number > b.order_number;
-  });
+//   form_json_array.sort(function (a, b) {
+//     return a.order_number > b.order_number;
+//   });
   if (first_run) {
     first_run = false;
   } else {
@@ -766,7 +768,7 @@ function get_form_json(phase,incident_short_name, form_json_array) {
       }
       form_json_array.push(phase_data);
       var jString = JSON.stringify(form_json_array);
-
+	  $("#tabs-2").empty();
       $("#tabs-2").append(jString);
 
 //       form_json_array.push(data.phases_json[0].phase_id);
@@ -812,7 +814,6 @@ function get_form_json(phase,incident_short_name, form_json_array) {
     if (!any_equal) {
         show_sidebar_form_creator();
 
-      $("#form_label").append("<h2>Create a form by using the controls on the left</h2>");
 //       $("#tabs-2").append(data.forms_json);
       var phases_array = JSON.parse(data.phases_json);
       
@@ -826,10 +827,17 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 	    "phase_short_name": phases_array[n].phase_short_name,
 	    
 	  }
+	  console.log(form_json_array);
 	  form_json_array.push(phase_data);
 	  var jString = JSON.stringify(form_json_array);
+	  $("#tabs-2").empty();
+	   $("#form_table").empty();
+	  $("#form_label").empty();
+      $("#form_label").append("<h2>Create a form by using the controls on the left</h2>");
+
 
 	  $("#tabs-2").append(jString);
+	  console.log("here");
 	}
       
       }
@@ -864,9 +872,9 @@ function read_phases_json_to_html(phases_json_array, incident_short_name) {
 }
 
 function save_changes(form_json_array) {
-  form_json_array.sort(function (a, b) {
-    return a.order_number > b.order_number;
-  });
+//   form_json_array.sort(function (a, b) {
+//     return a.order_number > b.order_number;
+//   });
   var jString = JSON.stringify(form_json_array);
   //console.log(jString);
 
@@ -910,6 +918,16 @@ function hide_phases_list() {
 function show_phases_list() {
   $("#phases_list").show();
 }
+
+function hide_phases_buttons() {
+  $("#phases_buttons").hide();
+}
+
+function show_phases_buttons() {
+  $("#phases_buttons").show();
+}
+
+
 
 function add_edit_buttons(order_number) {
 //  buttons_string = '<a href="#' + order_number + '" class="move_one_position_up" id="' + order_number + '">+</a>\

@@ -467,8 +467,5 @@ def build_form(form_json):
 
   class DynamicForm(Form): pass
   name = "name"
-  setattr(DynamicForm, name, TextField(name.title(), [wtforms.validators.Length(min = 1, max = 100,
-  message = "New Thing must be between 1 and 100 characters")]))
-  
-  
+  setattr(DynamicForm, name, TextField(name.title()))
   return DynamicForm

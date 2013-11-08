@@ -458,14 +458,23 @@ def populate_phase_links(phases_json):
   return links
 
 
-
+class BaseForm(wtforms.Form):
+    @classmethod
+    def append_field(cls, name, field):
+	setattr(cls, name, field)
+	return cls
 
 def build_form(form_json):
-  
-  #for field in form_json:
-    ## setattr
+  class DynamicForm(wtforms.Form): pass                      
 
-  class DynamicForm(Form): pass
   name = "name"
   setattr(DynamicForm, name, TextField(name.title()))
-  return DynamicForm
+  d = DynamicForm
+  return d
+  
+  
+#def build_form(form_json):
+  #class DynamicForm(BaseForm): pass
+  #form = DynamicForm.append_field("name", TextField("Name"))
+  
+  #return form

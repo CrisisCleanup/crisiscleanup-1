@@ -46,6 +46,9 @@ class IncidentSaveForm(base.RequestHandler):
     pre_existing_forms_json = incident.forms_json
     pefj = json.loads(pre_existing_forms_json)
     
+    # check if this form (with phase id) is already there, if so, replace it, if not, add it
+    
+    
     pefj.append(new_array)
     
     incident.forms_json = json.dumps(pefj)

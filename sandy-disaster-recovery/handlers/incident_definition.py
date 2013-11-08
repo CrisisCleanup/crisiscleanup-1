@@ -143,4 +143,3 @@ class IncidentDefinition(base.RequestHandler):
     #webapp2_extras.security.hash_password(password, method, salt=None, pepper=None)
     #get password hash
     #webapp2_extras.security.check_password_hash(password, pwhash, pepper=None)
-    

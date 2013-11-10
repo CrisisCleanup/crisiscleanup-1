@@ -12,6 +12,11 @@ edit phase
 
 {% block scripts %}
 <script type="text/javascript" src="../javascript/incident_form_creator.js"></script>
+<!--<script type="text/javascript" src="../javascript/ui-bootstrap-tpls-0.6.0.min.js"></script>
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">-->
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
+<script src="../javascript/form_module.js"></script>-->
 
 {% endblock %}
 
@@ -29,6 +34,20 @@ edit phase
 {% endblock %}
 
 {% block sidebar_content %}
+<!--<div ng-app="formBuilderApp">
+  <div ng-controller="incidentsController">
+
+  
+    <select ng-model="selectedIncident" ng-options="item as item.test for item in incidents">
+      <option value="">Select Incident</option>
+    </select>
+    <[ selectedIncident ]>
+<!--    <ul>
+    <li ng-repeat="inc in incidents"><[ inc.test ]></li>
+   </ul>-->
+<!--
+  </div>
+</div>-->
 
 <div id="sidebar_form_creator">
   <div id="form_editor">
@@ -279,84 +298,3 @@ edit phase
 </div>
 
 {% endblock %}
-
-
-
-<!--
-TODO
-
--- make form fit into current question-answer scheme from current html
--- create an id_name for each label (lowerCase and replace spaces with underscores)
--- for selects, ids have dashes (-) not underscores (_)
--- add incident and phase support
-
--- save to incident. Save button in HTML tab, JSON tab and form creator div
-
--- separate into files
-
--- qunit
-
--- edit an existing form (after you save it)
-
--- html remove field
-
--- html add field here
-
--- add order to the form_json_array? That way, we can have label at 0, paragraph at 1... what happens when one is deleted in place?
-
-__
-
-order
-
-#make form fit into current format
-
-add subheading (like heading, but with h3)
-add incident support
-
-new tabs,
-  phases
-    html
-    json
-    edit json
-
-autosave(?) save progress(?)
-save button
-
-edit form
-
-add phases
-edit phases
-
-test with lat/lng auto geocode
-_____
-
-_____
-
-Phases
-- change div ids for tabs-1, tabs-2
-
-- change left hand to show different forms
-
-Associate with Incident
-
-Save
--- phases and forms json(s) to incident
--- save to recycle bin saved within model
-
-Inherit
-- a phase
-- a form
-
-- phases schema
--- without forms
--- with forms
-
-Edit html/json
--- Line _____________  Edit | Remove | Add element above
-
-Refactor JQuery
-
-Move JQuery into separate files
-
-JUnit
--->

@@ -124,7 +124,7 @@ class FormHandler(base.AuthenticatedHandler):
           "paragraph": paragraph,
           "submit_button": submit_button,
           "phases_links": phases_links,
-          "new_form": new_form
+          "new_form": new_form()
 	})
     self.response.out.write(template.render(
         {"version" : os.environ['CURRENT_VERSION_ID'],

@@ -762,6 +762,8 @@ function clear_radio_options() {
 
 
 function get_json(incident_short_name, phases_json_array) {
+  console.log(incident_short_name);
+
   $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name},  function( data ) {
     phases_json_array.push(JSON.parse(data.phases_json));
     if (data.phases_json == "[]") {

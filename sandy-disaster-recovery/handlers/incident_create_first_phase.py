@@ -35,7 +35,7 @@ class IncidentCreateFirstPhase(base.RequestHandler):
     incident_short_name = self.request.get("incident_short_name")
     #raise Exception(self.request.POST)
     phase_name = self.request.get("phase_name")
-    phase_definition = self.request.get("phase_definition")
+    description = self.request.get("description")
     phase_position = self.request.get("phase_position")
     add_phase = self.request.get("add_phase")
     q = incident_definition.IncidentDefinition.all()
@@ -46,7 +46,7 @@ class IncidentCreateFirstPhase(base.RequestHandler):
     phase_short_name = phase_short_name.replace(" ", "_")
     phase_data = {
      "phase_name": phase_name,
-     "phase_definition": phase_definition,
+     "description": description,
      "phase_position": phase_position,
      "phase_short_name": phase_short_name,
      "phase_id": os.urandom(16).encode("hex"),

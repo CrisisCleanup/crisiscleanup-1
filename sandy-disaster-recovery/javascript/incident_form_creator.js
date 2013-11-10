@@ -425,8 +425,8 @@ function add_textarea_input(form_json_array) {
 
   var header_json = {
     "type": "textarea",
-    "textarea_label": textarea_label,
-    "textarea_id": textarea_id,
+    "label": textarea_label,
+    "_id": textarea_id,
     "order_number": order_number,
   }
   form_json_array.push(header_json);
@@ -452,12 +452,12 @@ function add_text_input(form_json_array) {
     
   var text_json = {
     type: "text",
-    text_label: text_label,
+    label: text_label,
     text_default: text_default,
     text_placeholder: text_placeholder,
     text_required: text_required,
     text_sensitive: text_sensitive,
-    text_id: text_id,
+    _id: text_id,
     text_infobox: text_infobox,
     text_printer: text_printer,
     text_mobile: text_mobile,
@@ -486,11 +486,11 @@ function add_checkbox_input(form_json_array) {
   
   var checkbox_json = {
     type: "checkbox",
-    checkbox_label: checkbox_label,
+    label: checkbox_label,
     checkbox_default: checkbox_default,
     checkbox_required: checkbox_required,
     checkbox_sensitive: checkbox_sensitive,
-    checkbox_id: checkbox_id,
+    _id: checkbox_id,
     checkbox_checked_value: "y",
     checkbox_unchecked_value: "n",
     checkbox_infobox: checkbox_infobox,
@@ -518,12 +518,12 @@ function add_select_input(form_json_array, select_options_array) {
        
   var select_json = {
     type: "select",
-    select_label: select_label,
+    label: select_label,
     select_option_1: select_option_1,
     select_default: select_default,
     select_required: select_required,
     select_sensitive: select_sensitive,
-    select_id: select_id,
+    _id: select_id,
     select_infobox: select_infobox,
     select_printer: select_printer,
     select_mobile: select_mobile,
@@ -557,12 +557,12 @@ function add_radio_input(form_json_array, radio_options_array) {
     
   var radio_json = {
     type: "radio",
-    radio_label: radio_label,
+    label: radio_label,
     radio_option_1: radio_option_1,
     radio_default: radio_default,
     radio_required: radio_required,
     radio_sensitive: radio_sensitive,
-    radio_id: radio_id,
+    _id: radio_id,
     radio_low_hint: radio_low_hint,
     radio_high_hint: radio_high_hint,
     radio_infobox: radio_infobox,
@@ -632,14 +632,14 @@ function read_json_to_html(form_json_array) {
         req = "*";
       }
       var radio_string = "";
-      var radio_string_start = '</td></tr><tr><td class=question>' + buttons_string  + form_json_array[i].radio_label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
+      var radio_string_start = '</td></tr><tr><td class=question>' + buttons_string  + form_json_array[i].label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
       var radio_string_end = '<td>' + form_json_array[i].radio_high_hint + '</td></tr></table></td></tr>';
       for (var j = 0; j < options_array.length; j++) {
         var options_string = "";
 	if(form_json_array[i].radio_default == options_array[j]) {
-          var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
+          var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i]._id + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
 	} else {
-	  var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
+	  var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i]._id + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
 	}
 
 	radio_string = radio_string + option_string;
@@ -661,7 +661,7 @@ function read_json_to_html(form_json_array) {
       if (form_json_array[i].select_required) {
         req = "*";
       }
-      var begin_option = '<tr><td class=question>' + buttons_string + form_json_array[i].select_label + req +'</td><td class="answer"><div class="form_field"><select class="" id="' + form_json_array[i].select_id + '" name="' + form_json_array[i].select_id + '">';
+      var begin_option = '<tr><td class=question>' + buttons_string + form_json_array[i].label + req +'</td><td class="answer"><div class="form_field"><select class="" id="' + form_json_array[i]._id + '" name="' + form_json_array[i]._id + '">';
       var end_option = '</select></div></td></tr>';
       var select_string = "";
 
@@ -689,8 +689,8 @@ function read_json_to_html(form_json_array) {
     if(form_json_array[i].type == "textarea") {
       buttons_string = add_edit_buttons(form_json_array[i].order_number);
 
-      var new_textarea = '<tr><td class=question>'+ buttons_string + form_json_array[i].textarea_label + ':</td><td class="answer">\
-      <div class="form_field"><textarea class="" id="' + form_json_array[i].textarea_id + '" name="' + form_json_array[i].textarea_id + '"></textarea></div>\
+      var new_textarea = '<tr><td class=question>'+ buttons_string + form_json_array[i].label + ':</td><td class="answer">\
+      <div class="form_field"><textarea class="" id="' + form_json_array[i]._id + '" name="' + form_json_array[i]._id + '"></textarea></div>\
       </td></tr>'
       $("#form_table").append(new_textarea);
     }
@@ -707,7 +707,7 @@ function read_json_to_html(form_json_array) {
       if (form_json_array[i].text_required) {
         var required = "*";
       }
-      var new_text_input = '<tr><td class=question>' + buttons_string + form_json_array[i].text_label + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + form_json_array[i].text_id + '" name="' + form_json_array[i].text_id + '" type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"/></div></td></tr>'
+      var new_text_input = '<tr><td class=question>' + buttons_string + form_json_array[i].label + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + form_json_array[i]._id + '" name="' + form_json_array[i]._id + '" type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"/></div></td></tr>'
       $("#form_table").append(new_text_input);
     }
     
@@ -722,7 +722,7 @@ function read_json_to_html(form_json_array) {
       if (form_json_array[i].checkbox_default == "y") {
         checked = " checked";
       }
-      var new_checkbox = '<tr><td class=question><label for="' + form_json_array[i].checkbox_id + '">' + buttons_string + form_json_array[i].checkbox_label + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + form_json_array[i].checkbox_id + '" type="hidden" value="' +form_json_array[i].checkbox_unchecked_value + '"/><input class="" id="' + form_json_array[i].checkbox_id + '" name="' + form_json_array[i].checkbox_id + '" type="checkbox" value="' +form_json_array[i].checkbox_checked_value + '"' + checked + '></div></td></tr>';
+      var new_checkbox = '<tr><td class=question><label for="' + form_json_array[i]._id + '">' + buttons_string + form_json_array[i].label + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + form_json_array[i]._id + '" type="hidden" value="' +form_json_array[i].checkbox_unchecked_value + '"/><input class="" id="' + form_json_array[i]._id + '" name="' + form_json_array[i]._id + '" type="checkbox" value="' +form_json_array[i].checkbox_checked_value + '"' + checked + '></div></td></tr>';
       $("#form_table").append(new_checkbox);
 
     }

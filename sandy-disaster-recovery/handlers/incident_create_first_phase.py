@@ -33,6 +33,7 @@ def make_date_object(date_string):
 class IncidentCreateFirstPhase(base.RequestHandler):
   def post(self):
     incident_short_name = self.request.get("incident_short_name")
+    #raise Exception(self.request.POST)
     phase_name = self.request.get("phase_name")
     phase_definition = self.request.get("phase_definition")
     phase_position = self.request.get("phase_position")

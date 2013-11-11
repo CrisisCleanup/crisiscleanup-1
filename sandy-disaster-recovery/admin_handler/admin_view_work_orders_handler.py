@@ -32,6 +32,9 @@ from export_bulk_handler import AbstractExportBulkHandler, AbstractExportBulkWor
 
 def create_work_order_search_form(events, work_types):
 
+    # filter orgs on selected events
+    orgs = Organization.all().filter('incident in', [event for event in events])
+
     class WorkOrderSearchForm(Form):
 
         offset = HiddenField(default="0")
@@ -43,15 +46,17 @@ def create_work_order_search_form(events, work_types):
             default=events[0].key()
         )
         query = TextField("Search")
-        reporting_org = ReferencePropertyField(
-            reference_class=Organization,
-            label_attr='name',
-            allow_blank=True
+        reporting_org = SelectField(
+            choices=[('', '')] + [
+                (org.key(), org.name) for org in orgs
+            ],
+            default=''
         )
-        claiming_org = ReferencePropertyField(
-            reference_class=Organization,
-            label_attr='name',
-            allow_blank=True
+        claiming_org = SelectField(
+            choices=[('', '')] + [
+                (org.key(), org.name) for org in orgs
+            ],
+            default=''
         )
         work_type = SelectField(
             choices=[('', '')] + [

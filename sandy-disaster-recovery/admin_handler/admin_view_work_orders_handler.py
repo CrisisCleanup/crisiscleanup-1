@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
+import pickle
+
 from google.appengine.ext.db import Query, Key
 
 from wtforms import Form, TextField, HiddenField, SelectField
@@ -25,7 +27,7 @@ from admin_base import AdminAuthenticatedHandler
 import event_db
 from site_db import Site
 from organization import Organization
-from export_bulk_handler import AbstractExportBulkHandler
+from export_bulk_handler import SITES_PER_TASK, AbstractExportBulkHandler, AbstractExportBulkWorker
 
 
 def get_work_order_search_form(events, work_types):
@@ -161,7 +163,25 @@ class AdminExportWorkOrdersBulkHandler(AdminAuthenticatedHandler, AbstractExport
         raise Exception("Not supported")
 
     def AuthenticatedPost(self, org, event):
-        # get relevant values for search form 
+        self.org = org
+        self.event = event
+        self.start_export(org, event, '/admin-export-bulk-worker')
+    
+    def get_continuation_param_dict(self):
+        d = super(AdminExportWorkOrdersBulkHandler, self).get_continuation_param_dict()
+        d['org_pickle'] = pickle.dumps(self.org)
+        d['event_pickle'] = pickle.dumps(self.event)
+        d['post_pickle'] = pickle.dumps(self.request.POST)
+        return d
+
+
+class AdminExportWorkOrdersBulkWorker(AbstractExportBulkWorker):
+
+    def get_query(self):
+        org = pickle.loads(self.org_pickle)
+        event = pickle.loads(self.event_pickle)
+        post_data = pickle.loads(self.post_pickle)
+
         if org.is_global_admin:
             events = event_db.Event.all()
             work_types = [
@@ -178,10 +198,22 @@ class AdminExportWorkOrdersBulkHandler(AdminAuthenticatedHandler, AbstractExport
 
         WorkOrderSearchForm = get_work_order_search_form(
             events=events, work_types=work_types)
-        form = WorkOrderSearchForm(self.request.POST)
-
+        form = WorkOrderSearchForm(post_data)
         query = setup_and_query_from_form(org, event, form)
-        site_ids = [site.key().id() for site in query]
-        id_list = ','.join(str(id) for id in site_ids)
-        
-        self.start_export(org, event, id_list)
+        return query
+
+    def get_sites(self, query):
+        return [site for site in query]
+
+    def get_continuation_param_dict(self):
+        d = super(AdminExportWorkOrdersBulkWorker, self).get_continuation_param_dict()
+        d['org_pickle'] = self.org_pickle
+        d['event_pickle'] = self.event_pickle
+        d['post_pickle'] = self.post_pickle
+        return d 
+
+    def post(self):
+        self.org_pickle = self.request.get('org_pickle')
+        self.event_pickle = self.request.get('event_pickle')
+        self.post_pickle = self.request.get('post_pickle')
+        super(AdminExportWorkOrdersBulkWorker, self).post()

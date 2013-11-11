@@ -36,7 +36,17 @@ def get_csv_fields_list():
 
 class AbstractExportBulkHandler(object):
 
-    def start_export(self, org, event, id_list):
+    def get_continuation_param_dict(self):
+        return {
+            'cursor': '',
+            'event': self.filtering_event_key,
+            'filename': self.blobstore_filename,
+            'worker_url': self.worker_url,
+        }
+
+    def start_export(self, org, event, worker_url):
+        self.worker_url = worker_url
+
         # create filename
         filename = "%s-%s-%s.csv" % (
             re.sub(r'\W+', '-', event.name.lower()),
@@ -45,13 +55,13 @@ class AbstractExportBulkHandler(object):
         )
 
         # create file in blobstore
-        blobstore_filename = files.blobstore.create(
+        self.blobstore_filename = files.blobstore.create(
             mime_type='text/csv',
            _blobinfo_uploaded_filename=filename
         )
 
         # write header/title row
-        with files.open(blobstore_filename, 'a') as fd:
+        with files.open(self.blobstore_filename, 'a') as fd:
             writer = csv.writer(fd)
             writer.writerow([
                 "%s Work Orders. Downloaded %s UTC by %s" % (
@@ -64,19 +74,14 @@ class AbstractExportBulkHandler(object):
 
         # select event filter based on user
         if org.is_global_admin:
-            filtering_event_key = ''
+            self.filtering_event_key = ''
         else:
-            filtering_event_key = event.key()
+            self.filtering_event_key = event.key()
 
         # start first task
         taskqueue.add(
-            url='/export_bulk_worker',
-            params={
-                'cursor': '',
-                'event': filtering_event_key,
-                'filename': blobstore_filename,
-                'id_list': id_list,
-            }
+            url=self.worker_url,
+            params=self.get_continuation_param_dict(),
         )
 
         # write json
@@ -98,13 +103,17 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
 
     def handle(self, org, event):
         if self.request.get('download') == 'selected':
-            id_list = self.request.get('id_list')
+            self.id_list = self.request.get('id_list')
         else:
-            id_list = []
-        self.start_export(org, event, id_list)
+            self.id_list = []
+        self.start_export(org, event, '/export-bulk-worker')
+
+    def get_continuation_param_dict(self):
+        d = super(ExportBulkHandler, self).get_continuation_param_dict()
+        d['id_list'] = self.id_list
 
 
-class ExportBulkWorker(webapp2.RequestHandler):
+class AbstractExportBulkWorker(webapp2.RequestHandler):
 
     def _write_csv_rows(self, fd, sites):
         writer = csv.writer(fd)
@@ -112,50 +121,84 @@ class ExportBulkWorker(webapp2.RequestHandler):
         for site in sites:
             writer.writerow(site.ToCsvLine(fields))
 
+    def get_query(self):
+        raise NotImplementedError
+
+    def get_sites(self):
+        raise NotImplementedError
+
+    def get_continuation_param_dict(self):
+        return {
+            'cursor': self.end_cursor,
+            'event': self.filtering_event_key,
+            'filename': self.filename,
+            'worker_url': self.worker_url,
+        }
+
     def post(self):
         # get args
-        start_cursor = self.request.get('cursor')
-        filtering_event_key = self.request.get('event')
-        filename = self.request.get('filename')
-        id_list = self.request.get('id_list')
-        ids = (
-            set(int(x) for x in id_list.split(','))
-            if id_list else set()
-        )
+        self.start_cursor = self.request.get('cursor')
+        self.filtering_event_key = self.request.get('event')
+        self.filename = self.request.get('filename')
+        self.worker_url = self.request.get('worker_url')
 
-        # construct query
-        query = Site.all()
-        if filtering_event_key:
-            query.filter('event', Event.get(filtering_event_key))
-        if start_cursor:
-            query.with_cursor(start_cursor)
-        sites = query.fetch(limit=SITES_PER_TASK)
-
-        # filter on ids if supplied
-        # (GAE: can't do as part of query with cursor...)
-        if ids:
-            sites = [site for site in sites if site.key().id() in ids]
+        # get (base) query, skip query to cursor, filter for sites
+        query = self.get_query()
+        if self.start_cursor:
+            query.with_cursor(self.start_cursor)
+        sites = self.get_sites(query)
 
         # write lines to blob file
-        with files.open(filename, 'a') as fd:
+        with files.open(self.filename, 'a') as fd:
             self._write_csv_rows(fd, sites)
 
         # decide what to do next
-        end_cursor = query.cursor()
-        if end_cursor and start_cursor != end_cursor:
+        self.end_cursor = query.cursor()
+        if self.end_cursor and self.start_cursor != self.end_cursor:
             # chain to next task
             taskqueue.add(
-                url='/export_bulk_worker',
-                params={
-                    'cursor': end_cursor,
-                    'event': filtering_event_key,
-                    'filename': filename,
-                    'id_list': id_list,
-                }
+                url=self.worker_url,
+                params=self.get_continuation_param_dict()
             )
         else:
             # finalize
-            files.finalize(filename)
+            files.finalize(self.filename)
+
+
+class ExportBulkWorker(AbstractExportBulkHandler):
+
+    " Used by front-end map. "
+    
+    def post(self):
+        id_list = self.request.get('id_list')
+        self.ids = (
+            set(int(x) for x in id_list.split(','))
+            if id_list else set()
+        )
+        super(ExportBulkHandler, self).post()
+
+    def get_query(self):
+        query = Site.all()
+        if self.filtering_event_key:
+            query.filter('event', Event.get(self.filtering_event_key))
+        return query
+
+    def get_sites(self, query):
+        # filter on ids if supplied
+        # (GAE: can't do as part of query with cursor...)
+        fetched_sites = query.fetch(limit=SITES_PER_TASK)
+        if self.ids:
+            return [
+                site for site in fetched_sites
+                if site.key().id() in self.ids
+            ]
+        else:
+            return fetched_sites
+
+    def get_continuation_param_dict(self):
+        d = super(ExportBulkWorker, self).get_continuation_param_dict()
+        d['id_list'] = self.id_list
+        return d
 
 
 class DownloadBulkExportHandler(

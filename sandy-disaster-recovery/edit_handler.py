@@ -254,12 +254,15 @@ def populate_incident_form(form_json, phase_id):
 	phase_number = i
     i+=1
   for obj in form_json[phase_number]:
+    #raise Exception(form_json[phase_number])
     i+=1
+    if "phase_id" in obj:
+      string += '<input type="hidden" name="phase_id" value="' + obj['phase_id'] + '">'
     if "type" in obj and obj["type"] == "text":
       required = ""
-      if obj["text_required"] == True:
+      if obj["required"] == True:
 	required = "*"
-      new_text_input = '<tr><td class=question>' + obj['text_label'] + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + obj['text_id'] + '" name="' + obj['text_id'] + '" type="text" value="' + obj['text_default'] + '" placeholder="' + obj['text_placeholder'] + '"/></div></td></tr>'
+      new_text_input = '<tr><td class=question>' + obj['label'] + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="text" /></div></td></tr>'
       string += new_text_input
     elif "type" in obj and obj["type"] == "label":
       label = obj['label']
@@ -271,8 +274,8 @@ def populate_incident_form(form_json, phase_id):
       new_subheader = '<tr><td class="question"><h3>' + obj['subheader'] + '</h3></tr></td>'
       string += new_subheader
     elif "type" in obj and obj["type"] == "textarea":
-      new_textarea = '<tr><td class=question>' + obj['textarea_label'] + ':</td><td class="answer">\
-      <div class="form_field"><textarea class="" id="' + obj['textarea_id'] + '" name="' + obj['textarea_id'] + '"></textarea></div>\
+      new_textarea = '<tr><td class=question>' + obj['label'] + ':</td><td class="answer">\
+      <div class="form_field"><textarea class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '"></textarea></div>\
       </td></tr>'
       string += new_textarea
     
@@ -281,9 +284,11 @@ def populate_incident_form(form_json, phase_id):
     elif "type" in obj and obj["type"] == "checkbox":
       required = ""
       checked = ""
-      if obj["checkbox_required"] == True:
+      if obj["required"] == True:
 	required = "*"
-      new_checkbox = '<tr><td class=question><label for="' + obj['checkbox_id'] + '">' + obj['checkbox_label'] + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + obj['checkbox_id'] + '" type="hidden" value="' +obj['checkbox_unchecked_value'] + '"/><input class="" id="' + obj['checkbox_id'] + '" name="' + obj['checkbox_id'] + '" type="checkbox" value="' +obj['checkbox_checked_value'] + '"' + checked + '></div></td></tr>';
+      if obj["_default"] == "y":
+	checked = " checked"
+      new_checkbox = '<tr><td class=question><label for="' + obj['_id'] + '">' + obj['label'] + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + obj['_id'] + '" type="hidden" value="n"/><input class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="checkbox" value="y"' + checked + '></div></td></tr>';
       string += new_checkbox
     elif "type" in obj and obj["type"] == "select":
       options_array = []
@@ -291,19 +296,16 @@ def populate_incident_form(form_json, phase_id):
       for key in obj:
 	if "select_option_" in key:
 	  options_array.append(key)
-      if obj["select_required"]:
+      if obj["required"]:
 	required = "*"
-      begin_option = '<tr><td class=question>' + obj['select_label'] + required +'</td><td class="answer"><div class="form_field"><select class="" id="' + obj['select_id'] + '" name="' + obj['select_id'] + '">';
+      begin_option = '<tr><td class=question>' + obj['label'] + required +'</td><td class="answer"><div class="form_field"><select class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '">';
       end_option = '</select></div></td></tr>';
-      select_string = "";
+      select_string = '<option value="None">Choose one</option>';
       
       options_array.sort()
       for option in options_array:
 	option_string = ""
-	if obj['select_default'] == option:
-	  option_string = "<option selected>" + obj[option] + "</option>"
-	else:
-	  option_string = "<option>" + obj[option] + "</option>";
+	option_string = "<option>" + obj[option] + "</option>";
 	select_string = select_string + option_string
 
       new_select = begin_option + select_string + end_option
@@ -314,64 +316,22 @@ def populate_incident_form(form_json, phase_id):
       for key in obj:
 	if "radio_option_" in key:
 	  options_array.append(key)
-      if obj["radio_required"]:
+      if obj["required"]:
 	      required = "*"
       radio_string = "";
-      radio_string_start = '</td></tr><tr><td class=question>' + obj['radio_label'] + required + '</td><td class="answer"><table><tr><td>' + obj['radio_low_hint'] + '</td><td>';
-      radio_string_end = '<td>' + obj['radio_high_hint'] + '</td></tr></table></td></tr>';
+      radio_string_start = '</td></tr><tr><td class=question>' + obj['label'] + required + '</td><td class="answer"><table><tr><td>' + obj['low_hint'] + '</td><td>';
+      radio_string_end = '<td>' + obj['high_hint'] + '</td></tr></table></td></tr>';
       
       options_array.sort()
       for option in options_array:
 	options_string = ""
-	if obj['radio_default'] == option:
-	  option_string = '<td><input id="' + obj['radio_id'] + '" name="' + obj['radio_id'] + '" type="radio" value="' + obj[option] + '"></td>'
-	else:
-	  option_string = '<td><input id="' + obj['radio_id'] + '" name="' + obj['radio_id'] + '" type="radio" value="' + obj[option] + '"></td>';
+	#if obj['radio_default'] == option:
+	  #option_string = '<td><input id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="radio" value="' + obj[option] + '" checked="true"></td>'
+	#else:
+	option_string = '<td><input id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="radio" value="' + obj[option] + '"></td>';
   
         radio_string = radio_string + option_string
         
       string = string + radio_string_start + radio_string + radio_string_end;
   
-      #for (var j = 0; j < options_array.length; j++) {
-        #var options_string = "";
-	#if(form_json_array[i].radio_default == options_array[j]) {
-          #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
-	#} else {
-	  #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
-	#}
-
-	#radio_string = radio_string + option_string;
-      #}
-
-    #if(form_json_array[i].type == "radio") {
-      #var options_array = []
-      #for (var key in form_json_array[i]) {
-        #var key_string = key.toString();
-        #if (key_string.indexOf("radio_option_") == 0) {
-	    #options_array.push(key_string);
-        #}
-      #}
-      
-      #var req = "";
-      #if (form_json_array[i].radio_required) {
-        #req = "*";
-      #}
-      #var radio_string = "";
-      #var radio_string_start = '</td></tr><tr><td class=question>' + form_json_array[i].radio_label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
-      #var radio_string_end = '<td>' + form_json_array[i].radio_high_hint + '</td></tr></table></td></tr>';
-      #for (var j = 0; j < options_array.length; j++) {
-        #var options_string = "";
-	#if(form_json_array[i].radio_default == options_array[j]) {
-          #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
-	#} else {
-	  #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
-	#}
-
-	#radio_string = radio_string + option_string;
-      #}
-      #var final_radio_string = radio_string_start + radio_string + radio_string_end;
-      #$("#form_table").append(final_radio_string);
-
-    #}
-
   return string, label, paragraph

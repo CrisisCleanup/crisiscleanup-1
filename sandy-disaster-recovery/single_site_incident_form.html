@@ -123,12 +123,18 @@ Object.keys(post_json).forEach(function(key) {
 </table>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 {{ new_form.name.label }} {{ new_form.name }}
 
 =======
 <div>{{ new_form.name.label }}: {{ new_form.name }}</div>
 >>>>>>> more form-creator updates
 
+=======
+{% for obj in new_form %}
+<div>{{ obj.label}}: {{ obj }}</div>
+{% endfor %}
+>>>>>>> reformat form_handler.py
 {{submit_button}}
 
 

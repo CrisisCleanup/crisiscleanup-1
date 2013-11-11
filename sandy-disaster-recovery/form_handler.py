@@ -38,7 +38,7 @@ import random
 from models import incident_definition
 import wtforms.ext.dateutil.fields
 import wtforms.fields
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
+from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
 
 
 
@@ -58,7 +58,6 @@ class IncidentForm(site_db.Site):
 class FormHandler(base.AuthenticatedHandler):
 
   def AuthenticatedGet(self, org, event):
-    new_form = build_form(None)
     #single_site_template = jinja_environment.get_template('single_site.html')
       
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
@@ -86,13 +85,15 @@ class FormHandler(base.AuthenticatedHandler):
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
-    string, label, paragraph= populate_incident_form(IncidentForm, json.loads(inc_def_query.forms_json), phase_number)
+    string, label, paragraph= populate_incident_form(json.loads(inc_def_query.forms_json), phase_number)
     phases_links = populate_phase_links(json.loads(inc_def_query.phases_json))
+    #wt_form = build_form(json.loads(inc_def_query.forms_json), phase_number)
     #raise Exception(th)
     
     # set it as form_stub
     # send to single site
-    submit_button = '<input type="submit" value="Submit request">'
+    #submit_button = '<a id="submit_form" value="Submit request">Submit</a>'
+    submit_button = "<button class='submit'>Submit</button>"
     inc_form = None
     if query:
       inc_form = query.form_html
@@ -124,7 +125,7 @@ class FormHandler(base.AuthenticatedHandler):
           "paragraph": paragraph,
           "submit_button": submit_button,
           "phases_links": phases_links,
-          "new_form": new_form()
+          #"new_form": wt_form()
 	})
     self.response.out.write(template.render(
         {"version" : os.environ['CURRENT_VERSION_ID'],
@@ -278,12 +279,15 @@ class FormHandler(base.AuthenticatedHandler):
 	  phase_number = i
 	#raise Exception(phase_number)
       i += 1
+    submit_button = "<button class='submit'>Submit</button>"
+
 
     string, label, paragraph= populate_incident_form(IncidentForm, json.loads(inc_def_query.forms_json), phase_number)
     single_site = single_site_template.render(
         { "form": data,
           "org": org,
           "incident_form_block": string,
+          "submit_button": submit_button
           })
     self.response.out.write(template.render(
         {"message": message,
@@ -300,167 +304,189 @@ class FormHandler(base.AuthenticatedHandler):
 
 
 
-
-def populate_incident_form(IncidentForm, form_json, phase_number):
-  #raise Exception(phase_number)
-  if phase_number:
-    phase_number = int(str(phase_number))
-  else:
-    phase_number = 0
-    
-
+def populate_incident_form(form_json, phase_number):
   i = 0
   string = ""
   label = ""
   paragraph = ""
-  try:  
-    form_json[phase_number]
-  except:
-    string = "<h2>No Form Added"
+
+  if phase_number:
+    phase_number = return_phase_number_int(phase_number)
+
+  if not check_if_form_exists(form_json, phase_number):
+    string = "<h2>No Form Added</h2>"
     label = ""
     paragraph=""
     return string, label, paragraph
+
+  # If form exists, continue
+  
   for obj in form_json[phase_number]:
-    #raise Exception(form_json[phase_number])
     i+=1
-    if "phase_id" in obj:
-      string += '<input type="hidden" name="phase_id" value="' + obj['phase_id'] + '">'
-    if "type" in obj and obj["type"] == "text":
-      required = ""
-      if obj["text_required"] == True:
-	required = "*"
-      new_text_input = '<tr><td class=question>' + obj['text_label'] + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + obj['text_id'] + '" name="' + obj['text_id'] + '" type="text" value="' + obj['text_default'] + '" placeholder="' + obj['text_placeholder'] + '"/></div></td></tr>'
-      string += new_text_input
-    elif "type" in obj and obj["type"] == "label":
-      label = obj['label']
-    elif "type" in obj and obj["type"] == "header":
-      new_header = '<tr><td class="question"><h2>' + obj['header'] + '</h2></tr></td>'
-      string += new_header
-      
-    elif "type" in obj and obj["type"] == "subheader":
-      new_subheader = '<tr><td class="question"><h3>' + obj['subheader'] + '</h3></tr></td>'
-      string += new_subheader
-    elif "type" in obj and obj["type"] == "textarea":
-      new_textarea = '<tr><td class=question>' + obj['textarea_label'] + ':</td><td class="answer">\
-      <div class="form_field"><textarea class="" id="' + obj['textarea_id'] + '" name="' + obj['textarea_id'] + '"></textarea></div>\
-      </td></tr>'
-      string += new_textarea
     
+    ### If the object is holding the value of label, set the label.
+    if "type" in obj and obj["type"] == "label":
+      label = obj['label']
+      
+    ### If the object is a paragraph, set paragraph variable
     elif "type" in obj and obj["type"] == "paragraph":
       paragraph = obj["paragraph"]
+      
+    ### If the object is a header, send to get_header_html()
+    elif "type" in obj and obj["type"] == "header":
+      string = get_header_html(obj, string)
+      
+    ### If the object is a subheader, send to get_subheader_html()
+    elif "type" in obj and obj["type"] == "subheader":
+      string = get_subheader_html(obj, string)
+      
+    ### If the object is holding the phase_id, set the hidden phase_id value
+    elif "phase_id" in obj:
+      string = get_phase_html(obj, string)
+      
+    ### If the object is a text field, send to get_text_html() 
+    elif "type" in obj and obj["type"] == "text":
+      string = get_text_html(obj, string)
+
+    ### If the object is a textarea, send to get_textarea_html()
+    elif "type" in obj and obj["type"] == "textarea":
+      string = get_textarea_html(obj, string)
+    
+    ### If the object is a checkbox, send to get_checkbox_html()
     elif "type" in obj and obj["type"] == "checkbox":
-      required = ""
-      checked = ""
-      if obj["checkbox_required"] == True:
-	required = "*"
-      if obj["checkbox_default"] == "y":
-	checked = " checked"
-      new_checkbox = '<tr><td class=question><label for="' + obj['checkbox_id'] + '">' + obj['checkbox_label'] + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + obj['checkbox_id'] + '" type="hidden" value="' +obj['checkbox_unchecked_value'] + '"/><input class="" id="' + obj['checkbox_id'] + '" name="' + obj['checkbox_id'] + '" type="checkbox" value="' +obj['checkbox_checked_value'] + '"' + checked + '></div></td></tr>';
-      string += new_checkbox
+      string = get_checkbox_html(obj, string)
+
+    ### if the object is a select, send to get_select_html()
     elif "type" in obj and obj["type"] == "select":
-      options_array = []
-      required = ""
-      for key in obj:
-	if "select_option_" in key:
-	  options_array.append(key)
-      if obj["select_required"]:
-	required = "*"
-      begin_option = '<tr><td class=question>' + obj['select_label'] + required +'</td><td class="answer"><div class="form_field"><select class="" id="' + obj['select_id'] + '" name="' + obj['select_id'] + '">';
-      end_option = '</select></div></td></tr>';
-      select_string = "";
+      string = get_select_html(obj, string)
       
-      options_array.sort()
-      for option in options_array:
-	option_string = ""
-	if obj['select_default'] == option:
-	  option_string = "<option selected>" + obj[option] + "</option>"
-	else:
-	  option_string = "<option>" + obj[option] + "</option>";
-	select_string = select_string + option_string
-
-      new_select = begin_option + select_string + end_option
-      string += new_select
+    ### if the object is a radio, send to get_radio_html()
     elif "type" in obj and obj["type"] == "radio":
-      options_array = []
-      required = ""
-      for key in obj:
-	if "radio_option_" in key:
-	  options_array.append(key)
-      if obj["radio_required"]:
-	      required = "*"
-      radio_string = "";
-      radio_string_start = '</td></tr><tr><td class=question>' + obj['radio_label'] + required + '</td><td class="answer"><table><tr><td>' + obj['radio_low_hint'] + '</td><td>';
-      radio_string_end = '<td>' + obj['radio_high_hint'] + '</td></tr></table></td></tr>';
-      
-      options_array.sort()
-      for option in options_array:
-	options_string = ""
-	if obj['radio_default'] == option:
-	  option_string = '<td><input id="' + obj['radio_id'] + '" name="' + obj['radio_id'] + '" type="radio" value="' + obj[option] + '" checked="true"></td>'
-	else:
-	  option_string = '<td><input id="' + obj['radio_id'] + '" name="' + obj['radio_id'] + '" type="radio" value="' + obj[option] + '"></td>';
+      string = get_radio_html(obj, string)
   
-        radio_string = radio_string + option_string
-        
-      string = string + radio_string_start + radio_string + radio_string_end;
-  
-      #for (var j = 0; j < options_array.length; j++) {
-        #var options_string = "";
-	#if(form_json_array[i].radio_default == options_array[j]) {
-          #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
-	#} else {
-	  #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
-	#}
-
-	#radio_string = radio_string + option_string;
-      #}
-
-    #if(form_json_array[i].type == "radio") {
-      #var options_array = []
-      #for (var key in form_json_array[i]) {
-        #var key_string = key.toString();
-        #if (key_string.indexOf("radio_option_") == 0) {
-	    #options_array.push(key_string);
-        #}
-      #}
-      
-      #var req = "";
-      #if (form_json_array[i].radio_required) {
-        #req = "*";
-      #}
-      #var radio_string = "";
-      #var radio_string_start = '</td></tr><tr><td class=question>' + form_json_array[i].radio_label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
-      #var radio_string_end = '<td>' + form_json_array[i].radio_high_hint + '</td></tr></table></td></tr>';
-      #for (var j = 0; j < options_array.length; j++) {
-        #var options_string = "";
-	#if(form_json_array[i].radio_default == options_array[j]) {
-          #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
-	#} else {
-	  #var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i].radio_label + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
-	#}
-
-	#radio_string = radio_string + option_string;
-      #}
-      #var final_radio_string = radio_string_start + radio_string + radio_string_end;
-      #$("#form_table").append(final_radio_string);
-
-    #}
-
   return string, label, paragraph
 
-	
-      #if str(obj['type']) == "text":
-	#setattr(F,"name", TextField("Name"))
-      #except:
-	#pass
-      #if i == 5:
-	#if obj['type'] == "text":
-	  #raise Exception("#$#")
-	#raise Exception(obj['type'])
-      #try:
-	#if i == 5:
-	  #raise Exception(34)
 
+def get_text_html(obj, string):
+  required = ""
+  suggestion = get_suggestion_div(obj["_id"])
+  edit_string = force_click_edit(obj["_id"])
+  readonly_string = set_readonly(obj["_id"])
+  #raise Exception(edit_string)
+
+  if obj["required"] == True:
+    required = "*"
+  new_text_input = '<tr><td class=question>' +obj['label'] + str(edit_string) + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="text" ' + readonly_string + ' /></div>' + suggestion + '</td></tr>'
+  string += new_text_input  
+  return string
+  
+def get_phase_html(obj, string):
+  string += '<input type="hidden" name="phase_id" value="%s">' % obj["phase_id"]
+  return string
+
+def get_header_html(obj, string):
+  new_header = '<tr><td class="question"><h2>%s</h2></tr></td>' % obj['header']
+  string += new_header
+  return string
+
+def get_subheader_html(obj, string):
+  new_subheader = '<tr><td class="question"><h3>%s</h3></tr></td>' % sobj['subheader']
+  string += new_subheader
+  return string
+
+def get_textarea_html(obj, string):
+  new_textarea = '<tr><td class=question>' + obj['label'] + ':</td><td class="answer"><div class="form_field"><textarea class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '"></textarea></div></td></tr>'
+  string += new_textarea
+  return string
+
+def get_checkbox_html(obj, string):
+  required = ""
+  checked = ""
+  if obj["required"] == True:
+    required = "*"
+  if obj["_default"] == "y":
+    checked = " checked"
+  new_checkbox = '<tr><td class=question><label for="' + obj['_id'] + '">' + obj['label'] + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + obj['_id'] + '" type="hidden" value="n"/><input class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="checkbox" value="y"' + checked + '></div></td></tr>'
+  string += new_checkbox
+  return string
+
+def get_select_html(obj, string):
+  options_array = []
+  required = ""
+  for key in obj:
+    if "select_option_" in key:
+      options_array.append(key)
+  if obj["required"]:
+    required = "*"
+  begin_option = '<tr><td class=question>' + obj['label'] + required + '</td><td class="answer"><div class="form_field"><select class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '">'
+  end_option = '</select></div></td></tr>'
+  select_string = '<option value="None">Choose one</option>'
+
+  options_array.sort()
+  for option in options_array:
+    option_string = ""
+    option_string = "<option>" + obj[option] + "</option>"
+    select_string = select_string + option_string
+
+  new_select = begin_option + select_string + end_option
+  string += new_select
+  return string
+
+def get_radio_html(obj, string):
+  options_array = []
+  required = ""
+  for key in obj:
+    if "radio_option_" in key:
+      options_array.append(key)
+  if obj["required"]:
+	  required = "*"
+  radio_string = "";
+  radio_string_start = '</td></tr><tr><td class=question>' + obj['label'] + required + '</td><td class="answer"><table><tr><td>' + obj["low_hint"] + '</td><td>'
+  radio_string_end = '<td>' + obj['high_hint'] + '</td></tr></table></td></tr>'
+  options_array.sort()
+  for option in options_array:
+    options_string = ""
+    option_string = '<td><input id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="radio" value="' + obj[option] + '"></td>'
+    radio_string = radio_string + option_string
+  string = string + radio_string_start + radio_string + radio_string_end
+  return string
+  
+def return_phase_number_int(phase_number):
+  if phase_number:
+    phase_number = int(str(phase_number))
+  else:
+    phase_number = 0
+  return phase_number
+    
+def check_if_form_exists(form_json, phase_number):
+  try:  
+    form_json[phase_number]
+    return True
+  except:
+    return False
+
+def get_suggestion_div(id_string):
+  suggestion_string = ""
+  if id_string == "city" or id_string == "county" or id_string == "state":
+    suggestion_string = '<div id=' + id_string + 'Suggestion></div></td></tr>'
+  elif id_string == "zip_code":
+    suggestion_string = '<div id=zipCodeSuggestion></div></td></tr>'
+
+  return suggestion_string
+
+def force_click_edit(id_string):
+  edit_string = ""
+  if id_string == "latitude":
+    edit_string = """<small>(<a href="#" onclick="document.getElementById('latitude').readOnly=false; document.getElementById('latitude').focus(); return false;">edit</a>)</small>"""
+  elif id_string == "longitude":
+    edit_string = """<small>(<a href="#" onclick="document.getElementById('longitude').readOnly=false; document.getElementById('longitude').focus(); return false;">edit</a>)</small>"""
+  return edit_string
+
+def set_readonly(id_string):
+  readonly_string = ""
+  if id_string == "latitude" or id_string == "longitude":
+    readonly_string = "readonly"
+  return readonly_string
 	  
 def populate_phase_links(phases_json):
   links = ""
@@ -478,8 +504,14 @@ class BaseForm(wtforms.Form):
 	setattr(cls, name, field)
 	return cls
 
-def build_form(form_json):
-  class DynamicForm(wtforms.Form): pass                      
+def build_form(forms_json, phase_number):
+  class DynamicForm(wtforms.Form): pass    
+
+  if phase_number:
+    phase_number = int(str(phase_number))
+  else:
+    phase_number = 0
+    
 
   name = "name"
   setattr(DynamicForm, name, TextField(name.title(), [wtforms.validators.Length(min = 1, max = 100,
@@ -487,4 +519,3 @@ def build_form(form_json):
   
   
   return DynamicForm
-

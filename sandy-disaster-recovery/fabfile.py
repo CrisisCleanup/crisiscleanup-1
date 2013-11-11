@@ -173,6 +173,12 @@ def delete_app_yaml():
     os.remove(APP_YAML_FILENAME)
 
 
+def perform_overwrites(app_defn):
+    for src, dest in app_defn.get('overwrite', {}).items():
+        print "Copying %s to %s ..." % (src, dest)
+        shutil.copyfile(src, dest)
+
+
 def update():
     " Update GAE from working dir. "
     local("%(appcfg)s --oauth2 update . " % env)
@@ -254,14 +260,18 @@ def deploy(apps, tag='HEAD', version=None):
 
     # copy dir for deployment
     build_dir = mkdtemp(prefix=BUILD_DIR_PREFIX)
-    print "Building to %s" % build_dir
+    print "Building to %s ..." % build_dir
     local("git archive %s | tar -x -C %s" % (tag, build_dir))
+    print "Changing pwd to %s ..." % build_dir
     os.chdir(build_dir)
 
     # deploy to all specified apps
     for app_defn in app_defns:
+        print "Writing app.yaml..."
         write_app_yaml(app_defn, gae_app_version=gae_app_version)
-        update()
+        perform_overwrites(app_defn)
+        print "Starting GAE update..."
+        update()  # call GAE appcfg
         delete_app_yaml()
 
     # output success message

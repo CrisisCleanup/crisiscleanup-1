@@ -1,10 +1,7 @@
 var warn_on_leave = false;
 var first_run = true;
-// window.onbeforeunload = function(){
-//   if(warn_on_leave){
-//       return 'Your changes have not been saved. To save, stay on this page and click "save".';
-//   }
-// };
+
+
 $(function() {
 
 
@@ -20,7 +17,32 @@ $(function() {
   var phases_json_array = [];
   
   
-
+  $("#add_personal_info_module").click(function() {
+    var personal_module_object = JSON.parse(personal_info_module_string);
+    console.log(personal_module_object);
+    for (var i = 0; i < personal_module_object.length; i++) {
+      form_json_array.push(personal_module_object[i]);
+      read_json_to_html(form_json_array);
+//       $("#paragraph_form").trigger('reset');
+      var jString = JSON.stringify(form_json_array);
+      $("#tabs-2").empty();
+      $("#tabs-2").append(jString);
+    }
+    
+  });
+  
+  $("#add_status_info_module").click(function() {
+    var status_module_object = JSON.parse(status_info_module_string);
+    for (var i = 0; i < status_module_object.length; i++) {
+      form_json_array.push(status_module_object[i]);
+      read_json_to_html(form_json_array);
+//       $("#paragraph_form").trigger('reset');
+      var jString = JSON.stringify(form_json_array);
+      $("#tabs-2").empty();
+      $("#tabs-2").append(jString);
+    }
+    
+  });
   $("#save_all_changes").click(function() {
     save_changes(form_json_array);
   
@@ -78,7 +100,7 @@ $(function() {
     var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ select_options_array[i] + '" name="'+ select_options_array[i] + '"><br>';
     var new_option = '<option value="' + select_options_array[i] + '">Option '+ option_number + '</option>';
     $("#add_options_to_select").append(new_line);
-    $("#select_default").append(new_option);
+//     $("#select_default").append(new_option);
     // add to select options select default div
     // make a remove option(remove only removes last)
   });
@@ -88,9 +110,9 @@ $(function() {
     var new_option = 'Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>';
     var new_select = '<option value="radio_option_1">Option 1</option>';
     $("#add_options_to_radio").empty();
-    $("#radio_default").empty();
+//     $("#radio_default").empty();
     $("#add_options_to_radio").append(new_option);
-    $("#radio_default").append(new_select);
+//     $("#radio_default").append(new_select);
   // clear and reset text input
   // clear and reset default select
   
@@ -101,9 +123,9 @@ $(function() {
     var new_option = 'Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>';
     var new_select = '<option value="select_option_1">Option 1</option>';
     $("#add_options_to_select").empty();
-    $("#select_default").empty();
+//     $("#select_default").empty();
     $("#add_options_to_select").append(new_option);
-    $("#select_default").append(new_select);
+//     $("#select_default").append(new_select);
   // clear and reset text input
   // clear and reset default select
   
@@ -118,7 +140,7 @@ $(function() {
     var new_line = 'Option ' + option_number + ':  <input type="text" id="'+ radio_options_array[i] + '" name="'+ radio_options_array[i] + '"><br>';
     var new_option = '<option value="' + radio_options_array[i] + '">Option '+ option_number + '</option>';
     $("#add_options_to_radio").append(new_line);
-    $("#radio_default").append(new_option);
+//     $("#radio_default").append(new_option);
     // add to select options select default div
     // make a remove option(remove only removes last)
   });
@@ -206,6 +228,8 @@ $(function() {
 	add_textarea_input(form_json_array);
 	read_json_to_html(form_json_array);
 	$("#textarea_form").trigger('reset');
+	console.log(form_json_array);
+
 	var jString = JSON.stringify(form_json_array);
 	$("#tabs-2").empty();
 	$("#tabs-2").append(jString);
@@ -421,6 +445,7 @@ function add_subheader_input(form_json_array){
 function add_textarea_input(form_json_array) {
   var textarea_label = $("#textarea_label").val();
   var textarea_id = $("#textarea_id").val();
+  var textarea_validations = $("#textarea_validations").val();
   order_number = form_json_array.length;
 
   var header_json = {
@@ -428,6 +453,7 @@ function add_textarea_input(form_json_array) {
     "label": textarea_label,
     "_id": textarea_id,
     "order_number": order_number,
+    "validations": textarea_validations
   }
   form_json_array.push(header_json);
   
@@ -436,16 +462,17 @@ function add_textarea_input(form_json_array) {
 
 function add_text_input(form_json_array) {
   var text_label = $("#text_label").val();
-  var text_default = $("#text_default").val();
-  var text_placeholder = $("#text_placeholder").val();
+//   var text_default = $("#text_default").val();
+//   var text_placeholder = $("#text_placeholder").val();
   var text_required = $('#text_required').prop('checked')
   var text_sensitive = $('#text_sensitive').prop('checked')
   var text_id = $("#text_id").val();
+  var validations = $("#text_validations").val();
   
-  var text_infobox = $("#text_infobox").val();
-  var text_printer = $("#text_printer").val();
-  var text_mobile = $("#text_mobile").val();
-  var text_sms = $("#text_sms").val();
+//   var text_infobox = $("#text_infobox").val();
+//   var text_printer = $("#text_printer").val();
+//   var text_mobile = $("#text_mobile").val();
+//   var text_sms = $("#text_sms").val();
   
   order_number = form_json_array.length;
 
@@ -453,16 +480,17 @@ function add_text_input(form_json_array) {
   var text_json = {
     type: "text",
     label: text_label,
-    text_default: text_default,
-    text_placeholder: text_placeholder,
-    text_required: text_required,
-    text_sensitive: text_sensitive,
+//     text_default: text_default,
+//     text_placeholder: text_placeholder,
+    required: text_required,
+    sensitive: text_sensitive,
     _id: text_id,
-    text_infobox: text_infobox,
-    text_printer: text_printer,
-    text_mobile: text_mobile,
-    text_sms: text_sms,
+//     text_infobox: text_infobox,
+//     text_printer: text_printer,
+//     text_mobile: text_mobile,
+//     text_sms: text_sms,
     order_number: order_number,
+    validations: validations
 
   }
   
@@ -475,28 +503,28 @@ function add_checkbox_input(form_json_array) {
   var checkbox_required = $("#checkbox_required").prop('checked');
   var checkbox_sensitive = $("#checkbox_sensitive").prop("checked");
   var checkbox_id = $("#checkbox_id").val();
-  var checkbox_checked_value = $("#checkbox_checked_value").val();
-  var checkbox_unchecked_value = $("#checkbox_unchecked_value").val();
-  var checkbox_infobox = $("#checkbox_infobox").val();
-  var checkbox_printer = $("#checkbox_printer").val();
-  var checkbox_mobile = $("#checkbox_mobile").val();
-  var checkbox_sms = $("#checkbox_sms").val();
+  var checkbox_validations = $("#checkbox_validations");
+
+//   var checkbox_infobox = $("#checkbox_infobox").val();
+//   var checkbox_printer = $("#checkbox_printer").val();
+//   var checkbox_mobile = $("#checkbox_mobile").val();
+//   var checkbox_sms = $("#checkbox_sms").val();
   
   order_number = form_json_array.length;
   
   var checkbox_json = {
     type: "checkbox",
     label: checkbox_label,
-    checkbox_default: checkbox_default,
-    checkbox_required: checkbox_required,
-    checkbox_sensitive: checkbox_sensitive,
+    _default: checkbox_default,
+    required: checkbox_required,
+    sensitive: checkbox_sensitive,
     _id: checkbox_id,
-    checkbox_checked_value: "y",
-    checkbox_unchecked_value: "n",
-    checkbox_infobox: checkbox_infobox,
-    checkbox_printer: checkbox_printer,
-    checkbox_mobile: checkbox_mobile,
-    checkbox_sms: checkbox_sms,
+//     checked_value: "y",
+//     unchecked_value: "n",
+//     checkbox_infobox: checkbox_infobox,
+//     checkbox_printer: checkbox_printer,
+//     checkbox_mobile: checkbox_mobile,
+//     checkbox_sms: checkbox_sms,
     order_number: order_number,
   }
   
@@ -510,24 +538,24 @@ function add_select_input(form_json_array, select_options_array) {
   var select_required = $("#select_required").prop('checked');
   var select_sensitive = $("#select_sensitive").prop("checked");
   var select_id = $("#select_id").val();
-  var select_infobox = $("#select_infobox").val();
-  var select_printer = $("#select_printer").val();
-  var select_mobile = $("#select_mobile").val();
-  var select_sms = $("#select_sms").val();
+//   var select_infobox = $("#select_infobox").val();
+//   var select_printer = $("#select_printer").val();
+//   var select_mobile = $("#select_mobile").val();
+//   var select_sms = $("#select_sms").val();
   var order_number = form_json_array.length;
        
   var select_json = {
     type: "select",
     label: select_label,
     select_option_1: select_option_1,
-    select_default: select_default,
-    select_required: select_required,
-    select_sensitive: select_sensitive,
+//     select_default: select_default,
+    required: select_required,
+    sensitive: select_sensitive,
     _id: select_id,
-    select_infobox: select_infobox,
-    select_printer: select_printer,
-    select_mobile: select_mobile,
-    select_sms: select_sms,
+//     select_infobox: select_infobox,
+//     select_printer: select_printer,
+//     select_mobile: select_mobile,
+//     select_sms: select_sms,
     order_number: order_number,
   }
   
@@ -543,32 +571,32 @@ function add_select_input(form_json_array, select_options_array) {
 function add_radio_input(form_json_array, radio_options_array) {
   var radio_label = $("#radio_label").val();
   var radio_option_1 = $("#radio_option_1").val();
-  var radio_default = $("#radio_default").val();
+//   var radio_default = $("#radio_default").val();
   var radio_required = $("#radio_required").prop('checked');
   var radio_sensitive = $("#radio_sensitive").prop("checked");
   var radio_id = $("#radio_id").val();
   var radio_low_hint = $("#radio_low_hint").val();
   var radio_high_hint = $("#radio_high_hint").val();
-  var radio_infobox = $("#radio_infobox").val();
-  var radio_printer = $("#radio_printer").val();
-  var radio_mobile = $("#radio_mobile").val();
-  var radio_sms = $("#radio_sms").val();
+//   var radio_infobox = $("#radio_infobox").val();
+//   var radio_printer = $("#radio_printer").val();
+//   var radio_mobile = $("#radio_mobile").val();
+//   var radio_sms = $("#radio_sms").val();
   var order_number = form_json_array.length
     
   var radio_json = {
     type: "radio",
     label: radio_label,
     radio_option_1: radio_option_1,
-    radio_default: radio_default,
-    radio_required: radio_required,
-    radio_sensitive: radio_sensitive,
+//     radio_default: radio_default,
+    required: radio_required,
+    sensitive: radio_sensitive,
     _id: radio_id,
-    radio_low_hint: radio_low_hint,
-    radio_high_hint: radio_high_hint,
-    radio_infobox: radio_infobox,
-    radio_printer: radio_printer,
-    radio_mobile: radio_mobile,
-    radio_sms: radio_sms,
+    low_hint: radio_low_hint,
+    high_hint: radio_high_hint,
+//     radio_infobox: radio_infobox,
+//     radio_printer: radio_printer,
+//     radio_mobile: radio_mobile,
+//     radio_sms: radio_sms,
     order_number: order_number,
   }
   
@@ -628,19 +656,19 @@ function read_json_to_html(form_json_array) {
       }
       
       var req = "";
-      if (form_json_array[i].radio_required) {
+      if (form_json_array[i].required) {
         req = "*";
       }
       var radio_string = "";
-      var radio_string_start = '</td></tr><tr><td class=question>' + buttons_string  + form_json_array[i].label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].radio_low_hint + '</td><td>';
-      var radio_string_end = '<td>' + form_json_array[i].radio_high_hint + '</td></tr></table></td></tr>';
+      var radio_string_start = '</td></tr><tr><td class=question>' + buttons_string  + form_json_array[i].label + req + '</td><td class="answer"><table><tr><td>' + form_json_array[i].low_hint + '</td><td>';
+      var radio_string_end = '<td>' + form_json_array[i].high_hint + '</td></tr></table></td></tr>';
       for (var j = 0; j < options_array.length; j++) {
         var options_string = "";
-	if(form_json_array[i].radio_default == options_array[j]) {
-          var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i]._id + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
-	} else {
+// 	if(form_json_array[i].radio_default == options_array[j]) {
+//           var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i]._id + '" type="radio" value="' + form_json_array[i][options_array[j]] + '" checked="true"></td>';
+// 	} else {
 	  var option_string = '<td><input id="' + form_json_array[i][options_array[j]] + '" name="' + form_json_array[i]._id + '" type="radio" value="' + form_json_array[i][options_array[j]] + '"></td>';
-	}
+// 	}
 
 	radio_string = radio_string + option_string;
       }
@@ -658,22 +686,21 @@ function read_json_to_html(form_json_array) {
         }
       }
       var req = "";
-      if (form_json_array[i].select_required) {
+      if (form_json_array[i].required) {
         req = "*";
       }
       var begin_option = '<tr><td class=question>' + buttons_string + form_json_array[i].label + req +'</td><td class="answer"><div class="form_field"><select class="" id="' + form_json_array[i]._id + '" name="' + form_json_array[i]._id + '">';
       var end_option = '</select></div></td></tr>';
-      var select_string = "";
+      var select_string = '<option value="None">Choose one</option>';
 
       for (var j = 0; j < options_array.length; j++) {
-        var option_string = "";
-        if(form_json_array[i].select_default == options_array[j]) {
-	  var option_string = "<option selected>" + form_json_array[i][options_array[j]] + "</option>";
-	  select_string = select_string + option_string;
-        } else {
+//         if(form_json_array[i].select_default == options_array[j]) {
+// 	  var option_string = "<option selected>" + form_json_array[i][options_array[j]] + "</option>";
+// 	  select_string = select_string + option_string;
+//         } else {
 	  var option_string = "<option>" + form_json_array[i][options_array[j]] + "</option>";
 	  select_string = select_string + option_string;
-	}
+// 	}
       }
       
       
@@ -704,10 +731,10 @@ function read_json_to_html(form_json_array) {
     else if(form_json_array[i].type == "text") {
       buttons_string = add_edit_buttons(form_json_array[i].order_number);
       var required = "";
-      if (form_json_array[i].text_required) {
+      if (form_json_array[i].required) {
         var required = "*";
       }
-      var new_text_input = '<tr><td class=question>' + buttons_string + form_json_array[i].label + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + form_json_array[i]._id + '" name="' + form_json_array[i]._id + '" type="text" value="' + form_json_array[i].text_default + '" placeholder="' + form_json_array[i].text_placeholder + '"/></div></td></tr>'
+      var new_text_input = '<tr><td class=question>' + buttons_string + form_json_array[i].label + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + form_json_array[i]._id + '" name="' + form_json_array[i]._id + '" type="text"/></div></td></tr>'
       $("#form_table").append(new_text_input);
     }
     
@@ -715,14 +742,14 @@ function read_json_to_html(form_json_array) {
       buttons_string = add_edit_buttons(form_json_array[i].order_number);
       var required = "";
       var checked = "";
-      if (form_json_array[i].checkbox_required == true) {
+      if (form_json_array[i].required == true) {
         required = "*";
       }
       
-      if (form_json_array[i].checkbox_default == "y") {
+      if (form_json_array[i]._default == "y") {
         checked = " checked";
       }
-      var new_checkbox = '<tr><td class=question><label for="' + form_json_array[i]._id + '">' + buttons_string + form_json_array[i].label + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + form_json_array[i]._id + '" type="hidden" value="' +form_json_array[i].checkbox_unchecked_value + '"/><input class="" id="' + form_json_array[i]._id + '" name="' + form_json_array[i]._id + '" type="checkbox" value="' +form_json_array[i].checkbox_checked_value + '"' + checked + '></div></td></tr>';
+      var new_checkbox = '<tr><td class=question><label for="' + form_json_array[i]._id + '">' + buttons_string + form_json_array[i].label + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + form_json_array[i]._id + '" type="hidden" value="n"/><input class="" id="' + form_json_array[i]._id + '" name="' + form_json_array[i]._id + '" type="checkbox" value="y"' + checked + '></div></td></tr>';
       $("#form_table").append(new_checkbox);
 
     }
@@ -740,9 +767,9 @@ function clear_select_options(select_options_array) {
   var new_option = 'Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>';
   var new_select = '<option value="select_option_1">Option 1</option>';
   $("#add_options_to_select").empty();
-  $("#select_default").empty();
+//   $("#select_default").empty();
   $("#add_options_to_select").append(new_option);
-  $("#select_default").append(new_select);
+//   $("#select_default").append(new_select);
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -754,9 +781,9 @@ function clear_radio_options() {
   var new_option = 'Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>';
   var new_select = '<option value="radio_option_1">Option 1</option>';
   $("#add_options_to_radio").empty();
-  $("#radio_default").empty();
+//   $("#radio_default").empty();
   $("#add_options_to_radio").append(new_option);
-  $("#radio_default").append(new_select);
+//   $("#radio_default").append(new_select);
   
 }
 
@@ -1000,7 +1027,6 @@ function delete_by_position(order_number, form_json_array) {
     
     if (form_json_array[i].order_number > order_number) {
       form_json_array[i].order_number = form_json_array[i].order_number - 1; 
-      
     }
   }  
 }
@@ -1045,8 +1071,11 @@ function swap_order_numbers_up(order_number, form_json_array) {
     console.log(order_number)
     form_json_array[order_number].order_number = order_number - 1;
     form_json_array[order_number - 1].order_number = order_number;
-
     return true;
   }
   return false;
 }
+
+var personal_info_module_string = '[{"order_number": 1, "header": "Personal and Property Information", "type": "header"}, {"sensitive": true, "type": "text", "required": true, "order_number": 2, "_id": "name", "label": "Name", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 3, "_id": "request_date", "label": "Date of Request", "validations": "date"}, {"sensitive": true, "type": "text", "required": true, "order_number": 4, "_id": "address", "label": "Street Address", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 5, "_id": "city", "label": "City", "validations": "None"}, {"sensitive": false, "type": "text", "required": false, "order_number": 6, "_id": "county", "label": "County", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 7, "_id": "state", "label": "State", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 8, "_id": "zip_code", "label": "Zip Code", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 9, "_id": "latitude", "label": "Latitude", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 10, "_id": "longitude", "label": "Longitude", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 11, "_id": "cross_street", "label": "Cross Street or Nearby Landmark", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 12, "_id": "phone1", "label": "Phone 1", "validations": "phone"}, {"sensitive": true, "type": "text", "required": false, "order_number": 13, "_id": "phone2", "label": "Phone 2", "validations": "phone"}, {"sensitive": false, "type": "text", "required": false, "order_number": 14, "_id": "time_to_call", "label": "Best time to call", "validations": "None"}, {"select_option_1": "Trees", "select_option_2": "Wind", "sensitive": false, "type": "select", "required": true, "order_number": 15, "_id": "work_type", "select_option_3": "Fire", "label": "Primary Help Needed"}, {"select_option_1": "Rent", "select_option_2": "Own", "sensitive": false, "type": "select", "select_option_5": "Business", "required": false, "order_number": 16, "_id": "rent_or_own", "select_option_3": "Public Land", "label": "Rent/Own/Public", "select_option_4": "Non-Profit"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 17, "_id": "work_without_resident", "label": "Work without resident present"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 18, "_id": "member_of_organization", "label": "Member of your organization"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 19, "_id": "first_responder", "label": "First Responder"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 20, "_id": "older_than_60", "label": "Older than 60"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 21, "_id": "disabled", "label": "Disabled"}, {"order_number": 22, "_id": "special_needs", "type": "textarea", "label": "Special Needs", "validations": "None"}, {"sensitive": false, "type": "radio", "low_hint": "Low (1)", "required": false, "order_number": 23, "_id": "priority", "label": "Priority", "radio_option_4": "4", "radio_option_5": "5", "high_hint": "High (5)", "radio_option_1": "1", "radio_option_2": "2", "radio_option_3": "3"}]';
+
+var status_info_module_string = '[{"order_number": 1, "header": "Claim, Status and Report", "type": "header"}, {"order_number": 2, "_default": "n", "type": "checkbox", "required": false, "_id": "claim_for_org", "label": "Claim for my organization", "sensitive": false}, {"order_number": 3, "select_option_3": "Open, needs follow up", "type": "select", "select_option_4": "Closed, completed", "select_option_5": "Closed, incomplete", "select_option_6": "Closed, out of scope", "select_option_7": "Closed, done by others", "select_option_1": "Open, unassigned", "select_option_2": "Open, partially completed", "_id": "status", "label": "Current Status", "required": true, "select_option_8": "Closed, no help wanted", "select_option_9": "Closed, rejected", "select_option_10": "Closed, duplicate", "sensitive": false}, {"order_number": 4, "validations": "None", "type": "text", "required": false, "_id": "total_volunteers", "label": "Volunteers", "sensitive": false}, {"order_number": 5, "validations": "None", "type": "text", "required": false, "_id": "hours_worked_per_volunteer", "label": "Hours per volunteer", "sensitive": false}, {"order_number": 6, "validations": "None", "type": "text", "required": false, "_id": "initials_of_resident_present", "label": "Initials of resident present during work", "sensitive": false}, {"order_number": 7, "validations": "None", "type": "text", "required": false, "_id": "status note", "label": "Status Notes", "sensitive": false}]';

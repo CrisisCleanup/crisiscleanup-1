@@ -29,8 +29,18 @@ goog.require("sandy.form");
 {% endif %}
 </script>
 <script>
+$(function(){
+$("#submit_form").click(function() {
+
+  alert(1);
+});
+});
 {% if post_json %}
 $(function(){
+$("#submit_form").click(function() {
+
+  alert(1);
+});
 var post_json = {{post_json}};
 var oFormObject = document.forms['form'];
 

@@ -24,6 +24,7 @@
  {{ incident_form_block }}
 </table>
 
-<div>{{ new_form.name.label }}: {{ new_form.name }}</div>
-
+{% for obj in new_form %}
+<div>{{ obj.label}}: {{ obj }}</div>
+{% endfor %}
 {{submit_button}}

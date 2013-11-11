@@ -94,6 +94,11 @@ indexes:
   - name: longitude
   - name: work_type
 
+- kind: Site
+  properties:
+  - name: event
+  - name: work_type
+
 - kind: __BlobInfo__
   properties:
   - name: filename

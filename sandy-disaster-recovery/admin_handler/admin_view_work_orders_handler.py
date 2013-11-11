@@ -27,7 +27,7 @@ from admin_base import AdminAuthenticatedHandler
 import event_db
 from site_db import Site
 from organization import Organization
-from export_bulk_handler import SITES_PER_TASK, AbstractExportBulkHandler, AbstractExportBulkWorker
+from export_bulk_handler import AbstractExportBulkHandler, AbstractExportBulkWorker
 
 
 def get_work_order_search_form(events, work_types):

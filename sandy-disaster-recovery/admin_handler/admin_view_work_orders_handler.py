@@ -72,7 +72,7 @@ def create_work_order_search_form(events, work_types):
         )
         per_page = SelectField(
             choices=[
-                (n, n) for n in [10, 50, 100, 500]
+                (n, n) for n in [10, 50, 100, 250]
             ],
             coerce=int,
             default=10

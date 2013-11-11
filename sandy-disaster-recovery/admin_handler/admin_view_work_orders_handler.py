@@ -30,7 +30,7 @@ from organization import Organization
 from export_bulk_handler import AbstractExportBulkHandler, AbstractExportBulkWorker
 
 
-def get_work_order_search_form(events, work_types):
+def create_work_order_search_form(events, work_types):
 
     class WorkOrderSearchForm(Form):
 
@@ -131,7 +131,7 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
                     .filter('event', org.incident.key())
             ]
 
-        WorkOrderSearchForm = get_work_order_search_form(
+        WorkOrderSearchForm = create_work_order_search_form(
             events=events, work_types=work_types)
         form = WorkOrderSearchForm(self.request.GET)
 
@@ -196,7 +196,7 @@ class AdminExportWorkOrdersBulkWorker(AbstractExportBulkWorker):
                     .filter('event', org.incident.key())
             ]
 
-        WorkOrderSearchForm = get_work_order_search_form(
+        WorkOrderSearchForm = create_work_order_search_form(
             events=events, work_types=work_types)
         form = WorkOrderSearchForm(post_data)
         query = setup_and_query_from_form(org, event, form)

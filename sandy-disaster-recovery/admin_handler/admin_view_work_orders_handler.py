@@ -20,7 +20,6 @@ import pickle
 from google.appengine.ext.db import Query, Key
 
 from wtforms import Form, TextField, HiddenField, SelectField
-from wtforms.ext.appengine.fields import ReferencePropertyField
 
 from admin_base import AdminAuthenticatedHandler
 
@@ -101,9 +100,9 @@ def setup_and_query_from_form(org, event, form):
     if form.event.data:
         query.filter('event', Key(form.event.data))
     if form.reporting_org.data:
-        query.filter('reported_by', form.reporting_org.data)
+        query.filter('reported_by', Key(form.reporting_org.data))
     if form.claiming_org.data:
-        query.filter('claimed_by', form.claiming_org.data)
+        query.filter('claimed_by', Key(form.claiming_org.data))
     if form.work_type.data:
         query.filter('work_type', form.work_type.data)
     if form.status.data:

@@ -6,17 +6,64 @@
 
 {% block main_content %}
 
-<form id="search-form" method="GET" style="margin-bottom: 15px;">
+<form id="search-form" method="GET" class="form-horizontal" style="margin-bottom: 15px;" role="form">
+
   {{ form.offset }}
   {{ form.order }}
-  {{ form.event.label }} {{ form.event() }}
-  {{ form.query.label }} {{ form.query(placeholder="Not yet implemented", disabled=True) }}
-  {{ form.reporting_org.label }} {{ form.reporting_org() }}
-  {{ form.claiming_org.label }} {{ form.claiming_org() }}
-  {{ form.work_type.label }} {{ form.work_type() }}
-  {{ form.status.label }} {{ form.status() }}
-  {{ form.per_page.label }} {{ form.per_page() }}
-  <button type="submit">Search</button>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        {{ form.event.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.event(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.query.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.query(class="form-control", placeholder="Not yet implemented", disabled=True) }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.reporting_org.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.reporting_org(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.claiming_org.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.claiming_org(class="form-control") }}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        {{ form.work_type.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.work_type(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.status.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.status(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.per_page.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.per_page(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </form>
 
 {% if count > 0 %}

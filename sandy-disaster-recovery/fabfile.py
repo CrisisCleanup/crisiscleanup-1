@@ -132,17 +132,18 @@ def on_master_branch(app_defn):
     return True
 
 
-def master_pushed_to_remote(app_defn):
-    " Check that the master branch is pushed to origin. "
-    local_master_ref = local("git rev-parse %s" % env.master_branch, capture=True)
-    origin_master_ref = local("git rev-parse origin/%s" % env.master_branch, capture=True)
-    if local_master_ref != origin_master_ref:
+def current_branch_pushed_to_remote(app_defn):
+    " Check that the current branch is pushed to origin. "
+    current_branch = get_current_branch()
+    local_ref = local("git rev-parse %s" % current_branch, capture=True)
+    origin_ref = local("git rev-parse origin/%s" % current_branch, capture=True)
+    if local_ref != origin_ref:
         if app_defn.get('allow_unclean_deploy', False):
             warn("%s and origin/%s differ (ignoring for %s)" % (
-                env.master_branch, env.master_branch, app_defn['application']))
+                current_branch, current_branch, app_defn['application']))
         else:
             abort("%s must be pushed to origin to deploy to %s" % (
-                env.master_branch, app_defn['application']))
+                current_branch, app_defn['application']))
     return True
 
 
@@ -151,7 +152,7 @@ def ok_to_deploy(app_defn):
         app_yaml_template_present() and
         working_directory_clean(app_defn) and
         on_master_branch(app_defn) and
-        master_pushed_to_remote(app_defn)
+        current_branch_pushed_to_remote(app_defn)
     )
 
 

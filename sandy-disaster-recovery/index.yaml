@@ -67,13 +67,6 @@ indexes:
 - kind: Site
   properties:
   - name: claimed_by
-  - name: event
-  - name: reported_by
-  - name: work_type
-
-- kind: Site
-  properties:
-  - name: claimed_by
   - name: reported_by
   - name: status
   - name: work_type
@@ -112,11 +105,6 @@ indexes:
   properties:
   - name: event
   - name: case_number
-
-- kind: Site
-  properties:
-  - name: event
-  - name: case_number
   - name: claimed_by
   - name: floors_affected
   - name: latitude
@@ -126,23 +114,7 @@ indexes:
 - kind: Site
   properties:
   - name: event
-  - name: claimed_by
-
-- kind: Site
-  properties:
-  - name: event
   - name: name
-
-- kind: Site
-  properties:
-  - name: event
-  - name: reported_by
-
-- kind: Site
-  properties:
-  - name: event
-  - name: reported_by
-  - name: work_type
 
 - kind: Site
   properties:
@@ -168,48 +140,7 @@ indexes:
 - kind: Site
   properties:
   - name: event
-  - name: status
   - name: work_type
-  - name: case_number
-
-- kind: Site
-  properties:
-  - name: event
-  - name: status
-  - name: work_type
-  - name: claimed_by
-
-- kind: Site
-  properties:
-  - name: event
-  - name: status
-  - name: work_type
-  - name: name
-
-- kind: Site
-  properties:
-  - name: event
-  - name: status
-  - name: work_type
-  - name: reported_by
-
-- kind: Site
-  properties:
-  - name: event
-  - name: status
-  - name: work_type
-  - name: request_date
-
-- kind: Site
-  properties:
-  - name: event
-  - name: work_type
-
-- kind: Site
-  properties:
-  - name: event
-  - name: work_type
-  - name: case_number
 
 - kind: __BlobInfo__
   properties:

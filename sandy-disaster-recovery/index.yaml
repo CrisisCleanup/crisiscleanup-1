@@ -53,16 +53,6 @@ indexes:
   - name: reported_by
   - name: status
   - name: work_type
-  - name: case_number
-    direction: desc
-
-- kind: Site
-  properties:
-  - name: claimed_by
-  - name: event
-  - name: reported_by
-  - name: status
-  - name: work_type
   - name: name
 
 - kind: Site
@@ -72,27 +62,7 @@ indexes:
   - name: reported_by
   - name: status
   - name: work_type
-  - name: name
-    direction: desc
-
-- kind: Site
-  properties:
-  - name: claimed_by
-  - name: event
-  - name: reported_by
-  - name: status
-  - name: work_type
   - name: request_date
-
-- kind: Site
-  properties:
-  - name: claimed_by
-  - name: event
-  - name: reported_by
-  - name: status
-  - name: work_type
-  - name: request_date
-    direction: desc
 
 - kind: Site
   properties:

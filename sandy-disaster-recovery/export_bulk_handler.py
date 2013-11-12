@@ -121,10 +121,10 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         for site in sites:
             writer.writerow(site.ToCsvLine(fields))
 
-    def get_query(self):
+    def get_base_query(self):
         raise NotImplementedError
 
-    def get_sites(self):
+    def filter_sites(self):
         raise NotImplementedError
 
     def get_continuation_param_dict(self):
@@ -143,10 +143,11 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         self.worker_url = self.request.get('worker_url')
 
         # get (base) query, skip query to cursor, filter for sites
-        query = self.get_query()
+        query = self.get_base_query()
         if self.start_cursor:
             query.with_cursor(self.start_cursor)
-        sites = self.get_sites(query)
+        fetched_sites = query.fetch(limit=SITES_PER_TASK)
+        sites = self.filter_sites(fetched_sites)
 
         # write lines to blob file
         with files.open(self.filename, 'a') as fd:
@@ -177,16 +178,15 @@ class ExportBulkWorker(AbstractExportBulkHandler):
         )
         super(ExportBulkHandler, self).post()
 
-    def get_query(self):
+    def get_base_query(self):
         query = Site.all()
         if self.filtering_event_key:
             query.filter('event', Event.get(self.filtering_event_key))
         return query
 
-    def get_sites(self, query):
+    def filter_sites(self, fetched_sites):
         # filter on ids if supplied
         # (GAE: can't do as part of query with cursor...)
-        fetched_sites = query.fetch(limit=SITES_PER_TASK)
         if self.ids:
             return [
                 site for site in fetched_sites

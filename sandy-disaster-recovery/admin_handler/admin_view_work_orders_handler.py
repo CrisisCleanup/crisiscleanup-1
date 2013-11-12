@@ -182,7 +182,7 @@ class AdminExportWorkOrdersBulkHandler(AdminAuthenticatedHandler, AbstractExport
 
 class AdminExportWorkOrdersBulkWorker(AbstractExportBulkWorker):
 
-    def get_query(self):
+    def get_base_query(self):
         org = pickle.loads(self.org_pickle)
         event = pickle.loads(self.event_pickle)
         post_data = pickle.loads(self.post_pickle)
@@ -207,8 +207,8 @@ class AdminExportWorkOrdersBulkWorker(AbstractExportBulkWorker):
         query = setup_and_query_from_form(org, event, form)
         return query
 
-    def get_sites(self, query):
-        return [site for site in query]
+    def filter_sites(self, fetched_sites):
+        return fetched_sites
 
     def get_continuation_param_dict(self):
         d = super(AdminExportWorkOrdersBulkWorker, self).get_continuation_param_dict()

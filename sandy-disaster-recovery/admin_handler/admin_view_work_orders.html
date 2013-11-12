@@ -81,7 +81,9 @@
         {{ form.status() }}
         {{ form.per_page() }}
       </div>
-      <button id="export-results-btn">Export Results</button>
+      <button id="export-results-btn" class="btn btn-primary ladda-button" data-style="expand-right">
+        <span class="ladda-label">Export Results</span>
+      </button>
     </form>
   </div>
 {% endif %}
@@ -179,6 +181,8 @@ $exportResultsButton = $('#export-results-btn');
 
 $exportResultsButton.click(function(event) {
   event.preventDefault();
+  var laddaManager = Ladda.create(this);
+  laddaManager.start();
   $exportResultsButton.attr('disabled', true);
   $.ajax({
     url: '/admin-export-work-orders-bulk',
@@ -188,6 +192,7 @@ $exportResultsButton.click(function(event) {
     pollForCSVDownload(
       data.filename,
       function() {
+        laddaManager.stop();
         $exportResultsButton.attr('disabled', false)
       }
     );

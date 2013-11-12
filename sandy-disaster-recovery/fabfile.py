@@ -47,12 +47,18 @@ MINI_YAML = """
   secure: always
   allow_unclean_deploy: true
   sandbox: true
+  overwrite:
+    "assets/images/crisis-cleanup-logo-default.png" : "assets/images/crisis-cleanup-logo.png"
 
 - application: sandy-disaster-recovery
   secure: always
+  overwrite:
+    "assets/images/crisis-cleanup-logo-default.png" : "assets/images/crisis-cleanup-logo.png"
 
 - application: crisiscleanup-demo
   secure: optional
+  overwrite:
+    "assets/images/crisis-cleanup-logo-default.png" : "assets/images/crisis-cleanup-logo.png"
 
 - application: crisis-cleanup-au
   secure: always

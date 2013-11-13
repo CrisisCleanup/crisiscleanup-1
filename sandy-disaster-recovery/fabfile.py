@@ -273,7 +273,7 @@ def deploy(apps, tag='HEAD', version=None):
     # clear old build dirs
     clear_build_dirs()
 
-    # copy dir for deployment
+    # build to deployment, using git archive
     build_dir = mkdtemp(prefix=BUILD_DIR_PREFIX)
     print "Building to %s ..." % build_dir
     local("git archive %s | tar -x -C %s" % (tag, build_dir))

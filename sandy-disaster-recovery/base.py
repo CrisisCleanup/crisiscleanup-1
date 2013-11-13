@@ -46,6 +46,7 @@ class RequestHandler(webapp2.RequestHandler):
     self.response.headers['Expires'] = '0'
 
 class AuthenticatedHandler(RequestHandler):
+
   def post(self):
     org, event = key.CheckAuthorization(self.request)
     if not org:
@@ -69,6 +70,18 @@ class AuthenticatedHandler(RequestHandler):
       self.HandleAuthenticationFailure('put')
       return
     self.AuthenticatedPut(org, event)
+
+  def AuthenticatedGet(self, *args, **kwargs):
+      # unless implemented, method is not allowed
+      self.abort(405)
+
+  def AuthenticatedPost(self, *args, **kwargs):
+      # unless implemented, method is not allowed
+      self.abort(405)
+
+  def AuthenticatedPut(self, *args, **kwargs):
+      # unless implemented, method is not allowed
+      self.abort(405)
 
   def HandleAuthenticationFailure(self, method):
     """Takes some action when authentication fails.

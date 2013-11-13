@@ -112,13 +112,17 @@ def app_yaml_template_present():
 
 
 def working_directory_clean(app_defn):
-    " Check that the working directory is clean. "
+    """
+    Check that the working directory is clean.
+
+    Warn only; deployment is from a git commit.
+    """
     git_status = local("git status", capture=True)
     if "working directory clean" not in git_status:
         if app_defn.get('allow_unclean_deploy', False):
             warn("Working directory not clean (ignoring for %s)" % app_defn['application'])
         else:
-            abort("Working directory must be clean to deploy to %s" % app_defn['application'])
+            warn("Working directory not clean - modified files will not be deployed to %s" % app_defn['application'])
     return True
 
 
@@ -153,12 +157,28 @@ def current_branch_pushed_to_remote(app_defn):
     return True
 
 
-def ok_to_deploy(app_defn):
+def check_specified_commitish_pushed_to_remote(app_defn, tag):
+    " Check the specified commit on the current branch has been pushed to origin. "
+    current_branch = get_current_branch()
+    containing_branches = local("git branch -a --contains %s" % tag, capture=True)
+    if 'origin/%s' % current_branch not in containing_branches:
+        if app_defn.get('allow_unclean_deploy', False):
+            warn("%s has not been pushed to origin/%s (ignoring for %s)" % (
+                tag, current_branch, app_defn['application']))
+        else:
+            abort("%s must be pushed to origin/%s to deploy to %s" % (
+                tag, current_branch, app_defn['application']))
+
+    return True
+
+
+def ok_to_deploy(app_defn, tag):
     return (
         app_yaml_template_present() and
         working_directory_clean(app_defn) and
         on_master_branch(app_defn) and
-        current_branch_pushed_to_remote(app_defn)
+        check_specified_commitish_pushed_to_remote(app_defn, tag)
+        ## current_branch_pushed_to_remote(app_defn)
     )
 
 
@@ -226,12 +246,13 @@ def clear_build_dirs():
 
 
 @task
-def check(apps):
+def check(apps, tag='HEAD'):
     """
     Check if it is ok to deploy to apps
     """
     app_defns = get_app_definitions(apps.split(';'))
-    map(ok_to_deploy, app_defns)
+    for app_defn in app_defns:
+        ok_to_deploy(app_defn, tag)
 
 
 @task
@@ -249,7 +270,8 @@ def deploy(apps, tag='HEAD', version=None):
     app_defns = get_app_definitions(apps.split(';'))
 
     # before doing anything, check if *all* apps are ok to deploy to
-    map(ok_to_deploy, app_defns)
+    for app_defn in app_defns:
+        ok_to_deploy(app_defn, tag)
 
     # check tag
     if not (tag == 'HEAD' or tag in local('git tag -l', capture=True)):

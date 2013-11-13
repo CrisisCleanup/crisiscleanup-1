@@ -256,6 +256,18 @@ def check(apps, tag='HEAD'):
 
 
 @task
+def vacuum_indexes(apps):
+    """
+    Vacuum indexes for apps.
+    """
+    app_defns = get_app_definitions(apps.split(';'))
+    for app_defn in app_defns:
+        local("%(appcfg)s --oauth2 -A %(application)s vacuum_indexes ." % (
+            dict(env.items() + app_defn.items()))
+        )
+
+
+@task
 def deploy(apps, tag='HEAD', version=None):
     """
     Deploy to one or more applications

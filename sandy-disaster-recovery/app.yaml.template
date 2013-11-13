@@ -29,6 +29,10 @@ handlers:
   static_dir: assets
   expiration: "7d"
 
+- url: /adminconsole/.*
+  script: google.appengine.ext.admin.application
+  login: admin
+
 - url: .*
   script: main.app
   secure: $SECURE_PLACEHOLDER

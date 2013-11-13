@@ -50,7 +50,7 @@ hr {
   font-weight: bold;
   font-size: 16px;
 }
-input[type="submit"] {
+input[type="submit"], button {
   padding: 10px;
 }
 .form_message {

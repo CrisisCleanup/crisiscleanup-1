@@ -38,6 +38,7 @@ class IncidentDefinitionAjax(base.RequestHandler):
     q.filter("short_name =", incident_short_name)
     incident = q.get()
     
+    #raise Exception(incident)
     incident_data = {
       "phases_json": incident.phases_json,
       "forms_json": incident.forms_json

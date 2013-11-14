@@ -70,9 +70,9 @@ $(function() {
 <div>{{ form.name.label }}: {{ form.name}}</div>
 <div>{{ form.location.label }}: {{ form.location}}</div>
 <div>{{ form.timezone.label }}: {{ form.timezone }}</div>
-<div>{{ form.incident_date.label }}: {{ form.incident_date}}</div>
-<div>{{ form.cleanup_start_date.label }}: {{ form.cleanup_start_date}}</div>
-<div>{{ form.work_order_prefix.label }}: {{ form.work_order_prefix }}<a href="#" id="edit_work_order_prefix">Edit</a></div>
+<div>{{ form.incident_date.label }}: {{ form.incident_date(readonly=true) }}</div>
+<div>{{ form.cleanup_start_date.label }}: {{ form.cleanup_start_date(readonly=true) }}</div>
+<div>{{ form.work_order_prefix.label }}: {{ form.work_order_prefix(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('work_order_prefix').readOnly=false; document.getElementById('work_order_prefix').focus(); return false;">edit</a>)</small></div>
 <div>{{ form.incident_lat.label }}: {{ form.incident_lat }}</div>
 <div>{{ form.incident_lng.label }}: {{ form.incident_lng }}</div>
 <h3>Local Admin Information</h3>
@@ -81,7 +81,7 @@ $(function() {
 <div>{{ form.local_admin_organization.label }}: {{ form.local_admin_organization }}</div>
 <div>{{ form.local_admin_email.label }}: {{ form.local_admin_email }}</div>
 <div>{{ form.local_admin_cell_phone.label }}: {{ form.local_admin_cell_phone }}</div>
-<div>{{ form.local_admin_password.label }}: {{ form.local_admin_password }}</div>
+<div>{{ form.local_admin_password.label }}: {{ form.local_admin_password(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('local_admin_password').readOnly=false; document.getElementById('local_admin_password').focus(); return false;">edit</a>)</small></div> 
 
 
 <button class="submit">Submit</button>

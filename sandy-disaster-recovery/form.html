@@ -7,7 +7,8 @@
 <link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
 <link href="/stylesheets/form.print.css?v={{version}}" rel="stylesheet" type="text/css" media="print">
 <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>   
+ <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>   
 
 <!-- <link href="/stylesheets/popup_radio_form.css" rel="stylesheet"> -->
 
@@ -28,19 +29,29 @@ goog.require("sandy.form");
 <script src="/javascript/compiled_form.js?v={{version}}">
 {% endif %}
 </script>
+
 <script>
 $(function(){
 $("#submit_form").click(function() {
-
-  alert(1);
-});
+    $('#form').validate(
+    {
+    rules: {
+      name: {
+	minlength: 2,
+	required: true
+      },
+    },
+    //   highlight: function(element) {
+    //     $(element).closest('.control-group').removeClass('success').addClass('error');
+    //   },
+    success: function(element) {
+      alert(2);
+    }
+    });
+    });
 });
 {% if post_json %}
 $(function(){
-$("#submit_form").click(function() {
-
-  alert(1);
-});
 var post_json = {{post_json}};
 var oFormObject = document.forms['form'];
 

@@ -37,34 +37,72 @@ template = jinja_environment.get_template('/incident_edit_phase.html')
 
 class IncidentEditPhase(base.RequestHandler):
   def get(self):
-    incident_short_name = self.request.get("incident")
+    incident_short_name = self.request.get("incident_short_name")
+    phase_id = self.request.get("phase_id")
     q = incident_definition.IncidentDefinition.all()
     q.filter("short_name =", incident_short_name)
     incident = q.get()
     
+    phases_json = json.loads(incident.phases_json)
+    this_phase = None
+    for phase in phases_json:
+      if phase['phase_id'] == phase_id:
+	this_phase = phase
+    #raise Exception(this_phase)
+    form = incident_definition.IncidentPhaseForm(phase_name = this_phase['phase_name'], description=this_phase['description'])
     data = {
       "incident": incident,
+      "form": form,
+      "this_phase": this_phase
     }
     
     self.response.out.write(template.render(data))
     
     
   def post(self):
-    if self.request.get("phase1"):
-      pass
-      # get all and add to json
-    if self.request.get("phase2"):
-      pass
-      # get all and add to json
-    if self.request.get("phase3"):
-      pass
-      # get all and add to json
-    if self.request.get("phase4"):
-      pass
-      # get all and add to json
-    if self.request.get("phase5"):
-      pass
-      # get all and add to json
-    if self.request.get("phase6"):
-      pass
-      # get all and add to json
+    incident_id = self.request.get("incident_id")
+    phase_id = self.request.get("phase_id")
+    phase_name = self.request.get("phase_name")
+    description = self.request.get("description")
+    
+    form = incident_definition.IncidentPhaseForm(self.request.POST)
+    incident = incident_definition.IncidentDefinition.get_by_id(int(incident_id))
+    
+    phases_json = json.loads(incident.phases_json)
+
+    i = 0
+    phase_number = 0
+    for phase in phases_json:
+      if phase['phase_id'] == phase_id:
+	phase_number = i
+      i += 1
+
+    if form.validate():      
+      phase_short_name = phase_name.lower()
+      phase_short_name = phase_short_name.replace(" ", "_")
+      
+      
+
+      edited_phase_obj = {
+	"phase_name": phase_name,
+	"phase_id": phase_id,
+	"incident_short_name": incident.short_name,
+	"description": description,
+	"phase_short_name": phase_short_name
+      }
+      
+      phases_json[phase_number] = edited_phase_obj
+      incident.phases_json = json.dumps(phases_json)
+      incident.put()
+      self.redirect("/incident_definition?id=" + incident_id)
+      return
+    else:
+      data = {
+	"incident": incident,
+	"form": form,
+	"this_phase": phases_json[phase_number],
+	"errors": form.errors
+      }
+      
+      self.response.out.write(template.render(data))
+      return

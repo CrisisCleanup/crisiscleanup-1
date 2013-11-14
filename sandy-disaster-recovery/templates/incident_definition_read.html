@@ -28,24 +28,83 @@
 {% endblock %}
 
 {% block main_content %}
-<a href="/incident_form_creator">Go to forms</a> | <a href="/incident_edit?id={{ incident_definition_object.key().id() }}">Edit</a>
-<h2>Incident Definition</h2>
-<h3>Incident Information</h3>
-  <p>Incident Name: {{ incident_definition_object.name }}</p>
-  <p>Short Name: {{ incident_definition_object.short_name }}</p>
-  <p>Time Zone: {{ incident_definition_object.timezone }}</p>
-  <p>Incident Date: {{ incident_definition_object.incident_date }}</p>
-  <p>Start Date: {{ incident_definition_object.cleanup_start_date }}</p>
-  <p>Work Order Prefix: {{ incident_definition_object.work_order_prefix }}</p>
-  <p>Centroid Latitude: {{ incident_definition_object.incident_lat }}</p>
-  <p>Centroid Longitude: {{ incident_definition_object.incident_lng }}</p>
-<h3>Local Admin Information</h3>
-  <p>Name: {{ incident_definition_object.local_admin_name }}</p>
-  <p>Title: {{ incident_definition_object.local_admin_title }}</p>
-  <p>Organization: {{ incident_definition_object.local_admin_organization }}</p>
-  <p>Email: {{ incident_definition_object.local_admin_email }}</p>
-  <p>Cell Phone: {{ incident_definition_object.local_admin_cell_phone }}</p>
-  <p>Password: {{ incident_definition_object.local_admin_password }}</p>
+<h2>Incident: {{ incident_definition_object.name }}</h2>
+  <h3>Phases</h3>
+  {% if phases %}
+    {% for phase in phases %}
+      {{ phase.phase_name }} |
+    {% endfor %}
+  {% else %}
+  <u>No Phases: Click to the right to add</u> |
+  {% endif %}
+    <a href="/incident_add_phase?id={{ incident_definition_object.key().id() }}">Add Phase</a> |
+    <a href="/incident_edit_phases?id={{ incident_definition_object.key().id() }}">Edit Phases</a>
 
+
+{% if phases %}
+  <h3>Forms</h3>
+  {% for phase in phases %}
+    <a href="/incident_form_creator?incident_short_name={{phase.incident_short_name}}&phase_id={{phase.phase_id}}">{{ phase.phase_name }}</a> |
+  {% endfor %}
+  <small>Click to edit/view</small>
+{% endif %}
+
+<br>
+<h3>Incident Information | <a href="/incident_edit?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
+<table>
+<tr>
+  <td>Incident Name:</td>
+  <td>{{ incident_definition_object.name }}</td>
+  <td>Short Name:</td>
+  <td>{{ incident_definition_object.short_name }}</td>
+</tr>
+<tr>
+  <td>Work Order Prefix:</td>
+  <td>{{ incident_definition_object.work_order_prefix }}</td>
+  <td>Time Zone:</td>
+  <td>{{ incident_definition_object.timezone }}</td>
+</tr>
+<tr>
+  <td>Incident Date:</td>
+  <td>{{ incident_definition_object.incident_date }}</td>
+  <td>Cleanup Start Date:</td>
+  <td>{{ incident_definition_object.cleanup_start_date }}</td>
+</tr>
+<tr>
+  <td>Incident Latitude:</td>
+  <td>{{ incident_definition_object.incident_lat }}</td>
+  <td>Incident Longitude:</td>
+  <td>{{ incident_definition_object.incident_lng }}</td>
+</tr>
+  <td>Location:</td>
+  <td>{{ incident_definition_object.location }}</td>
+  <td></td>
+  <td></td>
+</table>
+<table>
+<h3>Local Admin Information</h2>
+<tr>
+  <td>Name:</td>
+  <td>{{ incident_definition_object.local_admin_name }}</td>
+  <td>Title:</td>
+  <td>{{ incident_definition_object.local_admin_title }}</td>
+</tr>
+<tr>
+  <td>Organization:</td>
+  <td>{{ incident_definition_object.local_admin_organization }}</td>
+  <td>Email:</td>
+  <td>{{ incident_definition_object.local_admin_email }}</td>
+</tr>
+<tr>
+  <td>Cell Phone:</td>
+  <td>{{ incident_definition_object.local_admin_cell_phone }}</td>
+  <td>Password:</td>
+  <td>{{ incident_definition_object.local_admin_password }}</td>
+</tr>
+</table>
+
+<h3><a href="#">Click Advanced For More</a></h3>
+<p>### ON CLICK ###</p>
+Explain what the advanced panel is for, it's defaults, and how to use it
 {% endblock %}
 

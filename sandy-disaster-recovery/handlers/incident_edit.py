@@ -55,17 +55,26 @@ class IncidentEdit(base.RequestHandler):
 
     form = incident_definition.IncidentDefinitionForm(self.request.POST, obj=incident)
     del form.incident
-    incident_date = form.incident_date.data
-    cleanup_start_date = form.cleanup_start_date.data
-    cleanup_end_date = form.cleanup_end_date.data
-    form.incident_date.data = datetime.strptime(incident_date, "%Y-%m-%d").date()
-    form.cleanup_start_date.data = datetime.strptime(cleanup_start_date, "%Y-%m-%d").date()
-    form.organization_map_latitude.data = form.incident_lat.data
-    form.organization_map_longitude.data = form.incident_lng.data
-    form.public_map_latitude.data = form.incident_lat.data
-    form.public_map_longitude.data = form.incident_lat.data
-    #form.incident.data = form.incident.data.key()
+
+    #form.incident.data = incident_id
     #raise Exception(form.incident.data)
+    #form.incident.data = form.incident.data.key()
+    try:
+      form.incident_lat.data = float(form.incident_lat.data)
+      form.incident_lng.data = float(form.incident_lng.data)
+    except:
+      pass
+    #raise Exception(form.incident.data)
+    
+    #incident_date = form.incident_date.data
+    #cleanup_start_date = form.cleanup_start_date.data
+    #cleanup_end_date = form.cleanup_end_date.data
+    #form.incident_date.data = datetime.strptime(incident_date, "%Y-%m-%d").date()
+    #form.cleanup_start_date.data = datetime.strptime(cleanup_start_date, "%Y-%m-%d").date()
+    #form.organization_map_latitude.data = float(form.incident_lat.data)
+    #form.organization_map_longitude.data = float(form.incident_lng.data)
+    #form.public_map_latitude.data = float(form.incident_lat.data)
+    #form.public_map_longitude.data = float(form.incident_lat.data)
     if not form.validate():
       self.response.out.write(template.render(
 	{
@@ -74,8 +83,16 @@ class IncidentEdit(base.RequestHandler):
 	  "incident": incident
       }))
     else:
-
+      form.incident_date.data = datetime.strptime(form.incident_date.data, "%Y-%m-%d").date()
+      form.cleanup_start_date.data = datetime.strptime(form.cleanup_start_date.data, "%Y-%m-%d").date()
+      phases_json = incident.phases_json
+      forms_json = incident.forms_json
+      short_name = incident.short_name
+      
       form.populate_obj(incident)
+      incident.phases_json = phases_json
+      incident.forms_json = forms_json
+      incident.short_name = short_name
       incident.put()
       return self.redirect("/incident_definition?id=" + incident_id)
 

@@ -25,7 +25,7 @@ from google.appengine.api import memcache
 import json
 from google.appengine.ext.db import Query
 
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
+from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
 import cache
 
 CASE_LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
@@ -63,8 +63,8 @@ class IncidentDefinition(db.Model):
   cleanup_start_date = db.DateProperty(required=True)
   cleanup_end_date = db.DateProperty(required=False)
   work_order_prefix = db.StringProperty(required=True)
-  incident_lat = db.StringProperty(required=True)
-  incident_lng = db.StringProperty(required=True)
+  incident_lat = db.FloatProperty(required=True)
+  incident_lng = db.FloatProperty(required=True)
   
   local_admin_name = db.StringProperty()
   local_admin_title = db.StringProperty()
@@ -77,18 +77,24 @@ class IncidentDefinition(db.Model):
   public_map_url = db.StringProperty()
   public_map_cluster = db.BooleanProperty(default=True)
   public_map_zoom = db.StringProperty(default="7")
-  public_map_latitude = db.StringProperty()
-  public_map_longitude = db.StringProperty()
+  public_map_latitude = db.FloatProperty()
+  public_map_longitude = db.FloatProperty()
   
   organization_map_title = db.StringProperty()
   organization_map_url = db.StringProperty()
   organization_map_cluster = db.BooleanProperty(default=True)
   organization_map_zoom = db.StringProperty(default="7")
-  organization_map_latitude = db.StringProperty()
-  organization_map_longitude = db.StringProperty()
+  organization_map_latitude = db.FloatProperty()
+  organization_map_longitude = db.FloatProperty()
   
   ignore_validation = db.BooleanProperty()
   developer_mode = db.BooleanProperty()
+  
+class IncidentPhaseForm(Form):
+  phase_name = TextField('Phase Name', [wtforms.validators.Length(min = 1, max = 100,
+      message = "Name must be between 1 and 100 characters")])
+  description = TextAreaField('Description', [wtforms.validators.Length(min = 1, max = 100,
+      message = "Name must be between 1 and 100 characters")])
   
   
 class IncidentDefinitionForm(model_form(IncidentDefinition)):
@@ -122,12 +128,14 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
 	       ("9", "Tokyo, Seoul, Osaka, Sapporo, Yakutsk"), ("9.5", "Adelaide, Darwin"), ("10", "Eastern Australia, Guam, Vladivostok"), 
 	       ("11", "Magadan, Solomon Islands, New Caledonia"), ("12", "Auckland, Wellington, Fiji, Kamchatka") ],
     default = 0)
-  incident_date = TextField('Incident Date (mm/dd/yyyy)')
-  cleanup_start_date = TextField('Cleanup Start Date (mm/dd/yyyy)')
+  incident_date = TextField('Incident Date (mm/dd/yyyy)', [wtforms.validators.Length(min = 1, max = 100,
+  message = "Name must be between 1 and 100 characters")])
+  cleanup_start_date = TextField('Cleanup Start Date (mm/dd/yyyy)', [wtforms.validators.Length(min = 1, max = 100,
+  message = "Name must be between 1 and 100 characters")])
   #cleanup_end_date = TextField('Cleanup End Date (mm/dd/yyyy)')
   work_order_prefix = TextField('Work Order Prefix', default = get_case_label())
-  incident_lat = TextField('Incident Latitude')
-  incident_lng = TextField('Incident Longitude')
+  incident_lat = TextField('Incident Latitude', [wtforms.validators.NumberRange(min=-90, max=90, message="Latitude must be a number between -90 and 90")])
+  incident_lng = TextField('Incident Longitude', [wtforms.validators.NumberRange(min=-180, max=180, message="Longitude must be a number between -180 and 180")])
   #ignore_validation = BooleanField("Ignore Validation", default=False)
   #developer_mode = BooleanField("Developer Mode", default=False)
   
@@ -136,7 +144,7 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   local_admin_organization = TextField('Local Admin Organization')
   local_admin_email = TextField('Local Admin Email')
   local_admin_cell_phone = TextField('Local Admin Cell Phone')
-  local_admin_password = TextField('Local Admin Password')
+  local_admin_password = TextField('Local Admin Password', [wtforms.validators.Regexp(r'([A-Za-z])+([0-9])+|([0-9])+([A-Za-z])+', flags=0, message=u'Password: Must contain at least one letter and at least one number')])
 
 
 

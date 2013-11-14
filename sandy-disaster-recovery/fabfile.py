@@ -22,6 +22,7 @@ BUILD_DIR_PREFIX = 'ccbuild'
 
 GAE_APPCFG_POSSIBLE_LOCATIONS = [
     '../../google_appengine/appcfg.py',
+    '../../../google_appengine/appcfg.py',
 ]
 
 try:

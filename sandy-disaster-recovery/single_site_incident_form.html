@@ -17,14 +17,30 @@
 {% endmacro %}
 {% endif %}
 
+{% if phases_links %}
+<p>{{phases_links}}</p>
+{% endif %}
 
+{% if label %}
+<h2>{{ label }}</h2>
+{% endif %}
+
+{% if paragraph %}
+<p>{{ paragraph }}</p>
+{% endif %}
+
+{% if incident_form_block %}
  <table id="form_table">
- <p>{{phases_links}}</p>
  <table>
  {{ incident_form_block }}
 </table>
+{% endif %}
 
+{% if new_form %}
 {% for obj in new_form %}
 <div>{{ obj.label}}: {{ obj }}</div>
 {% endfor %}
 {{submit_button}}
+{% endif %}
+{{submit_button}}
+

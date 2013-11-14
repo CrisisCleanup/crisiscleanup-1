@@ -149,7 +149,7 @@ class Site(db.Expando):
   latitude = db.FloatProperty(default = 0.0)
   longitude = db.FloatProperty(default = 0.0)
   ## Priority assigned by organization (1 is highest).
-  priority = db.IntegerProperty(choices=[1, 2, 3, 4, 5], default = 3)
+  #priority = db.IntegerProperty(choices=[1, 2, 3, 4, 5], default = 3)
   
   #priority = db.StringProperty()
   ## Name of org. rep (e.g. "Jill Smith")

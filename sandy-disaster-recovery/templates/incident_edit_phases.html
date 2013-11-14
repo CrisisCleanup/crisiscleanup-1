@@ -28,13 +28,12 @@
 {% endblock %}
 
 {% block main_content %}
-<form action="/incident_definition" method="POST">
-<h2>Incidents</h2>
-<p><a href="/incident_definition">Create a new incident</a> or click on an incident below to see more information.</p>
-
-{% for incident in incidents %}
-<h3><a href="/incident_definition?id={{ incident.key().id() }}"> {{ incident.name }}</a></h3>
+<h2>Incident: {{ incident_definition_object.name }}</h2>
+<h2>Edit Phases</h2>
+<p>Editing a phase is one of the most important things you can do with an incident, but it must be done carefully.</p>
+<p>If you are sure, please click a phase to edit to continue.</p>
+{% for phase in phases_json %}
+<p><a href="incident_edit_phase?phase_id={{phase.phase_id}}&incident_short_name={{phase.incident_short_name}}">{{phase.phase_name}}</a></p>
 {% endfor %}
-
 {% endblock %}
 

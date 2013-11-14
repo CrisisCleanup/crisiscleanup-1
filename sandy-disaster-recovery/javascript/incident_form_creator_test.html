@@ -11,18 +11,6 @@
   <script src="incident_form_creator.js"></script>
  
   <script>
-//   test("isEven basics", function() {
-//     ok(isEven(0), 'Zero is an even number'); 
-//     ok(isEven(2), 'So is two'); 
-//     ok(isEven(-4), 'So is negative four'); 
-//     ok(!isEven(1), 'One is not an even number'); 
-//     ok(!isEven(-7), 'Neither does negative seven'); 
-//  
-//     // Fails 
-// //     ok(isEven(3), 'Three is an even number');  
-//   });
-//   
-
 
   test("hide_divs should hide appropriate divs",9, function() {
     hide_divs();
@@ -47,556 +35,34 @@
     equal( false, label_div.is( ":visible" ), "should hide label_div" );
     equal( false, paragraph_div.is( ":visible" ), "should hide paragraph_div" );
   
-
   });
   
-  test("remove_option should remove one option from options_array", 1, function() {
-    var options_array = [1];
-    remove_option(options_array);
-    var len = options_array.length;
-    equal(len, 0, "We expect the value to be 0");
+  test("test #add_label click functionality", function() {
+    $("#add_label").on( "click", function() {
+      ok( true, "body was clicked!" );
+    });    
+    $("#add_label").trigger( "click" );
   });
-  
-  
-  test("add_select_option should add a new option with the correct number to the select_options_array", 4,  function() {
-    var select_options_array = [];
-    add_select_option(select_options_array);
-    
-    var len = select_options_array.length;
-    var new_array_element = select_options_array[0];
-
-    equal(len, 1, "We expect the value to be 1");
-    equal(new_array_element, "select_option_2", "We expect the first array value to be 'select_option_2'");
-    
-    
-    var select_options_array = ["select_option_2"];
-    add_select_option(select_options_array);
-    var len = select_options_array.length;
-    var new_array_element = select_options_array[1];
-
-
-    equal(len, 2, "We expect the second pass value to be 2");
-    equal(new_array_element, "select_option_3", "We expect the second array value to be 'select_option_3'");
-  
-  });
-  
-  test("add_radio_option should add a new option with the correct number to the radio_options_array", function() {
-    var radio_options_array = [];
-    add_radio_option(radio_options_array);
-    
-    var len = radio_options_array.length;
-    var new_array_element = radio_options_array[0];
-
-    equal(len, 1, "We expect the value to be 1");
-    equal(new_array_element, "radio_option_2", "We expect the first array value to be 'radio_option_2'");
-    
-    
-    var radio_options_array = ["radio_option_2"];
-    add_radio_option(radio_options_array);
-    var len = radio_options_array.length;
-    var new_array_element = radio_options_array[1];
-
-
-    equal(len, 2, "We expect the second pass value to be 2");
-    equal(new_array_element, "radio_option_3", "We expect the second array value to be 'radio_option_3'");
-  
-  });
-  
-  test("remove option should remove one element from options_array", 1, function() {
-    options_array = [1];
-    remove_option(options_array);
-    
-    len = options_array.length;
-    
-    equal(len, 0, "the length of options_array should be 0")
-  });
-  
-  test( "add_paragraph_input should increment form_json_array appropriately", 3, function() {
-    var form_json_array = [];
-    var dummy_paragraph = "This is the paragraph.";
-    $( "#paragraph" ).val(dummy_paragraph);
-
-    add_paragraph_input(form_json_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type
-    var paragraph = form_json_array[0].paragraph
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "paragraph", "the type of the new form_json_array object should be 'paragraph'");
-    equal(paragraph, dummy_paragraph, "the value of the dummy paragraph should equal paragraph");
-  });
-  
-  test( "add_label_input should increment form_json_array appropriately", 3, function() {
-    var form_json_array = [];
-    var dummy_label = "This is the label.";
-    $( "#label_name" ).val(dummy_label);
-
-    add_label_input(form_json_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type
-    var label = form_json_array[0].label
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "label", "the type of the new form_json_array object should be 'label'");
-    equal(label, dummy_label, "the value of the dummy label should equal label");
-  });
-
-  test( "add_header_input should increment form_json_array appropriately", 3, function() {
-    var form_json_array = [];
-    var dummy_header = "This is the header.";
-    $( "#header_label" ).val(dummy_header);
-
-    add_header_input(form_json_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type
-    var header = form_json_array[0].header
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "header", "the type of the new form_json_array object should be 'header'");
-    equal(header, dummy_header, "the value of the dummy header should equal header");
-  });
-  
-  test("add_text_input should increment form_json_array appropriately", 24, function() {
-    var form_json_array = []
-    var dummy_text_label = "Text Label";
-    var dummy_text_default = "Text Default"; 
-    var dummy_text_placeholder = "Text Placeholder";
-    $("#text_required").attr("checked", "checked");
-    $("#text_sensitive").attr("checked", "checked");
-    
-    var dummy_text_id = "Text Id";
-    
-    var dummy_text_infobox = "Text InfoBox";
-    var dummy_text_printer = "Text Printer";
-    var dummy_text_mobile = "Text Mobile";
-    var dummy_text_sms = "Text SMS";
-    
-    $("#text_label").val(dummy_text_label);
-    $("#text_default").val(dummy_text_default);
-    $("#text_placeholder").val(dummy_text_placeholder);
-    $("#text_infobox").val(dummy_text_infobox);
-    $("#text_printer").val(dummy_text_printer);
-    $("#text_id").val(dummy_text_id);
-    $("#text_mobile").val(dummy_text_mobile);
-    $("#text_sms").val(dummy_text_sms); 
-    
-    add_text_input(form_json_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type;
-    var label = form_json_array[0].text_label;
-    var _default = form_json_array[0].text_default;
-    var placeholder = form_json_array[0].text_placeholder;
-    var required = $('#text_required').prop('checked');
-    var sensitive = $('#text_sensitive').prop('checked');
-    var _id = form_json_array[0].text_id;
-    var infobox = form_json_array[0].text_infobox;
-    var printer = form_json_array[0].text_printer;
-    var mobile = form_json_array[0].text_mobile;
-    var sms = form_json_array[0].text_sms;
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "text", "the type of the new form_json_array object should be 'text'");
-    equal(label, dummy_text_label, "the value of the dummy label should equal label");
-    equal(_default, dummy_text_default, "the value of the dummy text default should equal _default");
-    equal(placeholder, dummy_text_placeholder, "the value of the dummy placeholder should equal placeholder");
-    equal(_id, dummy_text_id, "the value of the dummy id should equal _id");
-    equal(infobox, dummy_text_infobox, "the value of the dummy infobox should equal infobox");
-    equal(printer, dummy_text_printer, "the value of the dummy printer should equal printer");
-    equal(mobile, dummy_text_mobile, "the value of the dummy mobile should equal mobile");
-    equal(sms, dummy_text_sms, "the value of the dummy sms should equal sms");
-    equal(sensitive, true, "the value of sensitive should equal true");
-    equal(required, true, "the value of required should equal true");
-
-    var form_json_array = []
-    var dummy_text_label = "Text Label";
-    var dummy_text_default = "Text Default"; 
-    var dummy_text_placeholder = "Text Placeholder";
-    $("#text_required").attr("checked", false);
-    $("#text_sensitive").attr("checked", false);
-    
-    var dummy_text_id = "Text Id";
-    
-    var dummy_text_infobox = "Text InfoBox";
-    var dummy_text_printer = "Text Printer";
-    var dummy_text_mobile = "Text Mobile";
-    var dummy_text_sms = "Text SMS";
-    
-    $("#text_label").val(dummy_text_label);
-    $("#text_default").val(dummy_text_default);
-    $("#text_placeholder").val(dummy_text_placeholder);
-    $("#text_infobox").val(dummy_text_infobox);
-    $("#text_printer").val(dummy_text_printer);
-    $("#text_id").val(dummy_text_id);
-    $("#text_mobile").val(dummy_text_mobile);
-    $("#text_sms").val(dummy_text_sms); 
-    
-    add_text_input(form_json_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type;
-    var label = form_json_array[0].text_label;
-    var _default = form_json_array[0].text_default;
-    var placeholder = form_json_array[0].text_placeholder;
-    var required = $('#text_required').prop('checked');
-    var sensitive = $('#text_sensitive').prop('checked');
-    var _id = form_json_array[0].text_id;
-    var infobox = form_json_array[0].text_infobox;
-    var printer = form_json_array[0].text_printer;
-    var mobile = form_json_array[0].text_mobile;
-    var sms = form_json_array[0].text_sms;
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "text", "the type of the new form_json_array object should be 'text'");
-    equal(label, dummy_text_label, "the value of the dummy label should equal label");
-    equal(_default, dummy_text_default, "the value of the dummy text default should equal _default");
-    equal(placeholder, dummy_text_placeholder, "the value of the dummy placeholder should equal placeholder");
-    equal(_id, dummy_text_id, "the value of the dummy id should equal _id");
-    equal(infobox, dummy_text_infobox, "the value of the dummy infobox should equal infobox");
-    equal(printer, dummy_text_printer, "the value of the dummy printer should equal printer");
-    equal(mobile, dummy_text_mobile, "the value of the dummy mobile should equal mobile");
-    equal(sms, dummy_text_sms, "the value of the dummy sms should equal sms");
-    equal(sensitive, false, "the value of sensitive should equal false");
-    equal(required, false, "the value of required should equal false");
-
-  });
-  
-  test("add_checkbox_input should increment form_json_array appropriately", 22, function() {
-    var form_json_array = []
-    var dummy_checkbox_label = "Text Label";
-    var dummy_checkbox_default = $('#checkbox_default').val();
-
-    $("#checkbox_required").attr("checked", "checked");
-    $("#checkbox_sensitive").attr("checked", "checked");
-    
-    var dummy_checkbox_id = "Text Id";
-    
-    var dummy_checkbox_infobox = "Text InfoBox";
-    var dummy_checkbox_printer = "Text Printer";
-    var dummy_checkbox_mobile = "Text Mobile";
-    var dummy_checkbox_sms = "Text SMS";
-    
-    $("#checkbox_label").val(dummy_checkbox_label);
-    $("#checkbox_default").val(dummy_checkbox_default);
-    $("#checkbox_infobox").val(dummy_checkbox_infobox);
-    $("#checkbox_printer").val(dummy_checkbox_printer);
-    $("#checkbox_id").val(dummy_checkbox_id);
-    $("#checkbox_mobile").val(dummy_checkbox_mobile);
-    $("#checkbox_sms").val(dummy_checkbox_sms); 
-    
-    add_checkbox_input(form_json_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type;
-    var label = form_json_array[0].checkbox_label;
-    var _default = form_json_array[0].checkbox_default;
-    var required = $('#checkbox_required').prop('checked');
-    var sensitive = $('#checkbox_sensitive').prop('checked');
-    var _id = form_json_array[0].checkbox_id;
-    var infobox = form_json_array[0].checkbox_infobox;
-    var printer = form_json_array[0].checkbox_printer;
-    var mobile = form_json_array[0].checkbox_mobile;
-    var sms = form_json_array[0].checkbox_sms;
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "checkbox", "the type of the new form_json_array object should be 'checkbox'");
-    equal(label, dummy_checkbox_label, "the value of the dummy label should equal label");
-    equal(_default, dummy_checkbox_default, "the value of the dummy checkbox default should equal _default");
-    equal(_id, dummy_checkbox_id, "the value of the dummy id should equal _id");
-    equal(infobox, dummy_checkbox_infobox, "the value of the dummy infobox should equal infobox");
-    equal(printer, dummy_checkbox_printer, "the value of the dummy printer should equal printer");
-    equal(mobile, dummy_checkbox_mobile, "the value of the dummy mobile should equal mobile");
-    equal(sms, dummy_checkbox_sms, "the value of the dummy sms should equal sms");
-    equal(sensitive, true, "the value of sensitive should equal true");
-    equal(required, true, "the value of required should equal true");
-
-    var form_json_array = []
-    var dummy_checkbox_label = "Text Label";
-    $("#checkbox_default").val("y");
-    var dummy_checkbox_default = $('#checkbox_default').val();
-    $("#checkbox_required").attr("checked", false);
-    $("#checkbox_sensitive").attr("checked", false);
-    
-    var dummy_checkbox_id = "Text Id";
-    
-    var dummy_checkbox_infobox = "Text InfoBox";
-    var dummy_checkbox_printer = "Text Printer";
-    var dummy_checkbox_mobile = "Text Mobile";
-    var dummy_checkbox_sms = "Text SMS";
-    
-    $("#checkbox_label").val(dummy_checkbox_label);
-    $("#checkbox_default").val(dummy_checkbox_default);
-    $("#checkbox_infobox").val(dummy_checkbox_infobox);
-    $("#checkbox_printer").val(dummy_checkbox_printer);
-    $("#checkbox_id").val(dummy_checkbox_id);
-    $("#checkbox_mobile").val(dummy_checkbox_mobile);
-    $("#checkbox_sms").val(dummy_checkbox_sms); 
-    
-    add_checkbox_input(form_json_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type;
-    var label = form_json_array[0].checkbox_label;
-    var _default = form_json_array[0].checkbox_default;
-    var required = $('#checkbox_required').prop('checked');
-    var sensitive = $('#checkbox_sensitive').prop('checked');
-    var _id = form_json_array[0].checkbox_id;
-    var infobox = form_json_array[0].checkbox_infobox;
-    var printer = form_json_array[0].checkbox_printer;
-    var mobile = form_json_array[0].checkbox_mobile;
-    var sms = form_json_array[0].checkbox_sms;
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "checkbox", "the type of the new form_json_array object should be 'checkbox'");
-    equal(label, dummy_checkbox_label, "the value of the dummy label should equal label");
-    equal(_default, dummy_checkbox_default, "the value of the dummy checkbox default should equal _default");
-    equal(_id, dummy_checkbox_id, "the value of the dummy id should equal _id");
-    equal(infobox, dummy_checkbox_infobox, "the value of the dummy infobox should equal infobox");
-    equal(printer, dummy_checkbox_printer, "the value of the dummy printer should equal printer");
-    equal(mobile, dummy_checkbox_mobile, "the value of the dummy mobile should equal mobile");
-    equal(sms, dummy_checkbox_sms, "the value of the dummy sms should equal sms");
-    equal(sensitive, false, "the value of sensitive should equal false");
-    equal(required, false, "the value of required should equal false");
-
-  
-  });
-    
-  test("add_select_input should increment form_json_array appropriately", 20, function() {
-    var form_json_array = [];
-    var select_options_array = [];
-    var dummy_select_label = "Text Label";
-    $("#select_required").attr("checked", "checked");
-    $("#select_sensitive").attr("checked", "checked");
-    
-    var dummy_select_id = "Text Id";
-    
-    var dummy_select_infobox = "Text InfoBox";
-    var dummy_select_printer = "Text Printer";
-    var dummy_select_mobile = "Text Mobile";
-    var dummy_select_sms = "Text SMS";
-    
-    $("#select_label").val(dummy_select_label);
-    $("#select_infobox").val(dummy_select_infobox);
-    $("#select_printer").val(dummy_select_printer);
-    $("#select_id").val(dummy_select_id);
-    $("#select_mobile").val(dummy_select_mobile);
-    $("#select_sms").val(dummy_select_sms); 
-    
-    add_select_input(form_json_array, select_options_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type;
-    var label = form_json_array[0].select_label;
-    var required = $('#select_required').prop('checked');
-    var sensitive = $('#select_sensitive').prop('checked');
-    var _id = form_json_array[0].select_id;
-    var infobox = form_json_array[0].select_infobox;
-    var printer = form_json_array[0].select_printer;
-    var mobile = form_json_array[0].select_mobile;
-    var sms = form_json_array[0].select_sms;
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "select", "the type of the new form_json_array object should be 'select'");
-    equal(label, dummy_select_label, "the value of the dummy label should equal label");
-    equal(_id, dummy_select_id, "the value of the dummy id should equal _id");
-    equal(infobox, dummy_select_infobox, "the value of the dummy infobox should equal infobox");
-    equal(printer, dummy_select_printer, "the value of the dummy printer should equal printer");
-    equal(mobile, dummy_select_mobile, "the value of the dummy mobile should equal mobile");
-    equal(sms, dummy_select_sms, "the value of the dummy sms should equal sms");
-    equal(sensitive, true, "the value of sensitive should equal true");
-    equal(required, true, "the value of required should equal true");
-
-    var form_json_array = [];
-    var select_options_array = [];
-    var dummy_select_label = "Text Label";
-    $("#select_required").attr("checked", false);
-    $("#select_sensitive").attr("checked", false);
-    
-    var dummy_select_id = "Text Id";
-    
-    var dummy_select_infobox = "Text InfoBox";
-    var dummy_select_printer = "Text Printer";
-    var dummy_select_mobile = "Text Mobile";
-    var dummy_select_sms = "Text SMS";
-    
-    $("#select_label").val(dummy_select_label);
-    $("#select_infobox").val(dummy_select_infobox);
-    $("#select_printer").val(dummy_select_printer);
-    $("#select_id").val(dummy_select_id);
-    $("#select_mobile").val(dummy_select_mobile);
-    $("#select_sms").val(dummy_select_sms); 
-    
-    add_select_input(form_json_array, select_options_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type;
-    var label = form_json_array[0].select_label;
-    var _default = form_json_array[0].select_default;
-    var required = $('#select_required').prop('checked');
-    var sensitive = $('#select_sensitive').prop('checked');
-    var _id = form_json_array[0].select_id;
-    var infobox = form_json_array[0].select_infobox;
-    var printer = form_json_array[0].select_printer;
-    var mobile = form_json_array[0].select_mobile;
-    var sms = form_json_array[0].select_sms;
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "select", "the type of the new form_json_array object should be 'select'");
-    equal(label, dummy_select_label, "the value of the dummy label should equal label");
-    equal(_id, dummy_select_id, "the value of the dummy id should equal _id");
-    equal(infobox, dummy_select_infobox, "the value of the dummy infobox should equal infobox");
-    equal(printer, dummy_select_printer, "the value of the dummy printer should equal printer");
-    equal(mobile, dummy_select_mobile, "the value of the dummy mobile should equal mobile");
-    equal(sms, dummy_select_sms, "the value of the dummy sms should equal sms");
-    equal(sensitive, false, "the value of sensitive should equal false");
-    equal(required, false, "the value of required should equal false");
-
-  });
-
-  
-  test("add_radio_input should increment form_json_array appropriately", 20, function() {
-    var form_json_array = [];
-    var radio_options_array = [];
-    var dummy_radio_label = "Text Label";
-    $("#radio_required").attr("checked", "checked");
-    $("#radio_sensitive").attr("checked", "checked");
-    
-    var dummy_radio_id = "Text Id";
-    
-    var dummy_radio_infobox = "Text InfoBox";
-    var dummy_radio_printer = "Text Printer";
-    var dummy_radio_mobile = "Text Mobile";
-    var dummy_radio_sms = "Text SMS";
-    
-    $("#radio_label").val(dummy_radio_label);
-    $("#radio_infobox").val(dummy_radio_infobox);
-    $("#radio_printer").val(dummy_radio_printer);
-    $("#radio_id").val(dummy_radio_id);
-    $("#radio_mobile").val(dummy_radio_mobile);
-    $("#radio_sms").val(dummy_radio_sms); 
-    
-    add_radio_input(form_json_array, radio_options_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type;
-    var label = form_json_array[0].radio_label;
-    var required = $('#radio_required').prop('checked');
-    var sensitive = $('#radio_sensitive').prop('checked');
-    var _id = form_json_array[0].radio_id;
-    var infobox = form_json_array[0].radio_infobox;
-    var printer = form_json_array[0].radio_printer;
-    var mobile = form_json_array[0].radio_mobile;
-    var sms = form_json_array[0].radio_sms;
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "radio", "the type of the new form_json_array object should be 'radio'");
-    equal(label, dummy_radio_label, "the value of the dummy label should equal label");
-    equal(_id, dummy_radio_id, "the value of the dummy id should equal _id");
-    equal(infobox, dummy_radio_infobox, "the value of the dummy infobox should equal infobox");
-    equal(printer, dummy_radio_printer, "the value of the dummy printer should equal printer");
-    equal(mobile, dummy_radio_mobile, "the value of the dummy mobile should equal mobile");
-    equal(sms, dummy_radio_sms, "the value of the dummy sms should equal sms");
-    equal(sensitive, true, "the value of sensitive should equal true");
-    equal(required, true, "the value of required should equal true");
-
-    var form_json_array = [];
-    var radio_options_array = [];
-    var dummy_radio_label = "Text Label";
-    $("#radio_required").attr("checked", false);
-    $("#radio_sensitive").attr("checked", false);
-    
-    var dummy_radio_id = "Text Id";
-    
-    var dummy_radio_infobox = "Text InfoBox";
-    var dummy_radio_printer = "Text Printer";
-    var dummy_radio_mobile = "Text Mobile";
-    var dummy_radio_sms = "Text SMS";
-    
-    $("#radio_label").val(dummy_radio_label);
-    $("#radio_infobox").val(dummy_radio_infobox);
-    $("#radio_printer").val(dummy_radio_printer);
-    $("#radio_id").val(dummy_radio_id);
-    $("#radio_mobile").val(dummy_radio_mobile);
-    $("#radio_sms").val(dummy_radio_sms); 
-    
-    add_radio_input(form_json_array, radio_options_array);
-    var len = form_json_array.length;
-    var type = form_json_array[0].type;
-    var label = form_json_array[0].radio_label;
-    var _default = form_json_array[0].radio_default;
-    var required = $('#radio_required').prop('checked');
-    var sensitive = $('#radio_sensitive').prop('checked');
-    var _id = form_json_array[0].radio_id;
-    var infobox = form_json_array[0].radio_infobox;
-    var printer = form_json_array[0].radio_printer;
-    var mobile = form_json_array[0].radio_mobile;
-    var sms = form_json_array[0].radio_sms;
-    
-    equal(len, 1, "the length of form_json_array should be 1");
-    equal(type, "radio", "the type of the new form_json_array object should be 'radio'");
-    equal(label, dummy_radio_label, "the value of the dummy label should equal label");
-    equal(_id, dummy_radio_id, "the value of the dummy id should equal _id");
-    equal(infobox, dummy_radio_infobox, "the value of the dummy infobox should equal infobox");
-    equal(printer, dummy_radio_printer, "the value of the dummy printer should equal printer");
-    equal(mobile, dummy_radio_mobile, "the value of the dummy mobile should equal mobile");
-    equal(sms, dummy_radio_sms, "the value of the dummy sms should equal sms");
-    equal(sensitive, false, "the value of sensitive should equal false");
-    equal(required, false, "the value of required should equal false");
-
-  });
-  
-  test("hide_phases_list hides the correct divs", 1, function() {
-    hide_phases_list();
-    var phases_list_div = $("#phases_list");
-    equal( false, phases_list_div.is( ":visible" ), "should hide phases_list" );
-  });
-  
-  test("show_phases_list shows the correct divs", 1, function() {
-    show_phases_list();
-    var phases_list_div = $("#phases_list");
-    equal( true, phases_list_div.is( ":visible" ), "should show phases_list" );
-  });
-  
-  test("show_sidebar_form_creator shows the correct divs", 3, function() {
-    show_sidebar_form_creator();
-    var sidebar_form_creator_div = $("#sidebar_form_creator");
-    var phases_div = $("#phases");
-    var add_phase_button = $("#add_phase_button");
-    var edit_phase_button = $("edit_phase_button");
-    equal( true, sidebar_form_creator_div.is( ":visible" ), "should show phases_list" );
-    equal( true, phases_div.is( ":visible" ), "should show phases_list" );
-    equal( true, add_phase_button.is( ":visible" ), "should show phases_list" );
-//     equal( true, edit_phase_button.is(":visible"), "should show edit_phase_button");
-  });
-  
-  test("hide_sidebar_form_creator shows the correct divs", 4, function() {
-    hide_sidebar_form_creator();
-    var sidebar_form_creator_div = $("#sidebar_form_creator");
-    var phases_div = $("#phases");
-    var add_phase_button = $("#add_phase_button");
-    var edit_phase_button = $("edit_phase_button");
-    equal( false, sidebar_form_creator_div.is( ":visible" ), "should show phases_list" );
-    equal( false, phases_div.is( ":visible" ), "should show phases_list" );
-    equal( false, add_phase_button.is( ":visible" ), "should show phases_list" );
-    equal( false, edit_phase_button.is( ":visible" ), "should show phases_listw" );
-  });
-  
 
 
 </script>
 </head>
 <body>
-<!-- __________________________
- Sidbar-->
 <div id="qunit"></div>
-<h1 id="qunit-header">jquery-inputs plugin tests</h1>
-<h2 id="qunit-banner"></h2>
-<div id="qunit-testrunner-toolbar"></div>
-<h2 id="qunit-userAgent"></h2>
-<ol id="qunit-tests"></ol>
-<div id="qunit-fixture"> 
+         <div id="qunit-fixture">test markup</div>
 <div id="sidebar_form_creator">
   <div id="form_editor">
-    <a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>
+    <a href="#" id="save_all_changes1" class="button button-icon icon icon-envelope">Save All Changes</a>
   </div>
   <h2>Add Inputs to form</h2>
+  <a id="add_personal_info_module" href="#form_editor">Add personal info module</a></br>
+  <a id="add_status_info_module" href="#form_editor">Add Status and Claim info module</a></br>
   <a id="add_label" href="#form_editor">map label + </a><br>
   <a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>
   <a id="add_header" href="#form_editor">header +</a><br>
+  <a id="add_subheader" href="#form_editor">subheader +</a><br>
   <a id="add_text" href="#form_editor">text input +</a><br>
+  <a id="add_textarea" href="#form_editor">textarea input +</a><br>
   <a id="add_checkbox" href="#form_editor"">checkbox input +</a><br>
   <a id="add_select" href="#form_editor"">select input +</a><br>
   <a id="add_radio" href="#form_editor"">radio input +</a><br>
@@ -606,19 +72,19 @@
     <h3>Add Text Input</h3>
     <form id="text_form">
       Label: <input type="text" id="text_label" name="text_label"><br>
-      Default Value: <input type="text" id="text_default" name="text_default"><br> 
-      Placeholder: <input type="text" id="text_placeholder" name="text_placeholder"><br> 
-      Required: <input type="checkbox" id="text_required" name="text_required" value="y">
-      Sensitive: <input type="checkbox" id="text_sensitive" name="text_sensitive" value="y"><br>
       Form Id: <input type="text" id="text_id" name="text_id"><br>
 
-      <h3>Add Display Info</h3>
-      *For advanced users<br>
-      InfoBox: <textarea id="text_infobox" name="text_infobox" rows="2" cols="20">Write something here</textarea><br>
-      Printer: <input type="text" id="text_printer" name="text_printer"><br>
-      Mobile: <input type="text" id="text_mobile" name="text_mobile"><br>
-      Sms: <input type="text" id="text_sms" name="text_sms"><br>
-      <a href="#form_editor" id="add_text_to_form">Add to form</a>
+      Required: <input type="checkbox" id="text_required" name="text_required" value="y">
+      Sensitive: <input type="checkbox" id="text_sensitive" name="text_sensitive" value="y">
+      <br>
+      Extra Validations: <select id="text_validations" name="checkbox_default">
+	<option value="None" >Choose One (optional)</option>
+	<option value="email" >Email</option>
+	<option value="date" >Date</option>
+	<option value="phone" >Phone</option>
+	<option value="url" >Url</option>
+      </select><br>
+      <h3><a href="#form_editor" id="add_text_to_form">Add to form</a></h3>
     </form>
   </div>
 
@@ -626,23 +92,22 @@
   <h3>Add Checkbox</h3>
   <form id="checkbox_form">
     Label: <input type="text" id="checkbox_label" name="checkbox_label"><br>
+    Form Id: <input type="text" id="checkbox_id" name="checkbox_id"><br>
+
     Default Value:<select id="checkbox_default" name="checkbox_default">
     <option value="n" >Unchecked</option>
     <option value="y" >Checked</option>
     </select><br><br>
     Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y">
     Sensitive: <input type="checkbox" id="checkbox_sensitive" name="checkbox_sensitive" value="y"><br>
-    Form Id: <input type="text" id="checkbox_id" name="checkbox_id"><br>
-    Checked Value: <input type="text" id="checkbox_checked_value" name="checkbox_checked_value"><br>
-    Unchecked Value: <input type="text" id="checkbox_unchecked_value" name="checkbox_unchecked_value"><br>
-
-    <h3>Add Display Info</h3>
-    *For advanced users<br>
-    InfoBox: <textarea id="checkbox_infobox" name="checkbox_infobox" rows="2" cols="20">Write something here</textarea><br>
-    Printer: <input type="text" id="checkbox_printer" name="checkbox_printer"><br>
-    Mobile: <input type="text" id="checkbox_mobile" name="checkbox_mobile"><br>
-    Sms: <input type="text" id="checkbox_sms" name="checkbox_sms"><br>
-    <a href="#form_editor" id="add_checkbox_to_form">Add to form</a>
+    Extra Validations: <select id="checkbox_validations" name="checkbox_default">
+      <option value="None" >Choose One (optional)</option>
+      <option value="email" >Email</option>
+      <option value="date" >Date</option>
+      <option value="phone" >Phone</option>
+      <option value="url" >Url</option>
+    </select><br>
+    <h3><a href="#form_editor" id="add_checkbox_to_form">Add to form</a></h3>
   </form>
   </div>
   <div id="select_div">
@@ -650,6 +115,8 @@
   <h3>Add Select</h3> 
     <form id="select_form">
       Label: <input type="text" id="select_label" name="select_label"><br>
+      Form Id: <input type="text" id="select_id" name="select_id"><br>
+
       <div id="add_options_to_select">
       Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>
       </div>
@@ -657,21 +124,11 @@
       <br>
       <a id="clear_select_options">Clear options</a>
       <br>
-      Default: <select id="select_default" name="select_default">
-      <option value="select_option_1">Option 1</option>
-      </select>
       <br>
       <br>
       Required: <input type="checkbox" id="select_required" name="select_required" value="y">
       Sensitive: <input type="checkbox" id="select_sensitive" name="select_sensitive" value="y"><br>
-      Form Id: <input type="text" id="select_id" name="select_id"><br>
-      <h3>Add Display Info</h3>
-      *For advanced users<br>
-      InfoBox: <textarea id="select_infobox" name="select_infobox" rows="2" cols="20">Write something here</textarea><br>
-      Printer: <input type="text" id="select_printer" name="select_printer"><br>
-      Mobile: <input type="text" id="select_mobile" name="select_mobile"><br>
-      Sms: <input type="text" id="select_sms" name="select_sms"><br>
-      <a href="#form_editor" id="add_select_to_form">Add to form</a>
+      <h3><a href="#form_editor" id="add_select_to_form">Add to form</a></h3>
     </form>
   </div>
 
@@ -679,6 +136,8 @@
     <h3>Add Radio</h3> 
     <form id="radio_form">
       Label: <input type="text" id="radio_label" name="radio_label"><br>
+      Form Id: <input type="text" id="radio_id" name="radio_id"><br>
+
       <div id="add_options_to_radio">
       Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
       </div>
@@ -686,23 +145,11 @@
       <br>
       <a id="clear_radio_options">Clear options</a>
       <br>
-      Default: <select id="radio_default" name="radio_default">
-      <option value="radio_option_1">Option 1</option>
-      </select>
-      <br>
       <br>Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
       Sensitive: <input type="checkbox" id="radio_sensitive" name="radio_sensitive" value="y"><br>
-      Form Id: <input type="text" id="radio_id" name="radio_id"><br>
       Low Hint: <input type="text" id="radio_low_hint" name="radio_low_hint"><br>
       High Hint: <input type="text" id="radio_high_hint" name="radio_high_hint"><br>
-
-      <h3>Add Display Info</h3>
-      *For advanced users<br>
-      InfoBox: <textarea id="radio_infobox" name="radio_infobox" rows="2" cols="20">Write something here</textarea><br>
-      Printer: <input type="text" id="radio_printer" name="radio_printer"><br>
-      Mobile: <input type="text" id="radio_mobile" name="radio_mobile"><br>
-      Sms: <input type="text" id="radio_sms" name="radio_sms"><br>
-      <a href="#form_editor" id="add_radio_to_form">Add to form</a>
+      <h3><a href="#form_editor" id="add_radio_to_form">Add to form</a></h3>
     </form>
   </div>
 
@@ -711,47 +158,76 @@
 
     <form id="header_form">
       Label: <input type="text" id="header_label" name="header_label"><br>
-      <a href="#form_editor" id="add_header_to_form">Add to form</a></form>
-      </div>
-
-      <div id="label_div">
-      <h2>Add Header to form</h2>
-
-      <form id="label_form">
-      Label: <input type="text" id="label_name" name="label_name"><br>
-      <a href="#form_editor" id="add_label_to_form">Add to form</a></form>
-      </div>
-
-      <div id="paragraph_div">
-      <h2>Add Header to form</h2>
-
-      <form id="paragraph_form">
-      Paragraph: <input type="text" id="paragraph" name="paragraph"><br>
-      <a href="#form_editor" id="add_paragraph_to_form">Add to form</a>
+      <h3><a href="#form_editor" id="add_header_to_form">Add to form</a></h3>
     </form>
   </div>
-</div>
-<!--__________________________
-Main-->
 
+  <div id="subheader_div">
+    <h2>Add Subheader to form</h2>
+
+    <form id="subheader_form">
+      Label: <input type="text" id="subheader_label" name="subheader_label"><br>
+      <h3><a href="#form_editor" id="add_subheader_to_form">Add to form</a></h3>
+    </form>
+  </div>
+  <div id="textarea_div">
+    <h2>Add Textarea to form</h2>
+
+    <form id="textarea_form">
+      Name: <input type="text" id="textarea_label" name="textarea_label"><br>
+      Id: <input type="text" id="textarea_id" name="textarea_id"><br>
+      Extra Validations: <select id="textarea_validations" name="checkbox_default">
+	<option value="None" >Choose One (optional)</option>
+	<option value="email" >Email</option>
+	<option value="date" >Date</option>
+	<option value="phone" >Phone</option>
+	<option value="url" >Url</option>
+      </select><br>
+      <h3><a href="#form_editor" id="add_textarea_to_form">Add to form</a></h3>
+    </form>
+  </div>
+  
+  <div id="label_div">
+    <h2>Add Header to form</h2>
+
+    <form id="label_form">
+      Label: <input type="text" id="label_name" name="label_name"><br>
+      <h3><a href="#form_editor" id="add_label_to_form">Add to form</a></h3>
+    </form>
+  </div>
+
+  <div id="paragraph_div">
+    <h2>Add Header to form</h2>
+
+    <form id="paragraph_form">
+      Paragraph:<br><textarea rows="10" cols="30" id="paragraph" name="paragraph"></textarea><br>
+      <h3><a href="#form_editor" id="add_paragraph_to_form">Add to form</a></h3>
+    </form>
+  </div>
+<a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>
+
+</div>
 <h2>Incident Form Creator</h2>
 <select id="incident" name="incident">
     <option value="None">Choose an Incident</option>
     {% for incident in incidents %}
-    <option value="{{ incident.short_name }}">{{ incident.full_name }}</option>
+    <option value="{{ incident.short_name }}">{{ incident.name }}</option>
     {% endfor %}
 </select>
 <br>
 <br>
 
 <div id="main_form_nav">
+  <h3 class="horizontal"><a href="#" id="add_phase_button">Add Phase</a></h3>
+  <h3 class="horizontal"><a href="#" id="edit_phase_button">Edit Phases</a></h3>
+  <br>
   <select id="phases_list">
   <option value="None">Choose a phase</option>
 
   </select>
   <br>
-  <a href="#" id="add_phase_button">Add Phase</a>
-  <a href="#" id="edit_phase_button">Edit Phases</a>
+  <br>
+
 </div>
 
 <div id="phase_htmls">
@@ -762,7 +238,7 @@ Main-->
 <div id="first_phase_form_div">
   <form id="first_phase_form" action="/incident_create_first_phase" method="POST">
   Phase Name: <input type="text" name="phase_name"><br>
-  Phase Definition: <input type="text" name="phase_definition"><br>
+  Description: <input type="text" name="description"><br>
   <input type="hidden" name="phase_position" value="0">
 
   <button class="submit">Submit</button>
@@ -772,8 +248,7 @@ Main-->
 <div id="add_phase_form_div">
     <form id="add_phase_form" action="/incident_create_first_phase" method="POST">
     Phase Name: <input type="text" name="phase_name"><br>
-    Phase Definition: <input type="text" name="phase_definition"><br>
-    Phase Position: <input type="text" name="phase_position"><br>
+    Description: <input type="text" name="description"><br>
 
     <input type="hidden" name="add_phase" value="true">
     <button class="submit">Submit</button>
@@ -784,13 +259,8 @@ Main-->
 
 <div id="phases">
   <div id="tabs">
-  <!--  <ul>
-      <li><a href="#" id="show_html">HTML</a></li>
-      <li><a href="#" id="show_json">JSON</a></li>
-    </ul>-->
-    
-    <a href="#" id="show_html">HTML</a>
-    <a href="#" id="show_json">JSON</a>
+    <h3 class="horizontal"><a href="#" id="show_html">HTML</a></h3>
+    <h3 class="horizontal"><a href="#" id="show_json">JSON</a></h3>
     <div id="tabs-1">
 	<div id="form_label">
 	</div>
@@ -806,5 +276,6 @@ Main-->
 
   </div>
 </div>
+
 </body>
 </html>

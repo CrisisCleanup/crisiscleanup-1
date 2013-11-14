@@ -44,7 +44,7 @@
 {% if phases %}
   <h3>Forms</h3>
   {% for phase in phases %}
-    <a href="/incident_form_creator?incident_short_name={{phase.incident_short_name}}&phase_id={{phase.phase_id}}">{{ phase.phase_name }}</a> |
+    <a href="/incident_form_creator?incident_short_name={{phase.incident_short_name}}&phase_id={{phase.phase_short_name}}">{{ phase.phase_name }}</a> |
   {% endfor %}
   <small>Click to edit/view</small>
 {% endif %}

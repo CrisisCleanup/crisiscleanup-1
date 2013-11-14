@@ -217,54 +217,6 @@
 
 {% block main_content %}
 <h2>Incident Form Creator</h2>
-<select id="incident" name="incident">
-    <option value="None">Choose an Incident</option>
-    {% for incident in incidents %}
-    <option value="{{ incident.short_name }}">{{ incident.name }}</option>
-    {% endfor %}
-</select>
-<br>
-<br>
-
-<div id="main_form_nav">
-  <h3 class="horizontal"><a href="#" id="add_phase_button">Add Phase</a></h3>
-  <h3 class="horizontal"><a href="#" id="edit_phase_button">Edit Phases</a></h3>
-  <br>
-  <select id="phases_list">
-  <option value="None">Choose a phase</option>
-
-  </select>
-  <br>
-  <br>
-
-</div>
-
-<div id="phase_htmls">
-
-
-</div>
-
-<div id="first_phase_form_div">
-  <form id="first_phase_form" action="/incident_create_first_phase" method="POST">
-  Phase Name: <input type="text" name="phase_name"><br>
-  Description: <textarea name="description"></textarea><br>
-  <input type="hidden" name="phase_position" value="0">
-
-  <button class="submit">Submit</button>
-</form>
-</div>
-
-<div id="add_phase_form_div">
-    <form id="add_phase_form" action="/incident_create_first_phase" method="POST">
-    Phase Name: <input type="text" name="phase_name"><br>
-    Description: <textarea name="description"></textarea><br>
-
-    <input type="hidden" name="add_phase" value="true">
-    <button class="submit">Submit</button>
-  </form>
-  <a href="#" id="close_phase_button">Close Form</a>
-
-</div>
 
 <div id="phases">
   <div id="tabs">

@@ -72,4 +72,10 @@ class IncidentSaveForm(base.RequestHandler):
     incident.forms_json = json.dumps(pefj)
     incident.put()
     
-    
+    some_array = []
+    data = {
+      "incident_key": incident.key().id()
+    }
+    some_array.append(data)
+    json_string = json.dumps(some_array)
+    self.response.out.write(json_string)  

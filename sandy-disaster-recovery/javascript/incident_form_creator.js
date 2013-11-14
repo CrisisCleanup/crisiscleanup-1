@@ -2,9 +2,11 @@ $(function() {
   // set up the page by hiding appropriate divs
   hide_divs();
   hide_tabs();
-  hide_sidebar_form_creator();
-  hide_phases_list();
-    
+//   hide_sidebar_form_creator();
+//   hide_phases_list();
+//     
+ 
+
   // name appropriate variables, that will be used throughout
   
   // when adding options to a select
@@ -19,6 +21,18 @@ $(function() {
   // where the json for all the arrays will be kept. This will go into our select
   var phases_json_array = [];
   
+  
+  var incident_short_name = GetUrlValue("incident_short_name");
+  var phase_id = GetUrlValue("phase_id");
+  get_form_json(phase_id, incident_short_name, form_json_array);
+
+  
+  $("#click_to_load").click(function() {
+  });
+  
+  $("#click_to_read").click(function() {
+//     console.log(form_json_array);
+  });
   // ----------- FORM LABEL FUNCTIONS ----------------
   $("#add_label").click(function() {
 	hide_divs();	
@@ -136,6 +150,7 @@ $(function() {
   // read the form click, and send to proper function
   $( "#add_text_to_form" ).click(function() {
       hide_divs();
+
       add_text_input(form_json_array);
       $("#tabs-2").empty();
       $("#text_form").trigger('reset');  
@@ -147,7 +162,7 @@ $(function() {
   function add_text_input(form_json_array) {
     var text_label = $("#text_label").val();
     var text_required = $('#text_required').prop('checked')
-    var text_sensitive = $('#text_sensitive');
+    var text_sensitive = $('#text_sensitive').val();
     var text_id = $("#text_id").val();
     var validations = $("#text_validations").val();
     order_number = form_json_array.length;
@@ -163,6 +178,10 @@ $(function() {
 
     }    
     form_json_array.push(text_json);
+      var jString = JSON.stringify(form_json_array);
+      console.log(jString);
+      console.log("#@#")
+
   }
   
   
@@ -220,7 +239,7 @@ $(function() {
     var checkbox_label = $("#checkbox_label").val();
     var checkbox_default = $("#checkbox_default").val();
 //     var checkbox_required = $("#checkbox_required").prop('checked');
-    var checkbox_sensitive = $("#checkbox_sensitive");
+    var checkbox_sensitive = $("#checkbox_sensitive").val();
     var checkbox_id = $("#checkbox_id").val();
     var checkbox_validations = $("#checkbox_validations");
 
@@ -263,7 +282,7 @@ $(function() {
     var select_option_1 = $("#select_option_1").val();
     var select_default = $("#select_default").val();
     var select_required = $("#select_required").prop('checked');
-    var select_sensitive = $("#select_sensitive");
+    var select_sensitive = $("#select_sensitive").val();
     var select_id = $("#select_id").val();
     var order_number = form_json_array.length;
 	
@@ -333,7 +352,7 @@ $(function() {
     var radio_label = $("#radio_label").val();
     var radio_option_1 = $("#radio_option_1").val();
     var radio_required = $("#radio_required").prop('checked');
-    var radio_sensitive = $("#radio_sensitive");
+    var radio_sensitive = $("#radio_sensitive").val();
     var radio_id = $("#radio_id").val();
     var radio_low_hint = $("#radio_low_hint").val();
     var radio_high_hint = $("#radio_high_hint").val();
@@ -408,17 +427,7 @@ $(function() {
 
   // ----------- EDIT FORM JQUERY EVENTS ----------------
   
-    $( "#add_phase_button" ).click(function() {
-    $("#add_phase_form_div").show();
-  });
-  
-  $("#edit_phase_button").click(function() {
-    window.location.replace('/incident_edit_phase?incident=' + phases_json_array[0][0].incident_short_name);
-  });
-  $( "#close_phase_button" ).click(function() {
-    $("#add_phase_form_div").hide();
-  });
-  
+
   $("#show_html").click(function() {
     hide_tabs();
     $("#tabs-1").show();
@@ -459,21 +468,7 @@ $(function() {
   
   });
   $("#tabs-1").show();
-  $( "#incident" ).change(function() {
-    show_phases_list();
-    show_phases_buttons();
-    $("#add_phase_button").show();
-    $("#edit_phase_button").show();
-    var incident_full_name = $("#incident").val();
-    get_json(incident_full_name, phases_json_array);
-  });
-  
-  $( "#phases_list" ).change(function() {
-    var phase = $("#phases_list").val();
-    var incident_full_name = $("#incident").val();
-    get_form_json(phase, incident_full_name, form_json_array);
 
-  });
 
   // ----------- EDIT FORM JQUERY EVENTS ----------------
 
@@ -482,8 +477,6 @@ $(function() {
 //------------------------------------------------------------------------------------------------------------------
 // helper functions
 function hide_divs() {
-  $("#first_phase_form_div").hide();
-  $("#add_phase_form_div").hide();
   $("#select_div").hide();
   $("#radio_div").hide();
   $("#text_div").hide();
@@ -512,7 +505,7 @@ function add_checkbox_input(form_json_array) {
   var checkbox_label = $("#checkbox_label").val();
   var checkbox_default = $("#checkbox_default").val();
   var checkbox_required = $("#checkbox_required").prop('checked');
-  var checkbox_sensitive = $("#checkbox_sensitive");
+  var checkbox_sensitive = $("#checkbox_sensitive").val();
   var checkbox_id = $("#checkbox_id").val();
 //   var checkbox_validations = $("#checkbox_validations");
 
@@ -536,7 +529,7 @@ function add_select_input(form_json_array, select_options_array) {
   var select_option_1 = $("#select_option_1").val();
   var select_default = $("#select_default").val();
   var select_required = $("#select_required").prop('checked');
-  var select_sensitive = $("#select_sensitive");
+  var select_sensitive = $("#select_sensitive").val();
   var select_id = $("#select_id").val();
   var order_number = form_json_array.length;
        
@@ -720,6 +713,7 @@ function get_json(incident_short_name, phases_json_array) {
 }
 
 function get_form_json(phase,incident_short_name, form_json_array) {
+  
   $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name, phase: phase},  function( data ) {
     if (data.forms_json == "[]") {
       $("#form_label").append("<h2>Create a form by using the controls on the left</h2>");
@@ -733,13 +727,13 @@ function get_form_json(phase,incident_short_name, form_json_array) {
       }
       form_json_array.push(phase_data);
       var jString = JSON.stringify(form_json_array);
-      console.log(1);
+//       console.log(1);
 	  $("#tabs-2").empty();
       $("#tabs-2").append(jString);
     } else {
       $("#form_label").append('<h2><a href="/incident_edit_form">Edit Form</a></h2>');
 
-      form_json_array = [];
+//       form_json_array = [];
       var arr = JSON.parse(data.forms_json);
       var jString = "";
       var any_equal = false;
@@ -752,21 +746,20 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 	    for (var b = 0; b < arr[k].length; b++) {
 	      form_json_array.push(arr[k][b]);
 	    }
-	
       $("#form_label").append('<h2><a href="/incident_edit_form">Edit Form</a></h2>');
           jString = JSON.stringify(form_json_array);
 
-	    read_json_to_html(form_json_arr);
+	    read_json_to_html(form_json_array);
 	  	    $("#tabs-2").empty();
 	    $("#tabs-2").append(jString);
-	          console.log(jString);
+// 	          console.log(jString);
 
 	  }
 	}
       }
     
       if (!any_equal) {
-	console.log(3);
+// 	console.log(3);
 	  show_sidebar_form_creator();
 	var phases_array = JSON.parse(data.phases_json);
 	
@@ -797,7 +790,6 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 
 function show_first_phase_form(incident_short_name, incident_short_name) {
   $('#first_phase_form').append('<input type="hidden" name="incident_short_name" value="' + incident_short_name + '" />');
-  $("#first_phase_form_div").show();
 }
 
 function read_phases_json_to_html(phases_json_array, incident_short_name) {
@@ -812,9 +804,12 @@ function read_phases_json_to_html(phases_json_array, incident_short_name) {
 }
 
 function save_changes(form_json_array) {
+//   console.log(form_json_array);
   var jString = JSON.stringify(form_json_array);
   $.post( "incident_save_form", {form_json_array:jString}, function( data ) {
-    window.location.replace('/incident_form_creator?message="Successfully saved form"')
+//     console.log(data);
+    var d = JSON.parse(data)
+    window.location.replace('/incident_definition?message="Saved Successfully"&id=' + d[0].incident_key.toString());
   });
 }
 
@@ -936,12 +931,26 @@ function swap_order_numbers_up(order_number, form_json_array) {
 }
 
 function add_to_form(form_json_array) {
+  console.log(form_json_array);
   read_json_to_html(form_json_array);
   var jString = JSON.stringify(form_json_array);
   $("#tabs-2").empty();
   $("#tabs-2").append(jString);   
 }
 
+function GetUrlValue(VarSearch){
+    var SearchString = window.location.search.substring(1);
+    var VariableArray = SearchString.split('&');
+    for(var i = 0; i < VariableArray.length; i++){
+        var KeyValuePair = VariableArray[i].split('=');
+        if(KeyValuePair[0] == VarSearch){
+            return KeyValuePair[1];
+        }
+    }
+}
+
+
 var personal_info_module_string = '[{"order_number": 1, "header": "Personal and Property Information", "type": "header"}, {"sensitive": true, "type": "text", "required": true, "order_number": 2, "_id": "name", "label": "Name", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 3, "_id": "request_date", "label": "Date of Request", "validations": "date"}, {"sensitive": true, "type": "text", "required": true, "order_number": 4, "_id": "address", "label": "Street Address", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 5, "_id": "city", "label": "City", "validations": "None"}, {"sensitive": false, "type": "text", "required": false, "order_number": 6, "_id": "county", "label": "County", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 7, "_id": "state", "label": "State", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 8, "_id": "zip_code", "label": "Zip Code", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 9, "_id": "latitude", "label": "Latitude", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 10, "_id": "longitude", "label": "Longitude", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 11, "_id": "cross_street", "label": "Cross Street or Nearby Landmark", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 12, "_id": "phone1", "label": "Phone 1", "validations": "phone"}, {"sensitive": true, "type": "text", "required": false, "order_number": 13, "_id": "phone2", "label": "Phone 2", "validations": "phone"}, {"sensitive": false, "type": "text", "required": false, "order_number": 14, "_id": "time_to_call", "label": "Best time to call", "validations": "None"}, {"select_option_1": "Trees", "select_option_2": "Wind", "sensitive": false, "type": "select", "required": true, "order_number": 15, "_id": "work_type", "select_option_3": "Fire", "label": "Primary Help Needed"}, {"select_option_1": "Rent", "select_option_2": "Own", "sensitive": false, "type": "select", "select_option_5": "Business", "required": false, "order_number": 16, "_id": "rent_or_own", "select_option_3": "Public Land", "label": "Rent/Own/Public", "select_option_4": "Non-Profit"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 17, "_id": "work_without_resident", "label": "Work without resident present"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 18, "_id": "member_of_organization", "label": "Member of your organization"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 19, "_id": "first_responder", "label": "First Responder"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 20, "_id": "older_than_60", "label": "Older than 60"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 21, "_id": "disabled", "label": "Disabled"}, {"order_number": 22, "_id": "special_needs", "type": "textarea", "label": "Special Needs", "validations": "None"}, {"sensitive": false, "type": "radio", "low_hint": "Low (1)", "required": false, "order_number": 23, "_id": "priority", "label": "Priority", "radio_option_4": "4", "radio_option_5": "5", "high_hint": "High (5)", "radio_option_1": "1", "radio_option_2": "2", "radio_option_3": "3"}]';
 
 var status_info_module_string = '[{"order_number": 1, "header": "Claim, Status and Report", "type": "header"}, {"order_number": 2, "_default": "n", "type": "checkbox", "required": false, "_id": "claim_for_org", "label": "Claim for my organization", "sensitive": false}, {"order_number": 3, "select_option_3": "Open, needs follow up", "type": "select", "select_option_4": "Closed, completed", "select_option_5": "Closed, incomplete", "select_option_6": "Closed, out of scope", "select_option_7": "Closed, done by others", "select_option_1": "Open, unassigned", "select_option_2": "Open, partially completed", "_id": "status", "label": "Current Status", "required": true, "select_option_8": "Closed, no help wanted", "select_option_9": "Closed, rejected", "select_option_10": "Closed, duplicate", "sensitive": false}, {"order_number": 4, "validations": "None", "type": "text", "required": false, "_id": "total_volunteers", "label": "Volunteers", "sensitive": false}, {"order_number": 5, "validations": "None", "type": "text", "required": false, "_id": "hours_worked_per_volunteer", "label": "Hours per volunteer", "sensitive": false}, {"order_number": 6, "validations": "None", "type": "text", "required": false, "_id": "initials_of_resident_present", "label": "Initials of resident present during work", "sensitive": false}, {"order_number": 7, "validations": "None", "type": "text", "required": false, "_id": "status note", "label": "Status Notes", "sensitive": false}]';
+

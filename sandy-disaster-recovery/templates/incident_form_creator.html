@@ -6,17 +6,10 @@
 
 {% block scripts %}
 <script type="text/javascript" src="../javascript/incident_form_creator.js"></script>
-<!--<script type="text/javascript" src="../javascript/ui-bootstrap-tpls-0.6.0.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">-->
-
-<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
-<script src="../javascript/form_module.js"></script>-->
-
 {% endblock %}
 
 {% block login %}
 {% endblock %}
-
 
 {% block description_title %}
 {% endblock %}
@@ -28,20 +21,6 @@
 {% endblock %}
 
 {% block sidebar_content %}
-<!--<div ng-app="formBuilderApp">
-  <div ng-controller="incidentsController">
-
-  
-    <select ng-model="selectedIncident" ng-options="item as item.test for item in incidents">
-      <option value="">Select Incident</option>
-    </select>
-    <[ selectedIncident ]>
-<!--    <ul>
-    <li ng-repeat="inc in incidents"><[ inc.test ]></li>
-   </ul>-->
-<!--
-  </div>
-</div>-->
 
 <div id="sidebar_form_creator">
   <div id="form_editor">
@@ -68,8 +47,14 @@
       Form Id: <input type="text" id="text_id" name="text_id"><br>
 
       Required: <input type="checkbox" id="text_required" name="text_required" value="y">
-      Sensitive: <input type="checkbox" id="text_sensitive" name="text_sensitive" value="y">
       <br>
+      Sensitive Info: <select id="text_sensitive" name="checkbox_default">
+	<option value="None" >Choose One (optional)</option>
+	<option value="name" >Name</option>
+	<option value="contact_information" >Contact Information</option>
+	<option value="address" >Address</option>
+	<option value="narrative" >Narrative</option>
+      </select><br>
       Extra Validations: <select id="text_validations" name="checkbox_default">
 	<option value="None" >Choose One (optional)</option>
 	<option value="email" >Email</option>
@@ -91,22 +76,21 @@
     <option value="n" >Unchecked</option>
     <option value="y" >Checked</option>
     </select><br><br>
-    Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y">
-    Sensitive: <input type="checkbox" id="checkbox_sensitive" name="checkbox_sensitive" value="y"><br>
-    Extra Validations: <select id="checkbox_validations" name="checkbox_default">
+<!--     Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y"> -->
+      Sensitive Info: <select id="checkbox_sensitive" name="checkbox_default">
+	<option value="None" >Choose One (optional)</option>
+	<option value="name" >Name</option>
+	<option value="contact_information" >Contact Information</option>
+	<option value="address" >Address</option>
+	<option value="narrative" >Narrative</option>
+      </select><br>
+      <!--    Extra Validations: <select id="checkbox_validations" name="checkbox_default">
       <option value="None" >Choose One (optional)</option>
       <option value="email" >Email</option>
       <option value="date" >Date</option>
       <option value="phone" >Phone</option>
       <option value="url" >Url</option>
-    </select><br>
-
-<!--    <h3>Add Display Info</h3>
-    *For advanced users<br>
-    InfoBox: <textarea id="checkbox_infobox" name="checkbox_infobox" rows="2" cols="20">Write something here</textarea><br>
-    Printer: <input type="text" id="checkbox_printer" name="checkbox_printer"><br>
-    Mobile: <input type="text" id="checkbox_mobile" name="checkbox_mobile"><br>
-    Sms: <input type="text" id="checkbox_sms" name="checkbox_sms"><br>-->
+    </select><br>-->
     <h3><a href="#form_editor" id="add_checkbox_to_form">Add to form</a></h3>
   </form>
   </div>
@@ -124,19 +108,16 @@
       <br>
       <a id="clear_select_options">Clear options</a>
       <br>
-<!--      Default: <select id="select_default" name="select_default">
-      <option value="select_option_1">Option 1</option>
-      </select>-->
       <br>
       <br>
       Required: <input type="checkbox" id="select_required" name="select_required" value="y">
-      Sensitive: <input type="checkbox" id="select_sensitive" name="select_sensitive" value="y"><br>
-<!--      <h3>Add Display Info</h3>
-      *For advanced users<br>
-      InfoBox: <textarea id="select_infobox" name="select_infobox" rows="2" cols="20">Write something here</textarea><br>
-      Printer: <input type="text" id="select_printer" name="select_printer"><br>
-      Mobile: <input type="text" id="select_mobile" name="select_mobile"><br>
-      Sms: <input type="text" id="select_sms" name="select_sms"><br>-->
+      Sensitive Info: <select id="select_sensitive" name="checkbox_default">
+	<option value="None" >Choose One (optional)</option>
+	<option value="name" >Name</option>
+	<option value="contact_information" >Contact Information</option>
+	<option value="address" >Address</option>
+	<option value="narrative" >Narrative</option>
+      </select><br>
       <h3><a href="#form_editor" id="add_select_to_form">Add to form</a></h3>
     </form>
   </div>
@@ -154,21 +135,16 @@
       <br>
       <a id="clear_radio_options">Clear options</a>
       <br>
-<!--      Default: <select id="radio_default" name="radio_default">
-      <option value="radio_option_1">Option 1</option>
-      </select>
-      <br>-->
       <br>Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
-      Sensitive: <input type="checkbox" id="radio_sensitive" name="radio_sensitive" value="y"><br>
+      Sensitive Info: <select id="radio_sensitive" name="checkbox_default">
+	<option value="None" >Choose One (optional)</option>
+	<option value="name" >Name</option>
+	<option value="contact_information" >Contact Information</option>
+	<option value="address" >Address</option>
+	<option value="narrative" >Narrative</option>
+      </select><br>
       Low Hint: <input type="text" id="radio_low_hint" name="radio_low_hint"><br>
       High Hint: <input type="text" id="radio_high_hint" name="radio_high_hint"><br>
-
-<!--      <h3>Add Display Info</h3>
-      *For advanced users<br>
-      InfoBox: <textarea id="radio_infobox" name="radio_infobox" rows="2" cols="20">Write something here</textarea><br>
-      Printer: <input type="text" id="radio_printer" name="radio_printer"><br>
-      Mobile: <input type="text" id="radio_mobile" name="radio_mobile"><br>
-      Sms: <input type="text" id="radio_sms" name="radio_sms"><br>-->
       <h3><a href="#form_editor" id="add_radio_to_form">Add to form</a></h3>
     </form>
   </div>
@@ -196,6 +172,13 @@
     <form id="textarea_form">
       Name: <input type="text" id="textarea_label" name="textarea_label"><br>
       Id: <input type="text" id="textarea_id" name="textarea_id"><br>
+      Sensitive Info: <select id="textarea_sensitive" name="checkbox_default">
+	<option value="None" >Choose One (optional)</option>
+	<option value="name" >Name</option>
+	<option value="contact_information" >Contact Information</option>
+	<option value="address" >Address</option>
+	<option value="narrative" >Narrative</option>
+      </select><br>
       Extra Validations: <select id="textarea_validations" name="checkbox_default">
 	<option value="None" >Choose One (optional)</option>
 	<option value="email" >Email</option>
@@ -264,7 +247,7 @@
 <div id="first_phase_form_div">
   <form id="first_phase_form" action="/incident_create_first_phase" method="POST">
   Phase Name: <input type="text" name="phase_name"><br>
-  Description: <input type="text" name="description"><br>
+  Description: <textarea name="description"></textarea><br>
   <input type="hidden" name="phase_position" value="0">
 
   <button class="submit">Submit</button>
@@ -274,7 +257,7 @@
 <div id="add_phase_form_div">
     <form id="add_phase_form" action="/incident_create_first_phase" method="POST">
     Phase Name: <input type="text" name="phase_name"><br>
-    Description: <input type="text" name="description"><br>
+    Description: <textarea name="description"></textarea><br>
 
     <input type="hidden" name="add_phase" value="true">
     <button class="submit">Submit</button>
@@ -285,11 +268,6 @@
 
 <div id="phases">
   <div id="tabs">
-  <!--  <ul>
-      <li><a href="#" id="show_html">HTML</a></li>
-      <li><a href="#" id="show_json">JSON</a></li>
-    </ul>-->
-    
     <h3 class="horizontal"><a href="#" id="show_html">HTML</a></h3>
     <h3 class="horizontal"><a href="#" id="show_json">JSON</a></h3>
     <div id="tabs-1">

@@ -20,6 +20,7 @@ import os
 import webapp2_extras
 from datetime import datetime
 from google.appengine.ext import db
+import json
 
 # Local libraries.
 import base
@@ -27,6 +28,7 @@ import key
 from models import incident_definition
 import event_db
 import cache
+import random_password
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
@@ -44,12 +46,15 @@ class IncidentDefinition(base.RequestHandler):
     id = self.request.get("id")
     if id:
       incident_definition_object = incident_definition.IncidentDefinition.get_by_id(int(id))
+      phases = json.loads(incident_definition_object.phases_json)
       data = {
+	"phases": phases,
 	"incident_definition_object": incident_definition_object,
       }
       self.response.out.write(read_template.render(data))
     else:
       form = incident_definition.IncidentDefinitionForm()
+      form.local_admin_password.data = random_password.generate_password()
       work_order_prefix = "Set from event_db"
       query_string = "SELECT * FROM Event"
       events_list = db.GqlQuery(query_string)
@@ -65,6 +70,11 @@ class IncidentDefinition(base.RequestHandler):
   def post(self):
     data = incident_definition.IncidentDefinitionForm(self.request.POST)
     version = data.name.data
+    try:
+      data.incident_lat.data = float(data.incident_lat.data)
+      data.incident_lng.data = float(data.incident_lng.data)
+    except:
+      pass
     #raise Exception(version)
     if not data.validate():
       self.response.out.write(template.render(
@@ -93,23 +103,9 @@ class IncidentDefinition(base.RequestHandler):
       local_admin_password = data.local_admin_password.data
     
     
-      #public_map_title = data.public_map_title.data
-      #public_map_url = data.public_map_url.data
-      #public_map_cluster = data.public_map_cluster.data
-      #public_map_zoom = data.public_map_zoom.data
-      
-      #internal_map_title = data.internal_map_title.data
-      #internal_map_url = data.internal_map_url.data
-      #internal_map_cluster = data.internal_map_cluster.data
-      #internal_map_zoom = data.internal_map_zoom.data
-    
       incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
       start_date_object = datetime.strptime(cleanup_start_date, "%m/%d/%Y").date()
-      
-      # create new version and associate with inc def
-      #if incident_version == "New":
-	#inc_def = incident_definition.IncidentDefinition(is_schema_version = True, version = incident_version, full_name = incident_full_name, short_name = incident_short_name, timezone = timezone, start_date = start_date_object, end_date = end_date_object, incident_date = incident_date_object, work_order_prefix = work_order_prefix, centroid_lat = centroid_latitude, centroid_lng = centroid_longitude, camera_latitude = camera_latitude, camera_longitude = camera_longitude, developer_mode = developer_mode, ignore_validation = ignore_validation, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, public_map_cluster = public_map_cluster, public_map_title = public_map_title, public_map_url = public_map_url, public_map_zoom = public_map_zoom, internal_map_cluster = internal_map_cluster, internal_map_title = internal_map_title, internal_map_url = internal_map_url, internal_map_zoom = internal_map_zoom)
-	
+
 
 
       ### TODO
@@ -132,14 +128,5 @@ class IncidentDefinition(base.RequestHandler):
       
       self.redirect("/incident_definition?id=" + str(inc_def.key().id()))
 
-      
-  
-    # make dates date objects
-    # use make_date_object
-    
-    
-    
-    #hash a password
-    #webapp2_extras.security.hash_password(password, method, salt=None, pepper=None)
-    #get password hash
-    #webapp2_extras.security.check_password_hash(password, pwhash, pepper=None)
+def get_phases_from_json(phases_json):
+  pass

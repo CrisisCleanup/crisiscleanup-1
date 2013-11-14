@@ -32,40 +32,40 @@ def make_date_object(date_string):
 
 class IncidentCreateFirstPhase(base.RequestHandler):
   def post(self):
-    incident_short_name = self.request.get("incident_short_name")
-    #raise Exception(self.request.POST)
-    phase_name = self.request.get("phase_name")
-    description = self.request.get("description")
-    phase_position = self.request.get("phase_position")
-    add_phase = self.request.get("add_phase")
-    q = incident_definition.IncidentDefinition.all()
-    q.filter("short_name =", incident_short_name)
-    incident = q.get()
+    pass
+  # TODO DELETE
+  
+    #incident_id = self.request.get("incident_id")
+    #phase_name = self.request.get("phase_name")
+    #description = self.request.get("description")
+    #add_phase = self.request.get("add_phase")
+    #incident = incident_definition.IncidentDefinition.get_by_id(int(incident_id))
     
-    phase_short_name = phase_name.lower()
-    phase_short_name = phase_short_name.replace(" ", "_")
-    phase_data = {
-     "phase_name": phase_name,
-     "description": description,
-     "phase_position": phase_position,
-     "phase_short_name": phase_short_name,
-     "phase_id": os.urandom(16).encode("hex"),
-     "incident_short_name": incident_short_name
-    }
+    #phase_short_name = phase_name.lower()
+    #phase_short_name = phase_short_name.replace(" ", "_")
+    #phase_data = {
+     #"phase_name": phase_name,
+     #"description": description,
+     #"phase_short_name": phase_short_name,
+     #"phase_id": os.urandom(16).encode("hex"),
+     #"incident_short_name": incident.short_name
+    #}
     
-    phase_array = []
+    #phase_array = []
     
-    phase_array.append(phase_data)
+    #phase_array.append(phase_data)
     
-    phases_json = json.dumps(phase_array)
-    if not add_phase:
-      incident.phases_json = phases_json
-      incident.put()
-    else:
-      phases_array = incident.phases_json
-      arr = json.loads(phases_array)
-      arr.append(phase_data)
-      incident.phases_json = json.dumps(arr)
-      incident.put()
+    #phases_json = json.dumps(phase_array)
     
-    self.redirect("incident_form_creator")
+    ##if not add_phase:
+      ##incident.phases_json = phases_json
+      ##incident.put()
+    ##else:
+    #phases_array = incident.phases_json
+    #arr = json.loads(phases_array)
+    #arr.append(phase_data)
+    #incident.phases_json = json.dumps(arr)
+    
+    #incident.put()
+    
+    #self.redirect("incident_definition?id=" + str(incident_id))

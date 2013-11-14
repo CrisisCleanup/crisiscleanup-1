@@ -8,6 +8,9 @@
 /*================================================
     RESET
 ================================================*/
+table.incident_definition_table {
+ width:50%; 
+}
 html,
 button,
 input,
@@ -1021,3 +1024,4 @@ ol.fifteen > li:before {
 .horizontal {
   display: inline;
 }
+

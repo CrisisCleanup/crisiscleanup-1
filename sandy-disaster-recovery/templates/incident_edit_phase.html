@@ -1,36 +1,1 @@
-
-{% extends "base_template.html" %}
-
-{% block head_content %}
-<link href="/stylesheets/default.css" rel="stylesheet">
-{% endblock %}
-
-{% block scripts %}
-{% endblock %}
-
-{% block login %}
-{% endblock %}
-
-
-{% block description_title %}
-{% endblock %}
-
-{% block description_subtitle %}
-{% endblock %}
-
-{% block sidebar_title %}
-{% endblock %}
-
-{% block sidebar_content %}
-{% endblock %}
-
-{% block main_title %}
-{% endblock %}
-
-{% block main_content %}
-
-<h2>Edit Phases</h2>
-
-{{ incident.phases_json }}
-{% endblock %}
-
+{% extends "base_template.html" %}{% block head_content %}<link href="/stylesheets/default.css" rel="stylesheet">{% endblock %}{% block scripts %}{% endblock %}{% block login %}{% endblock %}{% block description_title %}{% endblock %}{% block description_subtitle %}{% endblock %}{% block sidebar_title %}{% endblock %}{% block sidebar_content %}{% endblock %}{% block main_title %}{% endblock %}{% block main_content %}<h2>Edit Phases</h2>{% if errors %}<section id="errors">  <header>The submission had errors</header>  <article>    <ul>    {% for k in errors %}      <li class="error">        {% for e in errors[k] %}          {{k}}: {{e}}        {% endfor %}      </li>    {% endfor %}    </ul>  <article></section>{% endif %}<form method="POST"><div>{{ form.phase_name.label}}{{ form.phase_name }}</div><div>{{ form.description.label}}{{ form.description }}</div><input type="hidden" name="incident_id" value="{{ incident.key().id() }}"><input type="hidden" name="phase_id" value="{{ this_phase.phase_id }}"><button class="submit">Submit</button></form>{% endblock %}

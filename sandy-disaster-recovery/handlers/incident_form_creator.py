@@ -19,6 +19,7 @@ import jinja2
 import os
 import webapp2_extras
 from datetime import datetime
+import json
 
 # Local libraries.
 import base
@@ -34,9 +35,39 @@ def make_date_object(date_string):
 
 class IncidentFormCreator(base.RequestHandler):
   def get(self):
-    incidents = incident_definition.IncidentDefinition.all()
+    incident_short_name = self.request.get("incident_short_name")
+    phase_id = self.request.get("phase_id")
+    
+    q = incident_definition.IncidentDefinition.all()
+    q.filter("short_name =", incident_short_name)
+    incident = q.get()
+    
+    phases_json_string = incident.phases_json
+    forms_json_string = incident.forms_json
+    #raise Exception(forms_json_string)
+    #if forms_json_string == "[]":
     data = {
-        "incidents": incidents,
+    "start_array": []
+    }
+    self.response.out.write(template.render(data))
+    return
+    
+    forms_json_object = json.loads(forms_json_string)
+    
+    
+    raise Exception(forms_json_object)
+    form_number = 0
+    i = 0
+    for form in forms_json_object:
+      #if form['phase_id'] == phase_id:
+	#phase_number = i
+      i += 1
+    raise Exception(i)
+	
+    start_array = json.dumps(phases_json_string)
+    raise Exception(start_array)
+    data = {
+        "start_array": start_array
     }
     self.response.out.write(template.render(data))
 

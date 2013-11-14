@@ -29,32 +29,19 @@ from models import incident_definition
 import event_db
 import cache
 
-
-def show_phases_from_json(phases_json):
-    as_json = json.loads(phases_json)
-    
-    length = len(as_json)
-    string = ""
-    for obj in as_json:
-      def_string = '<p>>' + obj['phase_name'] + ': ' + obj['description'] + '</p>'
-      string = string + def_string
-    return string
-
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
 
-jinja_environment.filters['show_phases_from_json'] = show_phases_from_json
-
-template = jinja_environment.get_template('/incident_list.html')
+template = jinja_environment.get_template('/incident_edit_phases.html')
 
 
-class IncidentList(base.RequestHandler):
+class IncidentEditPhases(base.RequestHandler):
   def get(self):
-    q = incident_definition.IncidentDefinition.all()
-    incidents = q.run()
-    
+    _id = self.request.get("id")
+    incident_definition_object = incident_definition.IncidentDefinition.get_by_id(int(_id))
+    phases_json = json.loads(incident_definition_object.phases_json)
     data = {
-      "incidents": incidents,
+      "phases_json": phases_json,
+      "incident_definition_object": incident_definition_object
     }
     self.response.out.write(template.render(data))
-    

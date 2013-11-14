@@ -22,13 +22,17 @@ from google.appengine.ext import db
 import json
 import wtforms.validators
 from datetime import datetime
-from xml.sax.saxutils import unescape
+
 
 # Local libraries.
 import base
 import site_db
+import site_util
 import form_db
 from models import incident_definition
+from helpers import populate_incident_form
+from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
+
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -70,7 +74,6 @@ class EditHandler(base.AuthenticatedHandler):
     #form = site_db.SiteForm(self.request.POST, site)
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #form = site_db.DerechosSiteForm(self.request.POST, site)
-    #post_json2 = site.to_dict()
     post_json2 = site_db.SiteToDict(site)
 
     date_string = str(post_json2['request_date'])
@@ -100,9 +103,11 @@ class EditHandler(base.AuthenticatedHandler):
       phase_id = post_json2['phase_id']
     except:
       pass
-
-    inc_form, label, paragraph= populate_incident_form(json.loads(inc_def_query.forms_json), phase_id)
-
+    phase_number = get_phase_number(json.loads(inc_def_query.forms_json), phase_id)
+    inc_form, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number)
+    
+    #raise Exception(inc_form)
+    raise Exception(post_json)
     submit_button = '<input type="submit" value="Submit request">'
 
 
@@ -128,38 +133,57 @@ class EditHandler(base.AuthenticatedHandler):
   def AuthenticatedPost(self, org, event):
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #single_site_template = jinja_environment.get_template('single_site_derechos.html')
+    mode_js = False
+    phase_id = self.request.get("phase_id")
+    q = db.Query(incident_definition.IncidentDefinition)
+    q.filter("incident =", event.key())
+    inc_def_query = q.get()
+    #raise Exception(inc_def_query.forms_json)
+    ### SET VALIDATORS HERE
+    optional_validator = wtforms.validators.Optional()
+    email_validator = wtforms.validators.Email(message=u'Invalid email aress.')
+    url_validator = wtforms.validators.URL(message=u'Invalid URL.')
+    required_validator = wtforms.validators.Length(min = 1, max = 100,  message = "Required Field")
+    phone_validator = wtforms.validators.Regexp(r'^\d+$', flags=0, message=u'Phone number. No letters allowed or other characters allowed.')
+
+    phase_number = get_phase_number(json.loads(inc_def_query.forms_json), phase_id)
+    
     try:
       id = int(self.request.get('_id'))
     except:
       return
     site = site_db.Site.get_by_id(id)
-    data = site_db.StandardSiteForm(self.request.POST, site)
-    #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
-        #form = site_db.DerechosSiteForm(self.request.POST, site)
+    wt_form = build_form(json.loads(inc_def_query.forms_json), phase_number)
+    data = wt_form(self.request.POST, site)
+    validations_array = []
+    forms_json_obj = json.loads(inc_def_query.forms_json)
 
-    # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
-    data.name.data = unescape(data.name.data)
+    for obj in forms_json_obj[phase_number]:
+      #raise Exception(forms_json_obj[phase_number])
+      if "validations" in obj or "required" in obj:
+	_id = str(obj["_id"])
+	if "validations" in obj and obj[u"validations"] == 'email':
+	  validations_array.append(email_validator)
+	  data[_id].validators = data[_id].validators + validations_array
+	  validations_array = []
+	if "validations" in obj and obj["validations"] == "url":
+	  validations_array.append(url_validator)
+	  data[_id].validators = data[_id].validators + validations_array
+	  validations_array = []
+	if "validations" in obj and obj["validations"] == "phone":
+	  validations_array.append(phone_validator)
+	  data[_id].validators = data[_id].validators + validations_array
+	  validations_array = []
+	if "required" in obj and obj["required"] == False:
+	  validations_array.append(optional_validator)
+	  data[_id].validators = data[_id].validators + validations_array
+	  validations_array = []  
+	if "required" in obj and obj["required"] == True:
+	  validations_array.append(required_validator)
+	  data[_id].validators = data[_id].validators + validations_array
+	  validations_array = []  
 
 
-    data.priority.data = int(data.priority.data)
-    data.name.validators = data.name.validators + [wtforms.validators.Length(min = 1, max = 100,
-                             message = "Name must be between 1 and 100 characters")]
-    data.phone1.validators = data.phone1.validators + [wtforms.validators.Length(
-        min = 1, max = 100,
-        message = "Please enter a primary phone number")]
-    data.city.validators = data.city.validators + [wtforms.validators.Length(
-        min = 1, max = 100,
-        message = "Please enter a city name")]
-    data.state.validators = data.state.validators + [wtforms.validators.Length(
-        min = 1, max = 100,
-        message = "Please enter a state name")]
-    data.work_type.validators = data.work_type.validators + [wtforms.validators.Length(
-        min = 1, max = 100,
-        message = "Please set a primary work type")]
-
-    claim_for_org = self.request.get("claim_for_org") == "y"
-
-    mode_js = self.request.get("mode") == "js"
     if data.validate():
       #setattr(site, "longitude", lng_float)
       #setattr(site, "latitude", lat_float)
@@ -171,12 +195,45 @@ class EditHandler(base.AuthenticatedHandler):
         in_post = self.request.get(f.name, default_value = None)
         if in_post is None:
           continue
-        setattr(site, f.name, f.data)
-      if claim_for_org:
-        site.claimed_by = org
+	
+	
+	
+	if f.name == "request_date":
+	  date_saved = False
+	  try:
+	    date_object = datetime.strptime(f.data, '%Y-%m-%d %H:%M:%S')
+	    setattr(site, f.name, date_object)
+	    date_saved=True
+	  except:
+	    date_saved=False
+	    pass
+	  if date_saved is False:
+	    try:
+	      f.data = f.data.replace("/", "-")
+	      date_object = datetime.strptime(f.data, '%Y-%m-%d')
+	      setattr(site, f.name, date_object)
+	      date_saved=True
+	    except:
+	      date_saved=False
+	      pass
+	  if date_saved is False:
+	    try:
+	      f.data = f.data.replace("/", "-")
+	      date_object = datetime.strptime(f.data, '%m-%d-%Y')
+	      setattr(site, f.name, date_object)
+	      date_saved=True
+	    except:
+	      date_saved=False
+	      pass
+	elif f.name == "latitude" or f.name == "longitude":
+	  setattr(site, f.name, float(f.data))
+	else:
+	  setattr(site, f.name, f.data)
+      #if claim_for_org:
+        #site.claimed_by = org
       # clear assigned_to if status is unassigned
-      if data.status.data == 'Open, unassigned':
-        site.assigned_to = ''
+      #if data.status.data == 'Open, unassigned':
+        #site.assigned_to = ''
         
         
       for k, v in self.request.POST.iteritems():
@@ -210,7 +267,7 @@ class EditHandler(base.AuthenticatedHandler):
       if query:
 	inc_form = query.form_html
 	
-      post_json2 = site.to_dict()
+      post_json2 = site_db.SiteToDict(site)
       date_string = str(post_json2['request_date'])
       post_json2['request_date'] = date_string
       post_json2['event'] = site.event.name
@@ -221,11 +278,13 @@ class EditHandler(base.AuthenticatedHandler):
       #}
       post_json = json.dumps(post_json2)
       
+      submit_button = "<button class='submit'>Submit</button>"
 
       single_site = single_site_template.render(
-          { "form": data,
+          { "new_form": data,
             "org": org,
 	    "incident_form_block": inc_form,
+	    "submit_button": submit_button
 	  })
       if mode_js:
         self.response.set_status(400)
@@ -240,8 +299,7 @@ class EditHandler(base.AuthenticatedHandler):
            "page": "/edit"}))
 
 
-def populate_incident_form(form_json, phase_id):
-
+def get_phase_number(form_json, phase_id):
   i = 0
   string = ""
   label = ""
@@ -253,85 +311,31 @@ def populate_incident_form(form_json, phase_id):
       if "phase_id" in o and o['phase_id'] == phase_id:
 	phase_number = i
     i+=1
-  for obj in form_json[phase_number]:
-    #raise Exception(form_json[phase_number])
-    i+=1
-    if "phase_id" in obj:
-      string += '<input type="hidden" name="phase_id" value="' + obj['phase_id'] + '">'
-    if "type" in obj and obj["type"] == "text":
-      required = ""
-      if obj["required"] == True:
-	required = "*"
-      new_text_input = '<tr><td class=question>' + obj['label'] + ': <span class=required-asterisk>' + required + '</span></td><td class="answer"><div class="form_field"><input class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="text" /></div></td></tr>'
-      string += new_text_input
-    elif "type" in obj and obj["type"] == "label":
-      label = obj['label']
-    elif "type" in obj and obj["type"] == "header":
-      new_header = '<tr><td class="question"><h2>' + obj['header'] + '</h2></tr></td>'
-      string += new_header
-      
-    elif "type" in obj and obj["type"] == "subheader":
-      new_subheader = '<tr><td class="question"><h3>' + obj['subheader'] + '</h3></tr></td>'
-      string += new_subheader
-    elif "type" in obj and obj["type"] == "textarea":
-      new_textarea = '<tr><td class=question>' + obj['label'] + ':</td><td class="answer">\
-      <div class="form_field"><textarea class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '"></textarea></div>\
-      </td></tr>'
-      string += new_textarea
     
-    elif "type" in obj and obj["type"] == "paragraph":
-      paragraph = obj["paragraph"]
-    elif "type" in obj and obj["type"] == "checkbox":
-      required = ""
-      checked = ""
-      if obj["required"] == True:
-	required = "*"
-      if obj["_default"] == "y":
-	checked = " checked"
-      new_checkbox = '<tr><td class=question><label for="' + obj['_id'] + '">' + obj['label'] + required +'</label></td><td class="answer"><div class="form_field"><input class="" name="' + obj['_id'] + '" type="hidden" value="n"/><input class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="checkbox" value="y"' + checked + '></div></td></tr>';
-      string += new_checkbox
-    elif "type" in obj and obj["type"] == "select":
-      options_array = []
-      required = ""
-      for key in obj:
-	if "select_option_" in key:
-	  options_array.append(key)
-      if obj["required"]:
-	required = "*"
-      begin_option = '<tr><td class=question>' + obj['label'] + required +'</td><td class="answer"><div class="form_field"><select class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '">';
-      end_option = '</select></div></td></tr>';
-      select_string = '<option value="None">Choose one</option>';
-      
-      options_array.sort()
-      for option in options_array:
-	option_string = ""
-	option_string = "<option>" + obj[option] + "</option>";
-	select_string = select_string + option_string
+  return phase_number
 
-      new_select = begin_option + select_string + end_option
-      string += new_select
-    elif "type" in obj and obj["type"] == "radio":
-      options_array = []
-      required = ""
-      for key in obj:
-	if "radio_option_" in key:
-	  options_array.append(key)
-      if obj["required"]:
-	      required = "*"
-      radio_string = "";
-      radio_string_start = '</td></tr><tr><td class=question>' + obj['label'] + required + '</td><td class="answer"><table><tr><td>' + obj['low_hint'] + '</td><td>';
-      radio_string_end = '<td>' + obj['high_hint'] + '</td></tr></table></td></tr>';
-      
-      options_array.sort()
-      for option in options_array:
-	options_string = ""
-	#if obj['radio_default'] == option:
-	  #option_string = '<td><input id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="radio" value="' + obj[option] + '" checked="true"></td>'
-	#else:
-	option_string = '<td><input id="' + obj['_id'] + '" name="' + obj['_id'] + '" type="radio" value="' + obj[option] + '"></td>';
-  
-        radio_string = radio_string + option_string
-        
-      string = string + radio_string_start + radio_string + radio_string_end;
-  
-  return string, label, paragraph
+def build_form(forms_json, phase_number):
+  class DynamicForm(wtforms.Form): pass    
+
+  if phase_number:
+    phase_number = int(str(phase_number))
+  else:
+    phase_number = 0
+    
+
+  i = 0
+  string = ""
+  label = ""
+  paragraph = ""
+  forms_json[phase_number]
+  for obj in forms_json[phase_number]:
+    if "_id" in obj:
+    #if "type" in obj and obj['type'] == 'text':
+      #raise Exception(obj)
+      setattr(DynamicForm, obj['_id'], TextField(obj['label']))
+    #if "type" in obj and obj['type'] == 'textarea':
+      #setattr(DynamicForm, obj['_id'], TextAreaField(obj['label']))
+    #if "type" in obj and obj['type'] == 'checkbox':
+      #setattr(DynamicForm, obj['_id'], BooleanField(obj['label']))
+  d = DynamicForm
+  return d  

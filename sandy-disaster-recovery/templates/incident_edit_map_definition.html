@@ -1,0 +1,69 @@
+
+{% extends "base_template.html" %}
+
+{% block head_content %}
+<link href="/stylesheets/default.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block login %}
+{% endblock %}
+
+
+{% block description_title %}
+{% endblock %}
+
+{% block description_subtitle %}
+{% endblock %}
+
+{% block sidebar_title %}
+{% endblock %}
+
+{% block sidebar_content %}
+{% endblock %}
+
+{% block main_title %}
+{% endblock %}
+
+{% block main_content %}
+
+<h2>Edit Map Definition</h2>
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<form method="POST">
+<h2>Organization Map</h2>
+{{ form.organization_map_title.label }}:{{form.organization_map_title}}<br>
+{{ form.organization_map_url.label }}:{{form.organization_map_url}}<br>
+{{ form.organization_map_latitude.label }}:{{form.organization_map_latitude(readonly=true)}}<small>(<a href="#" onclick="document.getElementById('organization_map_latitude').readOnly=false; document.getElementById('organization_map_latitude').focus(); return false;">edit</a>)</small><br>
+{{ form.organization_map_longitude.label }}:{{form.organization_map_longitude(readonly=true)}}<small>(<a href="#" onclick="document.getElementById('organization_map_longitude').readOnly=false; document.getElementById('organization_map_longitude').focus(); return false;">edit</a>)</small><br>
+{{ form.organization_map_cluster.label }}:{{form.organization_map_cluster}}<br>
+{{ form.organization_map_zoom.label }}:{{form.organization_map_zoom}}<br>
+<h2>Public Map</h2>
+{{ form.public_map_title.label }}:{{form.public_map_title}}<br>
+{{ form.public_map_url.label }}:{{form.public_map_url}}<br>
+{{ form.public_map_latitude.label }}:{{form.public_map_latitude(readonly=true)}}<small>(<a href="#" onclick="document.getElementById('public_map_latitude').readOnly=false; document.getElementById('public_map_latitude').focus(); return false;">edit</a>)</small><br>
+{{ form.public_map_longitude.label }}:{{form.public_map_longitude(readonly=true)}}<small>(<a href="#" onclick="document.getElementById('public_map_longitude').readOnly=false; document.getElementById('public_map_longitude').focus(); return false;">edit</a>)</small><br>
+{{ form.public_map_cluster.label }}:{{form.public_map_cluster}}<br>
+{{ form.public_map_zoom.label }}:{{form.public_map_zoom}}<br>
+<input type="hidden" name="incident_id" value="{{ incident_id }}">
+<button class="submit">Submit</button>
+</form>
+
+{% endblock %}
+

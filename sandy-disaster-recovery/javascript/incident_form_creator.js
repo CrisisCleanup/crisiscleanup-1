@@ -448,7 +448,12 @@ $(function() {
       add_to_form(form_json_array);
     }
   });
-  
+  $("#form_table").on( "click", ".delete_by_position",  function() {
+    order_number = $(this).attr("id");
+    
+    delete_by_position(order_number, form_json_array);
+    add_to_form(form_json_array);
+  });
   
   $("#form_table").on( "click", ".move_one_position_down",  function() {
     order_number = $(this).attr("id");
@@ -883,7 +888,7 @@ function move_one_position_down(order_number, form_json_array) {
 function delete_by_position(order_number, form_json_array) {
   for (var i = 0; i < form_json_array.length; i++) {
     if (form_json_array[i].order_number == order_number) {
-      delete form_json_array[i];
+      form_json_array.splice(i, 1);
     }
     
     if (form_json_array[i].order_number > order_number) {
@@ -898,6 +903,7 @@ Array.prototype.swap = function (x,y) {
   this[y] = b;
   return this;
 }
+
 
 Array.prototype.move_up = function(order_number) {
     var tmp = this[order_number - 1];

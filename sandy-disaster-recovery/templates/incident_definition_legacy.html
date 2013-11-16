@@ -61,13 +61,17 @@ $(function() {
 </section>
 {% endif %}
 <h3>Basic Information</h3>
-<form action="/incident_definition" method="POST">
-<div>{{ form.name.label }}: {{ form.name}}</div>
+<form action="/incident_definition_legacy" method="POST">
+<div>Select Event: <select id="event_id" name="event_id">
+<option value="">Choose one:</option>
+{% for event in events %}
+<option value="{{ event.key().id() }}">{{ event.name }}</option>
+{% endfor %}
+</select>
 <div>{{ form.location.label }}: {{ form.location}}</div>
 <div>{{ form.timezone.label }}: {{ form.timezone }}</div>
 <div>{{ form.incident_date.label }}: {{ form.incident_date(readonly=true) }}</div>
 <div>{{ form.cleanup_start_date.label }}: {{ form.cleanup_start_date(readonly=true) }}</div>
-<div>{{ form.work_order_prefix.label }}: {{ form.work_order_prefix(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('work_order_prefix').readOnly=false; document.getElementById('work_order_prefix').focus(); return false;">edit</a>)</small></div>
 <div>{{ form.incident_lat.label }}: {{ form.incident_lat }}</div>
 <div>{{ form.incident_lng.label }}: {{ form.incident_lng }}</div>
 <h3>Local Admin Information</h3>

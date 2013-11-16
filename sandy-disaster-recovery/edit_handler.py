@@ -104,14 +104,14 @@ class EditHandler(base.AuthenticatedHandler):
     except:
       pass
     phase_number = get_phase_number(json.loads(inc_def_query.forms_json), phase_id)
-    inc_form, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number)
+    inc_form, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, post_json)
     
     #raise Exception(inc_form)
-    raise Exception(post_json)
+    #raise Exception(post_json)
     submit_button = '<input type="submit" value="Submit request">'
-
-
     
+    if mode_js:
+      submit_button = ""
     single_site = single_site_template.render(
         { "form": form,
           "org": org,

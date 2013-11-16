@@ -78,6 +78,10 @@ from handlers import incident_edit
 from handlers import incident_create_definition_version
 from handlers import incident_add_phase
 from handlers import incident_edit_phases
+from handlers import incident_edit_map_definition
+from handlers import incident_edit_communications_definition
+from handlers import incident_definition_legacy
+
 
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
@@ -220,6 +224,7 @@ app = webapp2.WSGIApplication([
     Route(r'/form_ajax_handler', form_ajax_handler.FormAjaxHandler, 'form_ajax_handler'),
 
     Route(r'/incident_definition', incident_definition.IncidentDefinition, 'incident_definition'),
+    Route(r'/incident_definition_legacy', incident_definition_legacy.IncidentDefinitionLegacy, 'incident_definition_legacy'),
     Route(r'/incident_definition_ajax', incident_definition_ajax.IncidentDefinitionAjax, 'incident_definition_ajax'),
     Route(r'/incident_create_first_phase', incident_create_first_phase.IncidentCreateFirstPhase, 'incident_create_first_phase'),
     Route(r'/incident_save_form', incident_save_form.IncidentSaveForm, 'incident_save_form'),
@@ -229,6 +234,8 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_add_phase', incident_add_phase.IncidentAddPhase, 'incident_add_phase'),
     Route(r'/incident_edit', incident_edit.IncidentEdit, 'incident_edit'),
     Route(r'/incident_edit_phases', incident_edit_phases.IncidentEditPhases, 'incident_edit_phases'),
+    Route(r'/incident_edit_map_definition', incident_edit_map_definition.IncidentEditMapDefinition, 'incident_edit_map_definition'),
+    Route(r'/incident_edit_communications_definition', incident_edit_communications_definition.IncidentEditCommunicationsDefinition, 'incident_edit_communications_definition'),
 
     Route(r'/incident_create_definition_version', incident_create_definition_version.IncidentCreateDefinitionVersion, 'incident_create_definition_version'),
 

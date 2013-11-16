@@ -32,7 +32,7 @@ import random_password
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
-template = jinja_environment.get_template('/incident_definition.html')
+template = jinja_environment.get_template('/incident_definition_legacy.html')
 
 read_template = jinja_environment.get_template('/incident_definition_read.html')
 
@@ -41,9 +41,10 @@ CASE_LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", 
 def make_date_object(date_string):
   pass
 
-class IncidentDefinition(base.RequestHandler):
+class IncidentDefinitionLegacy(base.RequestHandler):
   def get(self):
     id = self.request.get("id")
+    events = event_db.Event.all()
     if id:
       incident_definition_object = incident_definition.IncidentDefinition.get_by_id(int(id))
       phases = json.loads(incident_definition_object.phases_json)
@@ -63,19 +64,25 @@ class IncidentDefinition(base.RequestHandler):
       data = {
 	"work_order_prefix": CASE_LABELS[count],
 	"current_date": current_date,
-	"form": form
+	"form": form,
+	"events": events
       }
       self.response.out.write(template.render(data))
 
   def post(self):
     data = incident_definition.IncidentDefinitionForm(self.request.POST)
     version = data.name.data
+    event_id = self.request.get("event_id")
+    this_event = None
+    if event_id:
+      this_event = event_db.Event.get_by_id(int(event_id))
+      data.name.data = this_event.name
+
     try:
       data.incident_lat.data = float(data.incident_lat.data)
       data.incident_lng.data = float(data.incident_lng.data)
     except:
       pass
-    #raise Exception(version)
     if not data.validate():
       self.response.out.write(template.render(
 	{
@@ -102,29 +109,19 @@ class IncidentDefinition(base.RequestHandler):
       local_admin_cell_phone = data.local_admin_cell_phone.data
       local_admin_password = data.local_admin_password.data
     
-      
-    
     
       incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
       start_date_object = datetime.strptime(cleanup_start_date, "%m/%d/%Y").date()
 
 
 
-      ### TODO
-      # Make this happen atomically
-	  
-      query_string = "SELECT * FROM Event"
-      events_list = db.GqlQuery(query_string)
-      count = events_list.count()
-      this_event = event_db.Event(name = incident_name,
-			  short_name = incident_short_name,
-			  case_label = data.work_order_prefix.data,
-			)
-      ten_minutes = 600
-      cache.PutAndCache(this_event, ten_minutes)
+      # TODO
+      # Get incident from incident id, save to inc_def below      
+      
       
       # add this version = incident_version
-      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = incident_name, short_name = incident_name.lower().replace(" ", "_"), timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = work_order_prefix, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key())
+      
+      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = this_event.name, short_name = this_event.short_name, timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = this_event.case_label, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key())
       inc_def.put()
 
       

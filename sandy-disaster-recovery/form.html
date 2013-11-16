@@ -58,37 +58,37 @@ var oFormObject = document.forms['form'];
 Object.keys(post_json).forEach(function(key) {
     var this_element = document.getElementById(key);
     var type = null;
-    try
-    {
-      var type = this_element.type;	
-      if (type == "text") {
-	this_element.value = post_json[key];
-      }
-      if (type == "textarea") {
-	this_element.value = post_json[key];
-      }
-      
-      if (type.indexOf("select") !== -1) {
-	this_element.value = post_json[key];
-      }
-      if (type == "checkbox") {
-        if (post_json[key] == "y") {
-	  this_element.checked = true;
-	}
-      }
-      if (type == "radio") {
-        console.log(post_json[key]);
-        console.log(this_element);
-	this_element.checked = true;
-	$(':radio[value=' + post_json[key] + '][id=' + key + ']').click();
-      }
-
-    }
-  catch(err)
-    {
-//       console.log("ERROR, ELEMENT = " + key + err + err.message);
-      
-    }
+//     try
+//     {
+//       var type = this_element.type;	
+//       if (type == "text") {
+// 	this_element.value = post_json[key];
+//       }
+//       if (type == "textarea") {
+// 	this_element.value = post_json[key];
+//       }
+//       
+//       if (type.indexOf("select") !== -1) {
+// 	this_element.value = post_json[key];
+//       }
+//       if (type == "checkbox") {
+//         if (post_json[key] == "y") {
+// 	  this_element.checked = true;
+// 	}
+//       }
+//       if (type == "radio") {
+//         console.log(post_json[key]);
+//         console.log(this_element);
+// 	this_element.checked = true;
+// 	$(':radio[value=' + post_json[key] + '][id=' + key + ']').click();
+//       }
+// 
+//     }
+//   catch(err)
+//     {
+// //       console.log("ERROR, ELEMENT = " + key + err + err.message);
+//       
+//     }
 
 //     console.log(key, post_json[key]);
 //     if (key == "name") {

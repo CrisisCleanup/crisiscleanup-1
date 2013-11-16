@@ -90,23 +90,73 @@ class IncidentDefinition(db.Model):
   ignore_validation = db.BooleanProperty()
   developer_mode = db.BooleanProperty()
   
+  notify_unfinished = db.IntegerProperty(required=False, default=14)
+  notify_on_new_orgs = db.BooleanProperty(required=False, default=False)
+  notify_contacts = db.BooleanProperty(required=False, default=False)
+  
 class IncidentPhaseForm(Form):
   phase_name = TextField('Phase Name', [wtforms.validators.Length(min = 1, max = 100,
       message = "Name must be between 1 and 100 characters")])
   description = TextAreaField('Description', [wtforms.validators.Length(min = 1, max = 100,
       message = "Name must be between 1 and 100 characters")])
+
+
+class AdvancedCommunicationsForm(Form):
+  notify_choices_array = [
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10),
+    (11, 11),
+    (12, 12),
+    (13, 13),
+    (14, 14),
+    (15, 15),
+    (16, 16),
+    (17, 17),
+    (18, 18),
+    (19, 19),
+    (20, 20),
+    (21, 21),
+  ]
+  notify_contacts = BooleanField("Notify All Contacts In Organization?", default=False)
+  notify_on_new_orgs = BooleanField("Notify organizations when new organizations join?", default=False)
+  notify_unfinished = wtforms.fields.SelectField("Notify when claimed sites are unchanged for", choices = notify_choices_array, coerce=int)
+  
+class AdvancedMapForm(Form):
+  zoom_choices_array = [
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10),
+    (11, 11),
+    (12, 12),
+  ]
+  organization_map_title = TextField('Organization Map Title', [wtforms.validators.Length(min = 1, max = 100,
+      message = "Name must be between 1 and 100 characters"), wtforms.validators.Optional()])
+  organization_map_url = TextField('Organization Map KML Link', [wtforms.validators.Length(min = 1, max = 100,
+      message = "Name must be between 1 and 100 characters"), wtforms.validators.Optional()])
+  organization_map_latitude = TextField('Organization Map Latitude', [wtforms.validators.NumberRange(min=-90, max=90, message="Latitude must be a number between -90 and 90")])
+  organization_map_longitude = TextField('Organization Map Longitude', [wtforms.validators.NumberRange(min=-180, max=180, message="Longitude must be a number between -180 and 180")])
+  organization_map_cluster = BooleanField("Employ Clustering", default=False)
+  organization_map_zoom = wtforms.fields.SelectField(choices = zoom_choices_array, coerce=int)
+
+  public_map_title = TextField('Public Map Title', [wtforms.validators.Length(min = 1, max = 100,
+      message = "Name must be between 1 and 100 characters"), wtforms.validators.Optional()])
+  public_map_url = TextField('Public Map KML Link', [wtforms.validators.Length(min = 1, max = 100,
+      message = "Name must be between 1 and 100 characters"), wtforms.validators.Optional()])
+  public_map_latitude = TextField('Public Map Latitude', [wtforms.validators.NumberRange(min=-90, max=90, message="Latitude must be a number between -90 and 90")])
+  public_map_longitude = TextField('Public Map Longitude', [wtforms.validators.NumberRange(min=-180, max=180, message="Longitude must be a number between -180 and 180")])
+  public_map_cluster = BooleanField("Employ Clustering", default=False)
+  public_map_zoom = wtforms.fields.SelectField(choices = zoom_choices_array, coerce=int)
+  
   
   
 class IncidentDefinitionForm(model_form(IncidentDefinition)):
-  #q = IncidentDefinition.all()
-  #q.filter("is_version =", True)
-  #versions = q.run()
-  #choices_array = [("-1", "Choose a Version")]    
-  #i = 0
-  #for v in versions:
-    #new_choice = (str(i), v.version)
-    #choices_array.push(new_choice)
-  #version = wtforms.fields.SelectField(choices = choices_array, default = 0)
+  phone_validator = wtforms.validators.Regexp(r'^\d+$', flags=0, message=u'Phone number. No letters allowed or other characters allowed.')
 
   name = TextField('Incident Name', [wtforms.validators.Length(min = 1, max = 100,
   message = "Name must be between 1 and 100 characters")])
@@ -139,11 +189,15 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   #ignore_validation = BooleanField("Ignore Validation", default=False)
   #developer_mode = BooleanField("Developer Mode", default=False)
   
-  local_admin_name = TextField('Local Admin Name')
-  local_admin_title = TextField('Local Admin Title')
-  local_admin_organization = TextField('Local Admin Organization')
-  local_admin_email = TextField('Local Admin Email')
-  local_admin_cell_phone = TextField('Local Admin Cell Phone')
+  local_admin_name = TextField('Local Admin Name', [wtforms.validators.Length(min = 1, max = 100,
+  message = "Local Admin Name must be between 1 and 100 characters")])
+  local_admin_title = TextField('Local Admin Title', [wtforms.validators.Length(min = 1, max = 100,
+  message = "Local Admin Title must be between 1 and 100 characters")])
+  local_admin_organization = TextField('Local Admin Organization', [wtforms.validators.Length(min = 1, max = 100,
+  message = "Local Admin Organization must be between 1 and 100 characters")])
+  local_admin_email = TextField('Local Admin Email', [wtforms.validators.Length(min = 1, max = 100,
+  message = "Local Admin Email must be between 1 and 100 characters")])
+  local_admin_cell_phone = TextField('Local Admin Cell Phone', [phone_validator])
   local_admin_password = TextField('Local Admin Password', [wtforms.validators.Regexp(r'([A-Za-z])+([0-9])+|([0-9])+([A-Za-z])+', flags=0, message=u'Password: Must contain at least one letter and at least one number')])
 
 

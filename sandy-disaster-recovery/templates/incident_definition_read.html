@@ -6,6 +6,17 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+$(function() {
+  $("#advanced_tab").hide();
+
+  $("#show_advanced_tab").click(function() {
+    $("#advanced_tab").show();
+  });
+
+
+});
+</script>
 {% endblock %}
 
 {% block login %}
@@ -40,14 +51,17 @@
     <a href="/incident_add_phase?id={{ incident_definition_object.key().id() }}">Add Phase</a> |
     <a href="/incident_edit_phases?id={{ incident_definition_object.key().id() }}">Edit Phases</a>
 
-
+<h3>Forms</h3>
 {% if phases %}
-  <h3>Forms</h3>
   {% for phase in phases %}
     <a href="/incident_form_creator?incident_short_name={{phase.incident_short_name}}&phase_id={{phase.phase_short_name}}">{{ phase.phase_name }}</a> |
   {% endfor %}
   <small>Click to edit/view</small>
+{% else %}
+<u>No Forms: Add a phase to initialize a form</u>
+
 {% endif %}
+<br>
 
 <br>
 <h3>Incident Information | <a href="/incident_edit?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
@@ -103,8 +117,73 @@
 </tr>
 </table>
 
-<h3><a href="#">Click Advanced For More</a></h3>
-<p>### ON CLICK ###</p>
-Explain what the advanced panel is for, it's defaults, and how to use it
+<h3><a href="#show_advanced_tab" id="show_advanced_tab">Click here for advanced options</a></h3>
+<div id="advanced_tab">
+<p><strong><u>These options are set by default. Changing them can greatly affect the performance of your app.</u></strong></p>
+
+<h3>Maps | <a href="/incident_edit_map_definition?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
+<h4>Organization Map</h4>	
+<table>
+<tr>
+  <td>Title</td>
+  <td>{{ incident_definition_object.organization_map_title }}</td>
+  <td>URL:</td>
+  <td>{{ incident_definition_object.organization_map_url }}</td>
+</tr>
+<tr>
+  <td>Clustering</td>
+  <td>{{ incident_definition_object.organization_map_cluster }}</td>
+  <td>Zoom:</td>
+  <td>{{ incident_definition_object.organization_map_zoom }}</td>
+</tr>
+<tr>
+  <td>Latitude</td>
+  <td>{{ incident_definition_object.organization_map_latitude }}</td>
+  <td>Longitude:</td>
+  <td>{{ incident_definition_object.organization_map_longitude }}</td>
+</tr>
+</table>
+<h4>Public Map</h4>	
+<table>
+<tr>
+  <td>Title</td>
+  <td>{{ incident_definition_object.public_map_title }}</td>
+  <td>URL:</td>
+  <td>{{ incident_definition_object.public_map_url }}</td>
+</tr>
+<tr>
+  <td>Clustering</td>
+  <td>{{ incident_definition_object.public_map_cluster }}</td>
+  <td>Zoom:</td>
+  <td>{{ incident_definition_object.public_map_zoom }}</td>
+</tr>
+<tr>
+  <td>Latitude</td>
+  <td>{{ incident_definition_object.public_map_latitude }}</td>
+  <td>Longitude:</td>
+  <td>{{ incident_definition_object.public_map_longitude }}</td>
+</tr>
+</table>
+<br>
+<h3>Communications | <a href="/incident_edit_communications_definition?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
+<table>
+<tr>
+  <td>Notify when claimed site is unfinished for this long:</td>
+  <td>{{ incident_definition_object.notify_unfinished }} days</td>
+</tr>
+<tr>
+  <td>Notify organizations when new organizations join?</td>
+  <td>{{ incident_definition_object.notify_on_new_orgs }}</td>
+</tr>
+<tr>
+  <td>Notify All Contacts in Organization?</td>
+  <td>{{ incident_definition_object.notify_contacts }}</td>
+</tr>
+
+</table>
+<br>
+<h3>Diplay Info | <a href="/incident_display_info_edit?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
+</div>
 {% endblock %}
+
 

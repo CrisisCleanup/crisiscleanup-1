@@ -29,16 +29,21 @@ from organization import Organization
 from export_bulk_handler import AbstractExportBulkHandler, AbstractExportBulkWorker
 
 
-def create_work_order_search_form(events, work_types, limit_orgs_to_event=None):
+def create_work_order_search_form(events, work_types, limiting_event=None):
     events_by_recency = sorted(events, key=lambda event: event.key().id(), reverse=True)
 
-    # determine orgs to include
-    if limit_orgs_to_event:
-        if limit_orgs_to_event.key() not in [e.key() for e in events]:
-            raise Exception("Event %s unavailable" % limit_orgs_to_event)
-        orgs = Organization.all().filter('incident', limit_orgs_to_event.key())
+    # determine orgs and work types to include
+    if limiting_event:
+        if limiting_event.key() not in [e.key() for e in events]:
+            raise Exception("Event %s unavailable" % limiting_event)
+        orgs = Organization.all().filter('incident', limiting_event.key())
+        work_types = [
+            site.work_type for site
+            in Query(Site, projection=['work_type'], distinct=True) \
+                .filter('event', limiting_event.key())
+            if site.work_type in work_types
+        ]
     else:
-        orgs = Organization.all()
         orgs = Organization.all().filter('incident in', [event for event in events])
 
     class WorkOrderSearchForm(Form):
@@ -139,15 +144,15 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
                     .filter('event', org.incident.key())
             ]
 
+        # construct search form, limiting by event if supplied
         try:
-            limit_orgs_to_event = event_db.Event.get(self.request.get('event'))
+            limiting_event = event_db.Event.get(self.request.get('event'))
         except:
-            limit_orgs_to_event = None
-
+            limiting_event = None
         WorkOrderSearchForm = create_work_order_search_form(
             events=events,
             work_types=work_types,
-            limit_orgs_to_event=limit_orgs_to_event
+            limiting_event=limiting_event
         )
         form = WorkOrderSearchForm(self.request.GET)
 

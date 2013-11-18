@@ -28,6 +28,7 @@ import key
 from models import incident_definition
 import event_db
 import cache
+import organization
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
@@ -64,17 +65,7 @@ class IncidentEdit(base.RequestHandler):
       form.incident_lng.data = float(form.incident_lng.data)
     except:
       pass
-    #raise Exception(form.incident.data)
-    
-    #incident_date = form.incident_date.data
-    #cleanup_start_date = form.cleanup_start_date.data
-    #cleanup_end_date = form.cleanup_end_date.data
-    #form.incident_date.data = datetime.strptime(incident_date, "%Y-%m-%d").date()
-    #form.cleanup_start_date.data = datetime.strptime(cleanup_start_date, "%Y-%m-%d").date()
-    #form.organization_map_latitude.data = float(form.incident_lat.data)
-    #form.organization_map_longitude.data = float(form.incident_lng.data)
-    #form.public_map_latitude.data = float(form.incident_lat.data)
-    #form.public_map_longitude.data = float(form.incident_lat.data)
+    form.local_admin_organization.data = long(form.local_admin_organization.data)
     if not form.validate():
       self.response.out.write(template.render(
 	{
@@ -85,53 +76,47 @@ class IncidentEdit(base.RequestHandler):
     else:
       form.incident_date.data = datetime.strptime(form.incident_date.data, "%Y-%m-%d").date()
       form.cleanup_start_date.data = datetime.strptime(form.cleanup_start_date.data, "%Y-%m-%d").date()
+      form.local_admin_organization.data = organization.Organization.get_by_id(form.local_admin_organization.data).key()
+      
+      event = incident.incident
+      event_changed = False
+      short_name = form.name.data.lower().replace(" ", "_")
+      if event.name != form.name.data:
+	event_changed = True
+	event.name = form.name.data
+	event.short_name = short_name
+      if event.case_label != form.work_order_prefix.data:
+	event_changed = True
+	event.case_label = form.work_order_prefix.data
+      if event_changed:
+	event.put()
+
       phases_json = incident.phases_json
       forms_json = incident.forms_json
-      short_name = incident.short_name
+      
+      org_lat = incident.organization_map_latitude
+      org_lng = incident.organization_map_longitude
+      
+      pub_lat = incident.public_map_latitude
+      pub_lng = incident.public_map_longitude
+      
+      original_lat = incident.incident_lat
+      original_lng = incident.incident_lng
       
       form.populate_obj(incident)
       incident.phases_json = phases_json
       incident.forms_json = forms_json
       incident.short_name = short_name
+
+      if form.incident_lat.data != original_lat:
+	incident.organization_map_latitude = form.incident_lat.data
+	incident.public_map_latitude = form.incident_lat.data
+      if form.incident_lng.data != original_lng:
+	incident.organization_map_longitude = form.incident_lng.data
+	incident.public_map_longitude = form.incident_lng.data
+
       incident.put()
       return self.redirect("/incident_definition?id=" + incident_id)
 
-    #incident.version = self.request.get("incident_version")
-    #incident.full_name = self.request.get("incident_full_name")
-    #incident.short_name = self.request.get("incident_short_name")
-    #incident.timezone = self.request.get("timezone")
-    #incident_date = self.request.get("incident_date")
-    #start_date = self.request.get("incident_start_date")
-    #end_date = self.request.get("incident_end_date")
-    #incident.work_order_prefix = self.request.get("work_order_prefix")
-    #incident.centroid_latitude = self.request.get("centroid_latitude")
-    #incident.centroid_longitude = self.request.get("centroid_longitude")
-    #incident.camera_latitude = self.request.get("camera_latitude")
-    #incident.camera_longitude = self.request.get("camera_longitude")
-    #incident.developer_mode = bool(self.request.get("developer_mode"))
-    #incident.ignore_validation = bool(self.request.get("ignore_validation"))
-    
-    #incident.local_admin_name = self.request.get("local_admin_name")
-    #incident.local_admin_title = self.request.get("local_admin_title")
-    #incident.local_admin_organization = self.request.get("local_admin_organization")
-    #incident.local_admin_email = self.request.get("local_admin_email")
-    #incident.local_admin_cell_phone = self.request.get("local_admin_cell_phone")
-    #incident.local_admin_password = self.request.get("local_admin_password") 
-  
-    #incident.public_map_title = self.request.get("public_map_title")
-    #incident.public_map_url = self.request.get("public_map_url")
-    #incident.public_map_cluster = bool(self.request.get("public_map_cluster"))
-    #incident.public_map_zoom = self.request.get("public_map_zoom")
-    
-    #incident.internal_map_title = self.request.get("internal_map_title")
-    #incident.internal_map_url = self.request.get("internal_map_url")
-    #incident.internal_map_cluster = bool(self.request.get("internal_map_cluster"))
-    #incident.internal_map_zoom = self.request.get("internal_map_zoom")
-  
-    ##incident.start_date = datetime.strptime(start_date, "%m-%d-%Y").date()
-    ##incident.end_date = datetime.strptime(end_date, "%m-%d-%Y").date()
-    ##incident.incident_date_object = datetime.strptime(incident_date, "%m-%d-%Y").date()
 
-    #incident.put()
-    
     

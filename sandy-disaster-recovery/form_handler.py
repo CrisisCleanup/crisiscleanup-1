@@ -124,10 +124,10 @@ class FormHandler(base.AuthenticatedHandler):
 
     ### SET VALIDATORS HERE
     optional_validator = wtforms.validators.Optional()
-    email_validator = wtforms.validators.Email(message=u'Invalid email aress.')
+    email_validator = wtforms.validators.Email(message=u'Invalid email address.')
     url_validator = wtforms.validators.URL(message=u'Invalid URL.')
     required_validator = wtforms.validators.Length(min = 1, max = 100,  message = "Required Field")
-    phone_validator = wtforms.validators.Regexp(r'^\d+$', flags=0, message=u'Phone number. No letters allowed or other characters allowed.')
+    phone_validator = wtforms.validators.Regexp(r'[^a-zA-Z]+$', flags=0, message=u'Phone number. No letters allowed.')
 
     q = db.Query(form_db.IncidentForm)
     q.filter("incident =", event.key())
@@ -273,7 +273,6 @@ class FormHandler(base.AuthenticatedHandler):
 	#raise Exception(phase_number)
       i += 1
     submit_button = "<button class='submit'>Submit</button>"
-
 
     string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number)
     single_site = single_site_template.render(

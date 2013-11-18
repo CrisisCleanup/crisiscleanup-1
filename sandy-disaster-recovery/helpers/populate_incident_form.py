@@ -89,7 +89,7 @@ def get_text_html(obj, string, default_value):
   return string
   
 def get_phase_html(obj, string):
-  string += '<input type="hidden" name="phase_id" value="' + obj["phase_id"] + '">'
+  string += '<input type="hidden" id="phase_id" name="phase_id" value="' + obj["phase_id"] + '">'
   return string
 
 def get_header_html(obj, string):

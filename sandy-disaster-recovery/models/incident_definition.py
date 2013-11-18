@@ -28,6 +28,9 @@ from google.appengine.ext.db import Query
 from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
 import cache
 
+import organization
+import event_db
+
 CASE_LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 def get_case_label():
   work_order_prefix = "Set from event_db"
@@ -51,7 +54,7 @@ class IncidentDefinition(db.Model):
   # removing versions until we know what will likely be inherited
   is_version = db.BooleanProperty()
   version = db.StringProperty(required=False)
-  incident = db.ReferenceProperty(required=False)
+  incident = db.ReferenceProperty(event_db.Event, 'incident')
   # ensure unique
   name = db.StringProperty(required=True)
   # ensure unique
@@ -68,7 +71,8 @@ class IncidentDefinition(db.Model):
   
   local_admin_name = db.StringProperty()
   local_admin_title = db.StringProperty()
-  local_admin_organization = db.StringProperty()
+  local_admin_organization = db.ReferenceProperty(organization.Organization, 'local_admin_organization')
+
   local_admin_email = db.StringProperty()
   local_admin_cell_phone = db.StringProperty()
   local_admin_password = db.StringProperty()
@@ -93,6 +97,8 @@ class IncidentDefinition(db.Model):
   notify_unfinished = db.IntegerProperty(required=False, default=14)
   notify_on_new_orgs = db.BooleanProperty(required=False, default=False)
   notify_contacts = db.BooleanProperty(required=False, default=False)
+  
+  is_version_one_legacy = db.BooleanProperty(required=True, default=False)
   
 class IncidentPhaseForm(Form):
   phase_name = TextField('Phase Name', [wtforms.validators.Length(min = 1, max = 100,
@@ -156,7 +162,19 @@ class AdvancedMapForm(Form):
   
   
 class IncidentDefinitionForm(model_form(IncidentDefinition)):
-  phone_validator = wtforms.validators.Regexp(r'^\d+$', flags=0, message=u'Phone number. No letters allowed or other characters allowed.')
+  organizations = organization.Organization.all()
+  
+  organizations_array = []
+  
+  for org in organizations:
+    if org.name != "Admin":
+
+      string_value = org.name + " | " + org.incident.name
+      obj = (org.key().id(), string_value)
+      organizations_array.append(obj)
+  
+  
+  phone_validator = wtforms.validators.Regexp(r'[^a-zA-Z]+$', flags=0, message=u'Phone number. No letters allowed.')
 
   name = TextField('Incident Name', [wtforms.validators.Length(min = 1, max = 100,
   message = "Name must be between 1 and 100 characters")])
@@ -193,10 +211,8 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   message = "Local Admin Name must be between 1 and 100 characters")])
   local_admin_title = TextField('Local Admin Title', [wtforms.validators.Length(min = 1, max = 100,
   message = "Local Admin Title must be between 1 and 100 characters")])
-  local_admin_organization = TextField('Local Admin Organization', [wtforms.validators.Length(min = 1, max = 100,
-  message = "Local Admin Organization must be between 1 and 100 characters")])
-  local_admin_email = TextField('Local Admin Email', [wtforms.validators.Length(min = 1, max = 100,
-  message = "Local Admin Email must be between 1 and 100 characters")])
+  local_admin_organization = wtforms.fields.SelectField("Organization (by Incident)", choices = organizations_array)
+  local_admin_email = TextField('Local Admin Email', [wtforms.validators.Email(message=u'Invalid email address.')])
   local_admin_cell_phone = TextField('Local Admin Cell Phone', [phone_validator])
   local_admin_password = TextField('Local Admin Password', [wtforms.validators.Regexp(r'([A-Za-z])+([0-9])+|([0-9])+([A-Za-z])+', flags=0, message=u'Password: Must contain at least one letter and at least one number')])
 

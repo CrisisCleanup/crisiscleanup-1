@@ -81,7 +81,7 @@ def create_work_order_search_form(events, work_types):
     return WorkOrderSearchForm
 
 
-def setup_and_query_from_form(org, event, form):
+def query_from_form(org, event, form):
     # start query based on admin type
     if org.is_global_admin:
         query = Site.all()
@@ -89,9 +89,6 @@ def setup_and_query_from_form(org, event, form):
         query = Site.all().filter('event', org.incident.key())
     else:
         raise Exception("Not an admin")
-
-    # validate form
-    form.validate()
 
     # if a local admin, filter to logged in event
     if org.is_local_admin:
@@ -140,7 +137,7 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
             events=events, work_types=work_types)
         form = WorkOrderSearchForm(self.request.GET)
 
-        query = setup_and_query_from_form(org, event, form)
+        query = query_from_form(org, event, form)
 
         # page using offset
         count = query.count(limit=1000000)
@@ -204,7 +201,7 @@ class AdminExportWorkOrdersBulkWorker(AbstractExportBulkWorker):
         WorkOrderSearchForm = create_work_order_search_form(
             events=events, work_types=work_types)
         form = WorkOrderSearchForm(post_data)
-        query = setup_and_query_from_form(org, event, form)
+        query = query_from_form(org, event, form)
         return query
 
     def filter_sites(self, fetched_sites):

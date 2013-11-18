@@ -69,7 +69,7 @@
 {% if count > 0 %}
   <div>
     {{ offset + 1}} to {{ offset + sites|length }} of {{ count }} work orders
-    <form id="export-form" method="POST" style="display: inline-block">
+    <form id="export-form" method="POST" style="display: inline-block; margin-bottom: 10px;">
       <div style="display: none">
         {{ form.offset }}
         {{ form.order }}
@@ -81,8 +81,8 @@
         {{ form.status() }}
         {{ form.per_page() }}
       </div>
-      <button id="export-results-btn" class="btn btn-primary ladda-button" data-style="expand-right">
-        <span class="ladda-label">Export Results</span>
+      <button id="export-all-results-btn" class="btn btn-sm btn-primary ladda-button" data-style="expand-right">
+        <span class="ladda-label">Export All Results</span>
       </button>
     </form>
   </div>
@@ -96,6 +96,9 @@
           data-field => sortable server-side
           Note: update indexes (index.yaml) upon adding more
         #}
+        <th style="text-align: center; vertical-align: middle;">
+          <input type="checkbox" class="checkbox-all">
+        </th>
         <th>Incident</th>
         <th>Case</th>
         <th data-field="name">Name</th>
@@ -104,13 +107,21 @@
         <th data-field="reported_by">Reported by</th>
         <th data-field="claimed_by">Claimed by</th>
         <th data-field="work_type">Work Type</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
       {% for site in sites %}
         <tr>
+          <td style="text-align: center; vertical-align: middle;">
+            <input type="checkbox" class="checkbox-site" data-site-id="{{ site.key().id() }}">
+          </td>
           <td>{{ site.event.name }}</td>
-          <td>{{ site.case_number }}</td>
+          <td>
+            <a href="/edit?id={{ site.key().id() }}">
+              {{ site.case_number }}
+            </a>
+          </td>
           <td>{{ site.name }}</td>
           <td>
             <a href="/edit?id={{ site.key().id() }}">
@@ -121,10 +132,60 @@
           <td>{{ site.reported_by.name }}</td>
           <td>{{ site.claimed_by.name }}</td>
           <td>{{ site.work_type }}</td>
+          <td>{{ site.status }}</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+
+  <div class="row">
+    <div class="col-md-2">
+      {% if prev_offset >=0 %}
+        <a 
+          class="btn btn-default"
+          href="#"
+          onclick="$('input[name=offset]').val('{{prev_offset}}').parent('form').submit(); return false;">
+          Prev
+        </a>
+      &nbsp;&nbsp;&nbsp;
+      {% endif %}
+      {% if next_offset %}
+        <a 
+          class="btn btn-default"
+          href="#"
+          onclick="$('input[name=offset]').val('{{next_offset}}').parent('form').submit(); return false;">
+          Next
+        </a>
+      {% endif %}
+    </div>
+    <div class="col-md-10">
+      <div class="pull-right">
+        <span>Bulk actions:</span>
+        <button class="btn btn-sm bulk-action-btn ladda-button" data-action="export" data-style="expand-right" disabled>
+          <span class="ladda-label">Export</span>
+        </button>
+        <button class="btn btn-sm bulk-action-btn" data-action="unclaim" disabled>Unclaim</button>
+        <span style="margin-left: 10px;">Org:</span>
+        <select id="select-bulk-org" class="form-control input-sm" style="display: inline; width: 100px">
+          {% for (val, label) in form.reporting_org.choices %}
+            <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-sm bulk-action-btn requires-org" data-action="claim" disabled>
+          Claim for
+        </button>
+        <span style="margin-left: 10px;">Status:</span>
+        <select id="select-bulk-status" class="form-control input-sm" style="display: inline; width: 100px">
+          {% for (val, label) in form.status.choices %}
+            <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-sm bulk-action-btn requires-status" data-action="set-status" disabled>
+          Set Status
+        </button>
+      </div>
+    </div>
+  </div>
 
 {% else %}
   {% set next_offset = None %}
@@ -135,20 +196,6 @@
   {% endif %}
 {% endif %}
 
-<div>
-  {% if prev_offset >=0 %}
-    <a href="#" onclick="$('input[name=offset]').val('{{prev_offset}}').parent('form').submit(); return false;">
-      Previous
-    </a>
-  &nbsp;&nbsp;&nbsp;
-  {% endif %}
-  {% if next_offset %}
-    <a href="#" onclick="$('input[name=offset]').val('{{next_offset}}').parent('form').submit(); return false;">
-      Next
-    </a>
-  {% endif %}
-</div>
-
 {% endblock %}
 
 {% block scripts %}
@@ -158,56 +205,6 @@ th[data-field] {
   cursor: pointer;
 }
 </style>
-<script src="/javascript/download_polling.js"></script>
-<script type="text/javascript">
-$(function() {
-
-$searchForm = $('form#search-form');
-$exportForm = $('form#export-form');
-
-$('th[data-field]').click(function(event) {
-  // flip or set the sort order
-  var orderField = $(this).attr('data-field');
-  if (orderField) {
-    var currentOrder = $('input[name=order]').val();
-    var newOrder = orderField != currentOrder ? orderField : '-' + orderField;
-    $('input[name=order]').val(newOrder).parent('form').submit();
-  }
-});
-
-
-$exportResultsButton = $('#export-results-btn');
-
-
-$exportResultsButton.click(function(event) {
-  event.preventDefault();
-  var laddaManager = Ladda.create(this);
-  laddaManager.start();
-  $exportResultsButton.attr('disabled', true);
-  $.ajax({
-    url: '/admin-export-work-orders-bulk',
-    type: 'POST',
-    data: $exportForm.serialize(),
-  }).done(function(data) {
-    pollForCSVDownload(
-      data.filename,
-      function() {
-        laddaManager.stop();
-        $exportResultsButton.attr('disabled', false)
-      }
-    );
-  });
-});
-
-
-/* reload page if event/incident select changed */
-
-$('select[name=event]').change(function() {
-  $searchForm.submit();
-  $searchForm.find('input,select,button').attr('disabled', true);
-});
-
-
-});
-</script>
+<script src="/javascript/download_polling.js" type="text/javascript"></script>
+<script src="/javascript/admin_view_work_orders.js" type="text/javascript"></script>
 {% endblock %}

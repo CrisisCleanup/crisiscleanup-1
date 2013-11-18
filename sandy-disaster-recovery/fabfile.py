@@ -29,6 +29,7 @@ try:
         path for path in GAE_APPCFG_POSSIBLE_LOCATIONS
         if os.path.exists(path)
     ).next()
+    _sdk_path = os.path.join(*os.path.split(_appcfg_path)[:-1])
 except StopIteration:
     abort('appcfg.py not found - edit GAE_APPCFG_POSSIBLE_LOCATIONS')
 
@@ -38,6 +39,7 @@ except StopIteration:
 env.master_branch = "master"
 env.default_gae_app_version = "live"
 env.appcfg = os.path.realpath(_appcfg_path)
+env.sdk_path = os.path.realpath(_sdk_path)
 
 
 # define apps
@@ -339,3 +341,10 @@ def write_local_app_yaml():
             "# (edit %s instead)\n\n" % APP_YAML_TEMPLATE_FILENAME
         )
     )
+
+
+@task
+def dev():
+    " Start development server. "
+    local("%s --high_replication --require_indexes ." %
+        os.path.join(env.sdk_path, 'dev_appserver.py'))

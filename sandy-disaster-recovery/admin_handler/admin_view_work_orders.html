@@ -1,0 +1,213 @@
+{% extends "base_template.html" %}
+
+{% block main_title %}
+<h2>Work Orders</h2>
+{% endblock %}
+
+{% block main_content %}
+
+<form id="search-form" method="GET" class="form-horizontal" style="margin-bottom: 15px;" role="form">
+
+  {{ form.offset }}
+  {{ form.order }}
+  
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        {{ form.event.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.event(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.query.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.query(class="form-control", placeholder="Not yet implemented", disabled=True) }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.reporting_org.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.reporting_org(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.claiming_org.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.claiming_org(class="form-control") }}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        {{ form.work_type.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.work_type(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.status.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.status(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.per_page.label(class="control-label col-sm-3") }}
+        <div class="col-sm-9">
+          {{ form.per_page(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% if count > 0 %}
+  <div>
+    {{ offset + 1}} to {{ offset + sites|length }} of {{ count }} work orders
+    <form id="export-form" method="POST" style="display: inline-block">
+      <div style="display: none">
+        {{ form.offset }}
+        {{ form.order }}
+        {{ form.event() }}
+        {{ form.query(placeholder="Not yet implemented", disabled=True) }}
+        {{ form.reporting_org() }}
+        {{ form.claiming_org() }}
+        {{ form.work_type() }}
+        {{ form.status() }}
+        {{ form.per_page() }}
+      </div>
+      <button id="export-results-btn" class="btn btn-primary ladda-button" data-style="expand-right">
+        <span class="ladda-label">Export Results</span>
+      </button>
+    </form>
+  </div>
+{% endif %}
+
+{% if sites|length > 0 %}
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        {#
+          data-field => sortable server-side
+          Note: update indexes (index.yaml) upon adding more
+        #}
+        <th>Incident</th>
+        <th>Case</th>
+        <th data-field="name">Name</th>
+        <th>Address</th>
+        <th data-field="request_date">Date</th>
+        <th data-field="reported_by">Reported by</th>
+        <th data-field="claimed_by">Claimed by</th>
+        <th data-field="work_type">Work Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for site in sites %}
+        <tr>
+          <td>{{ site.event.name }}</td>
+          <td>{{ site.case_number }}</td>
+          <td>{{ site.name }}</td>
+          <td>
+            <a href="/edit?id={{ site.key().id() }}">
+              {{ site.full_address }}
+            </a>
+          </td>
+          <td nowrap>{{ site.request_date.strftime('%Y-%m-%d') }}</td>
+          <td>{{ site.reported_by.name }}</td>
+          <td>{{ site.claimed_by.name }}</td>
+          <td>{{ site.work_type }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% else %}
+  {% set next_offset = None %}
+  {% if count > 0 %}
+    <p>No more work orders found.</p>
+  {% else %}
+    <p>No work orders found.</p>
+  {% endif %}
+{% endif %}
+
+<div>
+  {% if prev_offset >=0 %}
+    <a href="#" onclick="$('input[name=offset]').val('{{prev_offset}}').parent('form').submit(); return false;">
+      Previous
+    </a>
+  &nbsp;&nbsp;&nbsp;
+  {% endif %}
+  {% if next_offset %}
+    <a href="#" onclick="$('input[name=offset]').val('{{next_offset}}').parent('form').submit(); return false;">
+      Next
+    </a>
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<style type="text/css">
+/* set cursor for sortable-fields */
+th[data-field] {
+  cursor: pointer;
+}
+</style>
+<script src="/javascript/download_polling.js"></script>
+<script type="text/javascript">
+$(function() {
+
+$searchForm = $('form#search-form');
+$exportForm = $('form#export-form');
+
+$('th[data-field]').click(function(event) {
+  // flip or set the sort order
+  var orderField = $(this).attr('data-field');
+  if (orderField) {
+    var currentOrder = $('input[name=order]').val();
+    var newOrder = orderField != currentOrder ? orderField : '-' + orderField;
+    $('input[name=order]').val(newOrder).parent('form').submit();
+  }
+});
+
+
+$exportResultsButton = $('#export-results-btn');
+
+
+$exportResultsButton.click(function(event) {
+  event.preventDefault();
+  var laddaManager = Ladda.create(this);
+  laddaManager.start();
+  $exportResultsButton.attr('disabled', true);
+  $.ajax({
+    url: '/admin-export-work-orders-bulk',
+    type: 'POST',
+    data: $exportForm.serialize(),
+  }).done(function(data) {
+    pollForCSVDownload(
+      data.filename,
+      function() {
+        laddaManager.stop();
+        $exportResultsButton.attr('disabled', false)
+      }
+    );
+  });
+});
+
+
+/* reload page if event/incident select changed */
+
+$('select[name=event]').change(function() {
+  $searchForm.submit();
+  $searchForm.find('input,select,button').attr('disabled', true);
+});
+
+
+});
+</script>
+{% endblock %}

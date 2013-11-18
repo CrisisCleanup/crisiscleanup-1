@@ -108,7 +108,7 @@ class AdminHandler(base.AuthenticatedHandler):
                     organization=this_organization.key(),
                 )
                 primary_contact_db.PutAndCache(contact, ten_minutes)
-                self.redirect("/admin?message=Contact Created")
+                self.redirect("/admin-create-contact?selected_org=%s&message=Contact Created" % this_organization.key().id())
                 return
             else:
                 #query_string = "SELECT * FROM Event"

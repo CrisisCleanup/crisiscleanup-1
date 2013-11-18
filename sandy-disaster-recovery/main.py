@@ -74,25 +74,30 @@ from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
 from admin_handler import admin_all_organizations_handler
-from admin_handler import admin_inactive_organizations_handler
 from admin_handler import admin_create_admin_handler
 from admin_handler import admin_create_contact_handler
 from admin_handler import admin_display_contacts_handler
 from admin_handler import admin_single_contact_handler
 from admin_handler import admin_create_incident_handler
+from admin_handler import admin_view_incidents_handler
+from admin_handler import admin_approve_incidents_handler
+from admin_handler import admin_printer_templates_handler
 from admin_handler import admin_see_admins_handler
 from admin_handler import admin_incident_add_admin_handler
 from admin_handler import admin_make_admin_handler
+from admin_handler import admin_view_work_orders_handler
+from admin_handler import admin_fix_errors_handler
+from admin_handler import admin_social_media_handler
+from admin_handler import admin_website_alerts_handler
 from admin_handler import admin_import_csv_handler
 from admin_handler import admin_edit_pages_handler
-
-
-from admin_handler import admin_single_organization_handler as admin_single_organization_handler
-from admin_handler import admin_edit_organization_handler as admin_edit_organization_handler
-from admin_handler import admin_edit_contact_handler as admin_edit_contact_handler
-from admin_handler import admin_import_contacts_handler as admin_import_contacts_handler
-
+from admin_handler import admin_single_organization_handler
+from admin_handler import admin_edit_organization_handler
+from admin_handler import admin_edit_contact_handler
+from admin_handler import admin_validation_questions_handler
+from admin_handler import admin_import_contacts_handler
 from admin_handler import admin_create_incident_form_handler
+from admin_handler import admin_website_settings_handler
 
 import form_ajax_handler
 import update_csv_handler
@@ -163,14 +168,15 @@ app = webapp2.WSGIApplication([
     Route(r'/problems', problem_handler.ProblemHandler, 'problems'),
     Route(r'/sites', sites_handler.SitesHandler, 'sites'),
     Route(r'/signup', new_organization_handler.NewOrganizationHandler, 'new_organization'),
-    Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'),
     Route(r'/admin', admin_handler.AdminHandler, 'admin_handler'),
+    Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'),
+    Route(r'/admin-view-incidents', admin_view_incidents_handler.AdminViewIncidentsHandler, 'admin-view-incidents'),
+    Route(r'/admin-approve-incidents', admin_approve_incidents_handler.AdminApproveIncidentsHandler, 'admin-approve-incidents'),
+    Route(r'/admin-printer-templates', admin_printer_templates_handler.AdminPrinterTemplatesHandler, 'admin-printer-templates'),
     Route(r'/admin-create-organization', admin_create_organization_handler.AdminHandler, 'admin_create_organization_handler'),
     Route(r'/admin-new-organization', admin_new_organization_handler.AdminHandler, 'admin_new_organization_handler'),
     Route(r'/admin-organization-requests', admin_organization_requests_handler.AdminHandler, 'admin_organization_requests_handler'),
-    Route(r'/admin-all-organizations', admin_all_organizations_handler.AdminHandler, 'admin_all_organizations_handler'),
-    Route(r'/admin-all-organizations', admin_all_organizations_handler.AdminHandler, 'admin_all_organizations_handler'),
-    Route(r'/admin-inactive-organizations', admin_inactive_organizations_handler.AdminHandler, 'admin_all_organizations_handler'),
+    Route(r'/admin-all-organizations', admin_all_organizations_handler.AdminAllOrgsHandler, 'admin_all_organizations_handler'),
     Route(r'/admin-create-admin', admin_create_admin_handler.AdminHandler, 'admin_create_admin_handler'),
     Route(r'/admin-create-contact', admin_create_contact_handler.AdminHandler, 'admin_create_contact_handler'),
     Route(r'/admin-display-contacts', admin_display_contacts_handler.AdminHandler, 'admin_display_contacts_handler'),
@@ -178,9 +184,16 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-single-organization', admin_single_organization_handler.AdminHandler, 'admin_single_organization_handler'),
     Route(r'/admin-edit-organization', admin_edit_organization_handler.AdminHandler, 'admin_edit_organization_handler'),
     Route(r'/admin-edit-contact', admin_edit_contact_handler.AdminHandler, 'admin_edit_contact_handler'),
+    Route(r'/admin-validation-questions', admin_validation_questions_handler.AdminValidationQuestionsHandler, 'admin_validation_questions'),
     Route(r'/admin-see-admins', admin_see_admins_handler.AdminHandler, 'admin_see_admins_handler'),
     Route(r'/admin-incident-add-admin', admin_incident_add_admin_handler.AdminHandler, 'admin_incident_add_admin_handler'),
     Route(r'/admin-make-admin', admin_make_admin_handler.AdminHandler, 'admin_make_admin_handler'),
+    Route(r'/admin-view-work-orders', admin_view_work_orders_handler.AdminViewWorkOrdersHandler, 'admin_view_work_orders'),
+    Route(r'/admin-export-work-orders-bulk', admin_view_work_orders_handler.AdminExportWorkOrdersBulkHandler, 'admin_export_work_orders_bulk'),
+    Route(r'/admin-export-bulk-worker', admin_view_work_orders_handler.AdminExportWorkOrdersBulkWorker, 'admin_export_bulk_worker'),
+    Route(r'/admin-fix-errors', admin_fix_errors_handler.AdminFixErrorsHandler, 'admin_fix_errors'),
+    Route(r'/admin-social-media', admin_social_media_handler.AdminSocialMediaHandler, 'admin_social_media'),
+    Route(r'/admin-website-alerts', admin_website_alerts_handler.AdminWebsiteAlertsHandler, 'admin_website_alerts'),
     Route(r'/admin-import-contacts', admin_import_contacts_handler.ImportContactsHandler, 'admin_import_contacts_handler'),
     Route(r'/admin-import-csv', admin_import_csv_handler.ImportCSVHandler, 'admin_import_csv_handler'),
     Route(r'/admin-import-csv/template.csv', admin_import_csv_handler.DownloadCSVTemplateHandler, 'admin_import_csv_handler'),
@@ -189,7 +202,6 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-edit-pages', admin_edit_pages_handler.AdminEditPagesHandler, 'admin_edit_pages_handler'),
     Route(r'/admin-edit-pages/download/defaults', admin_edit_pages_handler.AdminDownloadPageBlocks, 'admin_edit_pages_handler'),
     Route(r'/admin-create-incident-csv', admin_create_incident_csv_handler.AdminCreateIncidentCSVHandler, 'admin_edit_pages_handler'),
-
     Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'),
     Route(r'/import-co-flood-handler', import_co_handler.ImportCOHandler, 'import-co-flood'),
 
@@ -213,7 +225,6 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
-
-    ## DISABLED ## Route(r'/test-email', messaging.EmailTestHandler, 'email_test_handler'),
+    Route(r'/admin-website-settings', admin_website_settings_handler.AdminWebsiteSettingsHandler, 'admin_website_settings'),
     
 ], debug=True)

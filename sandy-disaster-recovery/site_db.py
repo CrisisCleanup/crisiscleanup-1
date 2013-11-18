@@ -174,6 +174,15 @@ class Site(db.Expando):
       ],
       default="Open, unassigned")
 
+  @property
+  def full_address(self):
+    return ", ".join(
+      map(
+        lambda field: field if field else '',
+        [self.address, self.city, self.county, self.state, self.zip_code]
+      )
+    )
+
   def put(self, **kwargs):
       " On-save "
       # set blurred co-ordinates

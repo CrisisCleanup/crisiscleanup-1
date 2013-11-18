@@ -1,5 +1,378 @@
 indexes:
 
+# manually specified indexes on Site for WorkOrderSearchForm and similar
+# to use 'zigzag merging' and avoid combinatorial definition of indexes
+#
+# Structure: for all filterable fields f, for all sort orders o,
+# create index for (f, o ascending), (f, o descending)
+#
+# (for rationale, see https://developers.google.com/appengine/articles/indexselection )
+
+- kind: Site
+  properties:
+  - name: event
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: claimed_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: work_type
+    direction: desc
+
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: request_date
+    direction: desc
+
+#- kind: Site
+#  properties:
+#  - name: reported_by
+#  - name: reported_by
+#    direction: asc
+#
+#- kind: Site
+#  properties:
+#  - name: reported_by
+#  - name: reported_by
+#    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: claimed_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: work_type
+    direction: desc
+
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: reported_by
+    direction: desc
+
+#- kind: Site
+#  properties:
+#  - name: claimed_by
+#  - name: claimed_by
+#    direction: asc
+#
+#- kind: Site
+#  properties:
+#  - name: claimed_by
+#  - name: claimed_by
+#    direction: desc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: work_type
+    direction: desc
+
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: reported_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: claimed_by
+    direction: desc
+
+#- kind: Site
+#  properties:
+#  - name: work_type
+#  - name: work_type
+#    direction: asc
+#
+#- kind: Site
+#  properties:
+#  - name: work_type
+#  - name: work_type
+#    direction: desc
+#
+
+- kind: Site
+  properties:
+  - name: status
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: reported_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: claimed_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: work_type
+    direction: desc
+
+
 # AUTOGENERATED
 
 # This index.yaml is automatically updated whenever the dev_appserver
@@ -67,16 +440,6 @@ indexes:
   - name: latitude
   - name: longitude
   - name: work_type
-
-- kind: Site
-  properties:
-  - name: event
-  - name: name
-
-- kind: Site
-  properties:
-  - name: event
-  - name: request_date
 
 - kind: Site
   properties:

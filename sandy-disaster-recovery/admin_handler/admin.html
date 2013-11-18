@@ -3,6 +3,13 @@
 <h2>Admin Home</h2>
 {% endblock %}
 {% block main_content%}
+
+{% if not message %}
+  <p>Welcome to the administration interface.</p>
+{% else %}
+  <p><strong>{{ message }}</strong></p>
+{% endif %}
+
 {% if display_contacts %}
 <br/><br/>
 <br/>

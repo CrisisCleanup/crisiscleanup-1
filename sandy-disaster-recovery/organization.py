@@ -18,7 +18,7 @@ from google.appengine.ext import db
 
 import wtforms
 from wtforms.ext.appengine.db import model_form
-from wtforms import TextField, validators, SelectField
+from wtforms import TextField, validators, SelectField, DateTimeField
 from google.appengine.api import memcache
 from google.appengine.ext.db import to_dict
 
@@ -76,6 +76,14 @@ class Organization(db.Expando):
   #OTHER
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
   timestamp_login = db.DateTimeProperty(required=False)
+
+  @property
+  def is_global_admin(self):
+      return self.name == "Admin"
+
+  @property
+  def is_local_admin(self):
+      return self.is_admin and not self.is_global_admin
 
   @property
   def primary_contacts(self):
@@ -221,7 +229,11 @@ class OrganizationForm(
         OrganizationValidatorsMixIn
     ): 
     """ All fields, for admin use. """
-    pass
+
+    timestamp_login = DateTimeField(
+        "Last logged in",
+        [validators.optional()]
+    )
 
 
 class CreateOrganizationForm(OrganizationForm):

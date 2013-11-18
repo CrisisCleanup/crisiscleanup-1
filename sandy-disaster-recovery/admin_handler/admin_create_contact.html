@@ -5,6 +5,11 @@
 
 {% block main_content %}
 
+{% if message %}
+  <p><strong>{{ message }}</strong></p>
+  <br>
+{% endif %}
+
 <form method="POST" action="/admin">
   {% if errors %}
   <section id="errors">
@@ -22,12 +27,22 @@
     <article>
   </section>
   {% endif %}
-  <p>Choose organization</p>
-  <select name="choose_organization">
-  {% for result in organization_list %}
-  <option value="{{result.key().id()}}">{{result.name}}</option>
-  {% endfor %}
-  </select><br/><br/>
+
+  {% if selected_org %}
+    <p>Organization: {{ selected_org.name }}
+    <input type="hidden" name="choose_organization" value="{{ selected_org.key().id() }}">
+  {% else %}
+    <p>Choose organization:</p>
+    <select name="choose_organization">
+      {% for o in organization_list %}
+        <option value="{{ o.key().id() }}">
+          {{ o.name }}
+        </option>
+      {% endfor %}
+    </select>
+  {% endif %}
+  
+  <br/><br/>
 
   <table>
     <tr>
@@ -57,7 +72,7 @@
   </p>
 
   <input type=hidden name=create_contact value=True>
-  <input type=submit value="Submit Edit">
+  <input type=submit value="Create Contact">
 
 </form>
 

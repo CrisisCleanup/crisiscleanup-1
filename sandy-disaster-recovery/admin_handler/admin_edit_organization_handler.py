@@ -44,29 +44,24 @@ class AdminHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
             
-        if self.request.get("organization"):
-            try:
-                id = int(self.request.get("organization"))
-            except:
-                self.redirect("/admin")
+        try:
+            org_by_id = organization.Organization.get_by_id(
+                int(self.request.get("organization"))
+            )
+        except:
+            self.abort(404)
+            
+        # bail if not a relevant local admin
+        if local_admin:
+            if not org.incident.key() == org_by_id.incident.key():
+                self.redirect("/")
                 return
-                
-            org_by_id = organization.Organization.get_by_id(id)
-                
-            # bail if not a relevant local admin
-            if local_admin:
-                if not org.incident.key() == org_by_id.incident.key():
-                    self.redirect("/")
-                    return
 
-            form = organization.OrganizationForm(None, org_by_id)
-            self.response.out.write(template.render({
-                "organization": org_by_id,
-                "form": form,
-            }))
-            return
-        else:
-            self.redirect("/admin")
+        form = organization.OrganizationForm(None, org_by_id)
+        self.response.out.write(template.render({
+            "organization": org_by_id,
+            "form": form,
+        }))
 
     def AuthenticatedPost(self, org, event):
         global_admin = False
@@ -80,8 +75,13 @@ class AdminHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
 
-        org_id = int(self.request.get("org_id"))
-        org_by_id = organization.Organization.get_by_id(org_id)
+        try:
+            org_by_id = organization.Organization.get_by_id(
+                int(self.request.get("organization"))
+            )
+        except:
+            self.abort(404)
+
         form = organization.OrganizationForm(self.request.POST)
 
         if form.validate() and not form.errors:

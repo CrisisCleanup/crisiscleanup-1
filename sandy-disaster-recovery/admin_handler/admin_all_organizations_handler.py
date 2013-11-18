@@ -15,52 +15,70 @@
 # limitations under the License.
 #
 # System libraries.
-import jinja2
-import os
+import datetime
+from google.appengine.ext.db import Key
+from wtforms import Form, TextField, IntegerField, SelectField
 
 # Local libraries.
-import base
-
+from admin_base import AdminAuthenticatedHandler
+import event_db
 import organization
 
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('admin_all_organizations.html')
-GLOBAL_ADMIN_NAME = "Admin"
+
+class OrganizationFilterForm(Form):
+
+    def _ternary_coerce(val):
+        return {'1': True, '0': False}.get(val, None)
+
+    event = SelectField(default='')
+    name = TextField()
+    active = SelectField(
+        choices=[('', ''), ('1', 'Yes'), ('0', 'No')],
+        coerce=_ternary_coerce
+    )
+    verified = SelectField(
+        choices=[('', ''), ('1', 'Yes'), ('0', 'No')],
+        coerce=_ternary_coerce
+    )
+    logged_in_days = IntegerField()
 
 
-class AdminHandler(base.AuthenticatedHandler):
+class AdminAllOrgsHandler(AdminAuthenticatedHandler):
+
+    template = 'admin_all_organizations.html'
 
     def AuthenticatedGet(self, org, event):
-        global_admin = False
-        local_admin = False
-        
-        if org.name == GLOBAL_ADMIN_NAME:
-            global_admin = True
-        if org.is_admin and global_admin == False:
-            local_admin = True
-            
-        if global_admin == False and local_admin == False:
-            self.redirect("/")
-            return
-            
-        # get relevant organizations
-        if global_admin:
+        form = OrganizationFilterForm(self.request.GET)
+
+        # get relevant organizations and incidents
+        if org.is_global_admin:
             query = organization.Organization.all()
-            
-        if local_admin:
-            query = organization.Organization.all().filter('incident =', org.incident.key())
+            events = event_db.Event.all()
+        elif org.is_local_admin:
+            query = organization.Organization.all().filter('incident', org.incident.key())
+            events = [event_db.Event.get(org.incident.key())]
 
-        # filter on active/inactive
-        if self.request.get('filter') == 'active':
-            query.filter('is_active', True)
-        elif self.request.get('filter') == 'inactive':
-            query.filter('is_active', False)
+        form.event.choices = [('', '')] + [
+            (e.key(), e.name) for e in events
+        ]
 
-        self.response.out.write(template.render(
-        {
-            "global_admin": global_admin,
-            "org_query": query,
-            "url": "/admin-single-organization?organization=",
-        }))
-        return
+        # apply filters
+        if form.event.data:
+            query.filter('incident', Key(form.event.data))
+        if form.active.data is not None:
+            query.filter('is_active', form.active.data)
+        if form.verified.data is not None:
+            query.filter('is_verified', form.verified.data)
+        if form.logged_in_days.data is not None:
+            earliest_date = (
+                datetime.datetime.utcnow() - 
+                datetime.timedelta(days=int(form.logged_in_days.data))
+            )
+            query.filter('timestamp_login >=', earliest_date)
+
+        self.render(
+            form=form,
+            org_query=query,
+            url="/admin-single-organization?organization=",
+            global_admin=org.is_global_admin,
+        )

@@ -178,7 +178,6 @@ def ok_to_deploy(app_defn, tag):
         working_directory_clean(app_defn) and
         on_master_branch(app_defn) and
         check_specified_commitish_pushed_to_remote(app_defn, tag)
-        ## current_branch_pushed_to_remote(app_defn)
     )
 
 

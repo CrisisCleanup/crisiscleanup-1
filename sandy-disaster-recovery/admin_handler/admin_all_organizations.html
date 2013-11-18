@@ -5,14 +5,48 @@
 
 {% block main_content %}
 
-<p>
-  [<a href="?">All</a>]
-  [<a href="?filter=active">Active only</a>]
-  [<a href="?filter=inactive">Inactive only</a>]
-</p>
+<form>
+  {% if form.event.choices|length > 2 %}
+    {{ form.event.label }} {{ form.event }}
+  {% endif %}
+  {{ form.name.label }} {{ form.name(placeholder="To be implemented", disabled=True) }}
+  {{ form.active.label }} {{ form.active() }}
+  {{ form.verified.label }} {{ form.verified() }}
+  {{ form.logged_in_days.label }} {{ form.logged_in_days(size=3) }}
+  <button type="submit">Search</button>
+</form>
 
-{% for result in org_query %}
-  <p><a href="{{url}}{{ result.key().id()}}">{{ result.name }}</a></p>
-{% endfor %}
+<br>
+
+<table class="table sortable">
+  <thead>
+    <tr>
+      <th>Incident</th>
+      <th>Org Name</th>
+      <th>Last Login</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for org in org_query %}
+      <tr>
+        <td>
+          {{ org.incident.name }}
+        </td>
+        <td>
+          <a href="{{ url }}{{ org.key().id()}}">
+            {{ org.name }}
+          </a>
+        </td>
+        <td>
+          {{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }}
+        </td>
+      </tr>
+    {% else %}
+      <tr>
+        <td colspan="2">No orgs found.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock %}

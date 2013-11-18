@@ -199,6 +199,15 @@ $exportResultsButton.click(function(event) {
   });
 });
 
+
+/* reload page if event/incident select changed */
+
+$('select[name=event]').change(function() {
+  $searchForm.submit();
+  $searchForm.find('input,select,button').attr('disabled', true);
+});
+
+
 });
 </script>
 {% endblock %}

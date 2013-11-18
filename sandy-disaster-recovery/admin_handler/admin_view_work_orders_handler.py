@@ -33,6 +33,7 @@ def create_work_order_search_form(events, work_types):
 
     # filter orgs on selected events
     orgs = Organization.all().filter('incident in', [event for event in events])
+    events_by_recency = sorted(events, key=lambda event: event.key().id(), reverse=True)
 
     class WorkOrderSearchForm(Form):
 
@@ -40,11 +41,9 @@ def create_work_order_search_form(events, work_types):
         order = HiddenField()
         event = SelectField(
             choices=[
-                (e.key(), e.name) for e in 
-                # most recent first
-                sorted(events, key=lambda event: event.key().id(), reverse=True)
+                (e.key(), e.name) for e in events_by_recency
             ],
-            default=events[0].key()
+            default=events_by_recency[0]
         )
         query = TextField("Search")
         reporting_org = SelectField(

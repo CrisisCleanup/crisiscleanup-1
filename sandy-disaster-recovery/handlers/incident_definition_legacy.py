@@ -29,6 +29,7 @@ from models import incident_definition
 import event_db
 import cache
 import random_password
+import organization
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
@@ -83,6 +84,8 @@ class IncidentDefinitionLegacy(base.RequestHandler):
       data.incident_lng.data = float(data.incident_lng.data)
     except:
       pass
+    
+    data.local_admin_organization.data = long(data.local_admin_organization.data)
     if not data.validate():
       self.response.out.write(template.render(
 	{
@@ -113,6 +116,7 @@ class IncidentDefinitionLegacy(base.RequestHandler):
       incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
       start_date_object = datetime.strptime(cleanup_start_date, "%m/%d/%Y").date()
 
+      org = organization.Organization.get_by_id(local_admin_organization)
 
 
       # TODO
@@ -121,7 +125,7 @@ class IncidentDefinitionLegacy(base.RequestHandler):
       
       # add this version = incident_version
       
-      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = this_event.name, short_name = this_event.short_name, timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = this_event.case_label, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key())
+      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = this_event.name, short_name = this_event.short_name, timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = this_event.case_label, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = org.key(), local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key(), is_version_one_legacy = True)
       inc_def.put()
 
       

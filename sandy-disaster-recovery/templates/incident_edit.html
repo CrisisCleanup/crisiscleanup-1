@@ -48,21 +48,22 @@
 <h3>Basic Information</h3>
 <form action="/incident_edit" method="POST">
 <input type="hidden" name="incident_id" value="{{incident.key().id()}}">
-<div>{{ form.name.label }}: {{ form.name}}</div>
+<div>{{ form.name.label }}: {{ form.name(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('name').readOnly=false; document.getElementById('name').focus(); return false;">edit</a>)</small></div>
 <div>{{ form.location.label }}: {{ form.location}}</div>
 <div>{{ form.timezone.label }}: {{ form.timezone }}</div>
 <div>{{ form.incident_date.label }}: {{ form.incident_date}}</div>
 <div>{{ form.cleanup_start_date.label }}: {{ form.cleanup_start_date}}</div>
-<div>{{ form.work_order_prefix.label }}: {{ form.work_order_prefix }}</div>
-<div>{{ form.incident_lat.label }}: {{ form.incident_lat }}</div>
-<div>{{ form.incident_lng.label }}: {{ form.incident_lng }}</div>
+<div>{{ form.work_order_prefix.label }}: {{ form.work_order_prefix(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('work_order_prefix').readOnly=false; document.getElementById('work_order_prefix').focus(); return false;">edit</a>)</small></div>
+<div><small>(Latitude and longitude updates will propogate across the advanced panel as well. If you are not using the advanced panel, please ignore.)</small></div>
+<div>{{ form.incident_lat.label }}: {{ form.incident_lat(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('incident_lat').readOnly=false; document.getElementById('incident_lat').focus(); return false;">edit</a>)</small></div>
+<div>{{ form.incident_lng.label }}: {{ form.incident_lng(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('incident_lng').readOnly=false; document.getElementById('incident_lng').focus(); return false;">edit</a>)</small></div>
 <h3>Local Admin Information</h3>
 <div>{{ form.local_admin_name.label }}: {{ form.local_admin_name }}</div>
 <div>{{ form.local_admin_title.label }}: {{ form.local_admin_title }}</div>
 <div>{{ form.local_admin_organization.label }}: {{ form.local_admin_organization }}</div>
 <div>{{ form.local_admin_email.label }}: {{ form.local_admin_email }}</div>
 <div>{{ form.local_admin_cell_phone.label }}: {{ form.local_admin_cell_phone }}</div>
-<div>{{ form.local_admin_password.label }}: {{ form.local_admin_password }}</div>
+<div>{{ form.local_admin_password.label }}: {{ form.local_admin_password(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('local_admin_password').readOnly=false; document.getElementById('local_admin_password').focus(); return false;">edit</a>)</small></div>
 
 
 <button class="submit">Submit</button>

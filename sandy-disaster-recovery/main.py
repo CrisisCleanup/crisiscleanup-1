@@ -81,6 +81,7 @@ from handlers import incident_edit_phases
 from handlers import incident_edit_map_definition
 from handlers import incident_edit_communications_definition
 from handlers import incident_definition_legacy
+from handlers import check_similar_by_phase_api
 
 
 from admin_handler import admin_create_organization_handler
@@ -236,6 +237,8 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_edit_phases', incident_edit_phases.IncidentEditPhases, 'incident_edit_phases'),
     Route(r'/incident_edit_map_definition', incident_edit_map_definition.IncidentEditMapDefinition, 'incident_edit_map_definition'),
     Route(r'/incident_edit_communications_definition', incident_edit_communications_definition.IncidentEditCommunicationsDefinition, 'incident_edit_communications_definition'),
+    
+    Route(r'/check_similar_by_phase_api', check_similar_by_phase_api.CheckSimilarByPhaseAPI, "check_similar_by_phase_api"),
 
     Route(r'/incident_create_definition_version', incident_create_definition_version.IncidentCreateDefinitionVersion, 'incident_create_definition_version'),
 

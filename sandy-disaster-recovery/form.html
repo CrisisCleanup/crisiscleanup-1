@@ -29,6 +29,51 @@ goog.require("sandy.form");
 <script src="/javascript/compiled_form.js?v={{version}}">
 {% endif %}
 </script>
+<script>
+
+$(function(){
+
+
+});
+</script>
+<script>
+$(function(){
+ $("#zip_code").one('focus', function() {
+  var phase_id = $("#phase_id").val();
+  var address = $("#address").val();
+  var name = $("#name").val();
+  
+  console.log(phase_id);
+  
+  var obj = {
+//     "zip": zip,
+    "address": address,
+    "name": name,
+  }
+  
+
+  
+  $.getJSON( "/check_similar_by_phase_api", obj)
+    .done(function( data ) {
+      var similar_phase = '<p>Similar site found for this phase.</p> \
+	      <ul> \
+	      <li>Name: " '+ data["name"] + '"</li>\
+	      <li>City: " '+ data["city"] + '"</li>\
+	      <li>Address: " '+ data["address"] + '"</li>\
+	      </ul> \
+	      <p>If this is the same site, click <a href="/edit?id=' + data["id"] + '">HERE</a> to edit the existing information.</p>';
+      console.log(data);
+      if(data["phase_id"] == phase_id) {
+	$("#similar_by_phase").append(similar_phase);
+      } else {
+	// TODO
+	// come up with a way to let the form know that it needs to pick up the site... add the site_id as a hidden element?
+      }
+    });
+  
+  });
+});
+</script>
 
 <script>
 $(function(){
@@ -168,7 +213,8 @@ Object.keys(post_json).forEach(function(key) {
 {% endif %}
 
 
-<div id="similars"></div>
+<!-- <div id="similars"></div> -->
+<div id="similar_by_phase"></div>
 
 {{ single_site|safe }}
 

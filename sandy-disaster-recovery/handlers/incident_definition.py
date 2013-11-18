@@ -29,6 +29,7 @@ from models import incident_definition
 import event_db
 import cache
 import random_password
+import organization
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
@@ -60,6 +61,7 @@ class IncidentDefinition(base.RequestHandler):
       events_list = db.GqlQuery(query_string)
       count = events_list.count()
       current_date = None
+      #form.work_order_prefix.data = CASE_LABELS[count]
       data = {
 	"work_order_prefix": CASE_LABELS[count],
 	"current_date": current_date,
@@ -75,7 +77,8 @@ class IncidentDefinition(base.RequestHandler):
       data.incident_lng.data = float(data.incident_lng.data)
     except:
       pass
-    #raise Exception(version)
+    data.local_admin_organization.data = long(data.local_admin_organization.data)
+
     if not data.validate():
       self.response.out.write(template.render(
 	{
@@ -83,9 +86,7 @@ class IncidentDefinition(base.RequestHandler):
 	  "errors": data.errors,
       }))
     else:
-      #incident_version = self.request.get("incident_version")
       incident_name = data.name.data
-      incident_short_name = data.short_name.data
       timezone = data.timezone.data
       location = data.location.data
       
@@ -102,7 +103,7 @@ class IncidentDefinition(base.RequestHandler):
       local_admin_cell_phone = data.local_admin_cell_phone.data
       local_admin_password = data.local_admin_password.data
     
-      
+      org = organization.Organization.get_by_id(local_admin_organization)
     
     
       incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
@@ -112,6 +113,8 @@ class IncidentDefinition(base.RequestHandler):
 
       ### TODO
       # Make this happen atomically
+      
+      incident_short_name = incident_name.lower().replace(" ", "_")
 	  
       query_string = "SELECT * FROM Event"
       events_list = db.GqlQuery(query_string)
@@ -124,7 +127,7 @@ class IncidentDefinition(base.RequestHandler):
       cache.PutAndCache(this_event, ten_minutes)
       
       # add this version = incident_version
-      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = incident_name, short_name = incident_name.lower().replace(" ", "_"), timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = work_order_prefix, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = local_admin_organization, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key())
+      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = incident_name, short_name = incident_short_name, timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = work_order_prefix, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = org.key(), local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key())
       inc_def.put()
 
       

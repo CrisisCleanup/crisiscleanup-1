@@ -16,14 +16,9 @@
 #
 # System libraries.
 import datetime
-import jinja2
 import json
-import os
-from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
-from google.appengine.api import memcache
 from google.appengine.ext.db import Query
-from collections import OrderedDict
 
 # Local libraries
 import base
@@ -77,6 +72,7 @@ class PublicMapAjaxHandler(base.RequestHandler):
     ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
 
     def public_site_filter(site):
+        # site as dict
         return {
             'event': site['event'],
             'id': site['id'],
@@ -84,9 +80,9 @@ class PublicMapAjaxHandler(base.RequestHandler):
             'work_type': site['work_type'],
             'claimed_by': site['claimed_by'],
             'status': site['status'],
-            'floors_affected': site['floors_affected'],
-            'blurred_latitude': site['blurred_latitude'],
-            'blurred_longitude': site['blurred_longitude'],
+            'floors_affected': site.get('floors_affected'),
+            'blurred_latitude': site.get('blurred_latitude'),
+            'blurred_longitude': site.get('blurred_longitude'),
         }
 	
     output = json.dumps(

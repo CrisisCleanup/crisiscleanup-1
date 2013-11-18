@@ -211,11 +211,20 @@ function validate() {
             latlon = results[0].geometry.location;
             
             if (marker) marker.setMap(null);
-            marker = new google.maps.Marker({
-                map: map,
-                position: latlon,
-                draggable: true
-            });
+
+            // decide what marker to use
+            if (currentEditSite) {
+                // use existing map pin
+                marker = currentEditSite.marker;
+                marker.setPosition(latlon);
+            } else {
+                // create a new marker 
+                marker = new google.maps.Marker({
+                    map: map,
+                    position: latlon,
+                    draggable: true
+                });
+            }
 
             google.maps.event.addListener(marker, 'dragend', function (event) {
                 // update the form's latlon if the pin is dragged

@@ -132,8 +132,8 @@ sandy.main.SaveEdit = function () {
         } else if (status == 400) {
             goog.dom.getElement("single_site").innerHTML = xhr.getResponseText();
         }
-    }
-    goog.net.XhrIo.send("/edit?mode=js&id=" + currentEditSite["id"],
+    };
+    goog.net.XhrIo.send("/edit?mode=js&id=" + currentEditSite.id,
         onFormSubmit,
         "POST",
         content);
@@ -147,11 +147,15 @@ sandy.main.CloseEdit = function () {
 
     // hide the form
     goog.style.showElement(goog.dom.getElement('form_background'), false);
+
+    // reselect/update the site
     if (currentEditSite)
         sandy.main.SelectSite(currentEditSite);
 
     // show the legend
     goog.style.showElement(goog.dom.getElement("legend_div"), true);
+
+    currentEditSite = null;
 };
 
 
@@ -220,11 +224,13 @@ var getMarkerIcon = function (site) {
     site.work_type = marker_work_type;
     var icon_type = site.work_type.replace(/ /g, "_");
     return "/icons/" + icon_type + "_" + color + ".png";
-}
+};
+
 
 var dialogSite = null;
+
 var updateSite = function (site) {
-    var marker = site["marker"];
+    var marker = site.marker;
     // Schedule an update with XHR for this site.
     goog.net.XhrIo.send('/api/site_ajax?id=' + site.id,
         function (e) {
@@ -234,24 +240,31 @@ var updateSite = function (site) {
                 var new_site = xhr.getResponseJson();
                 for (var p in new_site) {
                     site[p] = new_site[p];
-                    if (dialog_site == site) {
-                        updateDialogForSite(dialog, site);
-                        site["tags"] = sandy.map.ClassifySite(site, my_organization);
-                        sandy.map.RefilterSingle(site);
-                        var marker_icon = getMarkerIcon(site);
-                        if (marker) {
-                            if (marker_icon) {
-                                marker.setIcon(marker_icon);
-                                marker.setVisible(true);
-                            } else {
-                                marker.setVisible(false);
-                            }
+                }
+                if (dialog_site == site) {
+                    updateDialogForSite(dialog, site);
+                    site["tags"] = sandy.map.ClassifySite(site, my_organization);
+                    sandy.map.RefilterSingle(site);
+
+                    // update the marker's image
+                    var marker_icon = getMarkerIcon(site);
+                    if (marker) {
+                        if (marker_icon) {
+                            marker.setIcon(marker_icon);
+                            marker.setVisible(true);
+                        } else {
+                            marker.setVisible(false);
                         }
                     }
+
+                    // reposition the marker
+                    marker.setPosition(
+                        new google.maps.LatLng(site.latitude, site.longitude)
+                    );
                 }
             }
-        })
-}
+        });
+};
 
 // Updates dialog content and event listeners for the given site.
 var updateDialogForSite = function (dialog, site) {

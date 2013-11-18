@@ -43,7 +43,7 @@ def create_work_order_search_form(events, work_types):
             choices=[
                 (e.key(), e.name) for e in events_by_recency
             ],
-            default=events_by_recency[0]
+            default=events_by_recency[0].key()
         )
         query = TextField("Search")
         reporting_org = SelectField(

@@ -40,7 +40,9 @@ def create_work_order_search_form(events, work_types):
         order = HiddenField()
         event = SelectField(
             choices=[
-                (e.key(), e.name) for e in events
+                (e.key(), e.name) for e in 
+                # most recent first
+                sorted(events, key=lambda event: event.key().id(), reverse=True)
             ],
             default=events[0].key()
         )

@@ -106,11 +106,12 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
             self.id_list = self.request.get('id_list')
         else:
             self.id_list = []
-        self.start_export(org, event, '/export-bulk-worker')
+        self.start_export(org, event, '/export_bulk_worker')
 
     def get_continuation_param_dict(self):
         d = super(ExportBulkHandler, self).get_continuation_param_dict()
         d['id_list'] = self.id_list
+        return d
 
 
 class AbstractExportBulkWorker(webapp2.RequestHandler):
@@ -166,17 +167,17 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
             files.finalize(self.filename)
 
 
-class ExportBulkWorker(AbstractExportBulkHandler):
+class ExportBulkWorker(AbstractExportBulkWorker):
 
     " Used by front-end map. "
     
     def post(self):
-        id_list = self.request.get('id_list')
+        self.id_list = self.request.get('id_list')
         self.ids = (
-            set(int(x) for x in id_list.split(','))
-            if id_list else set()
+            set(int(x) for x in self.id_list.split(','))
+            if self.id_list else set()
         )
-        super(ExportBulkHandler, self).post()
+        super(ExportBulkWorker, self).post()
 
     def get_base_query(self):
         query = Site.all()

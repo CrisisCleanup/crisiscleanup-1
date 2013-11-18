@@ -216,7 +216,7 @@ class OrganizationValidatorsMixIn(object):
 class OrganizationForm(
         model_form(
             Organization,
-            exclude=['incident']
+            exclude=['incident', 'timestamp_signup', 'timestamp_login']
         ),
         OrganizationValidatorsMixIn
     ): 

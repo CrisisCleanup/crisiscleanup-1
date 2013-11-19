@@ -40,6 +40,8 @@ STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 
 				'city_metaphone', 'phone_normalised', 'latitude', 'longitude',
 				'work_type', 'priority']
 
+PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
+
 def _GetOrganizationName(site, field):
   """Returns the name of the organization in the given field, if possible.
   """
@@ -59,6 +61,8 @@ def _GetField(site, field):
   except AttributeError:
     logging.warn('site %s is missing attribute %s' % (site.key().id(), field))
     return None
+
+
 
 
 class Site(db.Expando):
@@ -692,3 +696,6 @@ def _filter_non_digits(s):
 
 class StandardSiteForm(model_form(Site)):
     pass
+
+
+  

@@ -62,17 +62,38 @@ $(function(){
 	      <li>Address: " '+ data["address"] + '"</li>\
 	      </ul> \
 	      <p>If this is the same site, click <a href="/edit?id=' + data["id"] + '">HERE</a> to edit the existing information.</p>';
+	      
+      var similar_site = '<p>Similar site found for this incident, but not for this phase.</p> \
+	      <ul> \
+	      <li>Name: " '+ data["name"] + '"</li>\
+	      <li>City: " '+ data["city"] + '"</li>\
+	      <li>Address: " '+ data["address"] + '"</li>\
+	      </ul> \
+	      <p>If this is the same site, click <a href="?site_id=' + data["id"] + '&phase_number=' + GetUrlValue("phase_number") + '">HERE</a> to edit the existing information.</p>';
+	      
+
       console.log(data);
       if(data["phase_id"] == phase_id) {
 	$("#similar_by_phase").append(similar_phase);
       } else {
-	// TODO
-	// come up with a way to let the form know that it needs to pick up the site... add the site_id as a hidden element?
+	$("#similar_by_site").append(similar_site);
+
       }
     });
   
   });
 });
+
+function GetUrlValue(VarSearch){
+    var SearchString = window.location.search.substring(1);
+    var VariableArray = SearchString.split('&');
+    for(var i = 0; i < VariableArray.length; i++){
+        var KeyValuePair = VariableArray[i].split('=');
+        if(KeyValuePair[0] == VarSearch){
+            return KeyValuePair[1];
+        }
+    }
+}
 </script>
 
 <script>
@@ -172,7 +193,10 @@ Object.keys(post_json).forEach(function(key) {
   </form>
 </div>{# end delete_form #}
 {% endif %}
-<form method="POST" action="{{page}}">
+<form id="incident_form" method="POST" action="{{page}}">
+<div id="similar_by_site"></div>
+  {{ hidden_site_id }}
+
 {% endif %} {# not mode_js #}
 <input type="hidden" name="event_name" value="{{event_name}}" />
 
@@ -234,6 +258,7 @@ Object.keys(post_json).forEach(function(key) {
 {% endif %}
 </div>
 </div>
+</form>
 
 {{ menubox }}
 

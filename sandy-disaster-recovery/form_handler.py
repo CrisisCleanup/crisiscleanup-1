@@ -43,7 +43,7 @@ from helpers import populate_incident_form
 import wtforms.ext.dateutil.fields
 import wtforms.fields
 from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
-
+from models import phase
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -54,13 +54,24 @@ HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 
+PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
+
 class IncidentForm(site_db.Site):
   pass
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
+    
     phase_number = self.request.get("phase_number")
     message = cgi.escape(self.request.get("message"))
+    site_id = self.request.get("site_id")
+
+    defaults_json = None
+    hidden_site_id = None
+    if site_id:
+      defaults_json = get_personal_information_module_by_site_id(site_id)
+      hidden_site_id = '<input type="hidden" id="site_id" name="site_id" value="' + site_id + '">'
+      
     if len(message) == 0:
       message = None
     form = None
@@ -72,7 +83,11 @@ class FormHandler(base.AuthenticatedHandler):
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
-    string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number)
+    
+    # get site id, get PI data, fill form:
+    
+    ## on site_db, get_personal_information_by_id
+    string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
 
     phases_links = populate_phase_links(json.loads(inc_def_query.phases_json))
 
@@ -98,11 +113,12 @@ class FormHandler(base.AuthenticatedHandler):
          "form": form,
          "id": None,
          "page": "/",
-         "event_name": event.name}))
+         "event_name": event.name,
+         "hidden_site_id": hidden_site_id}))
 
   def AuthenticatedPost(self, org, event):
     post_data = self.request.POST
-    
+    site_id = self.request.get("site_id")
     my_string = ""
     for k, v in self.request.POST.iteritems():
       if v == "":
@@ -168,86 +184,109 @@ class FormHandler(base.AuthenticatedHandler):
 	  validations_array.append(required_validator)
 	  wt_data[_id].validators = wt_data[_id].validators + validations_array
 	  validations_array = []  
-
-
     if wt_data.validate():
+      # elif site_id
+      # elif no site_id
+      if str(phase_number) == "0" and inc_def_query.is_version_one_legacy == True:	
+	lookup = site_db.Site.gql(
+	  "WHERE name = :name and address = :address LIMIT 1",
+	  name = data.name.data,
+	  address = data.address.data)
+	
+	site = None
+	for l in lookup:
+	  # See if this same site is for a different event.
+	  # If so, we'll make a new one.
+	  if l.event and l.event.name == event.name:
+	    site = l
+	    break
 
-      lookup = site_db.Site.gql(
-        "WHERE name = :name and address = :address LIMIT 1",
-        name = data.name.data,
-        address = data.address.data)
-      
-      site = None
-      for l in lookup:
-        # See if this same site is for a different event.
-        # If so, we'll make a new one.
-        if l.event and l.event.name == event.name:
-          site = l
-          break
-
-      if not site:
-        # Save the data, and redirect to the view page
-        site = site_db.Site(address = data.address.data,
-                            name = data.name.data)
-                            #priority = int(data.priority.data))
-      for k, v in self.request.POST.iteritems():
-	#if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
-	  if k == "request_date":
-	    date_saved = False
-	    try:
-	      date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
-	      setattr(site, k, date_object)
-	      date_saved=True
-	    except:
-	      date_saved=False
-	      pass
-	    if date_saved is False:
+	if not site:
+	  # Save the data, and redirect to the view page
+	  site = site_db.Site(address = data.address.data,
+			      name = data.name.data)
+			      #priority = int(data.priority.data))
+	for k, v in self.request.POST.iteritems():
+	  #if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
+	    if k == "request_date":
+	      date_saved = False
 	      try:
-	        v = v.replace("/", "-")
-		date_object = datetime.strptime(v, '%Y-%m-%d')
+		date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
 		setattr(site, k, date_object)
 		date_saved=True
 	      except:
 		date_saved=False
 		pass
-	    if date_saved is False:
-	      try:
-	        v = v.replace("/", "-")
-		date_object = datetime.strptime(v, '%m-%d-%Y')
-		setattr(site, k, date_object)
-		date_saved=True
-	      except:
-		date_saved=False
-		pass
-	  elif k == "latitude" or k == "longitude":
-	    setattr(site, k, float(v))
-	  else:
-            setattr(site, k, str(v))
-      try:
-	data.populate_obj(site)
-      except:
-	pass
-	#raise Exception("populate")
-      site.reported_by = org
-      if claim_for_org:
-        site.claimed_by = org
-        
-      # clear assigned_to if status is unassigned
-      if data.status.data == 'Open, unassigned':
-        site.assigned_to = ''
-      # attempt to save site
+	      if date_saved is False:
+		try:
+		  v = v.replace("/", "-")
+		  date_object = datetime.strptime(v, '%Y-%m-%d')
+		  setattr(site, k, date_object)
+		  date_saved=True
+		except:
+		  date_saved=False
+		  pass
+	      if date_saved is False:
+		try:
+		  v = v.replace("/", "-")
+		  date_object = datetime.strptime(v, '%m-%d-%Y')
+		  setattr(site, k, date_object)
+		  date_saved=True
+		except:
+		  date_saved=False
+		  pass
+	    elif k == "latitude" or k == "longitude":
+	      setattr(site, k, float(v))
+	    else:
+	      setattr(site, k, str(v))
+	try:
+	  data.populate_obj(site)
+	except:
+	  pass
+	  #raise Exception("populate")
+	site.reported_by = org
+	if claim_for_org:
+	  site.claimed_by = org
+	  
+	# clear assigned_to if status is unassigned
+	if data.status.data == 'Open, unassigned':
+	  site.assigned_to = ''
+	# attempt to save site
 
-      similar_site = None
-      if site.similar(event) and not self.request.get('ignore_similar', None):
-        similar_site = site.similar(event)
-        message = None
-      elif site.event or event_db.AddSiteToEvent(site, event.key().id()):
-        site_db.PutAndCache(site)
+	similar_site = None
+	if site.similar(event) and not self.request.get('ignore_similar', None):
+	  similar_site = site.similar(event)
+	  message = None
+	elif site.event or event_db.AddSiteToEvent(site, event.key().id()):
+	  site_db.PutAndCache(site)
 
-        self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
-        return
-      else:
-        message = "Failed to add site to event: " + event.name
+	  self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
+	  return
+	else:
+	  message = "Failed to add site to event: " + event.name
+      elif site_id != None:
+	#look up site by id
+	site = site_db.Site.get_by_id(int(site_id))
+	if not site:
+	  #handle
+	  pass
+	phase_obj = phase.Phase(incident = inc_def_query.key(), site = site.key(), phase_id = phase_id)
+	for k, v in self.request.POST.iteritems():
+	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+	    #raise Exception(k)
+	    setattr(phase_obj, k, str(v))
+	try:
+	  if phase_obj.status != None:
+	    phase_obj.put()
+	except:
+	  pass
+	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
+	
+      elif site_id == None:
+	raise Exception(1)
+
+	
+
     else:
       message = "Failed to validate"
       similar_site = None
@@ -273,27 +312,27 @@ class FormHandler(base.AuthenticatedHandler):
 	#raise Exception(phase_number)
       i += 1
     submit_button = "<button class='submit'>Submit</button>"
-
-    string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number)
+    message = "none"
+    string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, self.request.POST)
     single_site = single_site_template.render(
-        { "form": data,
-          "org": org,
-          "incident_form_block": string,
-          "submit_button": submit_button
-          })
+	{ "form": data,
+	  "org": org,
+	  "incident_form_block": string,
+	  "submit_button": submit_button
+	  })
     self.response.out.write(template.render(
-        {"message": message,
-         "similar_site": similar_site,
-         "version" : os.environ['CURRENT_VERSION_ID'],
-         "errors": wt_data.errors,
-         "menubox" : menubox_template.render({"org": org, "event": event}),
-         "single_site": single_site,
-         "form": data,
-         "id": None,
-         "page": "/",
-         "post_json": post_json	,
-         "event_name": event.name}))
-	
+	{"message": message,
+	"similar_site": None,
+	"version" : os.environ['CURRENT_VERSION_ID'],
+	"errors": wt_data.errors,
+	"menubox" : menubox_template.render({"org": org, "event": event}),
+	"single_site": single_site,
+	"form": data,
+	"id": None,
+	"page": "/",
+	"post_json": post_json	,
+	"event_name": event.name}))
+
 def populate_phase_links(phases_json):
   links = "<h3>Phases</h3>"
   i = 0
@@ -347,3 +386,12 @@ def build_form(forms_json, phase_number):
       #setattr(DynamicForm, obj['_id'], BooleanField(obj['label']))
   d = DynamicForm
   return d  
+
+def get_personal_information_module_by_site_id(site_id):
+  site = site_db.Site.get_by_id(int(site_id))
+  site_dict = site_db.SiteToDict(site)
+  personal_info_data = {}
+  for field in site_dict:
+    if field in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+      personal_info_data[field] = str(site_dict[field])
+  return personal_info_data

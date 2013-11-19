@@ -57,6 +57,8 @@
 /*************************************
  * EASING
  */
+
+/* DISABLE
 .ladda-button,
 .ladda-button .ladda-spinner,
 .ladda-button .ladda-label {
@@ -65,6 +67,7 @@
   -ms-transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all !important;
   -o-transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all !important;
   transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all !important; }
+*/
 
 .ladda-button[data-style=zoom-in],
 .ladda-button[data-style=zoom-in] .ladda-spinner,

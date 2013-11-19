@@ -88,6 +88,7 @@ var invokeBulkAction = function(action) {
     } else {
 
         // post the action and refresh the page (to maintain search)
+        $('body').toggleClass('wait-cursor');
         $.ajax({
             url: '/admin-work-orders-bulk-action',
             type: 'POST',

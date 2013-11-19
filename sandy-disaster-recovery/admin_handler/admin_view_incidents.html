@@ -10,7 +10,11 @@
   <thead>
     <tr>
       <th>Incident</th>
-      <th></th>
+      <th>Short Name</th>
+      <th>Case Label</th>
+      <th>Created</th>
+      <th>Started</th>
+      <th>Sites (est.)</th>
     </tr>
   </thead>
   <tbody>
@@ -21,6 +25,11 @@
             {{ event.name }}
           </a>
         </td>
+        <td>{{ event.short_name }}</td>
+        <td>{{ event.case_label }}</td>
+        <td>{{ event.created_date }}</td>
+        <td>{{ event.start_date }}</td>
+        <td>{{ event.num_sites }}</td>
       </tr>
     {% endfor %}
   </tbody>

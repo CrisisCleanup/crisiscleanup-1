@@ -213,7 +213,7 @@ function validate() {
             if (marker) marker.setMap(null);
 
             // decide what marker to use
-            if (currentEditSite) {
+            if ("currentEditSite" in window && currentEditSite) {
                 // use existing map pin
                 marker = currentEditSite.marker;
                 marker.setPosition(latlon);

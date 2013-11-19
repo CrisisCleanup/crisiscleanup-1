@@ -109,6 +109,7 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
         else:
             self.id_list = []
 
+        # start export, forcing filter to current event
         self.start_export(
             org,
             event,

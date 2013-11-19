@@ -28,7 +28,7 @@ from models import incident_definition
 import site_db
 
 
-class Phase(db.Model):
+class Phase(db.Expando):
   incident = db.ReferenceProperty(incident_definition.IncidentDefinition, 'incident')
   site = db.ReferenceProperty(site_db.Site, "site")
   phase_id = db.StringProperty(default=True)

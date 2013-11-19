@@ -7,7 +7,10 @@ def populate_incident_form(form_json, phase_number, defaults=None):
   paragraph = ""
   defaults_json = None
   if defaults:
-    defaults_json = json.loads(defaults)
+    try:
+      defaults_json = json.loads(defaults)
+    except:
+      defaults_json = defaults
 
   if phase_number:
     phase_number = return_phase_number_int(phase_number)
@@ -207,8 +210,11 @@ def set_readonly(id_string):
   return readonly_string
 
 def get_default_value(defaults_json, obj):
-  default_string = None
-  if defaults_json:
-    _id=obj["_id"]
-    default_string = defaults_json[_id]
-  return default_string
+  try:
+    default_string = None
+    if defaults_json:
+      _id=obj["_id"]
+      default_string = defaults_json[_id]
+    return default_string
+  except:
+    pass

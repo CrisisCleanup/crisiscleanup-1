@@ -44,7 +44,7 @@ class AbstractExportBulkHandler(object):
             'worker_url': self.worker_url,
         }
 
-    def start_export(self, org, event, worker_url):
+    def start_export(self, org, event, worker_url, filtering_event_key=None):
         self.worker_url = worker_url
 
         # create filename
@@ -73,7 +73,9 @@ class AbstractExportBulkHandler(object):
             writer.writerow(get_csv_fields_list())
 
         # select event filter based on user
-        if org.is_global_admin:
+        if filtering_event_key:
+            self.filtering_event_key = filtering_event_key
+        elif org.is_global_admin:
             self.filtering_event_key = ''
         else:
             self.filtering_event_key = event.key()
@@ -106,7 +108,13 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
             self.id_list = self.request.get('id_list')
         else:
             self.id_list = []
-        self.start_export(org, event, '/export_bulk_worker')
+
+        self.start_export(
+            org,
+            event,
+            '/export_bulk_worker',
+            filtering_event_key=event.key()
+        )
 
     def get_continuation_param_dict(self):
         d = super(ExportBulkHandler, self).get_continuation_param_dict()

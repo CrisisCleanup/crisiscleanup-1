@@ -19,7 +19,7 @@ from event_db import Event
 
 # constants
 
-SITES_PER_TASK = 20
+DEFAULT_SITES_PER_TASK = 20
 
 DEFAULT_CSV_FIELDS_LIST = ["claimed_by", "reported_by", "modified_by", "case_number", "Days Waiting From %(today)s", "name", "request_date", "address", "city", "county", "state", "zip_code", "latitude", "longitude", "blurred_latitude", "blurred_longitude","cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_assessing_organization", "first_responder", "older_than_60", "disabled", "priority", "flood_height", "floors_affected", "carpet_removal", "hardwood_floor_removal", "drywall_removal", "heavy_item_removal", "appliance_removal", "standing_water", "mold_remediation", "pump_needed", "num_trees_down", "num_wide_trees", "roof_damage", "tarps_needed", "debris_removal_only", "habitable", "electricity", "electrical_lines", "claim_for_org", "status", "assigned_to", "total_volunteers", "hours_worked_per_volunteer", "initials_of_resident_present", "prepared_by", "do_not_work_before", "special_needs", "work_requested", "notes"]
 
@@ -133,6 +133,10 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
 
 class AbstractExportBulkWorker(webapp2.RequestHandler):
 
+    def __init__(self, *args, **kwargs):
+        super(webapp2.RequestHandler, self).__init__(*args, **kwargs)
+        self.sites_per_task = DEFAULT_SITES_PER_TASK
+
     def _write_csv_rows(self, fd, sites):
         writer = csv.writer(fd)
         fields = get_csv_fields_list()
@@ -164,7 +168,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         query = self.get_base_query()
         if self.start_cursor:
             query.with_cursor(self.start_cursor)
-        fetched_sites = query.fetch(limit=SITES_PER_TASK)
+        fetched_sites = query.fetch(limit=self.sites_per_task)
         sites = self.filter_sites(fetched_sites)
 
         # write lines to blob file
@@ -187,6 +191,10 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
 class ExportBulkWorker(AbstractExportBulkWorker):
 
     " Used by front-end map. "
+
+    def __init__(self, *args, **kwargs):
+        super(AbstractExportBulkWorker, self).__init__(*args, **kwargs)
+        self.sites_per_task = 200  # override
     
     def post(self):
         self.id_list = self.request.get('id_list')

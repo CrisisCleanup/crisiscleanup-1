@@ -14,28 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
-
 # System libraries.
-import cgi
 import jinja2
-import logging
 import os
-import urllib2
-import wtforms.validators
-import cache
-from google.appengine.ext import db
-
+import json
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
-import event_db
-import primary_contact_db
-import organization
 import key
 import page_db
 
@@ -44,12 +29,24 @@ loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('page.html')
 
 class PageHandler(base.RequestHandler):
+
     def get(self):
 	logged_in = False
         org, event = key.CheckAuthorization(self.request)
         if org and key:
 	  logged_in = True
+
+        # get page block params
         template_params = page_db.get_page_block_dict()
+
+        # add version dictionary params
+        try:
+            with open('version.json') as version_json_fd:
+                version_d = json.load(version_json_fd)
+        except:
+            version_d = None
+        template_params.update({'version_d': version_d})
+
         template_params['logged_in'] = logged_in
         self.response.out.write(template.render(template_params))
 

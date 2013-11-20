@@ -1,5 +1,5 @@
 
-import os, shutil
+import os, shutil, json
 from glob import glob
 from tempfile import mkdtemp, gettempdir
 
@@ -215,6 +215,16 @@ def perform_overwrites(app_defn):
         shutil.copyfile(src, dest)
 
 
+def write_deployment_version(app_defn, tag, commit):
+    with open('version.json', 'w') as version_json_fd:
+        version_d = {
+            'application': app_defn['application'],
+            'tag': tag,
+            'commit': commit,
+        }
+        json.dump(version_d, version_json_fd)
+
+
 def update():
     " Update GAE from working dir. "
     local("%(appcfg)s --oauth2 update . " % env)
@@ -290,6 +300,9 @@ def deploy(apps, tag='HEAD', version=None):
     if not (tag == 'HEAD' or tag in local('git tag -l', capture=True)):
         abort("Unknown tag '%s'" % tag)
 
+    # get commit hash
+    commit = local('git rev-parse %s' % tag, capture=True)
+
     # decide GAE app version to use
     if version:
         gae_app_version = version
@@ -320,6 +333,7 @@ def deploy(apps, tag='HEAD', version=None):
         print "Writing app.yaml..."
         write_app_yaml(app_defn, gae_app_version=gae_app_version)
         perform_overwrites(app_defn)
+        write_deployment_version(app_defn, tag, commit)
         print "Starting GAE update..."
         update()  # call GAE appcfg
         delete_app_yaml()

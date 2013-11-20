@@ -10,6 +10,23 @@
   <p><strong>{{ message }}</strong></p>
 {% endif %}
 
+{% if version_d %}
+  <table class="table" style="width: auto; margin-top: 20px;">
+    <tr>
+      <th>Application</th>
+      <td>{{ version_d.application }}</td>
+    </tr>
+    <tr>
+      <th>Tag</th>
+      <td>{{ version_d.tag }}</td>
+    </tr>
+    <tr>
+      <th>Commit</th>
+      <td>{{ version_d.commit }}</td>
+    </tr>
+  </table>
+{% endif %}
+
 {% if display_contacts %}
 <br/><br/>
 <br/>

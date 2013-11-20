@@ -1,6 +1,13 @@
 <!doctype html>
 <html class="no-js" lang="en">
 <head>
+  {%- if version_d %}
+  <!--
+    App:    {{ version_d.application }}
+    Tag:    {{ version_d.tag }}
+    Commit: {{ version_d.commit }}
+  -->
+  {%- endif %}
   <meta charset="utf-8">
   <title>{% block title %}Crisis Cleanup{% endblock %}</title>
   <meta name="HandheldFriendly" content="True" />

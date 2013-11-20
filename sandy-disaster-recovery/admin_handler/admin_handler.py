@@ -31,6 +31,7 @@ import cgi
 import jinja2
 import logging
 import os
+import json
 import urllib2
 import wtforms.validators
 
@@ -247,12 +248,21 @@ class AdminHandler(base.AuthenticatedHandler):
 
 
     def AuthenticatedGet(self, org, event):
+        # get version dictionary params
+        try:
+            with open('version.json') as version_json_fd:
+                version_d = json.load(version_json_fd)
+        except:
+            version_d = None
+
+        # render response
         if org.name == GLOBAL_ADMIN_NAME:
             self.response.out.write(
                 template.render({
                     "org": org,
                     "global_admin": True,
                     "message": self.request.get('message'),
+                    "version_d": version_d,
                 })
             )
             return
@@ -261,6 +271,7 @@ class AdminHandler(base.AuthenticatedHandler):
                 template.render({
                     "org": org,
                     "message": self.request.get('message'),
+                    "version_d": version_d,
                 })
             )
             return

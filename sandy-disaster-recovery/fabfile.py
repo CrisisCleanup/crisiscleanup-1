@@ -296,8 +296,16 @@ def deploy(apps, tag='HEAD', version=None):
     for app_defn in app_defns:
         ok_to_deploy(app_defn, tag)
 
-    # check tag
-    if not (tag == 'HEAD' or tag in local('git tag -l', capture=True)):
+    # check/rewrite tag
+    available_tags = local('git tag -l', capture=True).splitlines()
+    if tag == 'HEAD':
+        # rewrite HEAD to a tag if available
+        head_tags = local('git tag -l --contains=HEAD', capture=True)
+        if head_tags:
+            tag = head_tags.splitlines()[0]
+        else:
+            warn("HEAD is not tagged with a version.")
+    elif tag not in available_tags:
         abort("Unknown tag '%s'" % tag)
 
     # get commit hash

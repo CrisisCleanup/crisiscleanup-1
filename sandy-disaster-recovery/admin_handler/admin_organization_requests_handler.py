@@ -52,7 +52,7 @@ class AdminHandler(base.AuthenticatedHandler):
             query_string = "SELECT * FROM Organization WHERE org_verified = False"
             query_list = db.GqlQuery(query_string)
             for q in query_list:
-                if org.incident and q.incident.key() == org.incident.key():
+                if q.incident and q.incident.key() == org.incident.key():
                     query.append(q)
 
         self.response.out.write(template.render(

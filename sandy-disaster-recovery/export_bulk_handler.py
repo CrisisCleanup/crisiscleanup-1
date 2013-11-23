@@ -135,11 +135,13 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
 
     def __init__(self, *args, **kwargs):
         super(webapp2.RequestHandler, self).__init__(*args, **kwargs)
+        self.event = None
         self.sites_per_task = DEFAULT_SITES_PER_TASK
 
     def _write_csv_rows(self, fd, sites):
         writer = csv.writer(fd)
-        fields = get_csv_fields_list()
+        event_short_name = self.event.short_name if self.event else None
+        fields = get_csv_fields_list(event_short_name=event_short_name)
         for site in sites:
             writer.writerow(site.ToCsvLine(fields))
 
@@ -163,6 +165,8 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         self.filtering_event_key = self.request.get('event')
         self.filename = self.request.get('filename')
         self.worker_url = self.request.get('worker_url')
+
+        self.event = Event.get(self.filtering_event_key) if self.filtering_event_key else None
 
         # get (base) query, skip query to cursor, filter for sites
         query = self.get_base_query()

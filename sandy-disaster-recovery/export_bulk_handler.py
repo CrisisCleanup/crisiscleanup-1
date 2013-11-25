@@ -134,7 +134,7 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
 class AbstractExportBulkWorker(webapp2.RequestHandler):
 
     def __init__(self, *args, **kwargs):
-        super(webapp2.RequestHandler, self).__init__(*args, **kwargs)
+        super(AbstractExportBulkWorker, self).__init__(*args, **kwargs)
         self.event = None
         self.sites_per_task = DEFAULT_SITES_PER_TASK
 
@@ -197,7 +197,7 @@ class ExportBulkWorker(AbstractExportBulkWorker):
     " Used by front-end map. "
 
     def __init__(self, *args, **kwargs):
-        super(AbstractExportBulkWorker, self).__init__(*args, **kwargs)
+        super(ExportBulkWorker, self).__init__(*args, **kwargs)
         self.sites_per_task = 200  # override
     
     def post(self):

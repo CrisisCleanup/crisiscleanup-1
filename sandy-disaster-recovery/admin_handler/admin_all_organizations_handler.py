@@ -68,7 +68,7 @@ class AdminAllOrgsHandler(AdminAuthenticatedHandler):
         if form.active.data is not None:
             query.filter('is_active', form.active.data)
         if form.verified.data is not None:
-            query.filter('is_verified', form.verified.data)
+            query.filter('org_verified', form.verified.data)
         if form.logged_in_days.data is not None:
             earliest_date = (
                 datetime.datetime.utcnow() - 

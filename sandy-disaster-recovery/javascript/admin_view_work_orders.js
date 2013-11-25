@@ -42,6 +42,34 @@ $exportAllResultsButton.click(function(event) {
 });
 
 
+/* Zip Results */
+
+$zipResultsButton = $('#zip-results-btn');
+
+$zipResultsButton.click(function(event) {
+    event.preventDefault();
+    var laddaManager = Ladda.create(this);
+    laddaManager.start();
+    $zipResultsButton.attr('disabled', true);
+    $.ajax({
+        url: '/admin-work-orders-zip',
+        type: 'POST',
+        data: $exportForm.serialize()
+    }).done(function(data) {
+        pollForCSVDownload(
+            data.filename,
+            function() {
+                laddaManager.stop();
+                $exportAllResultsButton.attr('disabled', false);
+            }
+        );
+    }).error(function(data) {
+        laddaManager.stop();
+        alert('Error encountered. See server log for details.');
+    });
+});
+
+
 /* reload page if event/incident select changed */
 
 $('select[name=event]').change(function() {

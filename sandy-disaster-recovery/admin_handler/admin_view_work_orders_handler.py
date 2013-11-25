@@ -16,17 +16,25 @@
 #
 
 import pickle
+import re
+import time
+import json
 
 from google.appengine.ext.db import Query, Key
+from google.appengine.ext import deferred
+from google.appengine.api import files
 
 from wtforms import Form, TextField, HiddenField, SelectField
 
 from admin_base import AdminAuthenticatedHandler
 
 import event_db
+import api_key_db
 from site_db import Site
 from organization import Organization
 from export_bulk_handler import AbstractExportBulkHandler, AbstractExportBulkWorker
+from votesmart import officials_with_addresses_by_zip
+import xmltodict
 
 
 def create_work_order_search_form(events, work_types, limiting_event=None):
@@ -92,12 +100,14 @@ def create_work_order_search_form(events, work_types, limiting_event=None):
     return WorkOrderSearchForm
 
 
-def query_from_form(org, event, form):
+def query_from_form(org, event, form, projection=None, distinct=None):
     # start query based on admin type
     if org.is_global_admin:
-        query = Site.all()
+        query = Query(Site, projection=projection, distinct=distinct)
     elif org.is_local_admin:
-        query = Site.all().filter('event', org.incident.key())
+        if projection is not None or distinct is not None:
+            raise Exception("Not currently supported for local admin")
+        query = Query(Site).filter('event', org.incident.key())
     else:
         raise Exception("Not an admin")
 
@@ -124,39 +134,44 @@ def query_from_form(org, event, form):
     return query
 
 
+def form_and_query_from_params(org, event, limiting_event, form_data, projection=None, distinct=None):
+    # get relevant values for search form 
+    if org.is_global_admin:
+        events = event_db.Event.all()
+        work_types = [
+            site.work_type for site 
+            in Query(Site, projection=['work_type'], distinct=True)
+        ]
+    elif org.is_local_admin:
+        events = [event_db.Event.get(org.incident.key())]
+        work_types = [
+            site.work_type for site
+            in Query(Site, projection=['work_type'], distinct=True) \
+                .filter('event', org.incident.key())
+        ]
+
+    # construct search form, limiting by event if supplied
+    WorkOrderSearchForm = create_work_order_search_form(
+        events=events,
+        work_types=work_types,
+        limiting_event=limiting_event
+    )
+    form = WorkOrderSearchForm(form_data)
+    query = query_from_form(org, event, form, projection=projection, distinct=distinct)
+    return form, query
+
+
 class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
 
     template = "admin_view_work_orders.html"
 
     def AuthenticatedGet(self, org, event):
-        # get relevant values for search form 
-        if org.is_global_admin:
-            events = event_db.Event.all()
-            work_types = [
-                site.work_type for site 
-                in Query(Site, projection=['work_type'], distinct=True)
-            ]
-        elif org.is_local_admin:
-            events = [event_db.Event.get(org.incident.key())]
-            work_types = [
-                site.work_type for site
-                in Query(Site, projection=['work_type'], distinct=True) \
-                    .filter('event', org.incident.key())
-            ]
-
-        # construct search form, limiting by event if supplied
         try:
             limiting_event = event_db.Event.get(self.request.get('event'))
         except:
             limiting_event = None
-        WorkOrderSearchForm = create_work_order_search_form(
-            events=events,
-            work_types=work_types,
-            limiting_event=limiting_event
-        )
-        form = WorkOrderSearchForm(self.request.GET)
 
-        query = query_from_form(org, event, form)
+        form, query = form_and_query_from_params(org, event, limiting_event, self.request.GET)
 
         # page using offset
         count = query.count(limit=1000000)
@@ -290,24 +305,7 @@ class AdminExportWorkOrdersBulkWorker(AbstractExportBulkWorker):
         event = pickle.loads(self.event_pickle)
         post_data = pickle.loads(self.post_pickle)
 
-        if org.is_global_admin:
-            events = event_db.Event.all()
-            work_types = [
-                site.work_type for site 
-                in Query(Site, projection=['work_type'], distinct=True)
-            ]
-        elif org.is_local_admin:
-            events = [event_db.Event.get(org.incident.key())]
-            work_types = [
-                site.work_type for site
-                in Query(Site, projection=['work_type'], distinct=True) \
-                    .filter('event', org.incident.key())
-            ]
-
-        WorkOrderSearchForm = create_work_order_search_form(
-            events=events, work_types=work_types)
-        form = WorkOrderSearchForm(post_data)
-        query = query_from_form(org, event, form)
+        form, query = form_and_query_from_params(org, event, None, post_data) 
         return query
 
     def filter_sites(self, fetched_sites):
@@ -325,3 +323,87 @@ class AdminExportWorkOrdersBulkWorker(AbstractExportBulkWorker):
         self.event_pickle = self.request.get('event_pickle')
         self.post_pickle = self.request.get('post_pickle')
         super(AdminExportWorkOrdersBulkWorker, self).post()
+
+
+class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
+
+    def AuthenticatedGet(self, org, event):
+        self.abort(405)  # GET not supported
+
+    def AuthenticatedPost(self, org, event):
+        # check votesmart API is available
+        assert api_key_db.get_api_key('votesmart')
+
+        # decide filename in advance
+        filename = "%s-officials-%s.xml" % (
+            re.sub(r'\W+', '-', event.name.lower()),
+            str(time.time())
+        )
+
+        # package parameters for deferral
+        params = {}
+        params['org_pickle'] = pickle.dumps(org)
+        params['event_pickle'] = pickle.dumps(event)
+        params['post_pickle'] = pickle.dumps(self.request.POST)
+        deferred.defer(self._write_csv, params, filename)
+
+        # write filename out as json
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(
+            json.dumps({
+                'filename': filename
+            })
+        )
+
+    @classmethod
+    def _write_csv(cls, params, filename):
+        " Note: run deferred only. "
+        org = pickle.loads(params['org_pickle'])
+        event = pickle.loads(params['event_pickle'])
+        post_data = pickle.loads(params['post_pickle'])
+
+        _, query = form_and_query_from_params(org, event, None, post_data)
+
+        # get unique zip codes without using distinct projections (for simpler indexes)
+        zip_codes = set(site.zip_code for site in query)
+        zip_data = {zip_code: {} for zip_code in zip_codes}
+
+        # gather statistics on site statuses
+        for zip_code in zip_codes:
+            status_counts = {}
+            site_statuses = Query(Site, projection=('status',)) \
+                .filter('zip_code', zip_code)
+            for site in site_statuses:
+                status_counts[site.status] = status_counts.get(site.status, 0) + 1
+            zip_data[zip_code]['stats'] = status_counts
+
+        # call votesmart for data on officials
+        for zip_code in zip_codes:
+            zip_data[zip_code]['officials'] = officials_with_addresses_by_zip(zip_code)
+
+        # create XML file from data
+        blobstore_filename = files.blobstore.create(
+            mime_type='text/xml',
+           _blobinfo_uploaded_filename=filename
+        )
+        with files.open(blobstore_filename, 'a') as fd:
+            rewritten_zip_data = {
+                # rewrite for XML
+                'root': {
+                    'zip': [{
+                        '@code': zip_code,
+                        'officials': {
+                            'official': data['officials']
+                        },
+                        'statuses': {
+                            'count': [{
+                                '@status': status,
+                                '#text': count
+                            } for status, count in data['stats'].items()]
+                        } 
+                    } for zip_code, data in zip_data.items()]
+                }
+            }
+            xml = xmltodict.unparse(rewritten_zip_data, pretty=True)
+            fd.write(xml.encode('utf-8'))
+        files.finalize(blobstore_filename)

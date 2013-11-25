@@ -33,25 +33,13 @@
     {% for contact in contacts %}
       <tr>
         <td>
-          {% if is_admin %} {# TODO: remove branch #}
-            {{ contact.contact.first_name }} {{contact.contact.last_name}}
-          {% else %}
-            {{ contact.first_name }} {{ contact.last_name }}
-          {% endif %}
+          {{ contact.first_name }} {{ contact.last_name }}
         </td>
         <td>
-          {% if is_admin %} {# TODO: remove branch #}
-            {{ contact.contact.email }}
-          {% else %}
-            {{ contact.email }}
-          {% endif %}
+          {{ contact.email }}
         </td>
         <td>
-          {% if is_admin %} {# TODO: remove branch #}
-            <a href="/organization-edit-contact?contact={{contact.contact.key().id()}}">[Edit]</a>
-          {% else %}
-            <a href="/organization-edit-contact?contact={{contact.key().id()}}">[Edit]</a>
-          {% endif %}
+          <a href="/organization-edit-contact?contact={{contact.key().id()}}">[Edit]</a>
         </td>
       </tr>
     {% else %}

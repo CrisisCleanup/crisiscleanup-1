@@ -23,6 +23,8 @@
     <tr>
       <th>Incident</th>
       <th>Org Name</th>
+      <th>Active</th>
+      <th>Verified</th>
       <th>Last Login</th>
     </tr>
   </thead>
@@ -37,6 +39,8 @@
             {{ org.name }}
           </a>
         </td>
+        <td>{{ org.org_verified }}</td>
+        <td>{{ org.is_active }}</td>
         <td>
           {{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }}
         </td>

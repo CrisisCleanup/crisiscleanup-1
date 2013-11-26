@@ -14,8 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.appengine.api import urlfetch
 import json
+from collections import OrderedDict
+
+from google.appengine.api import urlfetch
 
 import api_key_db
 from memoize import memoize
@@ -41,11 +43,14 @@ def construct_url(function_name, params):
 
 
 def request(url):
-    " Request using GAE library. "
+    " Request using GAE library and parse JSON to OrderedDict "
     r = urlfetch.fetch(url)
     if r.status_code != 200:
         raise Exception(r.code)
-    return json.loads(r.content)
+    return json.loads(
+        r.content,
+        object_pairs_hook=OrderedDict
+    )
 
 
 @memoize(1000)
@@ -53,7 +58,7 @@ def officials_by_zip(zip_code):
     url = construct_url('Officials.getByZip', {'zip5': zip_code})
     d = request(url)
 
-    candidates = d.get('candidateList', {}).get('candidate', [])
+    candidates = d.get('candidateList', {}).get('candidate', {})
     return candidates
 
 

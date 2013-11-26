@@ -36,23 +36,40 @@
           CrisisCleanup 
         </a>
       </div>
-      <form class="navbar-form form-inline navbar-right">
-        <div class="form-group">
-          <input class="input-sm" type="search" class="form-control" placeholder="Search" disabled>
-        </div>
-        <div class="form-group">
-          <select class="form-control input-sm">
-            <option value="">All</option>
-            <option value="">Incidents</option>
-            <option value="">Organizations</option>
-            <option value="">Contacts</option>
-            <option value="">Work Orders</option>
-            <option value="">Communications</option>
-          </select>
-        </div>
-        <button type="submit" class="btn btn-sm" disabled>Submit</button>
-      </form>
-
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          {# navbar-right => this goes further right than the next block... #}
+          <li class="dropdown">
+            <a>
+              <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ org.name }} <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="disabled"><a href="#">Edit Profile</a></li>
+              <li class="divider"></li>
+              <li><a href="/map">Return to Map</a></li>
+              <li class="divider"></li>
+              <li><a href="/logout">Logout</a></li>
+              <li>
+            </ul>
+          </li>
+        </ul>
+        <form class="navbar-form navbar-right">
+          <div class="form-group">
+            <input class="input-sm" type="search" class="form-control" placeholder="Search" disabled>
+          </div>
+          <div class="form-group">
+            <select class="form-control input-sm">
+              <option value="">All</option>
+              <option value="">Incidents</option>
+              <option value="">Organizations</option>
+              <option value="">Contacts</option>
+              <option value="">Work Orders</option>
+              <option value="">Communications</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-sm" disabled>Submit</button>
+        </form>
+      </div>
     </div>
   </div>
 

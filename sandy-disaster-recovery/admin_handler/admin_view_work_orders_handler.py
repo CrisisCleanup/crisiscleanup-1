@@ -19,6 +19,8 @@ import pickle
 import re
 import time
 import json
+import csv
+from StringIO import StringIO
 
 from google.appengine.ext.db import Query, Key
 from google.appengine.ext import deferred
@@ -33,8 +35,8 @@ import api_key_db
 from site_db import Site
 from organization import Organization
 from export_bulk_handler import AbstractExportBulkHandler, AbstractExportBulkWorker
-from votesmart import officials_with_addresses_by_zip
 import xmltodict
+import votesmart
 
 
 def create_work_order_search_form(events, work_types, limiting_event=None):
@@ -335,7 +337,7 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         assert api_key_db.get_api_key('votesmart')
 
         # decide filename in advance
-        filename = "%s-officials-%s.xml" % (
+        filename = "%s-officials-%s.zip" % (
             re.sub(r'\W+', '-', event.name.lower()),
             str(time.time())
         )
@@ -369,41 +371,75 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         zip_data = {zip_code: {} for zip_code in zip_codes}
 
         # gather statistics on site statuses
+        possible_statuses = set()
         for zip_code in zip_codes:
             status_counts = {}
             site_statuses = Query(Site, projection=('status',)) \
                 .filter('zip_code', zip_code)
             for site in site_statuses:
                 status_counts[site.status] = status_counts.get(site.status, 0) + 1
+                possible_statuses.add(site.status)
             zip_data[zip_code]['stats'] = status_counts
 
         # call votesmart for data on officials
+        candidate_ids = set()
         for zip_code in zip_codes:
-            zip_data[zip_code]['officials'] = officials_with_addresses_by_zip(zip_code)
+            officials = votesmart.officials_by_zip(zip_code)
+            zip_data[zip_code]['officials'] = officials
+            candidate_ids.update(official['candidateId'] for official in officials)
 
-        # create XML file from data
+        # lookup addresses of officials
+        official_addresses = {
+            candidate_id: votesmart.candidate_addresses(candidate_id)
+            for candidate_id in candidate_ids
+        }
+
+        # create CSV sio of officials by zip code
+        candidate_field_names = officials[0].keys()
+        field_names = (
+            ['zip_code'] + list(possible_statuses) + ['candidateId'] + candidate_field_names
+        )
+        csv_sio = StringIO()
+        csv_writer = csv.DictWriter(csv_sio, field_names, extrasaction='ignore')
+        csv_writer.writeheader()
+        for zip_code in zip_data:
+            for official in zip_data[zip_code]['officials']:
+                row_d = {'zip_code': zip_code}
+                row_d.update(zip_data[zip_code]['stats'])
+                row_d.update(official)
+                csv_writer.writerow(row_d)
+
+        # create XML sio of addresses
+        rewritten_addresses_for_xml = {
+            'root': {
+                'addresses': [
+                    dict(
+                        [('@candidateID', candidate_id)] +
+                        addresses_sub_dict.items()
+                    ) for candidate_id, addresses_sub_dict in official_addresses.items()
+                ]
+            }
+        }
+        xml = xmltodict.unparse(
+            rewritten_addresses_for_xml,
+            pretty=True
+        )
+        xml_sio = StringIO()
+        xml_sio.write(xml)
+
+        # create zip archive of both
+        import zipfile
+        zip_sio = StringIO()
+        zf = zipfile.ZipFile(zip_sio, 'w')
+        zf.writestr('zips.csv', csv_sio.getvalue().encode('utf-8'))
+        zf.writestr('addresses.xml', xml_sio.getvalue().encode('utf-8'))
+        zf.close()
+
+        # create CSV file from data
         blobstore_filename = files.blobstore.create(
-            mime_type='text/xml',
+            mime_type='application/zip',
            _blobinfo_uploaded_filename=filename
         )
         with files.open(blobstore_filename, 'a') as fd:
-            rewritten_zip_data = {
-                # rewrite for XML
-                'root': {
-                    'zip': [{
-                        '@code': zip_code,
-                        'officials': {
-                            'official': data['officials']
-                        },
-                        'statuses': {
-                            'count': [{
-                                '@status': status,
-                                '#text': count
-                            } for status, count in data['stats'].items()]
-                        } 
-                    } for zip_code, data in zip_data.items()]
-                }
-            }
-            xml = xmltodict.unparse(rewritten_zip_data, pretty=True)
-            fd.write(xml.encode('utf-8'))
+            fd.write(zip_sio.getvalue())
         files.finalize(blobstore_filename)

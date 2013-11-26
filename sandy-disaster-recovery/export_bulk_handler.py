@@ -50,15 +50,16 @@ class AbstractExportBulkHandler(object):
             'worker_url': self.worker_url,
         }
 
-    def start_export(self, org, event, worker_url, filtering_event_key=None):
+    def start_export(self, org, event, worker_url, filtering_event_key=None, filename=None):
         self.worker_url = worker_url
 
-        # create filename
-        filename = "%s-%s-%s.csv" % (
-            re.sub(r'\W+', '-', event.name.lower()),
-            re.sub(r'\W+', '-', org.name.lower()),
-            str(time.time())
-        )
+        # create filename if not supplied
+        if filename is None:
+            filename = "%s-%s-%s.csv" % (
+                re.sub(r'\W+', '-', event.name.lower()),
+                re.sub(r'\W+', '-', org.name.lower()),
+                str(time.time())
+            )
 
         # create file in blobstore
         self.blobstore_filename = files.blobstore.create(
@@ -70,17 +71,17 @@ class AbstractExportBulkHandler(object):
         with files.open(self.blobstore_filename, 'a') as fd:
             writer = csv.writer(fd)
             writer.writerow([
-                "%s Work Orders. Downloaded %s UTC by %s" % (
+                "%s Work Orders. Created %s UTC%s" % (
                     event.name,
                     str(datetime.datetime.utcnow()).split('.')[0],
-                    org.name
+                    ' by %s' % org.name if org else ''
                 )
             ])
             writer.writerow(
                 get_csv_fields_list(event_short_name=event.short_name)
             )
 
-        # select event filter based on user
+        # select event filter based on parameter or org-user
         if filtering_event_key:
             self.filtering_event_key = filtering_event_key
         elif org.is_global_admin:
@@ -129,6 +130,28 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
         d = super(ExportBulkHandler, self).get_continuation_param_dict()
         d['id_list'] = self.id_list
         return d
+
+
+def all_event_filename(event):
+    return "%s-ALL.csv" % re.sub(r'\W+', '-', event.name.lower())
+
+
+class ExportAllEventsHandler(webapp2.RequestHandler, AbstractExportBulkHandler):
+
+    def get(self):
+        # allow cron only
+        assert self.request.headers['X-Appengine-Cron'] == 'true'
+
+        # start export Task chain for each event
+        for event in Event.all():
+            filename = all_event_filename(event)
+            self.start_export(
+                org=None,
+                event=event,
+                worker_url='/export_bulk_worker',
+                filtering_event_key=event.key(),
+                filename=filename,
+            )
 
 
 class AbstractExportBulkWorker(webapp2.RequestHandler):
@@ -245,6 +268,26 @@ class DownloadBulkExportHandler(
         if blob_infos.count() == 0:
             # say not ready yet (HTTP 202)
             self.response.set_status(202)
+        else:
+            # send the blob as a file
+            blob_info = blob_infos[0]
+            self.response.headers['Content-Disposition'] = (
+                str('attachment; filename="%s"' % filename)
+            )
+            self.send_blob(blob_info)
+
+
+class DownloadEventAllWorkOrdersHandler(
+        base.AuthenticatedHandler,
+        blobstore_handlers.BlobstoreDownloadHandler):
+
+    def AuthenticatedGet(self, org, event):
+        # retrieve most recent blob with filename of event
+        filename = all_event_filename(event)
+        blob_infos = BlobInfo.all().filter('filename', filename).order('-creation')
+
+        if blob_infos.count() == 0:
+            self.abort(404)
         else:
             # send the blob as a file
             blob_info = blob_infos[0]

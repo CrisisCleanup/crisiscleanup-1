@@ -2,7 +2,7 @@ $(function() {
 
 $exportButtons = $('button.export-btn');
 
-// bind export button clicks
+// bind long-lived export button clicks
 $exportButtons.click(function () {
 
   $this = $(this);
@@ -62,6 +62,15 @@ $exportButtons.click(function () {
 
   // prevent default
   return false;
+});
+
+
+// bind download all button
+$exportAllButton = $('button.all-export-btn');
+
+$exportAllButton.click(function() {
+    window.location = '/export_all_download';
+    return false;  // prevent default
 });
   
 });

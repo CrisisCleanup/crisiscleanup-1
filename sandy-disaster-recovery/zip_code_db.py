@@ -30,11 +30,19 @@ def load_zip_code_csv(path):
         'acceptable_cities',
         'unacceptable_cities',
     }
+    BATCH_SIZE = 200
     with open(path) as fd:
         reader = UnicodeDictReader(fd)
+        queue = []
         for i, row_d in enumerate(reader):
             key_name = row_d['zip']
             for field in UNWANTED_FIELDS:
                 del(row_d[field])
-            ZipCode.get_or_insert(key_name, **row_d)
-            if i and i % 100 == 0: print i
+            zc = ZipCode(key_name=key_name, **row_d)
+            queue.append(zc)
+            if i and i % BATCH_SIZE == 0:
+                # bulk insert
+                db.put(queue)
+                queue = []
+                print i
+        db.put(queue)

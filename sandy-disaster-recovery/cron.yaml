@@ -1,7 +1,14 @@
 cron:
+
 - description: Cache latest sites
   url: /refresh_counties
   schedule: every 20 minutes
+
 - description: Purge blobstore of old blobs
   url: /blobstore-delete
   schedule: every 24 hours
+
+- description: Regenerate CSV exports of sites for all events
+  url: /task/export-all-events
+  schedule: every 60 minutes
+  target: cron-export-all

@@ -41,7 +41,7 @@
           {# navbar-right => this goes further right than the next block... #}
           <li class="dropdown">
             <a>
-              <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ org.name }} <b class="caret"></b>
+              <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ org.name if org is defined else "" }} <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
               <li class="disabled"><a href="#">Edit Profile</a></li>

@@ -192,6 +192,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-export-work-orders-by-query', admin_view_work_orders_handler.AdminExportWorkOrdersByQueryBulkHandler, 'admin_export_work_orders_by_query'),
     Route(r'/admin-export-work-orders-by-id', admin_view_work_orders_handler.AdminExportWorkOrdersByIdBulkHandler, 'admin_export_work_orders_by_id'),
     Route(r'/admin-export-bulk-worker', admin_view_work_orders_handler.AdminExportWorkOrdersBulkWorker, 'admin_export_bulk_worker'),
+    Route(r'/admin-work-orders-zip', admin_view_work_orders_handler.AdminExportZipCodesByQueryHandler, 'admin_export_zip'),
     Route(r'/admin-fix-errors', admin_fix_errors_handler.AdminFixErrorsHandler, 'admin_fix_errors'),
     Route(r'/admin-social-media', admin_social_media_handler.AdminSocialMediaHandler, 'admin_social_media'),
     Route(r'/admin-website-alerts', admin_website_alerts_handler.AdminWebsiteAlertsHandler, 'admin_website_alerts'),

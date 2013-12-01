@@ -95,7 +95,7 @@ class AbstractExportBulkHandler(object):
             params=self.get_continuation_param_dict(),
         )
 
-        # write json
+        # write filename out as json
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(
             json.dumps({

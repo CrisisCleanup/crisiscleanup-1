@@ -60,6 +60,21 @@ def _GetField(site, field):
     return None
 
 
+STATUSES = [
+  "Open, unassigned",
+  "Open, assigned",
+  "Open, partially completed",
+  "Open, needs follow-up",
+  "Closed, completed",
+  "Closed, incomplete",
+  "Closed, out of scope",
+  "Closed, done by others",
+  "Closed, no help wanted",
+  "Closed, rejected",
+  "Closed, duplicate",
+]
+
+
 class Site(db.Expando):
   # The list of fields that will be included in the CSV output.
   CSV_FIELDS = []
@@ -159,20 +174,10 @@ class Site(db.Expando):
   #do_not_work_before = db.StringProperty()
 
   # Metadata
-  status = db.StringProperty(choices=[
-      "Open, unassigned",
-      "Open, assigned",
-      "Open, partially completed",
-      "Open, needs follow-up",
-      "Closed, completed",
-      "Closed, incomplete",
-      "Closed, out of scope",
-      "Closed, done by others",
-      "Closed, no help wanted",
-      "Closed, rejected",
-      "Closed, duplicate",
-      ],
-      default="Open, unassigned")
+  status = db.StringProperty(
+    choices=STATUSES,
+    default="Open, unassigned"
+  )
 
   @property
   def full_address(self):

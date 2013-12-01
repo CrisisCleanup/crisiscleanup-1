@@ -437,6 +437,79 @@ indexes:
 #    direction: desc
 
 
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: reported_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: claimed_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: work_type
+    direction: desc
+
+
 #
 # Organization
 # 
@@ -484,6 +557,11 @@ indexes:
 # manually, move them above the marker line.  The index.yaml file is
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: status
 
 - kind: CSVRow
   properties:

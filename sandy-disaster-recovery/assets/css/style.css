@@ -257,5 +257,8 @@ td { vertical-align: top; }
   border-style:solid;
   border-width:2px;
   border-color: #3891cf;
+}
 
+body.wait-cursor, body.wait-cursor *{
+  cursor: wait !important;   
 }

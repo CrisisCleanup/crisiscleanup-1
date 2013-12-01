@@ -84,6 +84,18 @@ indexes:
   - name: work_type
     direction: desc
 
+- kind: Site
+  properties:
+  - name: event
+  - name: status
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: status
+    direction: desc
+
 
 - kind: Site
   properties:
@@ -157,6 +169,18 @@ indexes:
   - name: work_type
     direction: desc
 
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+    direction: desc
+
 
 - kind: Site
   properties:
@@ -230,6 +254,18 @@ indexes:
   - name: work_type
     direction: desc
 
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: status
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: status
+    direction: desc
+
 
 - kind: Site
   properties:
@@ -302,79 +338,103 @@ indexes:
 #  - name: work_type
 #  - name: work_type
 #    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: status
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: status
+    direction: desc
+
+
+- kind: Site
+  properties:
+  - name: status
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: reported_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: claimed_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: work_type
+    direction: desc
+
+#- kind: Site
+#  properties:
+#  - name: status
+#  - name: status
+#    direction: asc
 #
-
-- kind: Site
-  properties:
-  - name: status
-  - name: case_number
-    direction: asc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: case_number
-    direction: desc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: name
-    direction: asc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: name
-    direction: desc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: request_date
-    direction: asc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: request_date
-    direction: desc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: reported_by
-    direction: asc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: reported_by
-    direction: desc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: claimed_by
-    direction: asc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: claimed_by
-    direction: desc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: work_type
-    direction: asc
-
-- kind: Site
-  properties:
-  - name: status
-  - name: work_type
-    direction: desc
+#- kind: Site
+#  properties:
+#  - name: status
+#  - name: status
+#    direction: desc
 
 
 #

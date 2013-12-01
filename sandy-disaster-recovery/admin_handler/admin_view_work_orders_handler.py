@@ -178,10 +178,97 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
         )
 
 
-class AdminExportWorkOrdersBulkHandler(AdminAuthenticatedHandler, AbstractExportBulkHandler):
+class AdminWorkOrderBulkActionHandler(AdminAuthenticatedHandler):
+
+    def _claim(self, site, **kwargs):
+        org = kwargs.get('org')
+        assert org is not None
+        site.claimed_by = org
+        site.save()
+
+    def _unclaim(self, site, **kwargs):
+        site.claimed_by = None
+        site.save()
+
+    def _set_status(self, site, **kwargs):
+        status = kwargs.get('status')
+        assert status
+        site.status = status
+        site.save()
+
+    BULK_ACTIONS = {
+        # POSTed action: function
+        'claim': _claim,
+        'unclaim': _unclaim,
+        'set-status': _set_status,
+    }
+
+    def AuthenticatedPost(self, org, event):
+        # get and check args
+        ids = [int(id) for id in self.request.get('ids', '').split(',')]
+        selected_org = (
+            Organization.get(self.request.get('org'))
+            if self.request.get('org') else None
+        )
+        status = self.request.get('status')
+        action = self.request.get('action', None)
+        if action not in self.BULK_ACTIONS:
+            self.abort(404)
+
+        # get authorised events 
+        if org.is_global_admin:
+            event_keys = list(event_db.Event.all(keys_only=True))
+        elif org.is_local_admin:
+            event_keys = [org.incident.key()]
+
+        # handle bulk action
+        fn = self.BULK_ACTIONS[action]
+        for id in ids:
+            site = Site.get_by_id(id)
+            authorised = (
+                site.event.key() in event_keys
+                and (selected_org is None or selected_org.incident.key() in event_keys)
+            )
+            if authorised:
+                fn(self, site, org=selected_org, status=status)
+
+        # redirect back to work orders table
+        self.redirect('/admin-view-work-orders')
+
+
+class AdminExportWorkOrdersByIdBulkHandler(
+    AdminAuthenticatedHandler, AbstractExportBulkHandler):
 
     def AuthenticatedGet(self, org, event):
-        raise Exception("Not supported")
+        self.abort(405)  # GET not supported
+
+    def AuthenticatedPost(self, org, event):
+        self.handle(org, event)
+
+    def handle(self, org, event):
+        self.id_list = self.request.get('id_list')
+        if not self.id_list:
+            self.abort(404)
+
+        self.start_export(
+            org,
+            event,
+            '/export_bulk_worker',
+            filtering_event_key=None  # event filtering handled prior
+        )
+
+    def get_continuation_param_dict(self):
+        d = super(AdminExportWorkOrdersByIdBulkHandler, self) \
+            .get_continuation_param_dict()
+        d['id_list'] = self.id_list
+        return d
+
+
+class AdminExportWorkOrdersByQueryBulkHandler(
+    AdminAuthenticatedHandler, AbstractExportBulkHandler):
+
+    def AuthenticatedGet(self, org, event):
+        self.abort(405)  # GET not supported
 
     def AuthenticatedPost(self, org, event):
         self.org = org
@@ -189,7 +276,7 @@ class AdminExportWorkOrdersBulkHandler(AdminAuthenticatedHandler, AbstractExport
         self.start_export(org, event, '/admin-export-bulk-worker')
     
     def get_continuation_param_dict(self):
-        d = super(AdminExportWorkOrdersBulkHandler, self).get_continuation_param_dict()
+        d = super(AdminExportWorkOrdersByQueryBulkHandler, self).get_continuation_param_dict()
         d['org_pickle'] = pickle.dumps(self.org)
         d['event_pickle'] = pickle.dumps(self.event)
         d['post_pickle'] = pickle.dumps(self.request.POST)

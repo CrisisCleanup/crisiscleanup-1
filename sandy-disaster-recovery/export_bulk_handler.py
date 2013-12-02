@@ -46,7 +46,8 @@ class AbstractExportBulkHandler(object):
         return {
             'cursor': '',
             'event': self.filtering_event_key,
-            'filename': self.blobstore_filename,
+            'filename': self.filename,
+            'blobstore_filename': self.blobstore_filename,
             'worker_url': self.worker_url,
         }
 
@@ -60,6 +61,7 @@ class AbstractExportBulkHandler(object):
                 re.sub(r'\W+', '-', org.name.lower()),
                 str(time.time())
             )
+        self.filename = filename
 
         # create file in blobstore
         self.blobstore_filename = files.blobstore.create(
@@ -179,6 +181,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
             'cursor': self.end_cursor,
             'event': self.filtering_event_key,
             'filename': self.filename,
+            'blobstore_filename': self.blobstore_filename,
             'worker_url': self.worker_url,
         }
 
@@ -187,6 +190,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         self.start_cursor = self.request.get('cursor')
         self.filtering_event_key = self.request.get('event')
         self.filename = self.request.get('filename')
+        self.blobstore_filename = self.request.get('blobstore_filename')
         self.worker_url = self.request.get('worker_url')
 
         self.event = Event.get(self.filtering_event_key) if self.filtering_event_key else None
@@ -199,7 +203,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         sites = self.filter_sites(fetched_sites)
 
         # write lines to blob file
-        with files.open(self.filename, 'a') as fd:
+        with files.open(self.blobstore_filename, 'a') as fd:
             self._write_csv_rows(fd, sites)
 
         # decide what to do next
@@ -211,8 +215,17 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
                 params=self.get_continuation_param_dict()
             )
         else:
-            # finalize
-            files.finalize(self.filename)
+            # deduplicate and finalize the file
+            files.finalize(self.blobstore_filename)
+            deduplicated_blobstore_filename = files.blobstore.create(
+                mime_type='text/csv',
+               _blobinfo_uploaded_filename=self.filename
+            )
+            with files.open(self.blobstore_filename, 'r') as fd:
+                deduplicated_lines = set(fd.readlines())
+            with files.open(deduplicated_blobstore_filename, 'w') as fd:
+                fd.writelines(deduplicated_lines)
+            files.finalize(deduplicated_blobstore_filename)
 
 
 class ExportBulkWorker(AbstractExportBulkWorker):

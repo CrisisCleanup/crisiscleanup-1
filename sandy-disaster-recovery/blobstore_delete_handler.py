@@ -23,7 +23,7 @@ from google.appengine.ext import webapp
 
 # constants
 
-MAX_BLOB_LIFESPAN_DAYS = 100
+MAX_BLOB_LIFESPAN_DAYS = 14
 
 
 # handlers

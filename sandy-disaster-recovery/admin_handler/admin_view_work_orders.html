@@ -66,6 +66,35 @@
   </div>
 </form>
 
+
+{% macro bulk_actions_button_row() -%}
+  {# macro for reuse #}
+  <span>Bulk actions:</span>
+  <button class="btn btn-sm bulk-action-btn ladda-button" data-action="export" data-style="expand-right" disabled>
+    <span class="ladda-label">Export</span>
+  </button>
+  <button class="btn btn-sm bulk-action-btn" data-action="unclaim" disabled>Unclaim</button>
+  <span style="margin-left: 10px;">Org:</span>
+  <select class="form-control input-sm select-bulk select-bulk-org" style="display: inline; width: 100px">
+    {% for (val, label) in form.reporting_org.choices %}
+      <option value="{{ val }}">{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-sm bulk-action-btn requires-org" data-action="claim" disabled>
+    Claim For
+  </button>
+  <span style="margin-left: 10px;">Status:</span>
+  <select class="form-control input-sm select-bulk select-bulk-status" style="display: inline; width: 100px">
+    {% for (val, label) in form.status.choices %}
+      <option value="{{ val }}">{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-sm bulk-action-btn requires-status" data-action="set-status" disabled>
+    Set Status
+  </button>
+{%- endmacro %}
+
+
 {% if count > 0 %}
   <div>
     {{ offset + 1}} to {{ offset + sites|length }} of {{ count }} work orders
@@ -88,11 +117,18 @@
         <span class="ladda-label">Officials by ZIP</span>
       </button>
     </form>
+    <div class="row">
+      <div class="col-md-push-2 col-md-10">
+        <div class="pull-right">
+          {{ bulk_actions_button_row() }}
+        </div>
+      </div>
+    </div>
   </div>
 {% endif %}
 
 {% if sites|length > 0 %}
-  <table class="table table-bordered">
+  <table class="table table-bordered" style="margin-top: 10px;">
     <thead>
       <tr>
         {#
@@ -163,29 +199,7 @@
     </div>
     <div class="col-md-10">
       <div class="pull-right">
-        <span>Bulk actions:</span>
-        <button class="btn btn-sm bulk-action-btn ladda-button" data-action="export" data-style="expand-right" disabled>
-          <span class="ladda-label">Export</span>
-        </button>
-        <button class="btn btn-sm bulk-action-btn" data-action="unclaim" disabled>Unclaim</button>
-        <span style="margin-left: 10px;">Org:</span>
-        <select id="select-bulk-org" class="form-control input-sm" style="display: inline; width: 100px">
-          {% for (val, label) in form.reporting_org.choices %}
-            <option value="{{ val }}">{{ label }}</option>
-          {% endfor %}
-        </select>
-        <button class="btn btn-sm bulk-action-btn requires-org" data-action="claim" disabled>
-          Claim For
-        </button>
-        <span style="margin-left: 10px;">Status:</span>
-        <select id="select-bulk-status" class="form-control input-sm" style="display: inline; width: 100px">
-          {% for (val, label) in form.status.choices %}
-            <option value="{{ val }}">{{ label }}</option>
-          {% endfor %}
-        </select>
-        <button class="btn btn-sm bulk-action-btn requires-status" data-action="set-status" disabled>
-          Set Status
-        </button>
+        {{ bulk_actions_button_row() }}
       </div>
     </div>
   </div>

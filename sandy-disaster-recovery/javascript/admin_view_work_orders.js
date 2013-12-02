@@ -82,10 +82,14 @@ $('select[name=event]').change(function() {
 
 $selectAllCheckbox = $('input[type=checkbox].checkbox-all');
 $siteCheckboxes = $('input[type=checkbox].checkbox-site');
+
 $bulkActionButtons = $('button.bulk-action-btn');
 $bulkActionExportButton = $bulkActionButtons.filter('[data-action=export]');
-$bulkActionOrgSelect = $('select#select-bulk-org');
-$bulkActionStatusSelect = $('select#select-bulk-status');
+
+$bulkActionSelect = $('select.select-bulk');
+$bulkActionOrgSelect = $('select.select-bulk-org');
+$bulkActionStatusSelect = $('select.select-bulk-status');
+
 
 var invokeBulkAction = function(action) {
     // construct list of checked site ids
@@ -175,6 +179,14 @@ $siteCheckboxes.click(function () {
         $siteCheckboxes.not(':checked').length === 0
     );
     enableBulkActionButtons();
+});
+
+// make the duplicate selects show the same selection
+$bulkActionOrgSelect.change(function() {
+    $bulkActionOrgSelect.val($(this).val());
+});
+$bulkActionStatusSelect.change(function() {
+    $bulkActionStatusSelect.val($(this).val());
 });
 
 

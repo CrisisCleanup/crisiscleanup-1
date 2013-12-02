@@ -338,9 +338,12 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         # check votesmart API is available
         assert api_key_db.get_api_key('votesmart')
 
+        # get selected event
+        selected_event = event_db.Event.get(self.request.get('event'))
+
         # decide filename in advance
         filename = "%s-officials-%s.zip" % (
-            re.sub(r'\W+', '-', event.name.lower()),
+            re.sub(r'\W+', '-', selected_event.name.lower()),
             str(time.time())
         )
 

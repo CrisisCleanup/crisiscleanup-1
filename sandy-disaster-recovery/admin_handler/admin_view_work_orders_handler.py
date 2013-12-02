@@ -369,7 +369,7 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         _, query = form_and_query_from_params(org, event, None, post_data)
 
         # get unique zip codes without using distinct projections (for simpler indexes)
-        zip_codes = set(site.zip_code for site in query)
+        zip_codes = set(site.zip_code for site in query if site.zip_code)
         zip_data = {zip_code: {} for zip_code in zip_codes}
 
         # gather statistics on site statuses

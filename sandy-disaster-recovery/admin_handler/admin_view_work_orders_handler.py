@@ -383,7 +383,9 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
 
         # lookup primary city from zip code
         for zip_code in zip_codes:
-            zip_data[zip_code]['primary_city'] = ZipCode.get_by_key_name(zip_code).primary_city
+            zip_code_obj = ZipCode.get_by_key_name(zip_code)
+            zip_data[zip_code]['primary_city'] = \
+                zip_code_obj.primary_city if zip_code_obj else u"Unknown"
 
         # call votesmart for data on officials
         candidate_ids = set()

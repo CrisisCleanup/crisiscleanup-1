@@ -49,7 +49,11 @@
               <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ org.name if org is defined else "" }} <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-              <li class="disabled"><a href="#">Edit Profile</a></li>
+              <li class="{% if org is not defined %}disabled{% endif %}">
+                <a href="/admin-single-organization?organization={{ org.key().id() if org is defined else None }}">
+                  Profile
+                </a>
+              </li>
               <li class="divider"></li>
               <li><a href="/map">Return to Map</a></li>
               <li class="divider"></li>

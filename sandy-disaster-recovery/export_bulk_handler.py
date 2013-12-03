@@ -153,7 +153,8 @@ class ExportAllEventsHandler(webapp2.RequestHandler, AbstractExportBulkHandler):
 
     def get(self):
         # allow only requests from cron
-        assert self.request.headers['X-Appengine-Cron'] == 'true'
+        if self.request.headers['X-Appengine-Cron'] != 'true':
+            self.abort(403)
 
         # start export Task chain for each event
         for event in Event.all():

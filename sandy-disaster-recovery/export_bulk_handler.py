@@ -1,5 +1,4 @@
 
-import time
 import datetime
 import re
 import json
@@ -16,6 +15,7 @@ import webapp2
 import base
 from site_db import Site
 from event_db import Event
+from time_utils import timestamp, timestamp_now
 
 
 # constants
@@ -68,7 +68,7 @@ class AbstractExportBulkHandler(object):
             filename = "%s-%s-%s.csv" % (
                 re.sub(r'\W+', '-', event.name.lower()),
                 re.sub(r'\W+', '-', org.name.lower()),
-                str(time.time())
+                timestamp_now(),
             )
         self.filename = filename
 
@@ -145,7 +145,7 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
         return d
 
 
-def all_event_filename(event):
+def all_event_timeless_filename(event):
     return "%s-ALL.csv" % re.sub(r'\W+', '-', event.name.lower())
 
 
@@ -158,7 +158,7 @@ class ExportAllEventsHandler(webapp2.RequestHandler, AbstractExportBulkHandler):
 
         # start export Task chain for each event
         for event in Event.all():
-            filename = all_event_filename(event)
+            filename = all_event_timeless_filename(event)
             self.start_export(
                 org=None,
                 event=event,
@@ -316,15 +316,20 @@ class DownloadEventAllWorkOrdersHandler(
 
     def AuthenticatedGet(self, org, event):
         # retrieve most recent blob with filename of event
-        filename = all_event_filename(event)
+        filename = all_event_timeless_filename(event)
         blob_infos = BlobInfo.all().filter('filename', filename).order('-creation')
-
         if blob_infos.count() == 0:
             self.abort(404)
-        else:
-            # send the blob as a file
-            blob_info = blob_infos[0]
-            self.response.headers['Content-Disposition'] = (
-                str('attachment; filename="%s"' % filename)
-            )
-            self.send_blob(blob_info)
+
+        # rewrite filename to include timestamp
+        blob_info_to_serve = blob_infos[0]
+        filename_to_serve = blob_info_to_serve.filename.replace(
+            '.csv',
+            '-%s.csv' % timestamp(blob_info_to_serve.creation)
+        )
+
+        # serve the blob as an attachment
+        self.response.headers['Content-Disposition'] = (
+            str('attachment; filename="%s"' % filename_to_serve)
+        )
+        self.send_blob(blob_info_to_serve)

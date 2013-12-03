@@ -17,7 +17,6 @@
 
 import pickle
 import re
-import time
 import json
 import zipfile
 from StringIO import StringIO
@@ -36,6 +35,7 @@ from site_db import Site, STATUSES
 from organization import Organization
 from zip_code_db import ZipCode
 from export_bulk_handler import AbstractExportBulkHandler, AbstractExportBulkWorker
+from time_utils import timestamp_now
 import xmltodict
 import votesmart
 from unicode_csv import UnicodeDictWriter
@@ -280,7 +280,7 @@ class AdminExportWorkOrdersByIdBulkHandler(
         filename = "%s-%s-%s.csv" % (
             re.sub(r'\W+', '-', selected_event.name.lower()),
             re.sub(r'\W+', '-', org.name.lower()),
-            str(time.time())
+            timestamp_now()
         )
 
         self.start_export(
@@ -313,7 +313,7 @@ class AdminExportWorkOrdersByQueryBulkHandler(
         filename = "%s-%s-%s.csv" % (
             re.sub(r'\W+', '-', selected_event.name.lower()),
             re.sub(r'\W+', '-', org.name.lower()),
-            str(time.time())
+            timestamp_now()
         )
 
         self.start_export(org, event, '/admin-export-bulk-worker', filename=filename)
@@ -368,7 +368,7 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         # decide filename in advance
         filename = "%s-officials-%s.zip" % (
             re.sub(r'\W+', '-', selected_event.name.lower()),
-            str(time.time())
+            timestamp_now()
         )
 
         # package parameters for deferral

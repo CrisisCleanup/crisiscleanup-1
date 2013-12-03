@@ -4,10 +4,11 @@ import datetime
 import re
 import json
 import csv
+from StringIO import StringIO
 
 from google.appengine.api import taskqueue
 from google.appengine.api import files
-from google.appengine.ext.blobstore import BlobInfo
+from google.appengine.ext.blobstore import BlobInfo, BlobReader
 from google.appengine.ext.webapp import blobstore_handlers
 
 import webapp2
@@ -55,6 +56,7 @@ class AbstractExportBulkHandler(object):
             'event': self.filtering_event_key,
             'filename': self.filename,
             'blobstore_filename': self.blobstore_filename,
+            'csv_header': self.csv_header,
             'worker_url': self.worker_url,
         }
 
@@ -76,19 +78,21 @@ class AbstractExportBulkHandler(object):
            _blobinfo_uploaded_filename=filename
         )
 
-        # write header/title row
-        with files.open(self.blobstore_filename, 'a') as fd:
-            writer = csv.writer(fd)
-            writer.writerow([
-                "%s Work Orders. Created %s UTC%s" % (
-                    event.name,
-                    str(datetime.datetime.utcnow()).split('.')[0],
-                    ' by %s' % org.name if org else ''
-                )
-            ])
-            writer.writerow(
-                get_csv_fields_list(event_short_name=event.short_name)
+        # decide header/title row
+        header_sio = StringIO()
+        writer = csv.writer(header_sio)
+        writer.writerow([
+            "%s Work Orders. Created %s UTC%s" % (
+                event.name,
+                str(datetime.datetime.utcnow()).split('.')[0],
+                ' by %s' % org.name if org else ''
             )
+        ])
+        writer.writerow(
+            get_csv_fields_list(event_short_name=event.short_name)
+        )
+        self.csv_header = header_sio.getvalue()
+        header_sio.close()
 
         # select event filter based on parameter or org-user
         if filtering_event_key:
@@ -148,7 +152,7 @@ def all_event_filename(event):
 class ExportAllEventsHandler(webapp2.RequestHandler, AbstractExportBulkHandler):
 
     def get(self):
-        # allow cron only
+        # allow only requests from cron
         assert self.request.headers['X-Appengine-Cron'] == 'true'
 
         # start export Task chain for each event
@@ -189,6 +193,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
             'event': self.filtering_event_key,
             'filename': self.filename,
             'blobstore_filename': self.blobstore_filename,
+            'csv_header': self.csv_header,
             'worker_url': self.worker_url,
         }
 
@@ -198,6 +203,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         self.filtering_event_key = self.request.get('event')
         self.filename = self.request.get('filename')
         self.blobstore_filename = self.request.get('blobstore_filename')
+        self.csv_header = self.request.get('csv_header')
         self.worker_url = self.request.get('worker_url')
 
         self.event = Event.get(self.filtering_event_key) if self.filtering_event_key else None
@@ -222,16 +228,22 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
                 params=self.get_continuation_param_dict()
             )
         else:
-            # deduplicate and finalize the file
+            # finish file: deduplicate lines
             files.finalize(self.blobstore_filename)
+            generated_file_blob_key = files.blobstore.get_blob_key(
+                self.blobstore_filename)
+            blob_reader = BlobReader(generated_file_blob_key)
+            deduplicated_lines = set(line for line in blob_reader)
             deduplicated_blobstore_filename = files.blobstore.create(
                 mime_type='text/csv',
                _blobinfo_uploaded_filename=self.filename
             )
-            with files.open(self.blobstore_filename, 'r') as fd:
-                deduplicated_lines = set(fd.readlines())
-            with files.open(deduplicated_blobstore_filename, 'w') as fd:
-                fd.writelines(deduplicated_lines)
+
+            # write csv header and deduplicated lines
+            with files.open(deduplicated_blobstore_filename, 'a') as fd:
+                fd.write(self.csv_header)
+                for line in deduplicated_lines:
+                    fd.write(line)
             files.finalize(deduplicated_blobstore_filename)
 
 

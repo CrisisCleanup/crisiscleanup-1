@@ -185,6 +185,7 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
             limit=per_page,
             offset=offset,
         )
+        maybe_more_sites = len(sites) == per_page
 
         self.render(
             request=self.request,
@@ -193,7 +194,7 @@ class AdminViewWorkOrdersHandler(AdminAuthenticatedHandler):
             count=count,
             offset=offset,
             prev_offset=offset - per_page,
-            next_offset=offset + per_page,
+            next_offset=(offset + per_page) if maybe_more_sites else None,
         )
 
 

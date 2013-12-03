@@ -72,7 +72,9 @@ $zipResultsButton.click(function(event) {
 
 /* reload page if event/incident select changed */
 
-$('select[name=event]').change(function() {
+$eventSelect = $('select[name=event]');
+
+$eventSelect.change(function() {
     $searchForm.submit();
     $searchForm.find('input,select,button').attr('disabled', true);
 });
@@ -106,7 +108,10 @@ var invokeBulkAction = function(action) {
         $.ajax({
             url: '/admin-export-work-orders-by-id',
             type: 'POST',
-            data: {id_list: siteIds}
+            data: {
+                event: $eventSelect.val(),
+                id_list: siteIds
+            }
         }).done(function(data) {
             pollForCSVDownload(
                 data.filename,

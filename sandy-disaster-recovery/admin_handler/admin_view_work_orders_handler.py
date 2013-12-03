@@ -265,15 +265,25 @@ class AdminExportWorkOrdersByIdBulkHandler(
         self.handle(org, event)
 
     def handle(self, org, event):
+        # get list of ids
         self.id_list = self.request.get('id_list')
         if not self.id_list:
             self.abort(404)
+
+        # get selected event -> filename
+        selected_event = event_db.Event.get(self.request.get('event'))
+        filename = "%s-%s-%s.csv" % (
+            re.sub(r'\W+', '-', selected_event.name.lower()),
+            re.sub(r'\W+', '-', org.name.lower()),
+            str(time.time())
+        )
 
         self.start_export(
             org,
             event,
             '/export_bulk_worker',
-            filtering_event_key=None  # event filtering handled prior
+            filtering_event_key=None,  # event filtering handled prior
+            filename=filename
         )
 
     def get_continuation_param_dict(self):
@@ -292,7 +302,16 @@ class AdminExportWorkOrdersByQueryBulkHandler(
     def AuthenticatedPost(self, org, event):
         self.org = org
         self.event = event
-        self.start_export(org, event, '/admin-export-bulk-worker')
+
+        # get selected event -> filename
+        selected_event = event_db.Event.get(self.request.get('event'))
+        filename = "%s-%s-%s.csv" % (
+            re.sub(r'\W+', '-', selected_event.name.lower()),
+            re.sub(r'\W+', '-', org.name.lower()),
+            str(time.time())
+        )
+
+        self.start_export(org, event, '/admin-export-bulk-worker', filename=filename)
     
     def get_continuation_param_dict(self):
         d = super(AdminExportWorkOrdersByQueryBulkHandler, self).get_continuation_param_dict()

@@ -60,6 +60,10 @@ def create_work_order_search_form(events, work_types, limiting_event=None):
 
     class WorkOrderSearchForm(Form):
 
+        def __init__(self, *args, **kwargs):
+            super(WorkOrderSearchForm, self).__init__(*args, **kwargs)
+            self.offset.data = 0  # offset set by the form should always be 0
+
         offset = HiddenField(default="0")
         order = HiddenField()
         event = SelectField(

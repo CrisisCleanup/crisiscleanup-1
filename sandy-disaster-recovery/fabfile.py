@@ -284,11 +284,6 @@ def deploy(apps, tag='HEAD', version=None):
     Deploy to one or more applications
     (semicolon-separated values or 'all').
     """
-    # if deploying to all, check
-    if apps == 'all':
-        if not confirm("Deploy to ALL apps, excluding sandbox? Are you sure?", default=False):
-            abort("Deploy to all except sandbox unconfirmed")
-
     # get app definitions
     app_defns = get_app_definitions(apps.split(';'))
 
@@ -321,10 +316,19 @@ def deploy(apps, tag='HEAD', version=None):
         else:
             gae_app_version = current_branch
 
-    # log that we are deploying
-    print "\n\n** Deploying %s as %s to %s **\n\n" % (tag, gae_app_version, ', '.join(
+    # state options
+    print "\nSelected deployment options:\n"
+    print "Tag:             %s" % tag
+    print "GAE app version: %s" % gae_app_version
+    print "Apps:            %s" % ', '.join(
         app_defn['application'] for app_defn in app_defns
-    ))
+    )
+    print
+
+    # if deploying to all, check
+    if apps == 'all':
+        if not confirm("Deploy to ALL apps, excluding sandbox? Are you sure?", default=False):
+            abort("Deploy to all except sandbox unconfirmed")
 
     # clear old build dirs
     clear_build_dirs()
@@ -338,6 +342,7 @@ def deploy(apps, tag='HEAD', version=None):
 
     # deploy to all specified apps
     for app_defn in app_defns:
+        print "\nDeploying to %s...\n" % app_defn['application']
         print "Writing app.yaml..."
         write_app_yaml(app_defn, gae_app_version=gae_app_version)
         perform_overwrites(app_defn)

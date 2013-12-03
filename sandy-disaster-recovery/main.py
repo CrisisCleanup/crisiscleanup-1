@@ -44,7 +44,6 @@ import sites_handler
 import new_organization_handler
 import welcome_handler
 import organization_ajax_handler
-import export_all_handler
 from admin_handler import admin_handler
 import organization_info_handler
 import contact_info_handler
@@ -143,7 +142,6 @@ app = webapp2.WSGIApplication([
     Route(r'/authentication', authentication_handler.AuthenticationHandler,
           'auth'),
     Route(r'/export', export_handler.ExportHandler, 'export'),
-    Route(r'/export_all', export_all_handler.ExportAllHandler, 'export_all'),
     Route(r'/export_bulk', export_bulk_handler.ExportBulkHandler, 'export_bulk'),
     Route(r'/export_bulk_worker', export_bulk_handler.ExportBulkWorker, 'export_bulk_worker'),
     Route(r'/export_bulk_download', export_bulk_handler.DownloadBulkExportHandler, 'export_bulk_download'),

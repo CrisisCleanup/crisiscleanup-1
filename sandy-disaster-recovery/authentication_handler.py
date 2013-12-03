@@ -15,7 +15,6 @@
 # limitations under the License.
 #
 # System libraries.
-import Cookie
 import datetime
 import jinja2
 import os
@@ -27,7 +26,6 @@ import wtforms.fields
 import wtforms.form
 import wtforms.validators
 import logging
-import time
 
 # Local libraries.
 import base
@@ -37,9 +35,11 @@ import organization
 import site_db
 import page_db
 
+
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('authentication.html')
+
 
 def GetOrganizationForm(post_data):
   e = event_db.Event(name = "Test Incident",
@@ -49,7 +49,6 @@ def GetOrganizationForm(post_data):
   organizations = db.GqlQuery(query_string)
   events = event_db.GetAllCached()
   events = db.GqlQuery("SELECT * From Event ORDER BY created_date DESC")
-  dirty = False
   event_key = None
   if events.count() == 0:
     logging.warning("Initialize called")
@@ -64,33 +63,12 @@ def GetOrganizationForm(post_data):
     events = [e]
 
   if organizations.count() == 0:
-    #time.sleep(5)
-    # This is to initially populate the database the first time.
-    # TODO(oryol): Add a regular Google login-authenticated handler
-    # to add users and passwords, whitelisted to the set of e-mail
-    # addresses we want to allow.
+    # initially populate the database the first time.
     default = organization.Organization(name = "Admin", password = "temporary_password", org_verified=True, is_active=True, is_admin=True, incident = event_key)
     default.put()
-    organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True ORDER BY name")# WHERE organization = :1 LIMIT 1", obj.key())
-  elif organizations.count() >= 2:
-    modified = []
-    for o in organizations:
-      #if o.name == "Administrator":
-        #pass
-        ##o.delete()
-      #else:
-      modified.append(o)
-    organizations = modified
+    organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True ORDER BY name")
 
-
-  #organizations.sort(key=lambda org: org.name)
-  #events.sort(key=lambda event: event.name)
-  
   class OrganizationForm(wtforms.form.Form):
-    #name = wtforms.fields.SelectField(
-        #'Name',
-        #choices = [(o.name, o.name) for o in organizations],
-        #validators = [wtforms.validators.required()])
     event = wtforms.fields.SelectField(
         'Work Event',
         choices = [(e.name, e.name) for e in events],
@@ -132,16 +110,10 @@ class AuthenticationHandler(base.RequestHandler):
       
       for l in organization.Organization.gql(
 	  "WHERE name = :name LIMIT 1", name = self.request.get("name")):
-      # when all orgs have incidents
-      #for l in organization.Organization.gql(
-	      #"WHERE name = :name and incident = :event_key LIMIT 1", name = form.name.data, event_key = event.key()):
 	org = l
     else:
       for l in organization.Organization.gql(
 	  "WHERE name = :name AND incident = :incident LIMIT 1", name = self.request.get("name"), incident=event.key()):
-      # when all orgs have incidents
-      #for l in organization.Organization.gql(
-	      #"WHERE name = :name and incident = :event_key LIMIT 1", name = form.name.data, event_key = event.key()):
 	org = l
 
     if event and org and org.password == form.password.data:

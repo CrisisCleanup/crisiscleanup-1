@@ -60,6 +60,7 @@ ten_minutes = 600
 
 
 class AdminHandler(base.AuthenticatedHandler):
+
     def AuthenticatedPost(self, org, event):
         global_admin = False
         local_admin = False
@@ -72,20 +73,6 @@ class AdminHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
 
-        events_list = None
-        if global_admin:
-            query_string = "SELECT * FROM Event"
-            events_list = db.GqlQuery(query_string)
-        
-        if local_admin:
-            events_list = []
-            query_string = "SELECT * FROM Event"
-            events = db.GqlQuery(query_string)
-            
-            for e in events:
-                if e.key() == org.incident.key():                    
-                    events_list.append(e)
-            
         if self.request.get("create_contact"):
             data = primary_contact_db.ContactFormFull(self.request.POST)
             if data.validate():

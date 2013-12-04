@@ -12,12 +12,18 @@ class="activePage"
 
 {% include '_admin_org_table.html' %}
 
-<form method=GET action="/admin-edit-organization">
+<form method=GET action="/admin-edit-organization" style="display: inline-block">
   <input type=hidden name="organization" value={{organization.key().id()}}>
   <button class="btn" type=submit value="Edit Organization">
     Edit Organization
   </button>
 </form>
+
+<div style="display: inline-block">
+  <a class="btn btn-default" href="/admin-create-contact?selected_org={{ organization.key().id() }}">
+    Add Contact
+  </a>
+</div>
 
 <h2>Delete Organization</h2>
 

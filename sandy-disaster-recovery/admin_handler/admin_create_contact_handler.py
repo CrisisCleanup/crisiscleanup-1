@@ -28,9 +28,13 @@ class AdminHandler(AdminAuthenticatedHandler):
     template = "admin_create_contact.html"
 
     def AuthenticatedGet(self, org, event):
-        form = primary_contact_db.ContactFormFull()
         selected_org_id = self.request.get('selected_org')
-        selected_org = organization.Organization.get_by_id(int(selected_org_id))
+        selected_org = (
+            organization.Organization.get_by_id(int(selected_org_id))
+            if selected_org_id else None
+        )
+
+        form = primary_contact_db.ContactFormFull()
 
         if org.is_global_admin:
             query_string = "SELECT * FROM Organization WHERE org_verified = True"

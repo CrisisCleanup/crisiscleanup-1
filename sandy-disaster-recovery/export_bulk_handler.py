@@ -7,6 +7,7 @@ from StringIO import StringIO
 
 from google.appengine.api import taskqueue
 from google.appengine.api import files
+from google.appengine.ext import blobstore
 from google.appengine.ext.blobstore import BlobInfo, BlobReader
 from google.appengine.ext.webapp import blobstore_handlers
 
@@ -235,12 +236,13 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
                 self.blobstore_filename)
             blob_reader = BlobReader(generated_file_blob_key)
             deduplicated_lines = set(line for line in blob_reader)
+            blobstore.delete(generated_file_blob_key)
+
+            # write csv header and deduplicated lines to new file
             deduplicated_blobstore_filename = files.blobstore.create(
                 mime_type='text/csv',
                _blobinfo_uploaded_filename=self.filename
             )
-
-            # write csv header and deduplicated lines
             with files.open(deduplicated_blobstore_filename, 'a') as fd:
                 fd.write(self.csv_header)
                 for line in deduplicated_lines:

@@ -48,7 +48,7 @@ def create_work_order_search_form(events, work_types, limiting_event=None):
     if limiting_event:
         if limiting_event.key() not in [e.key() for e in events]:
             raise Exception("Event %s unavailable" % limiting_event)
-        orgs = Organization.all().filter('incident', limiting_event.key())
+        orgs = Organization.all().filter('incidents', limiting_event.key())
         work_types = [
             site.work_type for site
             in Query(Site, projection=['work_type'], distinct=True) \
@@ -56,7 +56,7 @@ def create_work_order_search_form(events, work_types, limiting_event=None):
             if site.work_type in work_types
         ]
     else:
-        orgs = Organization.all().filter('incident in', [event for event in events])
+        orgs = Organization.all().filter('incidents in', [event for event in events])
 
     class WorkOrderSearchForm(Form):
 
@@ -115,7 +115,9 @@ def query_from_form(org, event, form, projection=None, distinct=None):
     elif org.is_local_admin:
         if projection is not None or distinct is not None:
             raise Exception("Not currently supported for local admin")
-        query = Query(Site).filter('event', org.incident.key())
+        query = Query(Site).filter('event in', [
+            incident.key() for incident in org.incidents
+        ])
     else:
         raise Exception("Not an admin")
 
@@ -151,11 +153,11 @@ def form_and_query_from_params(org, event, limiting_event, form_data, projection
             in Query(Site, projection=['work_type'], distinct=True)
         ]
     elif org.is_local_admin:
-        events = [event_db.Event.get(org.incident.key())]
+        events = org.incidents
         work_types = [
             site.work_type for site
             in Query(Site, projection=['work_type'], distinct=True) \
-                .filter('event', org.incident.key())
+                .filter('event in', [incident.key() for incident in org.incidents])
         ]
 
     # construct search form, limiting by event if supplied
@@ -243,7 +245,7 @@ class AdminWorkOrderBulkActionHandler(AdminAuthenticatedHandler):
         if org.is_global_admin:
             event_keys = list(event_db.Event.all(keys_only=True))
         elif org.is_local_admin:
-            event_keys = [org.incident.key()]
+            event_keys = org.incidents
 
         # handle bulk action
         fn = self.BULK_ACTIONS[action]
@@ -251,7 +253,11 @@ class AdminWorkOrderBulkActionHandler(AdminAuthenticatedHandler):
             site = Site.get_by_id(id)
             authorised = (
                 site.event.key() in event_keys
-                and (selected_org is None or selected_org.incident.key() in event_keys)
+                and (selected_org is None or any(
+                    incident_key in event_keys for incident_key in [
+                        incident.key() for incident in org.incidents
+                    ])
+                )
             )
             if authorised:
                 fn(self, site, org=selected_org, status=status)

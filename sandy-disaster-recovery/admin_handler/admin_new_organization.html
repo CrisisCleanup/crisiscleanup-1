@@ -27,30 +27,27 @@ This organization is awaiting approval
 {% include '_admin_org_table.html' %}
 
 {% if form %}
-  (this cannot be undone)
-  <form method=POST action="/admin">
-  <input type=hidden name=activate_organization value={{new_organization.key().id()}}>
-  <input type=submit value="Verify And Activate Organization">
+  <p>(this cannot be undone)</p>
+  <form method=POST action="/admin" style="display: inline-block">
+    <input type=hidden name=activate_organization value={{new_organization.key().id()}}>
+    <input type="submit" class="btn btn-primary"  value="Verify And Activate Organization">
   </form>
 {% else %}
-  <form method=POST action="/admin">
-  <input type=hidden name=edit_org_id value={{new_organization.key().id()}}>
-  <input type=submit value="Edit Organization">
+  <form method=POST action="/admin" style="display: inline-block">
+    <input type=hidden name=edit_org_id value={{new_organization.key().id()}}>
+    <input type="submit" class="btn"  value="Edit Organization">
   </form>
 {% endif %}
 
-  <form method=GET action="/admin-edit-organization">
-  <input type=hidden name="organization" value={{new_organization.key().id()}}>
-  <input type=submit value="Edit Organization">
+  <form method=GET action="/admin-edit-organization" style="display: inline-block">
+    <input type=hidden name="organization" value={{new_organization.key().id()}}>
+    <input type="submit" class="btn"  value="Edit Organization">
   </form>
-    <form method=POST action="/admin">
       
-  <form method=POST action="/admin">
-    (This cannot be undone. All Contacts will be retained in the system, but their References to this Organization will be removed.)
-    <br/>
-
-  <input type=hidden name=delete_org_id value={{new_organization.key().id()}}>
-  <input type=submit value="Permanently delete this organization">
+  <form method=POST action="/admin" style="margin-top: 20px;">
+    <p>(This cannot be undone. All Contacts will be retained in the system, but their References to this Organization will be removed.)</p>
+    <input type=hidden name=delete_org_id value={{new_organization.key().id()}}>
+    <input type="submit" class="btn btn-danger"  value="Permanently delete this organization">
   </form>
 {% endblock %}
 

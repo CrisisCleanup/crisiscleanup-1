@@ -34,6 +34,7 @@ import key
 import organization
 import site_db
 import page_db
+from messaging import email_administrators
 
 
 jinja_environment = jinja2.Environment(
@@ -63,8 +64,15 @@ def GetOrganizationForm(post_data):
     events = [e]
 
   if organizations.count() == 0:
-    # initially populate the database the first time.
-    default = organization.Organization(name = "Admin", password = "temporary_password", org_verified=True, is_active=True, is_admin=True, incident = event_key)
+    # init: populate the database with Admin user
+    default = organization.Organization(
+        name="Admin",
+        password="temporary_password",
+        org_verified=True,
+        is_active=True,
+        is_admin=True,
+        incidents=[event_key]
+    )
     default.put()
     organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True ORDER BY name")
 
@@ -81,6 +89,7 @@ def GetOrganizationForm(post_data):
 
 
 class AuthenticationHandler(base.RequestHandler):
+
   def get(self):
     org, event = key.CheckAuthorization(self.request)
     if org and event:
@@ -105,21 +114,50 @@ class AuthenticationHandler(base.RequestHandler):
     for e in event_db.Event.gql(
     "WHERE name = :name LIMIT 1", name = form.event.data):
         event = e
+
+    # check org and incident match
     org = None
-    if (self.request.get("name") == "Admin"):
-      
-      for l in organization.Organization.gql(
-	  "WHERE name = :name LIMIT 1", name = self.request.get("name")):
-	org = l
+    selected_org_name = self.request.get("name")
+    if selected_org_name == "Admin":
+      for x in organization.Organization.gql(
+	  "WHERE name = :name LIMIT 1", name=selected_org_name
+      ):
+	org = x
     else:
-      for l in organization.Organization.gql(
-	  "WHERE name = :name AND incident = :incident LIMIT 1", name = self.request.get("name"), incident=event.key()):
-	org = l
+      for x in organization.Organization.gql(
+	  "WHERE name = :name AND incidents = :incident LIMIT 1",
+          name=selected_org_name,
+          incident=event.key()
+      ):
+	org = x
+
+    # handle verified+active existing org joining new incident
+    if not org and selected_org_name == 'Other':
+        existing_org_name = self.request.get("existing-organization")
+        for x in organization.Organization.gql(
+            "WHERE name = :name LIMIT 1", name=existing_org_name):
+            org = x
 
     if event and org and org.password == form.password.data:
-      # login was successful: timestamp org, set cookie, and redirect
+      # login was successful
+
+      # (temp) force migration of org.incident -> org.incidents
+      unicode(org.incidents)
+
+      # add org to incident if not already allowed
+      if not org.may_access(event):
+          org.join(event)
+          message = u"Existing organization %s has joined incident %s." % (
+              org.name, event.name)
+          logging.info(u"authentication_handler: %s" % message)
+          email_administrators(event, message, message)
+          org.save()
+
+      # timestamp login
       org.timestamp_login = datetime.datetime.utcnow()
       org.save()
+
+      # create login key
       keys = key.Key.all()
       keys.order("date")
       selected_key = None
@@ -137,6 +175,8 @@ class AuthenticationHandler(base.RequestHandler):
                 string.ascii_uppercase + string.digits)
                                   for x in range(20)))
         selected_key.put()
+
+      # set cookie of org and event
       self.response.headers.add_header("Set-Cookie",
                                        selected_key.getCookie(org, event))
       self.redirect(urllib.unquote(self.request.get('destination', default_value='/').encode('ascii')))

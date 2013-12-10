@@ -15,23 +15,13 @@
 # limitations under the License.
 #
 
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
-
 # System libraries.
-import cgi
 import jinja2
-import logging
 import os
-import urllib2
-import wtforms.validators
-import cache
 from collections import OrderedDict
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
 import event_db
 import json
 import organization
@@ -40,16 +30,35 @@ loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 
 class OrganizationAjaxHandler(base.RequestHandler):
+
     def get(self):
-        data = {}
-        event = None
-        for e in event_db.Event.gql("Where name = :1", self.request.get("event_name")):
-            event = e
-        for org in organization.Organization.gql(
-            'Where incident = :1 and is_active = :2 ORDER BY name', event.key(), True):
-            data[org.name] = org.name
-            
-        d_sorted_by_value = OrderedDict(sorted(data.items(), key=lambda x: x[1]))
-        
-        self.response.out.write(json.dumps(d_sorted_by_value))
- 
+        event_name = self.request.get("event_name")
+        event = event_db.Event.all().filter('name', event_name).get()
+        if not event:
+            self.abort(404)
+
+        event_org_names = [
+            org.name for org in organization.Organization.gql(
+                'WHERE incidents = :1 and is_active = :2 ORDER BY name',
+                event.key(),
+                True
+            )
+        ]
+        other_org_names = [
+            org.name for org in organization.Organization.gql(
+                'WHERE is_active = True ORDER BY name'
+            )
+            if org.name not in event_org_names
+            and org.name != 'Admin'
+        ]
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(
+            json.dumps({
+                'event_orgs': 
+                    ['Admin'] + sorted(
+                        name for name in event_org_names if name != 'Admin'
+                ),
+                'other_orgs': sorted(other_org_names),
+            })
+        )

@@ -53,7 +53,7 @@ class OrganizationInfoHandler(base.AuthenticatedHandler):
 	    id = None
         message = self.request.get("message")
         if not id:
-            query_string = "SELECT * FROM Organization WHERE incident = :1 ORDER BY name"
+            query_string = "SELECT * FROM Organization WHERE incidents = :1 ORDER BY name"
             organization_list = db.GqlQuery(query_string, event.key())
             self.response.out.write(display_all_template.render({
                 "org_query": organization_list,
@@ -64,7 +64,7 @@ class OrganizationInfoHandler(base.AuthenticatedHandler):
         if not org_by_id:
             self.redirect("organization-info?message=Organization not found. If you think you are seeing this message in error, please contact your administrator.")
             return
-        if not org_by_id.incident.key() == event.key():
+        if event.key() not in (inc.key() for inc in org_by_id.incidents):
             self.redirect("organization-info?message=The organization you are trying to view doesn't belong to the event that you are signed in to. If you think you are seeing this message in error, please contact your administrator.")
             return
         org_key = org_by_id.key()

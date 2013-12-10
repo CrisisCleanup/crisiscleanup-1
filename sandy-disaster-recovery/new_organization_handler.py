@@ -86,7 +86,7 @@ class NewOrganizationHandler(base.RequestHandler):
           if not any(k.startswith(prop) for prop in self.CONTACT_PROPERTIES_LIST):
 	    if k == "choose_event":
 	      chosen_event = event_db.Event.get_by_id(int(v))
-	      setattr(org, "incident", chosen_event.key())
+	      setattr(org, "incidents", [chosen_event.key()])
 	    elif k in self.BOOLEAN_PROPERTIES_LIST:
 	      setattr(org, k, bool(int(v)))
 	    else:
@@ -123,6 +123,7 @@ class NewOrganizationHandler(base.RequestHandler):
 	organization.PutAndCacheOrganizationAndContact(org, new_contacts)
 
         # email administrators
+        import pdb; pdb.set_trace()
         approval_url = "%s://%s/admin-new-organization?new_organization=%d" % (
             urlparse(self.request.url).scheme,
             urlparse(self.request.url).netloc,

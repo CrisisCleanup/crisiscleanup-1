@@ -82,10 +82,8 @@ class AdminHandler(base.AuthenticatedHandler):
                 except:
                     return
                 this_organization = organization.Organization.get_by_id(id)
-                if local_admin:
-                    if not this_organization.incident.key() == org.incident.key():
-                        self.redirect("/")
-                        return
+                if not org.may_administer(this_organization):
+                    self.abort(403)
                 contact = primary_contact_db.Contact(
                     first_name=data.first_name.data,
                     last_name=data.last_name.data,
@@ -143,7 +141,7 @@ class AdminHandler(base.AuthenticatedHandler):
                         twitter = data.twitter.data,
                         url = data.url.data,
                         facebook = data.facebook.data,  
-                        incident = this_event.key(),
+                        incidents = [this_event.key()],
                         password = self.request.get("password"),
                         is_active = True,
                         is_admin = True,
@@ -170,7 +168,6 @@ class AdminHandler(base.AuthenticatedHandler):
             else:
                 # needs events lists, password, errors
                 query_string = "SELECT * FROM Event"
-                events_list = db.GqlQuery(query_string)
                 suggested_password = random_password.generate_password()
                 self.response.out.write(template.render(
                 {
@@ -183,52 +180,50 @@ class AdminHandler(base.AuthenticatedHandler):
                 return
 
         if self.request.get("delete_org_id"):
+            # delete organization
             try:
-                org_by_id = organization.Organization.get(db.Key.from_path('Organization', int(self.request.get("delete_org_id"))))
+                id = int(self.request.get("delete_org_id"))
+                org_by_id = organization.Organization.get_by_id(id)
             except:
-                self.response.set_status(400)
-                return
-            if local_admin:
-                if not org_by_id.incident.key() == org.incident.key():
-                    
-                    self.redirect("/")
-                    return
-                
+                self.abort(400)
+
+            if not org.may_administer(org_by_id):
+                self.abort(403)
+
             primary_contact_db.RemoveOrgFromContacts(org_by_id)
             db.delete(org_by_id)
             self.redirect("/admin")
             return
             
         if self.request.get("activate_organization"):
+            # activate organization
             try:
                 id = int(self.request.get("activate_organization"))
+                org_by_id = organization.Organization.get_by_id(id)
             except:
-                self.response.set_status(400)
-                return
-            org_by_id = organization.Organization.get(db.Key.from_path('Organization', id))
-            if local_admin:
-                if not org_by_id.incident.key() == org.incident.key():
-                    self.redirect("/")
-                    return
-                    
-            org_by_id.org_verified=True
-            org_by_id.is_active=True
+                self.abort(400)
+
+            if not org.may_administer(org_by_id):
+                self.abort(403)
+
+            org_by_id.org_verified = True
+            org_by_id.is_active = True
             organization.PutAndCache(org_by_id, 600)
             self.redirect("/admin")
             return
+
         if self.request.get("save_org_id"):
+            # save org (?)
             try:
                 id = int(self.request.get("save_org_id"))
+                org_by_id = organization.Organization.get_by_id(id)
             except:
-                self.response.set_status(400)
-                return
-            org_by_id = organization.Organization.get(db.Key.from_path('Organization', id))
-            if local_admin:
-                if not org_by_id.incident.key() == org.incident.key():
-                    self.redirect("/")
-                    return
-                    
-            org_by_id.org_verified=True
+                self.abort(400)
+
+            if not org.may_administer(org_by_id):
+                self.abort(403)
+
+            org_by_id.org_verified = True
             organization.PutAndCache(org_by_id, 600)
             self.redirect("/admin")
             return

@@ -20,10 +20,12 @@ import wtforms
 from wtforms.ext.appengine.db import model_form
 from wtforms import TextField, validators, SelectField, DateTimeField
 from google.appengine.api import memcache
-from google.appengine.ext.db import to_dict
+from google.appengine.ext.db import Key, to_dict
 
 import primary_contact_db
+import event_db
 import cache
+from form_utils import MultiCheckboxField
 
 
 class Organization(db.Expando):
@@ -55,7 +57,8 @@ class Organization(db.Expando):
   twitter = db.StringProperty(required=False)
   facebook = db.StringProperty(required=False)
   email = db.StringProperty(required=False)
-  incident = db.ReferenceProperty()
+  _incident_legacy = db.ReferenceProperty(name='incident')
+  _incidents_keys = db.ListProperty(db.Key, name='incidents')
   publish = db.BooleanProperty(required=False)
 
   does_recovery = db.BooleanProperty(required=False)
@@ -77,6 +80,32 @@ class Organization(db.Expando):
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
   timestamp_login = db.DateTimeProperty(required=False)
 
+  # automatically deferencing incidents field
+
+  def _get_incidents(self):
+      # temporary auto-migration: copy individual incident to incidents list
+      if self._incident_legacy and not self._incidents_keys:
+          self._incidents_keys = [self._incident_legacy.key()]
+          self.save()
+
+      return [event_db.Event.get(incident) for incident in self._incidents_keys]
+
+  def _set_incidents(self, incidents):
+      if all(type(inc) == event_db.Event for inc in incidents):
+          self._incidents_keys = [inc.key() for inc in incidents]
+      elif all(type(inc) == Key for inc in incidents):
+          self._incidents_keys = incidents  # TODO could check type of Key's ref
+      else:
+          raise Exception("incidents not of allowed type")
+
+  def _del_incidents(self):
+      del(self._incidents_keys)
+
+  incidents = property(_get_incidents, _set_incidents, _del_incidents)
+
+
+  # access controls
+
   @property
   def is_global_admin(self):
       return self.name == "Admin"
@@ -85,6 +114,36 @@ class Organization(db.Expando):
   def is_local_admin(self):
       return self.is_admin and not self.is_global_admin
 
+  def join(self, event):
+      assert type(event) is event_db.Event
+      if event.key() not in self._incidents_keys:
+          self.incidents = self.incidents + [event]
+
+  def may_access(self, obj):
+      if type(obj) is event_db.Event:
+          return obj.key() in self._incidents_keys
+      else:
+          raise NotImplementedError("may_access(obj) of type %s" % type(obj))
+
+  def may_administer(self, org_or_contact):
+      " Returns true if self may administer org/contact. "
+      # get org to check against
+      if type(org_or_contact) is Organization:
+          org = org_or_contact
+      elif type(org_or_contact) is primary_contact_db.Contact:
+          org = org_or_contact.organization
+      else:
+          raise Exception("org_or_contact is of unexpected type %s" % type(org_or_contact))
+
+      # check authority
+      return (
+          self.is_global_admin or
+          self.is_local_admin and any(
+              incident.key() in [self_incident.key() for self_incident in self.incidents]
+              for incident in org.incidents
+          )
+      )
+
   @property
   def primary_contacts(self):
     return primary_contact_db.Contact.gql(
@@ -92,6 +151,8 @@ class Organization(db.Expando):
       self.key()
     )
 
+  def __repr__(self):
+      return u"<Organization: %s>" % self.name
 
   
 cache_prefix = Organization.__name__ + "-d:"
@@ -221,19 +282,40 @@ class OrganizationValidatorsMixIn(object):
     )
 
 
+def event_key_coerce(x):
+    if type(x) is event_db.Event:
+        return x.key()
+    elif type(x) is Key:
+        return x
+    else:
+        return Key(x)
+
 class OrganizationForm(
         model_form(
             Organization,
-            exclude=['incident', 'timestamp_signup', 'timestamp_login']
+            exclude=['incidents', 'timestamp_signup', 'timestamp_login']
         ),
         OrganizationValidatorsMixIn
     ): 
+
     """ All fields, for admin use. """
 
+    incidents = MultiCheckboxField(
+        choices=[(event.key(), event.name) for event in event_db.Event.all()],
+        coerce=event_key_coerce,
+    )
     timestamp_login = DateTimeField(
         "Last logged in",
         [validators.optional()]
     )
+
+    def __init__(self, *args, **kwargs):
+        super(OrganizationForm, self).__init__(*args, **kwargs)
+
+        # override incidents data
+        incidents = kwargs.get('incidents')
+        if incidents is not None:
+            self.incidents.data = incidents
 
 
 class CreateOrganizationForm(OrganizationForm):

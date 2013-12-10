@@ -51,13 +51,10 @@ class AdminHandler(base.AuthenticatedHandler):
 
     def _get_events(self, org, global_admin, local_admin):
         if global_admin:
-            query_string = "SELECT * FROM Event"
-            return db.GqlQuery(query_string)
+            return event_db.Event.all() 
         
         if local_admin:
-            query_string = "SELECT * FROM Event"
-            events = db.GqlQuery(query_string)
-            return [e for e in events if e.key() == org.incident.key()]
+            return org.incidents
 
     def AuthenticatedGet(self, org, _):
         global_admin = False
@@ -107,9 +104,12 @@ class AdminHandler(base.AuthenticatedHandler):
             event = event_db.Event.get_by_id(int(form.incident.data))
             new_org = Organization(
                 name=form.name.data,
-                incident=event,
             )
+            import pdb; pdb.set_trace()
+            new_org.incidents = [event.key()]
+            new_org.save()
             del(form.incident)
+            del(form.incidents)
             form.populate_obj(new_org)
             new_org.save()
 

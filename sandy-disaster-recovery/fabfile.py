@@ -375,5 +375,5 @@ def write_local_app_yaml():
 @task
 def dev():
     " Start development server. "
-    local("%s --high_replication --require_indexes ." %
+    local("%s --high_replication --require_indexes --show_mail_body ." %
         os.path.join(env.sdk_path, 'dev_appserver.py'))

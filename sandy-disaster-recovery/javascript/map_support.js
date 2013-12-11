@@ -69,7 +69,7 @@ $exportButtons.click(function () {
 $exportAllButton = $('button.all-export-btn');
 
 $exportAllButton.click(function() {
-    window.location = '/export_all_download';
+    $('iframe#file-download-target')[0].src = '/export_all_download';
     return false;  // prevent default
 });
   

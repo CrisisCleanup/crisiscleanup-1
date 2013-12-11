@@ -32,7 +32,7 @@ PULASKI_CSV_FIELDS_LIST = ["claimed_by", "reported_by", "modified_by", "case_num
 
 # functions
 
-def get_csv_fields_list(event_short_name=None):
+def get_csv_fields_list(event_short_name):
     " Return CSV fields list with substitutions interpolated. "
     # choose fields list
     if event_short_name in ('moore', 'midwest_tornadoes'):
@@ -90,7 +90,7 @@ class AbstractExportBulkHandler(object):
             )
         ])
         writer.writerow(
-            get_csv_fields_list(event_short_name=event.short_name)
+            get_csv_fields_list(event.short_name)
         )
         self.csv_header = header_sio.getvalue()
         header_sio.close()
@@ -179,7 +179,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
     def _write_csv_rows(self, fd, sites):
         writer = csv.writer(fd)
         event_short_name = self.event.short_name if self.event else None
-        fields = get_csv_fields_list(event_short_name=event_short_name)
+        fields = get_csv_fields_list(event_short_name)
         for site in sites:
             writer.writerow(site.ToCsvLine(fields))
 

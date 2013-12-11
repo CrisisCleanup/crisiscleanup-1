@@ -119,17 +119,27 @@ class AuthenticationHandler(base.RequestHandler):
     org = None
     selected_org_name = self.request.get("name")
     if selected_org_name == "Admin":
+      # admin user
       for x in organization.Organization.gql(
 	  "WHERE name = :name LIMIT 1", name=selected_org_name
       ):
 	org = x
     else:
+      # regular user
       for x in organization.Organization.gql(
 	  "WHERE name = :name AND incidents = :incident LIMIT 1",
           name=selected_org_name,
           incident=event.key()
       ):
 	org = x
+      if org is None:
+          # try legacy incident field
+          for x in organization.Organization.gql(
+              "WHERE name = :name and incident = :incident LIMIT 1",
+              name=selected_org_name,
+              incident=event.key()
+          ):
+              org = x
 
     # handle verified+active existing org joining new incident
     if not org and selected_org_name == 'Other':

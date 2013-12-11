@@ -570,6 +570,23 @@ indexes:
 
 - kind: Organization
   properties:
+  - name: incident
+  - name: is_active
+  - name: name
+
+- kind: Organization
+  properties:
+  - name: incident
+  - name: is_admin
+  - name: name
+
+- kind: Organization
+  properties:
+  - name: incident
+  - name: name
+
+- kind: Organization
+  properties:
   - name: incidents
   - name: is_active
   - name: name

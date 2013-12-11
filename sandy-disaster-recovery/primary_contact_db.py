@@ -146,6 +146,11 @@ class ContactForm(model_form(Contact, exclude=['organization'])):
             min=1, max=100,
             message = "Name must be between 1 and 100 characters")
     ])
+    title = TextField('Org Title',[
+        validators.Length(
+            min=1, max=100,
+            message = "Org Title must be between 1 and 100 characters")
+    ])
     phone = TextField('Phone', [
         validators.Length(
             min=1, max=15,

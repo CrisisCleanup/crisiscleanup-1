@@ -642,6 +642,15 @@ indexes:
   - name: event
   - name: work_type
 
+- kind: Site
+  properties:
+  - name: event
+  - name: claimed_by
+  - name: county
+  - name: reported_by
+  - name: status
+  - name: work_type
+
 - kind: __BlobInfo__
   properties:
   - name: filename

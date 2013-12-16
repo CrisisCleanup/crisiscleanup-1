@@ -1,9 +1,11 @@
 
 import os
 
+from google.appengine.ext import db
 from google.appengine.ext import deferred
 from google.appengine.ext import blobstore
 from google.appengine.api import files
+
 import webapp2
 import jinja2
 
@@ -35,9 +37,8 @@ STATS_CSV_TEMPLATE_NAME = 'templates/csv/incident_statistics.csv'
 
 def crunch_incident_statistics(event):
     " To a dict. "
-    orgs = event.organizations
-    sites_query = Site.all().filter('event', event.key())
 
+    # setup counters
     claimed_status_counts = {status: 0 for status in STATUSES}
     unclaimed_status_counts = {status: 0 for status in STATUSES}
     work_type_open_counts = {}
@@ -45,13 +46,20 @@ def crunch_incident_statistics(event):
     county_open_counts = {}
     county_closed_counts = {}
 
+    orgs = event.organizations
     org_claimed_counts = {org.key().id(): 0 for org in orgs}
     org_open_counts = {org.key().id(): 0 for org in orgs}
     org_closed_counts = {org.key().id(): 0 for org in orgs}
     org_reported_counts = {org.key().id(): 0 for org in orgs}
 
+    # create and batch query
+    sites_query = db.Query(
+        Site,
+        projection=['claimed_by', 'reported_by', 'status', 'work_type', 'county']
+    ).filter('event', event.key())
     batched_sites = BatchingQuery(sites_query, SITES_BATCH_SIZE)
 
+    # iterate to crunch
     for site in batched_sites:
         claiming_org = site.claimed_by
         claimed = bool(claiming_org)
@@ -88,7 +96,7 @@ def crunch_incident_statistics(event):
         if reporting_org:
             org_reported_counts[reporting_org.key().id()] += 1
 
-    # totals
+    # compute totals
     total_status_counts = {
         status: claimed_status_counts.get(status, 0) + \
                 unclaimed_status_counts.get(status, 0)

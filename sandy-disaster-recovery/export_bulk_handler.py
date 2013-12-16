@@ -217,9 +217,12 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         fetched_sites = query.fetch(limit=self.sites_per_task)
         sites = self.filter_sites(fetched_sites)
 
-        # write lines to blob file
+        # write sites to sio, then blob file
+        # (can only keep blob file open for limited time...)
+        sio = StringIO()
+        self._write_csv_rows(sio, sites)
         with files.open(self.blobstore_filename, 'a') as fd:
-            self._write_csv_rows(fd, sites)
+            fd.write(sio.getvalue())
 
         # decide what to do next
         self.end_cursor = query.cursor()

@@ -79,7 +79,6 @@ class OrganizationEditContactsHandler(base.AuthenticatedHandler):
             self.abort(403)
 
         # abort if from another incident
-        import pdb; pdb.set_trace()
         if event.key() not in (inc.key() for inc in this_contact.organization.incidents):
             self.abort(403)
 

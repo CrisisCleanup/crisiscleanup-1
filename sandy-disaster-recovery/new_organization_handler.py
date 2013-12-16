@@ -123,7 +123,6 @@ class NewOrganizationHandler(base.RequestHandler):
 	organization.PutAndCacheOrganizationAndContact(org, new_contacts)
 
         # email administrators
-        import pdb; pdb.set_trace()
         approval_url = "%s://%s/admin-new-organization?new_organization=%d" % (
             urlparse(self.request.url).scheme,
             urlparse(self.request.url).netloc,

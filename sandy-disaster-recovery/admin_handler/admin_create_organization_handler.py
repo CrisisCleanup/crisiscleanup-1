@@ -105,7 +105,6 @@ class AdminHandler(base.AuthenticatedHandler):
             new_org = Organization(
                 name=form.name.data,
             )
-            import pdb; pdb.set_trace()
             new_org.incidents = [event.key()]
             new_org.save()
             del(form.incident)

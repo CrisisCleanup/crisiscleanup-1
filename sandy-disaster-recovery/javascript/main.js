@@ -480,6 +480,9 @@ var initMap = function() {
     goog.style.showElement(filters, true);
 };
 
+var batchLoadedOpen = false;
+var batchLoadedClosed = false;
+
 sandy.main.initialize = function (siteId, zoomLevel) {
     var country = sandy.util.determineCountry();
     var mapCenter = sandy.util.MAP_CENTER[country];
@@ -519,11 +522,18 @@ sandy.main.initialize = function (siteId, zoomLevel) {
         goog.ui.ac.AutoComplete.EventType.UPDATE,
         selectFunction);
     sandy.sites.tryBatchLoadSites("open", 0, initMap);
+    batchLoadedOpen = true;
     goog.dom.getElement("open").checked = true;
-    goog.dom.getElement("open").onclick = function () {
-        goog.dom.getElement("open").onclick = null;
-        sandy.sites.tryBatchLoadSites("closed", 0, initMap);
-    };
+    goog.events.listen(
+        goog.dom.getElement("open"),
+        goog.events.EventType.CLICK,
+        function() {
+            if (!batchLoadedClosed) {
+                batchLoadedClosed = true;
+                sandy.sites.tryBatchLoadSites("closed", 0, initMap);
+            }
+        }
+    );
 
     if (siteId) {
         zoomLevel = zoomLevel || 15;

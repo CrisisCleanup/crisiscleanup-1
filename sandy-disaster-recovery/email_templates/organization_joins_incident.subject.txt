@@ -1,0 +1,1 @@
+Existing organization {{ organization.name }} has joined incident {{ event.name }}

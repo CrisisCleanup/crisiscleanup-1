@@ -26,6 +26,7 @@ import wtforms.fields
 import wtforms.form
 import wtforms.validators
 import logging
+from urlparse import urlparse
 
 # Local libraries.
 import base
@@ -34,7 +35,7 @@ import key
 import organization
 import site_db
 import page_db
-from messaging import email_administrators
+from messaging import email_administrators_using_templates
 
 
 jinja_environment = jinja2.Environment(
@@ -157,10 +158,28 @@ class AuthenticationHandler(base.RequestHandler):
       # add org to incident if not already allowed
       if not org.may_access(event):
           org.join(event)
-          message = u"Existing organization %s has joined incident %s." % (
-              org.name, event.name)
-          logging.info(u"authentication_handler: %s" % message)
-          email_administrators(event, message, message)
+          logging.info(
+            u"authentication_handler: "
+            u"Existing organization %s has joined incident %s." % (
+                org.name, event.name
+            )
+          )
+
+          # email administrators
+          review_url = "%s://%s/admin-single-organization?organization=%s" % (
+              urlparse(self.request.url).scheme,
+              urlparse(self.request.url).netloc,
+              org.key().id()
+          )
+          organization_form = organization.OrganizationForm(None, org)
+          email_administrators_using_templates(
+            event=event,
+            subject_template_name='organization_joins_incident.subject.txt',
+            body_template_name='organization_joins_incident.body.txt',
+            organization=org,
+            review_url=review_url,
+            organization_form=organization_form,
+          )
           org.save()
 
       # timestamp login

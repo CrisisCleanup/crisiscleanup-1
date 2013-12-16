@@ -145,6 +145,12 @@ class Organization(db.Expando):
       )
 
   @property
+  def contacts(self):
+      return primary_contact_db.Contact.gql(
+          "WHERE organization = :1", self.key()
+      )
+
+  @property
   def primary_contacts(self):
     return primary_contact_db.Contact.gql(
       "WHERE organization = :1 and is_primary = True",

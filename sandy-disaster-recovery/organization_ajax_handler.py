@@ -18,7 +18,6 @@
 # System libraries.
 import jinja2
 import os
-from collections import OrderedDict
 
 # Local libraries.
 import base
@@ -58,7 +57,7 @@ class OrganizationAjaxHandler(base.RequestHandler):
                 'WHERE is_active = True ORDER BY name'
             )
             if org.name not in event_org_names
-            and org.name != 'Admin'
+            and not org.is_admin
         ]
 
         self.response.headers['Content-Type'] = 'application/json'

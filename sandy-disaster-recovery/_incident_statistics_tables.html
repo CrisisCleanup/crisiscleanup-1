@@ -1,0 +1,122 @@
+<table>
+  <thead>
+    <tr>
+      <th>Work Orders</th>
+      {% for status in statuses %}
+        <th>{{ status }}</th>
+      {% endfor %}
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Claimed</td>
+      {% for status in statuses %}
+        <td>{{ claimed_status_counts[status] }}</td>
+      {% endfor %}
+      <td>{{ claimed_status_total }}</td>
+    </tr>
+    <tr>
+      <td>Unclaimed</td>
+      {% for status in statuses %}
+        <td>{{ unclaimed_status_counts[status] }}</td>
+      {% endfor %}
+      <td>{{ unclaimed_status_total }}</td>
+    </tr>
+    <tr>
+      <th>Total</th>
+      {% for status in statuses %}
+        <td>{{ total_status_counts[status] }}</td>
+      {% endfor %}
+      <td>{{ total_status_total }}</td>
+    </tr>
+  </tbody>
+<table>
+
+<br><br>
+
+<table>
+  <thead>
+    <tr>
+      <th>Incident</th>
+      <th>Organization</th>
+      <th>Claimed Work Orders</th>
+      <th>Open</th>
+      <th>Closed</th>
+      <th>Reported</th>
+      <th>Last Login</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for org in orgs %}
+      {%- set org_id = org.key().id() -%}
+      <tr>
+        <td>{{ event.name }}</td>
+        <td>{{ org.name }}</td>
+        <td>{{ org_claimed_counts[org_id] }}</td>
+        <td>{{ org_open_counts[org_id] }}</td>
+        <td>{{ org_closed_counts[org_id] }}</td>
+        <td>{{ org_reported_counts[org_id] }}</td>
+        <td>
+          {{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td></td>
+      <td>Totals</td>
+      <td>{{ org_claimed_total }}</td>
+      <td>{{ org_open_total }}</td>
+      <td>{{ org_closed_total }}</td>
+      <td>{{ org_reported_total }}</td>
+    </tr>
+  </tfoot>
+</table>
+
+<br><br>
+
+<table>
+  <thead>
+    <tr>
+      <th>Work Type</th>
+      <th>Open</th>
+      <th>Closed</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for work_type in work_types %}
+      <tr>
+        <td>{{ work_type }}</td>
+        <td>{{ work_type_open_counts[work_type] }}</td>
+        <td>{{ work_type_closed_counts[work_type] }}</td>
+        <td>{{ work_type_totals[work_type] }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br><br>
+
+<table>
+  <thead>
+    <tr>
+      <th>County</th>
+      <th>Open</th>
+      <th>Closed</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for county in counties %}
+      <tr>
+        <td>{{ county }}</td>
+        <td>{{ county_open_counts[county] }}</td>
+        <td>{{ county_closed_counts[county] }}</td>
+        <td>{{ county_totals[county] }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

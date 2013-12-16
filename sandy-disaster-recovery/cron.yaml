@@ -8,7 +8,11 @@ cron:
   url: /blobstore-delete
   schedule: every 24 hours
 
-- description: Regenerate CSV exports of sites for all events
+- description: Generate CSV exports of sites for all events
   url: /task/export-all-events
   schedule: every 60 minutes
-  target: cron-export-all
+
+- description: Crunch statistics for all events
+  url: /task/crunch-all-events-stats
+  schedule: every 64 minutes
+  target: stats

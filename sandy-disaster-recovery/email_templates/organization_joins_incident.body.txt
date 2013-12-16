@@ -6,7 +6,7 @@ To review: {{ review_url }}
 Existing contacts:
 {% for contact in organization.contacts -%}
 * {{ contact.full_name }} {{ contact.phone }} {{ contact.email }} {% if contact.is_primary %}(Primary){% endif %}
-{% endfor -%}
+{% endfor %}
 
 Participating in these incidents:
 {% for incident in organization.incidents -%}

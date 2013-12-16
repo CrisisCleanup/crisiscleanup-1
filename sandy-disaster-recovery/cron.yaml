@@ -14,5 +14,5 @@ cron:
 
 - description: Crunch statistics for all events
   url: /task/crunch-all-events-stats
-  schedule: every 64 minutes
+  schedule: every 84 minutes
   target: stats

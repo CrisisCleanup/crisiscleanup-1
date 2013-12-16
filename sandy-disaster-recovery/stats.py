@@ -10,6 +10,12 @@ import jinja2
 import base
 from site_db import Site, STATUSES
 from event_db import Event
+from db_utils import BatchingQuery
+
+
+# constants
+
+SITES_BATCH_SIZE = 100
 
 
 # jinja
@@ -30,7 +36,7 @@ STATS_CSV_TEMPLATE_NAME = 'templates/csv/incident_statistics.csv'
 def crunch_incident_statistics(event):
     " To a dict. "
     orgs = event.organizations
-    sites = Site.all().filter('event', event.key())
+    sites_query = Site.all().filter('event', event.key())
 
     claimed_status_counts = {status: 0 for status in STATUSES}
     unclaimed_status_counts = {status: 0 for status in STATUSES}
@@ -44,7 +50,9 @@ def crunch_incident_statistics(event):
     org_closed_counts = {org.key().id(): 0 for org in orgs}
     org_reported_counts = {org.key().id(): 0 for org in orgs}
 
-    for site in sites:
+    batched_sites = BatchingQuery(sites_query, SITES_BATCH_SIZE)
+
+    for site in batched_sites:
         claiming_org = site.claimed_by
         claimed = bool(claiming_org)
         reporting_org = site.reported_by

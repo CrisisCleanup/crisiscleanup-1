@@ -9,7 +9,6 @@ import jinja2
 
 import base
 from site_db import Site, STATUSES
-from organization import Organization
 from event_db import Event
 
 
@@ -28,16 +27,9 @@ STATS_CSV_TEMPLATE_NAME = 'templates/csv/incident_statistics.csv'
 
 # functions
 
-def _event_orgs(event):
-    return (
-        list(Organization.all().filter('name', 'Admin')) +
-        list(Organization.all().filter('incidents', event.key()))
-    )
-
-
 def crunch_incident_statistics(event):
     " To a dict. "
-    orgs = _event_orgs(event)
+    orgs = event.organizations
     sites = Site.all().filter('event', event.key())
 
     claimed_status_counts = {status: 0 for status in STATUSES}
@@ -151,7 +143,7 @@ def crunch_incident_statistics(event):
 
 def incident_statistics_csv(incident_statistics_dict):
     event = Event.get(incident_statistics_dict['event_key'])
-    orgs = _event_orgs(event)
+    orgs = event.organizations
 
     incident_statistics_dict['event'] = event
     incident_statistics_dict['orgs'] = orgs
@@ -162,7 +154,7 @@ def incident_statistics_csv(incident_statistics_dict):
 
 def incident_statistics_html(incident_statistics_dict):
     event = Event.get(incident_statistics_dict['event_key'])
-    orgs = _event_orgs(event)
+    orgs = event.organizations
 
     incident_statistics_dict['event'] = event
     incident_statistics_dict['orgs'] = orgs

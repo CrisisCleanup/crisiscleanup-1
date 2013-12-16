@@ -21,13 +21,13 @@ from google.appengine.ext import db
 import logging
 
 from google.appengine.api import memcache
+from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 from wtforms.ext.appengine.db import model_form
 
-
 # Local libraries.
+from organization import Organization
 import cache
 import wtforms
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
 
 class Event(db.Model):
@@ -43,6 +43,24 @@ class Event(db.Model):
   longitudes = db.ListProperty(float)
   reminder_days = db.IntegerProperty(default=15)
   reminder_contents = db.TextProperty()
+
+  @property
+  def organizations(self):
+      """
+      Organizations related to this incident.
+
+      Handles current and legacy incident/s properties.
+      """
+      orgs = (
+          list(Organization.all().filter('name', 'Admin')) +
+          list(Organization.all().filter('incidents', self.key()))
+      )
+      org_ids = set(org.key().id() for org in orgs)
+      for org in Organization.all().filter('incident', self.key()):
+          if org.key().id() not in org_ids:
+              orgs.append(org)
+      return orgs
+
 
 def DefaultEventName():
   return "Hurricane Sandy Recovery"

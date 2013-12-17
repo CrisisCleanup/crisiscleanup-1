@@ -82,6 +82,7 @@ from handlers import incident_edit_map_definition
 from handlers import incident_edit_communications_definition
 from handlers import incident_definition_legacy
 from handlers import check_similar_by_phase_api
+from handlers import incident_definition_home
 
 
 from admin_handler import admin_create_organization_handler
@@ -235,6 +236,7 @@ app = webapp2.WSGIApplication([
     Route(r'/form_ajax_handler', form_ajax_handler.FormAjaxHandler, 'form_ajax_handler'),
 
     Route(r'/incident_definition', incident_definition.IncidentDefinition, 'incident_definition'),
+    Route(r'/incident_definition_home', incident_definition_home.IncidentDefinitionHome, 'incident_definition_home'),
     Route(r'/incident_definition_legacy', incident_definition_legacy.IncidentDefinitionLegacy, 'incident_definition_legacy'),
     Route(r'/incident_definition_ajax', incident_definition_ajax.IncidentDefinitionAjax, 'incident_definition_ajax'),
     Route(r'/incident_create_first_phase', incident_create_first_phase.IncidentCreateFirstPhase, 'incident_create_first_phase'),

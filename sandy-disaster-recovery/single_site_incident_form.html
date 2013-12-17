@@ -1,3 +1,6 @@
+{% if message %}
+{{ message }}
+{% endif %}
 {% if not readonly %}
 {% macro with_errors(field) %}
   {% if field.errors %}

@@ -87,11 +87,17 @@ class FormHandler(base.AuthenticatedHandler):
     # get site id, get PI data, fill form:
     
     ## on site_db, get_personal_information_by_id
-    string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
+    string = "<h2>No Form Added Yet</h2><p>To add a form for this incident, contact your administrator.</p>"
+    label = ""
+    paragraph = ""
+    phases_links = ""
+    submit_button = ""
+    if inc_def_query:
+      string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
+  
+      phases_links = populate_phase_links(json.loads(inc_def_query.phases_json))
 
-    phases_links = populate_phase_links(json.loads(inc_def_query.phases_json))
-
-    submit_button = "<button class='submit'>Submit</button>"
+      submit_button = "<button class='submit'>Submit</button>"
     inc_form = None
     if query:
       inc_form = query.form_html
@@ -264,7 +270,7 @@ class FormHandler(base.AuthenticatedHandler):
 	  return
 	else:
 	  message = "Failed to add site to event: " + event.name
-      elif site_id != None:
+      elif site_id != "":
 	#look up site by id
 	site = site_db.Site.get_by_id(int(site_id))
 	if not site:
@@ -282,14 +288,67 @@ class FormHandler(base.AuthenticatedHandler):
 	  pass
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
 	
-      elif site_id == None:
-	raise Exception(1)
+      elif site_id == "":
+	site = site_db.Site(address = data.address.data,
+			      name = data.name.data)
+			      #event = event.key())
+	
+	for k, v in self.request.POST.iteritems():
+	  if k  in site_db.STANDARD_SITE_PROPERTIES_LIST:
+	    if k == "request_date":
+	      date_saved = False
+	      try:
+		date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
+		setattr(site, k, date_object)
+		date_saved=True
+	      except:
+		date_saved=False
+		pass
+	      if date_saved is False:
+		try:
+		  v = v.replace("/", "-")
+		  date_object = datetime.strptime(v, '%Y-%m-%d')
+		  setattr(site, k, date_object)
+		  date_saved=True
+		except:
+		  date_saved=False
+		  pass
+	      if date_saved is False:
+		try:
+		  v = v.replace("/", "-")
+		  date_object = datetime.strptime(v, '%m-%d-%Y')
+		  setattr(site, k, date_object)
+		  date_saved=True
+		except:
+		  date_saved=False
+		  pass
+	    elif k == "latitude" or k == "longitude":
+	      setattr(site, k, float(v))
+	    else:
+	      setattr(site, k, str(v))
+	
+	if event_db.AddSiteToEvent(site, event.key().id()):
+	  #raise Exception(2)
+	  site_db.PutAndCache(site)
+      	phase_obj = phase.Phase(incident = inc_def_query.key(), site = site.key(), phase_id = phase_id)
+	for k, v in self.request.POST.iteritems():
+	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+	    #raise Exception(k)
+	    setattr(phase_obj, k, str(v))
+	phase_obj.put()
+	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
+
+	# get all info.
+	# save site stuff to sie
+	
+	# save phase stuff to phase
 
 	
 
     else:
       message = "Failed to validate"
       similar_site = None
+
     q = db.Query(form_db.IncidentForm)
     q.filter("incident =", event.key())
     query = q.get()

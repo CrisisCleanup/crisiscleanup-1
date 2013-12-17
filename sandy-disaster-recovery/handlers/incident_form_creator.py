@@ -32,13 +32,13 @@ template = jinja_environment.get_template('incident_form_creator.html')
 def make_date_object(date_string):
   pass
 
-class IncidentFormCreator(base.RequestHandler):
-  def get(self):
+class IncidentFormCreator(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
     incidents = incident_definition.IncidentDefinition.all()
     data = {
         "incidents": incidents,
     }
     self.response.out.write(template.render(data))
 
-  def post(self):
+  def AuthenticatedPost(self, org, event):
     pass

@@ -46,7 +46,7 @@ $(function(){
   console.log(phase_id);
   
   var obj = {
-//     "zip": zip,
+    "phase_id": phase_id,
     "address": address,
     "name": name,
   }
@@ -55,29 +55,35 @@ $(function(){
   
   $.getJSON( "/check_similar_by_phase_api", obj)
     .done(function( data ) {
-      var similar_phase = '<p>Similar site found for this phase.</p> \
+      var similar_phase = '<div style="background-color:yellow;"><p>Similar site found for this phase.</p> \
 	      <ul> \
 	      <li>Name: " '+ data["name"] + '"</li>\
 	      <li>City: " '+ data["city"] + '"</li>\
 	      <li>Address: " '+ data["address"] + '"</li>\
 	      </ul> \
-	      <p>If this is the same site, click <a href="/edit?id=' + data["id"] + '">HERE</a> to edit the existing information.</p>';
+	      <p>If this is the same site, click <a href="/edit?id=' + data["id"] + '">HERE</a> to edit the existing information.</p></div>';
 	      
-      var similar_site = '<p>Similar site found for this incident, but not for this phase.</p> \
+      var similar_site = '<div style="background-color:yellow;"><p>Similar site found for this incident, but not for this phase.</p> \
 	      <ul> \
 	      <li>Name: " '+ data["name"] + '"</li>\
 	      <li>City: " '+ data["city"] + '"</li>\
 	      <li>Address: " '+ data["address"] + '"</li>\
 	      </ul> \
-	      <p>If this is the same site, click <a href="?site_id=' + data["id"] + '&phase_number=' + GetUrlValue("phase_number") + '">HERE</a> to edit the existing information.</p>';
+	      <p>If this is the same site, click <a href="?site_id=' + data["id"] + '&phase_number=' + GetUrlValue("phase_number") + '">HERE</a> to edit the existing information.</p></div>';
 	      
 
       console.log(data);
+      console.log(phase_id);
+      console.log("ids");
+      console.log(data["phase_id"]);
+      console.log(data["site_id"]);
+      // in phase, set id to phase_id
+      // in site, set id to site_id
+
       if(data["phase_id"] == phase_id) {
 	$("#similar_by_phase").append(similar_phase);
       } else {
 	$("#similar_by_site").append(similar_site);
-
       }
     });
   

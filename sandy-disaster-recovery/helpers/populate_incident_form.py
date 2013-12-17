@@ -1,6 +1,6 @@
 import json
 
-def populate_incident_form(form_json, phase_number, defaults=None):
+def populate_incident_form(form_json, phase_number, defaults=None, hidden_elements = {}):
   i = 0
   string = ""
   label = ""
@@ -25,7 +25,7 @@ def populate_incident_form(form_json, phase_number, defaults=None):
     return string, label, paragraph
 
   # If form exists, continue
-  
+
   for obj in form_json[phase_number]:
     i+=1
     
@@ -74,6 +74,10 @@ def populate_incident_form(form_json, phase_number, defaults=None):
       default_value = get_default_value(defaults_json, obj)
       string = get_radio_html(obj, string, default_value)
   
+  for key in hidden_elements:
+    hidden_string = '<input type="hidden" name="' + str(key) + '" id="' + str(key) + ' value="' + str(hidden_elements[key]) + '">'  
+    string += hidden_string
+    
   return string, label, paragraph
 
 

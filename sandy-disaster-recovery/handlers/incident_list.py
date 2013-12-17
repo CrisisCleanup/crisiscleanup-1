@@ -48,8 +48,8 @@ jinja_environment.filters['show_phases_from_json'] = show_phases_from_json
 template = jinja_environment.get_template('/incident_list.html')
 
 
-class IncidentList(base.RequestHandler):
-  def get(self):
+class IncidentList(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
     q = incident_definition.IncidentDefinition.all()
     incidents = q.run()
     

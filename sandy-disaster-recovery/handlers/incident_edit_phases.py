@@ -35,8 +35,8 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('/incident_edit_phases.html')
 
 
-class IncidentEditPhases(base.RequestHandler):
-  def get(self):
+class IncidentEditPhases(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
     _id = self.request.get("id")
     incident_definition_object = incident_definition.IncidentDefinition.get_by_id(int(_id))
     phases_json = json.loads(incident_definition_object.phases_json)

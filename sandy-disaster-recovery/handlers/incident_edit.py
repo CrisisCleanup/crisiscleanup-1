@@ -36,8 +36,8 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('/incident_edit.html')
 
 
-class IncidentEdit(base.RequestHandler):
-  def get(self):
+class IncidentEdit(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
     id = self.request.get("id")
     incident = incident_definition.IncidentDefinition.get_by_id(int(id))
     form = incident_definition.IncidentDefinitionForm(obj=incident)
@@ -49,7 +49,7 @@ class IncidentEdit(base.RequestHandler):
     
     self.response.out.write(template.render(data))
 
-  def post(self):
+  def AuthenticatedPost(self, org, event):
     incident_id = self.request.get("incident_id")
     incident = incident_definition.IncidentDefinition.get_by_id(int(incident_id))
 

@@ -42,8 +42,8 @@ CASE_LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", 
 def make_date_object(date_string):
   pass
 
-class IncidentDefinition(base.RequestHandler):
-  def get(self):
+class IncidentDefinition(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
     id = self.request.get("id")
     if id:
       incident_definition_object = incident_definition.IncidentDefinition.get_by_id(int(id))
@@ -69,7 +69,7 @@ class IncidentDefinition(base.RequestHandler):
       }
       self.response.out.write(template.render(data))
 
-  def post(self):
+  def AuthenticatedPost(self, org, event):
     data = incident_definition.IncidentDefinitionForm(self.request.POST)
     version = data.name.data
     try:

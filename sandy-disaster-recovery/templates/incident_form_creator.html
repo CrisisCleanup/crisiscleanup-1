@@ -27,6 +27,7 @@
     <a href="#" id="save_all_changes1" class="button button-icon icon icon-envelope">Save All Changes</a>
   </div>
   <h2>Add Inputs to form</h2>
+  <a id="add_work_type" href="#form_editor">Add Work Type</a></br>
   <a id="add_personal_info_module" href="#form_editor">Add personal info module</a></br>
   <a id="add_status_info_module" href="#form_editor">Add Status and Claim info module</a></br>
   <a id="add_label" href="#form_editor">map label + </a><br>
@@ -205,6 +206,26 @@
     <form id="paragraph_form">
       Paragraph:<br><textarea rows="10" cols="30" id="paragraph" name="paragraph"></textarea><br>
       <h3><a href="#form_editor" id="add_paragraph_to_form">Add to form</a></h3>
+    </form>
+  </div>
+  <div id="work_type_div">
+    <h2>Add Work Types</h2>
+    <p>Other (<img src="/icons/Other_black.png">) will be added automatically.</p>
+    <form id="work_type_form">
+       <input type="checkbox" id="ash" name="ash" value="y">  <img src="/icons/Ash_black.png"> (Ash)<br>
+       <input type="checkbox" id="debris" name="debris" value="y"><img src="/icons/Debris_black.png"> (Debris)<br>
+       <input type="checkbox" id="fence" name="fense" value="y"><img src="/icons/Fence_black.png"> (Fence)<br>
+       <input type="checkbox" id="fire" name="fire" value="y"><img src="/icons/Fire_black.png"> (Fire)<br>
+       <input type="checkbox" id="flood" name="flood" value="y"><img src="/icons/Flood_black.png"> (Flood)<br>
+       <input type="checkbox" id="food" name="food" value="y"><img src="/icons/Food_black.png"> (Food)<br>
+       <input type="checkbox" id="landslide" name="landslide" value="y"><img src="/icons/Landslide_black.png"> (Landslide)<br>
+       <input type="checkbox" id="tarp" name="tarp" value="y"><img src="/icons/Tarp_black.png"> (Tarp)<br>
+       <input type="checkbox" id="tornado" name="tornado" value="y"><img src="/icons/Tornado_black.png"> (Tornado)<br>
+       <input type="checkbox" id="trees" name="trees" value="y"><img src="/icons/Trees_black.png"> (Trees)<br>
+       <input type="checkbox" id="volcano" name="volcano" value="y"><img src="/icons/Volcano_black.png"> (Volcano)<br>
+
+
+      <h3><a href="#form_editor" id="add_work_type_to_form">Add to form</a></h3>
     </form>
   </div>
 <a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>

@@ -35,8 +35,8 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('/incident_edit_phase.html')
 
 
-class IncidentEditPhase(base.RequestHandler):
-  def get(self):
+class IncidentEditPhase(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
     incident_short_name = self.request.get("incident_short_name")
     phase_id = self.request.get("phase_id")
     q = incident_definition.IncidentDefinition.all()
@@ -59,7 +59,7 @@ class IncidentEditPhase(base.RequestHandler):
     self.response.out.write(template.render(data))
     
     
-  def post(self):
+  def AuthenticatedPost(self, org, event):
     incident_id = self.request.get("incident_id")
     phase_id = self.request.get("phase_id")
     phase_name = self.request.get("phase_name")

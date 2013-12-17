@@ -28,8 +28,8 @@ import key
 from models import incident_definition
 
 
-class IncidentSaveForm(base.RequestHandler):
-  def post(self):
+class IncidentSaveForm(base.AuthenticatedHandler):
+  def AuthenticatedPost(self, org, event):
     id_array = None
     phase_id = None
     form_json_array = self.request.get("form_json_array")

@@ -1,5 +1,6 @@
 
 import os
+import datetime
 
 from google.appengine.ext import db
 from google.appengine.ext import deferred
@@ -126,6 +127,7 @@ def crunch_incident_statistics(event):
     }
 
     return {
+        'timestamp': datetime.datetime.utcnow(),
         'event_key': event.key(),
         'statuses': STATUSES,
         'work_types': work_types,

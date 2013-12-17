@@ -1,3 +1,4 @@
+{{ event.name }} Statistics. Generated {{ timestamp.strftime('%Y-%m-%d %H:%M') }} UTC
 ,"Work Orders",{% for status in statuses %}"{{ status }}",{% endfor %}"Total"
 ,"Claimed",{% for status in statuses %}{{ claimed_status_counts[status] }},{% endfor %}{{ claimed_status_total }}
 ,"Unclaimed",{% for status in statuses %}{{ unclaimed_status_counts[status] }},{% endfor %}{{ unclaimed_status_total }}

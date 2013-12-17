@@ -1,0 +1,74 @@
+{% extends "base_template.html" %}
+
+{% block head_content %}
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
+
+  <script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?sensor=false">
+  </script>
+  
+  <script type="text/javascript">
+  function initialize() {
+
+
+  }
+  </script>
+  
+    <script type="text/javascript" src="javascript/public_map15.js"></script>      
+    
+    <script type="text/javascript" src="javascript/map_clusterer.js"></script>       
+    <script type="text/javascript" src="javascript/messi.js"></script>       
+      <link rel="stylesheet" href="stylesheets/messi.css">
+      <link rel="stylesheet" href="assets/css/public-map.css">
+
+
+{% endblock %}
+
+{% block publicmap %}
+class="activePage"
+{% endblock %}
+
+{% block description_title %}
+{{ public_map_description_title_page_block|safe }}
+{% endblock %}
+
+{% block description_subtitle %}
+{{ public_map_description_subtitle_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_title %}
+
+{% endblock %}
+
+{% block sidebar_content %}
+{{ menubox }}
+<img id="legend_img" src="/icons/Legend.png" />
+<h2>Filters</h2>
+Only show the following types:<br />
+{% for f in filters %}
+<input type="checkbox" onClick="sandy.map.Refilter()" name="filter" id="{{f[0]}}">
+<label for="{{f[0]}}">{{f[1]}}</label><br />
+{% endfor %}
+<br>
+<form method="POST" action="/export" target="_blank">
+  <input name="id" class="id_list" type="hidden" value="" />
+  <input type="submit" id="filtered-export-btn" value="Download Spreadsheet (CSV)"></input><br />
+  <div id="filtered-export-wait-message" style="display: none; margin-top: 10px;">
+    <div id="filtered-export-spinner" style="display: inline-block; float: right;"></div>
+    This download may take<br>
+    a number of minutes.<br>
+    Please wait...
+  </div>
+</form>
+{% endblock %}
+
+{% block main_title %}
+Public Maps
+{% endblock %}
+
+{% block main_content %}
+<div id="display_incident"></div>
+<div id="display_filter"></div>
+<div id="map_canvas"></div>
+
+{% endblock %}

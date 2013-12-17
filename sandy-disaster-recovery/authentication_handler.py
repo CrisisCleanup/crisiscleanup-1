@@ -33,6 +33,7 @@ import base
 import event_db
 import key
 import organization
+import primary_contact_db
 import site_db
 import page_db
 from messaging import email_administrators_using_templates
@@ -66,7 +67,7 @@ def GetOrganizationForm(post_data):
 
   if organizations.count() == 0:
     # init: populate the database with Admin user
-    default = organization.Organization(
+    admin_org = organization.Organization(
         name="Admin",
         password="temporary_password",
         org_verified=True,
@@ -74,7 +75,17 @@ def GetOrganizationForm(post_data):
         is_admin=True,
         incidents=[event_key]
     )
-    default.put()
+    admin_org.put()
+    admin_contact = primary_contact_db.Contact(
+        first_name="Admin",
+        last_name="Admin",
+        title="Admin",
+        phone="1234",
+        email="admin@admin.admin",
+        organization=admin_org,
+        is_primary=True
+    )
+    admin_contact.put()
     organizations = db.GqlQuery("SELECT * FROM Organization WHERE is_active = True ORDER BY name")
 
   class OrganizationForm(wtforms.form.Form):

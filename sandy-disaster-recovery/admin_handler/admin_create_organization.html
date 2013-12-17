@@ -23,7 +23,7 @@
   <h3>Organization</h3>
 
   <table>
-    {% for field in form if field.name not in ('incident', 'is_active') %}
+    {% for field in form if field.name not in ('incident', 'is_active', 'org_verified') %}
       {{ render_field_row(field) }}
     {% endfor %}
   </table>

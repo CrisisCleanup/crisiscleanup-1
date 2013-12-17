@@ -1,4 +1,5 @@
 
+import logging
 import datetime
 import re
 import json
@@ -236,6 +237,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
             )
         else:
             # finish file: deduplicate lines
+            logging.info(u"Deduplicating to create %s ..." % self.filename)
             files.finalize(self.blobstore_filename)
             generated_file_blob_key = files.blobstore.get_blob_key(
                 self.blobstore_filename)

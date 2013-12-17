@@ -257,7 +257,115 @@ $(function() {
     form_json_array.push(checkbox_json);
   }
     
+  function add_work_type_input(form_json_array) {
+    var ash_value = $("#ash").prop('checked');
+    var debris = $("#debris").prop('checked');
+    var fence = $("#fence").prop('checked');
+    var fire = $("#fire").prop('checked');
+    var flood = $("#flood").prop('checked');
+    var food = $("#food").prop('checked');
+    var landslide = $("#landslide").prop('checked');
+    var tarp = $("#tarp").prop('checked');
+    var tornado = $("#tornado").prop('checked');
+    var trees = $("#trees").prop('checked');
+    var volcano = $("#volcano").prop('checked');
     
+    var work_types_array = [ash_value, debris, fence, fire, flood, food, landslide, tarp, tornado, trees, volcano];
+    var total_work_types = 0;
+    order_number = form_json_array.length;
+
+    var work_type_json = {
+      type: "select",
+      label: "Work Type",
+      required: "true",
+      sensitive: "true",
+      _id: "work_type",
+      order_number: order_number,
+    }
+
+    if (ash_value == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Ash"
+    }
+
+    if (debris == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Debris"
+    }
+
+    if (fence == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Fence"
+    }
+
+    if (fire == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Fire"
+    }
+    if (flood == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Flood"
+    }
+    if (food == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Food"
+    }
+    if (landslide == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Landslide"
+    }
+    if (tarp == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Tarp"
+    }
+    if (tornado == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Tornado"
+    }
+    if (trees == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Trees"
+    }
+    if (volcano == true) {
+      total_work_types = total_work_types + 1;
+
+      var str = "select_option_" + total_work_types;
+      work_type_json[str] = "Volcano"
+    }
+
+    var total_work_types = total_work_types + 1
+    var other_str = "select_option_" + total_work_types
+    work_type_json[other_str] = "Other"
+
+//     
+//     var paragraph_json = {
+//       "type": "paragraph",
+//       "paragraph": paragraph_value,
+//       "order_number": order_number,
+// 
+//     }
+    form_json_array.push(work_type_json);
+  }    
   // ----------- SELECT FUNCTIONS ----------------
 
   $( "#add_select" ).click(function() {
@@ -402,7 +510,18 @@ $(function() {
     $("#add_options_to_radio").empty();
     $("#add_options_to_radio").append(new_option);
   });
-
+  // ----------- ADD WORK TYPE ----------------
+  $("#add_work_type").click(function() {
+	hide_divs();	
+	$("#work_type_div").show();
+  });
+  
+  $("#add_work_type_to_form").click(function() {
+	hide_divs();
+	add_work_type_input(form_json_array);
+	$("#work_type_form").trigger('reset');
+	add_to_form(form_json_array);
+  });
   
   // ----------- ADD PERSONAL MODULE ----------------
   $("#add_personal_info_module").click(function() {
@@ -491,6 +610,7 @@ function hide_divs() {
   $("#paragraph_div").hide();
   $("#subheader_div").hide();
   $("#textarea_div").hide();
+  $("#work_type_div").hide();
 }
 function hide_tabs() {
   $("#tabs-1").hide();
@@ -956,7 +1076,7 @@ function GetUrlValue(VarSearch){
 }
 
 
-var personal_info_module_string = '[{"order_number": 1, "header": "Personal and Property Information", "type": "header"}, {"sensitive": true, "type": "text", "required": true, "order_number": 2, "_id": "name", "label": "Name", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 3, "_id": "request_date", "label": "Date of Request", "validations": "date"}, {"sensitive": true, "type": "text", "required": true, "order_number": 4, "_id": "address", "label": "Street Address", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 5, "_id": "city", "label": "City", "validations": "None"}, {"sensitive": false, "type": "text", "required": false, "order_number": 6, "_id": "county", "label": "County", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 7, "_id": "state", "label": "State", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 8, "_id": "zip_code", "label": "Zip Code", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 9, "_id": "latitude", "label": "Latitude", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 10, "_id": "longitude", "label": "Longitude", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 11, "_id": "cross_street", "label": "Cross Street or Nearby Landmark", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 12, "_id": "phone1", "label": "Phone 1", "validations": "phone"}, {"sensitive": true, "type": "text", "required": false, "order_number": 13, "_id": "phone2", "label": "Phone 2", "validations": "phone"}, {"sensitive": false, "type": "text", "required": false, "order_number": 14, "_id": "time_to_call", "label": "Best time to call", "validations": "None"}, {"select_option_1": "Trees", "select_option_2": "Wind", "sensitive": false, "type": "select", "required": true, "order_number": 15, "_id": "work_type", "select_option_3": "Fire", "label": "Primary Help Needed"}, {"select_option_1": "Rent", "select_option_2": "Own", "sensitive": false, "type": "select", "select_option_5": "Business", "required": false, "order_number": 16, "_id": "rent_or_own", "select_option_3": "Public Land", "label": "Rent/Own/Public", "select_option_4": "Non-Profit"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 17, "_id": "work_without_resident", "label": "Work without resident present"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 18, "_id": "member_of_organization", "label": "Member of your organization"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 19, "_id": "first_responder", "label": "First Responder"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 20, "_id": "older_than_60", "label": "Older than 60"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 21, "_id": "disabled", "label": "Disabled"}, {"order_number": 22, "_id": "special_needs", "type": "textarea", "label": "Special Needs", "validations": "None"}, {"sensitive": false, "type": "radio", "low_hint": "Low (1)", "required": false, "order_number": 23, "_id": "priority", "label": "Priority", "radio_option_4": "4", "radio_option_5": "5", "high_hint": "High (5)", "radio_option_1": "1", "radio_option_2": "2", "radio_option_3": "3"}]';
+var personal_info_module_string = '[{"order_number": 1, "header": "Personal and Property Information", "type": "header"}, {"sensitive": true, "type": "text", "required": true, "order_number": 2, "_id": "name", "label": "Name", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 3, "_id": "request_date", "label": "Date of Request", "validations": "date"}, {"sensitive": true, "type": "text", "required": true, "order_number": 4, "_id": "address", "label": "Street Address", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 5, "_id": "city", "label": "City", "validations": "None"}, {"sensitive": false, "type": "text", "required": false, "order_number": 6, "_id": "county", "label": "County", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 7, "_id": "state", "label": "State", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 8, "_id": "zip_code", "label": "Zip Code", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 9, "_id": "latitude", "label": "Latitude", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 10, "_id": "longitude", "label": "Longitude", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 11, "_id": "cross_street", "label": "Cross Street or Nearby Landmark", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 12, "_id": "phone1", "label": "Phone 1", "validations": "phone"}, {"sensitive": true, "type": "text", "required": false, "order_number": 13, "_id": "phone2", "label": "Phone 2", "validations": "phone"}, {"sensitive": false, "type": "text", "required": false, "order_number": 14, "_id": "time_to_call", "label": "Best time to call", "validations": "None"}, {"select_option_1": "Rent", "select_option_2": "Own", "sensitive": false, "type": "select", "select_option_5": "Business", "required": false, "order_number": 16, "_id": "rent_or_own", "select_option_3": "Public Land", "label": "Rent/Own/Public", "select_option_4": "Non-Profit"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 17, "_id": "work_without_resident", "label": "Work without resident present"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 18, "_id": "member_of_organization", "label": "Member of your organization"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 19, "_id": "first_responder", "label": "First Responder"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 20, "_id": "older_than_60", "label": "Older than 60"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 21, "_id": "disabled", "label": "Disabled"}, {"order_number": 22, "_id": "special_needs", "type": "textarea", "label": "Special Needs", "validations": "None"}, {"sensitive": false, "type": "radio", "low_hint": "Low (1)", "required": false, "order_number": 23, "_id": "priority", "label": "Priority", "radio_option_4": "4", "radio_option_5": "5", "high_hint": "High (5)", "radio_option_1": "1", "radio_option_2": "2", "radio_option_3": "3"}]';
 
 var status_info_module_string = '[{"order_number": 1, "header": "Claim, Status and Report", "type": "header"}, {"order_number": 2, "_default": "n", "type": "checkbox", "required": false, "_id": "claim_for_org", "label": "Claim for my organization", "sensitive": false}, {"order_number": 3, "select_option_3": "Open, needs follow up", "type": "select", "select_option_4": "Closed, completed", "select_option_5": "Closed, incomplete", "select_option_6": "Closed, out of scope", "select_option_7": "Closed, done by others", "select_option_1": "Open, unassigned", "select_option_2": "Open, partially completed", "_id": "status", "label": "Current Status", "required": true, "select_option_8": "Closed, no help wanted", "select_option_9": "Closed, rejected", "select_option_10": "Closed, duplicate", "sensitive": false}, {"order_number": 4, "validations": "None", "type": "text", "required": false, "_id": "total_volunteers", "label": "Volunteers", "sensitive": false}, {"order_number": 5, "validations": "None", "type": "text", "required": false, "_id": "hours_worked_per_volunteer", "label": "Hours per volunteer", "sensitive": false}, {"order_number": 6, "validations": "None", "type": "text", "required": false, "_id": "initials_of_resident_present", "label": "Initials of resident present during work", "sensitive": false}, {"order_number": 7, "validations": "None", "type": "text", "required": false, "_id": "status note", "label": "Status Notes", "sensitive": false}]';
 

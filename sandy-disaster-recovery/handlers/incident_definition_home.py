@@ -26,23 +26,30 @@ import json
 import base
 import key
 from models import incident_definition
+import event_db
+import cache
 
-def make_date_object(date_string):
-  pass
 
-class IncidentDefinitionAjax(base.AuthenticatedHandler):
+def show_phases_from_json(phases_json):
+    as_json = json.loads(phases_json)
+    
+    length = len(as_json)
+    string = ""
+    for obj in as_json:
+      def_string = '<p>>' + obj['phase_name'] + ': ' + obj['description'] + '</p>'
+      string = string + def_string
+    return string
+
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
+
+jinja_environment.filters['show_phases_from_json'] = show_phases_from_json
+
+template = jinja_environment.get_template('/incident_definition_home.html')
+
+
+class IncidentDefinitionHome(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
-    incident_short_name = self.request.get("incident_short_name")
-    phase = self.request.get("phase")
-    q = incident_definition.IncidentDefinition.all()
-    q.filter("short_name =", incident_short_name)
-    incident = q.get()
+    data = {}
+    self.response.out.write(template.render(data))
     
-    #raise Exception(incident)
-    incident_data = {
-      "phases_json": incident.phases_json,
-      "forms_json": incident.forms_json
-    }
-    incident_json = json.dumps(incident_data)
-    
-    self.response.out.write(incident_json)

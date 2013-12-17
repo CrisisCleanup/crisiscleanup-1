@@ -29,7 +29,7 @@ import base
 import key
 import site_db
 import metaphone
-
+from models import phase
 
 PAGE_OFFSET = 100
 
@@ -64,8 +64,19 @@ class CheckSimilarByPhaseAPI(base.AuthenticatedHandler):
     q.filter("address_metaphone =", address_metaphone)
     
     site = q.get()
+    
+    #raise Exception(site.phase_id)
     if not site:
       return
-      
+    
+    q = Query(model_class = phase.Phase)
+    q.filter("phase_id =", phase_id)
+    q.filter("site =", site.key())
+    
+    phase_obj = q.get()
+    if phase_obj:
+      self.response.out.write(
+        json.dumps(phase.PhaseToDict(phase_obj), default = dthandler))
+      return
     self.response.out.write(
         json.dumps(site_db.SiteToDict(site), default = dthandler))

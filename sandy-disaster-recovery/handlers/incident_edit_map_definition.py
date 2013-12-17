@@ -35,8 +35,8 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('/incident_edit_map_definition.html')
 
 
-class IncidentEditMapDefinition(base.RequestHandler):
-  def get(self):
+class IncidentEditMapDefinition(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
     incident_id = self.request.get("id")
     incident = incident_definition.IncidentDefinition.get_by_id(int(incident_id))
 
@@ -49,7 +49,7 @@ class IncidentEditMapDefinition(base.RequestHandler):
     
     self.response.out.write(template.render(data))
 
-  def post(self):
+  def AuthenticatedPost(self, org, event):
     incident_id = self.request.get("incident_id")
     form = incident_definition.AdvancedMapForm(self.request.POST)
     

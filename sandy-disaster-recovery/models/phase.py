@@ -32,3 +32,11 @@ class Phase(db.Expando):
   incident = db.ReferenceProperty(incident_definition.IncidentDefinition, 'incident')
   site = db.ReferenceProperty(site_db.Site, "site")
   phase_id = db.StringProperty(default=True)
+  
+  
+  
+def PhaseToDict(phase):
+  phase_dict = to_dict(phase)
+  phase_dict["site_id"] = phase.site.key().id()
+  phase_dict["id"] = phase.key().id()
+  return phase_dict

@@ -35,8 +35,8 @@ jinja_environment = jinja2.Environment(
 template = jinja_environment.get_template('/incident_add_phase.html')
 
 
-class IncidentAddPhase(base.RequestHandler):
-  def get(self):
+class IncidentAddPhase(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
     _id = self.request.get("id")
     incident_definition_object = incident_definition.IncidentDefinition.get_by_id(int(_id))
     form = incident_definition.IncidentPhaseForm()
@@ -45,7 +45,7 @@ class IncidentAddPhase(base.RequestHandler):
       "form": form
     }
     self.response.out.write(template.render(data))
-  def post(self):
+  def AuthenticatedPost(self, org, event):
     incident_id = self.request.get("incident_id")
     phase_name = self.request.get("phase_name")
     description = self.request.get("description")

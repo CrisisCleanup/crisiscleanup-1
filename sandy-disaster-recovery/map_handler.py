@@ -34,7 +34,7 @@ from models import incident_definition
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('main.html')
+template = jinja_environment.get_template('map.html')
 menubox_template = jinja_environment.get_template('_menubox.html')
 
 

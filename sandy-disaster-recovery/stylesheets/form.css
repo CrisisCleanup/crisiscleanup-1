@@ -135,3 +135,6 @@ section#errors li {
     box-shadow: -1px 0 5px orange;
 }
 
+#zenbox_tab {
+  top: 380px !important;
+}

@@ -15,7 +15,8 @@ class BatchingQuery(object):
     def __iter__(self):
         cursor = None
         while True:
-            for item in self.query.fetch(self.batch_size):
+            for item in self.query.run(limit=self.batch_size):
+                # (fetch is discouraged as apparently less memory-efficient)
                 yield item
             new_cursor = self.query.cursor()
             if new_cursor == cursor:

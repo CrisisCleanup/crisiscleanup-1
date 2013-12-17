@@ -18,7 +18,7 @@ from google.appengine.ext import db
 
 import wtforms
 from wtforms.ext.appengine.db import model_form
-from wtforms import TextField, validators, SelectField, DateTimeField
+from wtforms import TextField, validators, SelectField, DateTimeField, BooleanField
 from google.appengine.api import memcache
 from google.appengine.ext.db import to_dict
 
@@ -224,11 +224,11 @@ class OrganizationValidatorsMixIn(object):
 class OrganizationForm(
         model_form(
             Organization,
-            exclude=['incident', 'timestamp_signup', 'timestamp_login']
+            exclude=['incident', 'is_admin', 'timestamp_signup', 'timestamp_login']
         ),
         OrganizationValidatorsMixIn
     ): 
-    """ All fields, for admin use. """
+    """ All fields available to all levels of admin. """
 
     timestamp_login = DateTimeField(
         "Last logged in",
@@ -236,8 +236,17 @@ class OrganizationForm(
     )
 
 
+class GlobalAdminOrganizationForm(OrganizationForm):
+
+    is_admin = BooleanField()
+
+
 class CreateOrganizationForm(OrganizationForm):
-    """ All fields plus incident selection, for admin use. """
+
+    incident = SelectField()  # choices to be dynamically set
+
+
+class GlobalAdminCreateOrganizationForm(GlobalAdminOrganizationForm):
 
     incident = SelectField()  # choices to be dynamically set
 

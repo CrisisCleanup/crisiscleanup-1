@@ -22,6 +22,7 @@ import os
 # Local libraries.
 import base
 import organization
+from organization import OrganizationForm, GlobalAdminOrganizationForm
 
 
 jinja_environment = jinja2.Environment(
@@ -57,7 +58,10 @@ class AdminHandler(base.AuthenticatedHandler):
                 self.redirect("/")
                 return
 
-        form = organization.OrganizationForm(None, org_by_id)
+        form = (
+            GlobalAdminOrganizationForm(None, org_by_id) if global_admin
+            else OrganizationForm(None, org_by_id)
+        )
         self.response.out.write(template.render({
             "organization": org_by_id,
             "form": form,
@@ -82,7 +86,10 @@ class AdminHandler(base.AuthenticatedHandler):
         except:
             self.abort(404)
 
-        form = organization.OrganizationForm(self.request.POST)
+        form = (
+            GlobalAdminOrganizationForm(self.request.POST) if global_admin
+            else OrganizationForm(self.request.POST)
+        )
 
         if form.validate() and not form.errors:
             # bail if not a relevant local admin

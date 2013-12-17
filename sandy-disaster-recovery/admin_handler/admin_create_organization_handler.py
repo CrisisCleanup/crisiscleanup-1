@@ -15,28 +15,16 @@
 # limitations under the License.
 #
 # System libraries.
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
-import cgi
 import jinja2
-import logging
 import os
-import urllib2
-import wtforms.validators
 
 # Local libraries.
 import base
 import event_db
-import site_db
-import site_util
-import cache
-
-from datetime import datetime
-import settings
 
 from google.appengine.ext import db
-from organization import Organization, CreateOrganizationForm
-import primary_contact_db
+from organization import Organization, CreateOrganizationForm, GlobalAdminCreateOrganizationForm
 import random_password
 
 jinja_environment = jinja2.Environment(
@@ -73,7 +61,10 @@ class AdminHandler(base.AuthenticatedHandler):
             return
 
         # create form
-        form = CreateOrganizationForm()
+        form = (
+            GlobalAdminCreateOrganizationForm() if global_admin
+            else CreateOrganizationForm()
+        )
         events = self._get_events(org, global_admin, local_admin)
         form.incident.choices = [(str(event.key().id()), event.name) for event in events]
         form.password.data = random_password.generate_password()
@@ -98,7 +89,10 @@ class AdminHandler(base.AuthenticatedHandler):
             return
 
         # create form
-        form = CreateOrganizationForm(self.request.POST)
+        form = (
+            GlobalAdminCreateOrganizationForm(self.request.POST) if global_admin
+            else CreateOrganizationForm(self.request.POST)
+        )
         events = self._get_events(org, global_admin, local_admin)
         form.incident.choices = [(str(event.key().id()), event.name) for event in events]
 

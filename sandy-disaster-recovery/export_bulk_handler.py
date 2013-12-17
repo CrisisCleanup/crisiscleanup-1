@@ -107,6 +107,7 @@ class AbstractExportBulkHandler(object):
         taskqueue.add(
             url=self.worker_url,
             params=self.get_continuation_param_dict(),
+            retry_options=taskqueue.TaskRetryOptions(task_retry_limit=3),
         )
 
         # write filename out as json
@@ -230,7 +231,8 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
             # chain to next task
             taskqueue.add(
                 url=self.worker_url,
-                params=self.get_continuation_param_dict()
+                params=self.get_continuation_param_dict(),
+                retry_options=taskqueue.TaskRetryOptions(task_retry_limit=3),
             )
         else:
             # finish file: deduplicate lines

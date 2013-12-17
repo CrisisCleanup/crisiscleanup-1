@@ -284,7 +284,7 @@ class AdminExportWorkOrdersByIdBulkHandler(
         # get selected event -> filename
         selected_event = event_db.Event.get(self.request.get('event'))
         filename = "%s-%s-%s.csv" % (
-            re.sub(r'\W+', '-', selected_event.name.lower()),
+            selected_event.filename_friendly_name,
             re.sub(r'\W+', '-', org.name.lower()),
             timestamp_now()
         )
@@ -317,7 +317,7 @@ class AdminExportWorkOrdersByQueryBulkHandler(
         # get selected event -> filename
         selected_event = event_db.Event.get(self.request.get('event'))
         filename = "%s-%s-%s.csv" % (
-            re.sub(r'\W+', '-', selected_event.name.lower()),
+            selected_event.filename_friendly_name,
             re.sub(r'\W+', '-', org.name.lower()),
             timestamp_now()
         )
@@ -373,7 +373,7 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
 
         # decide filename in advance
         filename = "%s-officials-%s.zip" % (
-            re.sub(r'\W+', '-', selected_event.name.lower()),
+            selected_event.filename_friendly_name,
             timestamp_now()
         )
 

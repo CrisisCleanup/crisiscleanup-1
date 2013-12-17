@@ -18,13 +18,12 @@ from google.appengine.ext import db
 import Cookie
 import datetime
 import hashlib
-import logging
 import organization
 from google.appengine.api import memcache
 
-# Local classes
 import cache
 import event_db
+
 
 class Key(db.Model):
   secret_key = db.StringProperty(required = True)
@@ -114,6 +113,8 @@ def CheckAuthorization(request):
               if age.days > 14:
                 key.delete()
                 key = None
+
+            # check the secret hash
             if org and key and event:
               if (parts[0] == key.hashOrganization(org)):
                 return org, event

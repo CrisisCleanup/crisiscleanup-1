@@ -13,32 +13,35 @@ import yaml
 
 # constants
 
+REQUIRED_SDK_VERSION = '1.8.8'
 APP_YAML_FILENAME = 'app.yaml'
 APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template'
 BUILD_DIR_PREFIX = 'ccbuild'
 
 
-# find GAE appcfg
+# find GAE SDK
 
-GAE_APPCFG_POSSIBLE_LOCATIONS = [
-    '../../google_appengine/appcfg.py',
+POSSIBLE_SDK_DIRECTORIES = [
+    '../../google_appengine/',
 ]
 
 try:
-    _appcfg_path = (
-        path for path in GAE_APPCFG_POSSIBLE_LOCATIONS
+    _sdk_path = (
+        path for path in POSSIBLE_SDK_DIRECTORIES
         if os.path.exists(path)
+        and os.path.exists(os.path.join(path, 'appcfg.py'))
     ).next()
-    _sdk_path = os.path.join(*os.path.split(_appcfg_path)[:-1])
+    _sdk_path = os.path.join(*os.path.split(_sdk_path)[:-1])
 except StopIteration:
-    abort('appcfg.py not found - edit GAE_APPCFG_POSSIBLE_LOCATIONS')
+    abort('GAE SDK directory not found - add it to POSSIBLE_SDK_DIRECTORIES')
 
 
 # define env
 
 env.master_branch = "master"
 env.default_gae_app_version = "live"
-env.appcfg = os.path.realpath(_appcfg_path)
+env.sdk_path = os.path.realpath(_sdk_path)
+env.appcfg = os.path.realpath(os.path.join(_sdk_path, 'appcfg.py'))
 env.sdk_path = os.path.realpath(_sdk_path)
 
 
@@ -104,6 +107,19 @@ def warn_or_abort(app_defn, message):
         warn(message)
     else:
         abort(message)
+
+
+def sdk_version_ok():
+    " Check that the SDK is the specified version. "
+    try:
+        sdk_version_d = yaml.load(open(os.path.join(env.sdk_path, 'VERSION')))
+        current_sdk_version = sdk_version_d['release']
+    except:
+        current_sdk_version = None
+    if current_sdk_version != REQUIRED_SDK_VERSION:
+        abort("Local SDK version is %s - %s is required" % (
+            current_sdk_version, REQUIRED_SDK_VERSION))
+    return True
 
 
 def app_yaml_template_present():
@@ -176,6 +192,7 @@ def check_specified_commitish_pushed_to_remote(app_defn, tag):
 
 def ok_to_deploy(app_defn, tag):
     return (
+        sdk_version_ok() and
         app_yaml_template_present() and
         working_directory_clean(app_defn) and
         on_master_branch(app_defn) and
@@ -375,5 +392,8 @@ def write_local_app_yaml():
 @task
 def dev():
     " Start development server. "
-    local("%s --high_replication --require_indexes ." %
-        os.path.join(env.sdk_path, 'dev_appserver.py'))
+    sdk_version_ok()
+    local(
+        "%s --require_indexes=true --show_mail_body=true ." %
+        os.path.join(env.sdk_path, 'dev_appserver.py')
+    )

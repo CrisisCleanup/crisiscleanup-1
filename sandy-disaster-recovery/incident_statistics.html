@@ -33,3 +33,23 @@
 </ul>
 
 {% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+
+$('table#organization-table').tablesorter({
+  sortList: [[1,0]]
+});
+
+$('table#work-type-table').tablesorter({
+  sortList: [[3,0]]
+});
+
+$('table#county-table').tablesorter({
+  sortList: [[0,0]]
+});
+
+});
+</script>
+{% endblock %}

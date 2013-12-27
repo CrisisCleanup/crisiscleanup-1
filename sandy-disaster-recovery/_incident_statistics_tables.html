@@ -1,12 +1,14 @@
 <p>Generated at {{ timestamp.strftime('%Y-%m-%d %H:%M') }} UTC.</p>
 
-<table>
+<table id="status-table">
   <thead>
     <tr>
       <th>Work Orders</th>
       {% for status in statuses %}
         <th>{{ status }}</th>
       {% endfor %}
+      <th>Total Open</th>
+      <th>Total Closed</th>
       <th>Total</th>
     </tr>
   </thead>
@@ -16,28 +18,34 @@
       {% for status in statuses %}
         <td>{{ claimed_status_counts[status] }}</td>
       {% endfor %}
-      <td>{{ claimed_status_total }}</td>
+      <td style="font-weight: bold">{{ claimed_open_count }}</td>
+      <td style="font-weight: bold">{{ claimed_closed_count }}</td>
+      <td style="font-weight: bold">{{ claimed_status_total }}</td>
     </tr>
     <tr>
       <td>Unclaimed</td>
       {% for status in statuses %}
         <td>{{ unclaimed_status_counts[status] }}</td>
       {% endfor %}
-      <td>{{ unclaimed_status_total }}</td>
+      <td style="font-weight: bold">{{ unclaimed_open_count }}</td>
+      <td style="font-weight: bold">{{ unclaimed_closed_count }}</td>
+      <td style="font-weight: bold">{{ unclaimed_status_total }}</td>
     </tr>
     <tr>
       <th>Total</th>
       {% for status in statuses %}
-        <td>{{ total_status_counts[status] }}</td>
+        <td style="font-weight: bold">{{ total_status_counts[status] }}</td>
       {% endfor %}
-      <td>{{ total_status_total }}</td>
+      <td style="font-weight: bold">{{ total_open_total }}</td>
+      <td style="font-weight: bold">{{ total_closed_total }}</td>
+      <td style="font-weight: bold">{{ total_status_total }}</td>
     </tr>
   </tbody>
-<table>
+</table>
 
 <br><br>
 
-<table>
+<table id="organization-table">
   <thead>
     <tr>
       <th>Incident</th>
@@ -68,18 +76,18 @@
   <tfoot>
     <tr>
       <td></td>
-      <td>Totals</td>
-      <td>{{ org_claimed_total }}</td>
-      <td>{{ org_open_total }}</td>
-      <td>{{ org_closed_total }}</td>
-      <td>{{ org_reported_total }}</td>
+      <td style="font-weight: bold">Totals</td>
+      <td style="font-weight: bold">{{ org_claimed_total }}</td>
+      <td style="font-weight: bold">{{ org_open_total }}</td>
+      <td style="font-weight: bold">{{ org_closed_total }}</td>
+      <td style="font-weight: bold">{{ org_reported_total }}</td>
     </tr>
   </tfoot>
 </table>
 
 <br><br>
 
-<table>
+<table id="work-type-table">
   <thead>
     <tr>
       <th>Work Type</th>
@@ -102,7 +110,7 @@
 
 <br><br>
 
-<table>
+<table id="county-table">
   <thead>
     <tr>
       <th>County</th>

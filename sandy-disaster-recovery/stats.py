@@ -42,6 +42,10 @@ def crunch_incident_statistics(event):
     # setup counters
     claimed_status_counts = {status: 0 for status in STATUSES}
     unclaimed_status_counts = {status: 0 for status in STATUSES}
+    claimed_open_count = 0
+    claimed_closed_count = 0
+    unclaimed_open_count = 0
+    unclaimed_closed_count = 0
     work_type_open_counts = {}
     work_type_closed_counts = {}
     county_open_counts = {}
@@ -67,7 +71,9 @@ def crunch_incident_statistics(event):
         reporting_org = site.reported_by
         status = site.status
         work_type = site.work_type
-        county = site.county if site.county else u'Unknown'
+        if not work_type.strip():
+            work_type = u'[Blank]'
+        county = site.county if site.county else u'[Unknown]'
         open = status.startswith('Open')
         closed = status.startswith('Closed')
 
@@ -88,11 +94,17 @@ def crunch_incident_statistics(event):
             org_claimed_counts[claiming_org.key().id()] += 1
             if open:
                 org_open_counts[claiming_org.key().id()] += 1
+                claimed_open_count += 1
             if closed:
                 org_closed_counts[claiming_org.key().id()] += 1
+                claimed_closed_count +=1
         else:  # unclaimed
             unclaimed_status_counts[status] = \
                 unclaimed_status_counts.get(status, 0) + 1
+            if open:
+                unclaimed_open_count += 1
+            if closed:
+                unclaimed_closed_count += 1
 
         if reporting_org:
             org_reported_counts[reporting_org.key().id()] += 1
@@ -105,6 +117,8 @@ def crunch_incident_statistics(event):
     }
     claimed_status_total = sum(claimed_status_counts.values())
     unclaimed_status_total = sum(unclaimed_status_counts.values())
+    total_open_total = claimed_open_count + unclaimed_open_count
+    total_closed_total = claimed_closed_count + unclaimed_closed_count
     total_status_total = sum(total_status_counts.values())
 
     org_claimed_total = sum(org_claimed_counts.values())
@@ -136,8 +150,14 @@ def crunch_incident_statistics(event):
         'claimed_status_counts': claimed_status_counts,
         'unclaimed_status_counts': unclaimed_status_counts,
         'total_status_counts': total_status_counts,
+        'claimed_open_count': claimed_open_count,
+        'claimed_closed_count': claimed_closed_count,
+        'unclaimed_open_count': unclaimed_open_count,
+        'unclaimed_closed_count': unclaimed_closed_count,
         'claimed_status_total': claimed_status_total,
         'unclaimed_status_total': unclaimed_status_total,
+        'total_open_total': total_open_total,
+        'total_closed_total': total_closed_total,
         'total_status_total': total_status_total,
 
         'org_claimed_counts': org_claimed_counts,

@@ -1,8 +1,8 @@
 {{ event.name }} Statistics. Generated {{ timestamp.strftime('%Y-%m-%d %H:%M') }} UTC
-,"Work Orders",{% for status in statuses %}"{{ status }}",{% endfor %}"Total"
-,"Claimed",{% for status in statuses %}{{ claimed_status_counts[status] }},{% endfor %}{{ claimed_status_total }}
-,"Unclaimed",{% for status in statuses %}{{ unclaimed_status_counts[status] }},{% endfor %}{{ unclaimed_status_total }}
-,"Total",{% for status in statuses %}{{ total_status_counts[status] }},{% endfor %}{{total_status_total }}
+,"Work Orders",{% for status in statuses %}"{{ status }}",{% endfor %}"Total Open","Total Closed","Total"
+,"Claimed",{% for status in statuses %}{{ claimed_status_counts[status] }},{% endfor %}{{ claimed_open_count }},{{ claimed_closed_count }},{{ claimed_status_total }}
+,"Unclaimed",{% for status in statuses %}{{ unclaimed_status_counts[status] }},{% endfor %}{{ unclaimed_open_count }},{{ unclaimed_closed_count }},{{ unclaimed_status_total }}
+,"Total",{% for status in statuses %}{{ total_status_counts[status] }},{% endfor %}{{ total_open_total }},{{ total_closed_total }},{{total_status_total }}
 ,,,,,,,,
 "Incident","Organization","Claimed Work Orders","Open","Closed","Reported Work Orders","Last Login","Number of Logins- last 7 days","Number of Logins- last 30 days"
 {% for org in orgs -%}

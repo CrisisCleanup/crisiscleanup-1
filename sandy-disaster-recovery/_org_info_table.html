@@ -1,7 +1,11 @@
 <table style="margin-top: 15px; margin-bottom: 15px">
   <tr>
-    <td>Incident:</td>
-    <td>{{ organization.incident.name }}</td>
+    <td>Incidents:</td>
+    <td>
+      {% for incident in organization.incidents %}
+        {{ incident.name }}<br>
+      {% endfor %}
+    </td>
   </tr>
   <tr>
     <td>Name:</td>

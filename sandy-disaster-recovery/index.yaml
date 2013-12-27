@@ -516,17 +516,17 @@ indexes:
 
 - kind: Organization
   properties:
-  - name: incident
+  - name: incidents
   - name: is_active
 
 - kind: Organization
   properties:
-  - name: incident
+  - name: incidents
   - name: org_verified
 
 - kind: Organization
   properties:
-  - name: incident
+  - name: incidents
   - name: timestamp_login
 
 
@@ -583,6 +583,23 @@ indexes:
 - kind: Organization
   properties:
   - name: incident
+  - name: name
+
+- kind: Organization
+  properties:
+  - name: incidents
+  - name: is_active
+  - name: name
+
+- kind: Organization
+  properties:
+  - name: incidents
+  - name: is_admin
+  - name: name
+
+- kind: Organization
+  properties:
+  - name: incidents
   - name: name
 
 - kind: Organization

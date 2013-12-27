@@ -78,10 +78,10 @@ class OrganizationEditContactsHandler(base.AuthenticatedHandler):
         if this_contact.organization.key() != authenticated_org.key():
             self.abort(403)
 
-        # abort if from the wrong incident
-        if not this_contact.organization.incident.key() == org.incident.key():
-            self.redirect("/")
-            return
+        # abort if from another incident
+        if event.key() not in (inc.key() for inc in this_contact.organization.incidents):
+            self.abort(403)
+
         data = primary_contact_db.ContactFormFull(self.request.POST)
         if data.validate():     
             contact = this_contact

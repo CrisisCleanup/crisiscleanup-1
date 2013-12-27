@@ -21,7 +21,6 @@
 <table class="table sortable">
   <thead>
     <tr>
-      <th>Incident</th>
       <th>Org Name</th>
       <th>Active</th>
       <th>Verified</th>
@@ -31,9 +30,6 @@
   <tbody>
     {% for org in org_query %}
       <tr>
-        <td>
-          {{ org.incident.name }}
-        </td>
         <td>
           <a href="{{ url }}{{ org.key().id()}}">
             {{ org.name }}

@@ -37,17 +37,15 @@ class AdminHandler(AdminAuthenticatedHandler):
         form = primary_contact_db.ContactFormFull()
 
         if org.is_global_admin:
-            query_string = "SELECT * FROM Organization WHERE org_verified = True"
-            organization_list = db.GqlQuery(query_string)
+            organization_list = db.GqlQuery(
+                "SELECT * FROM Organization WHERE org_verified = True"
+            )
         elif org.is_local_admin:
-            organization_list = []
-            query_string = "SELECT * FROM Organization WHERE org_verified = True"
-            query_first = db.GqlQuery(query_string)
-            for q in query_first:
-                if q.incident.key() == org.incident.key():
-                    organization_list.append(q)
-        else:
-            raise Exception("Not an administrator")
+            organization_list = db.GqlQuery(
+                "SELECT * FROM Organization WHERE org_verified = True "
+                "AND incidents in :incidents",
+                incidents=[incident.key() for incident in org.incidents]
+            )
 
         self.render(
             form=form,

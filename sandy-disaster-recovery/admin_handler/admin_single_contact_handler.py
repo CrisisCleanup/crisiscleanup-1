@@ -15,28 +15,13 @@
 # limitations under the License.
 #
 # System libraries.
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
-import cgi
 import jinja2
-import logging
 import os
-import urllib2
-import wtforms.validators
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
-
-from datetime import datetime
-import settings
-
-from google.appengine.ext import db
-import organization
 import primary_contact_db
-import random_password
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -45,6 +30,7 @@ GLOBAL_ADMIN_NAME = "Admin"
 
 
 class AdminHandler(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
         global_admin = False
         local_admin = False
@@ -57,23 +43,16 @@ class AdminHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
 
-        if self.request.get("contact"):
-            try:
-                id = int(self.request.get("contact"))
-            except:
-                self.response.set_status(400)
-                return
+        try:
+            id = int(self.request.get("contact"))
             contact = primary_contact_db.Contact.get_by_id(id)
-            if local_admin:
-                if not contact.organization.incident.key() == org.incident.key():
-                    self.redirect("/admin")
-                    return
-            self.response.out.write(template.render(
-            {
-                "single_contact": contact,
-                "global_admin": global_admin,
-            }))
-            return
-        else:
-            self.redirect("/")
-            return
+        except:
+            self.abort(404)
+
+        if not org.may_administer(contact):
+            self.abort(403)
+
+        self.response.out.write(template.render({
+            "single_contact": contact,
+            "global_admin": global_admin,
+        }))

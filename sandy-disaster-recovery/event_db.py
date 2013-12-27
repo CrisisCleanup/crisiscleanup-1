@@ -15,19 +15,18 @@
 # limitations under the License.
 #
 # System libraries.
-import datetime
-import hashlib
-from google.appengine.ext import db
 import logging
+import re
+
+from google.appengine.ext import db
 
 from google.appengine.api import memcache
-from wtforms.ext.appengine.db import model_form
-
 
 # Local libraries.
 import cache
 import wtforms
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
+from wtforms import TextField
+from wtforms.ext.appengine.db import model_form
 
 
 class Event(db.Model):
@@ -44,8 +43,14 @@ class Event(db.Model):
   reminder_days = db.IntegerProperty(default=15)
   reminder_contents = db.TextProperty()
 
+  @property
+  def filename_friendly_name(self):
+      return re.sub(r'\W+', '-', self.name.lower())
+
+
 def DefaultEventName():
   return "Hurricane Sandy Recovery"
+
 
 @db.transactional(xg=True, retries=100)
 def AddSiteToEvent(site, event_id, force=False, can_overwrite=False):
@@ -61,6 +66,7 @@ def AddSiteToEvent(site, event_id, force=False, can_overwrite=False):
   site.put()
   return True
 
+
 ten_minutes = 600
 @db.transactional(xg=True, retries=100)
 def SetCountiesForEvent(event_id, counties):
@@ -70,6 +76,7 @@ def SetCountiesForEvent(event_id, counties):
   event.longitudes = []
   cache.PutAndCache(event, ten_minutes)
   return True
+
 
 def GetDefaultEvent():
   cache_key = 'Event:default'
@@ -82,6 +89,7 @@ def GetDefaultEvent():
     return e
   return None
 
+
 def GetEventFromParam(event_id_param):
   try:
     event_id = int(event_id_param)
@@ -90,19 +98,24 @@ def GetEventFromParam(event_id_param):
     event = GetDefaultEvent()
   return event
 
+
 def GetCached(event_id):
   return cache.GetCachedById(Event, ten_minutes, event_id)
+
 
 def GetAllCached():
   return cache.GetAllCachedBy(Event, ten_minutes)
 
+
 def GetAndCache(event_id):
   return cache.GetAndCache(Event, ten_minutes, event_id)
+
 
 def ReduceNumberOfSitesFromEvent(event_id):
   event = Event.get_by_id(event_id)
   event.num_sites -= 1
   cache.PutAndCache(event, ten_minutes)
+
 
 class NewEventForm(model_form(Event)):
     name = TextField('Name', [wtforms.validators.Length(min = 1, max = 100,

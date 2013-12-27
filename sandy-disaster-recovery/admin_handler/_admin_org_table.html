@@ -3,8 +3,14 @@
 
 <table class="table" style="width: auto">
 <tr>
-<td>Incident:</td>
-<td><strong>{{ organization.incident.name }}</strong></td>
+  <td>Incidents:</td>
+  <td>
+    <strong>
+      {% for incident in organization.incidents %}
+        {{ incident.name }}<br>
+      {% endfor %}
+    </strong>
+  </td>
 </tr>
 
 <tr>

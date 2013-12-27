@@ -15,76 +15,46 @@
 # limitations under the License.
 #
 # System libraries.
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
-import cgi
 import jinja2
-import logging
 import os
-import urllib2
-import wtforms.validators
+
+from google.appengine.ext import db
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
-import cache
-
-from datetime import datetime
-import settings
-
-from google.appengine.ext import db
 import organization
-import primary_contact_db
-import random_password
+
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('admin_new_organization.html')
-#CASE_LABELS = settings.CASE_LABELS
-#COUNT = 26
-GLOBAL_ADMIN_NAME = "Admin"
-ten_minutes = 600
+
 
 class AdminHandler(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
-        global_admin = False
-        local_admin = False
-        if org.name == GLOBAL_ADMIN_NAME:
-            global_admin = True
-        if org.is_admin == True and global_admin == False:
-            local_admin = True
-            
-        if global_admin == False and local_admin == False:
-            self.redirect("/")
-            return
-            
-        if self.request.get("new_organization"):
-            try:
-                id = int(self.request.get("new_organization"))
-            except:
-                self.response.set_status(400)
-                return
-            obj = organization.Organization.get(db.Key.from_path('Organization', id))
-            
-            if local_admin:                
-                if not obj.incident.key() == org.incident.key():
-                    self.redirect("/admin")
-                    return
+        if not (org.is_global_admin or org.is_local_admin):
+            self.abort(403)
 
-            # lookup contacts
-            contacts = db.GqlQuery("SELECT * FROM Contact WHERE organization = :1", obj.key())
+        # get the new org
+        try:
+            id = int(self.request.get("new_organization"))
+            new_org = organization.Organization.get(db.Key.from_path('Organization', id))
+        except:
+            self.abort(400)
 
-            # render template
-            self.response.out.write(template.render({
-                "form": True,
-                "new_organization": obj,
-                "contacts": contacts,
-                "global_admin": global_admin,
-            }))
-            return   
-        else:
-            self.redirect("/")
-            return
+        # check authorisation
+        if not org.may_administer(new_org):
+            self.abort(403)
+
+        # lookup contacts
+        contacts = db.GqlQuery("SELECT * FROM Contact WHERE organization = :1", new_org.key())
+
+        # render template
+        self.response.out.write(template.render({
+            "form": True,
+            "new_organization": new_org,
+            "contacts": contacts,
+            "global_admin": org.is_global_admin,
+        }))

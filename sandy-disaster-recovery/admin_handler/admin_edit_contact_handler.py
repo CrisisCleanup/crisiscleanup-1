@@ -44,32 +44,29 @@ class AdminHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
             
-        if self.request.get("contact"):
-            # lookup contact
-            try:
-                id = int(self.request.get("contact"))
-            except:
-                pass
+        # lookup contact
+        try:
+            id = int(self.request.get("contact"))
             contact = Contact.get_by_id(id)
+        except:
+            self.abort(404)
 
-            # bail if not a relevant local admin
-            if local_admin:
-                if not org.incident.key() == contact.organization.incident.key():
-                    self.redirect("/")
-                    return
-            
-            # create form
-            form = ContactFormFull(None, contact)
+        # check authorised
+        if not org.may_administer(contact):
+            self.abort(403)
+        
+        # create form
+        form = ContactFormFull(None, contact)
 
-            # render template
-            self.response.out.write(template.render({
-                "contact": contact,
-                "form": form,
-                "organization_name": (
-                    contact.organization.name if contact.organization else None
-                ),
-                "global_admin": global_admin,
-            }))
+        # render template
+        self.response.out.write(template.render({
+            "contact": contact,
+            "form": form,
+            "organization_name": (
+                contact.organization.name if contact.organization else None
+            ),
+            "global_admin": global_admin,
+        }))
 
     def AuthenticatedPost(self, org, _):
         global_admin = False
@@ -84,17 +81,20 @@ class AdminHandler(base.AuthenticatedHandler):
             return
 
         form = ContactFormFull(self.request.POST)
-        if form.validate() and not form.errors:
-            # update contact
+
+        # retrieve contact
+        try:
             contact_id = int(self.request.get("contact_id"))
             contact = Contact.get_by_id(contact_id)
+        except:
+            self.abort(404)
 
-            # bail if not a relevant local admin
-            if local_admin:
-                if not org.incident.key() == contact.organization.incident.key():
-                    self.redirect("/")
-                    return
+        # check authorised
+        if not org.may_administer(contact):
+            self.abort(403)
 
+        if form.validate() and not form.errors:
+            # update contact and redirect
             form.populate_obj(contact)
             contact.save()
             self.redirect('/admin-single-contact?contact=%d' % contact.key().id())

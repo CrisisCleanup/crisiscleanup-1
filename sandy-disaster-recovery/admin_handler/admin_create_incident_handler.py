@@ -84,8 +84,8 @@ class AdminCreateIncidentHandler(base.AuthenticatedHandler):
                                )
             ten_minutes = 600
             cache.PutAndCache(this_event, ten_minutes)
+
             # create local admin
-            
             new_admin = organization.Organization(name = "Local Admin - " + data.short_name.data,
             email = "",
             phone = "",
@@ -100,7 +100,7 @@ class AdminCreateIncidentHandler(base.AuthenticatedHandler):
             twitter = "",
             url = "",
             facebook = "",  
-            incident = this_event.key(),
+            incidents=[this_event.key()],
             password = self.request.get("password"),
             is_active = True,
             is_admin = True,

@@ -2,8 +2,17 @@ $(function(){
 
     prev_selected_event = '';  // global
 
-    // hide input rows
-    $(".toggle").hide();
+    $organizationSelect = $('#organization');
+    $existingOrganizationSelect = $('#existing-organization');
+
+    // show existingOrganizationSelect if "Other" org is selected
+    $organizationSelect.on('change keyup', function() {
+        if ($(this).val() == 'Other') {
+            $('.existing-organization-toggle').show();
+        } else {
+            $('.existing-organization-toggle').hide();
+        }
+    });
 
     // prepend non-option
     $("#event").prepend("<option value='' selected='selected'>Choose From Below</option>").val('');
@@ -13,8 +22,9 @@ $(function(){
         var selected_event = $(this).val();
 
         if (selected_event !== '' && selected_event != prev_selected_event) {
-            // clear the organization select
-            $("#organization").children().remove();
+            // clear the organization selects
+            $organizationSelect.children().remove();
+            $existingOrganizationSelect.children().remove();
 
             // load organizations
             $.getJSON(
@@ -23,18 +33,32 @@ $(function(){
                     event_name: $(this).val(), ajax: 'true'
                 },
                 function(data){
-                    var options = '';
-                    var temp = $('<select></select>');
+                    // attach orgs to organization select
 
-                    $.each(data, function(key, val) {
-                        $('<option></option>').attr('value', key).text(val).appendTo(temp);
+                    $organizationSelect.children().remove();
+                    $existingOrganizationSelect.children().remove();
+
+                    $.each(data.event_orgs, function(key, val) {
+                        $('<option></option>').attr('value', val).text(val)
+                            .appendTo($organizationSelect);
+                    });
+                    $.each(data.other_orgs, function(key, val) {
+                        $('<option></option>').attr('value', val).text(val)
+                            .appendTo($existingOrganizationSelect);
                     });
 
-                    $("#organization").children().remove();
-                    temp.children().detach().appendTo($("#organization"));
-                    $("#organization").prepend(
+                    $organizationSelect.prepend(
                         "<option value='Admin' selected='selected'>Admin</option>"
                     );
+                    $organizationSelect.append(
+                        "<option value='Other'>Other (Existing)</option>"
+                    );
+
+                    if (data.other_orgs.length === 0) {
+                        $existingOrganizationSelect.append(
+                            "<option value='' selected>(None available)</option>"
+                        );
+                    }
 
                     $(".toggle").show();
                 }

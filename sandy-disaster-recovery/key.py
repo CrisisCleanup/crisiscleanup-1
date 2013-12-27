@@ -114,8 +114,9 @@ def CheckAuthorization(request):
                 key.delete()
                 key = None
 
-            # check the secret hash
+            # check the secret org hash and event access
             if org and key and event:
-              if (parts[0] == key.hashOrganization(org)):
+              secret_matches = (parts[0] == key.hashOrganization(org))
+              if secret_matches and org.may_access(event):
                 return org, event
   return None, None

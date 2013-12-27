@@ -55,16 +55,16 @@ class AdminAllOrgsHandler(AdminAuthenticatedHandler):
             query = organization.Organization.all()
             events = event_db.Event.all()
         elif org.is_local_admin:
-            query = organization.Organization.all().filter('incident', org.incident.key())
-            events = [event_db.Event.get(org.incident.key())]
+            query = organization.Organization.all().filter('incidents', event.key())
+            events = [event]
 
-        form.event.choices = [('', '')] + [
+        form.event.choices = [('', 'All')] + [
             (e.key(), e.name) for e in events
         ]
 
         # apply filters
         if form.event.data:
-            query.filter('incident', Key(form.event.data))
+            query.filter('incidents', Key(form.event.data))
         if form.active.data is not None:
             query.filter('is_active', form.active.data)
         if form.verified.data is not None:

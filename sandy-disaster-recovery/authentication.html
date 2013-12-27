@@ -39,14 +39,34 @@ class="activePage"
 <form method="POST" action="{{page}}">
 <input type="hidden" value="{{destination}}" name="destination" />
 <table>
-<tr><td class=question>Choose Incident:</td>
-<td class="answer">{{ form.event(autofocus=True) }}</td></tr>
-<tr class="toggle"><td class=question>Organization:</td>
-<td class="answer"><select id="organization" name="name">
-</select></td></tr>
-<tr class="toggle"><td class=question>Passcode:</td>
-<td class="answer">{{ form.password() }}</td></tr>
+  <tr>
+    <td class="question">Choose Incident:</td>
+    <td class="answer">{{ form.event(autofocus=True) }}</td>
+  </tr>
+  <tr class="toggle organization-toggle" style="display: none">
+    <td class=question>Organization:</td>
+    <td class="answer">
+      <select id="organization" name="name">
+      </select>
+    </td>
+  </tr>
+  <tr class="existing-organization-toggle" style="display: none">
+    <td class="question">Existing Organization:</td>
+    <td class="answer">
+      <select id="existing-organization" name="existing-organization">
+      </select>
+    </td>
+  </tr>
+  <tr class="toggle" style="display: none">
+    <td class=question>Passcode:</td>
+    <td class="answer">{{ form.password() }}</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <input class="toggle" style="display: none" type="submit" value="Login" />
+    </td>
+  </tr>
 </table>
-<input class="toggle" type="submit" value="Login" />
 <br/>
 {% endblock %}

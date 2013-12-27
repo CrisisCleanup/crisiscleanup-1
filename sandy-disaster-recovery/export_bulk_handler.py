@@ -9,15 +9,13 @@ from StringIO import StringIO
 from google.appengine.api import taskqueue
 from google.appengine.api import files
 from google.appengine.ext import blobstore
-from google.appengine.ext.blobstore import BlobInfo, BlobReader
-from google.appengine.ext.webapp import blobstore_handlers
 
 import webapp2
 
 import base
 from site_db import Site
 from event_db import Event
-from time_utils import timestamp, timestamp_now
+from time_utils import timestamp_now
 
 
 # constants
@@ -68,7 +66,7 @@ class AbstractExportBulkHandler(object):
         # create filename if not supplied
         if filename is None:
             filename = "%s-%s-%s.csv" % (
-                re.sub(r'\W+', '-', event.name.lower()),
+                event.filename_friendly_name,
                 re.sub(r'\W+', '-', org.name.lower()),
                 timestamp_now(),
             )
@@ -149,7 +147,7 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
 
 
 def all_event_timeless_filename(event):
-    return "%s-ALL.csv" % re.sub(r'\W+', '-', event.name.lower())
+    return "%s-ALL.csv" % event.filename_friendly_name
 
 
 class ExportAllEventsHandler(webapp2.RequestHandler, AbstractExportBulkHandler):
@@ -241,7 +239,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
             files.finalize(self.blobstore_filename)
             generated_file_blob_key = files.blobstore.get_blob_key(
                 self.blobstore_filename)
-            blob_reader = BlobReader(generated_file_blob_key)
+            blob_reader = blobstore.BlobReader(generated_file_blob_key)
             deduplicated_lines = set(line for line in blob_reader)
             blobstore.delete(generated_file_blob_key)
 
@@ -294,51 +292,3 @@ class ExportBulkWorker(AbstractExportBulkWorker):
         d = super(ExportBulkWorker, self).get_continuation_param_dict()
         d['id_list'] = self.id_list
         return d
-
-
-class DownloadBulkExportHandler(
-        base.AuthenticatedHandler,
-        blobstore_handlers.BlobstoreDownloadHandler):
-
-    def AuthenticatedGet(self, org, event):
-        filename = self.request.get('filename')
-        if not filename:
-            webapp2.abort(404)
-
-        blob_infos = BlobInfo.all().filter('filename', filename).order('-creation')
-
-        if blob_infos.count() == 0:
-            # say not ready yet (HTTP 202)
-            self.response.set_status(202)
-        else:
-            # send the blob as a file
-            blob_info = blob_infos[0]
-            self.response.headers['Content-Disposition'] = (
-                str('attachment; filename="%s"' % filename)
-            )
-            self.send_blob(blob_info)
-
-
-class DownloadEventAllWorkOrdersHandler(
-        base.AuthenticatedHandler,
-        blobstore_handlers.BlobstoreDownloadHandler):
-
-    def AuthenticatedGet(self, org, event):
-        # retrieve most recent blob with filename of event
-        filename = all_event_timeless_filename(event)
-        blob_infos = BlobInfo.all().filter('filename', filename).order('-creation')
-        if blob_infos.count() == 0:
-            self.abort(404)
-
-        # rewrite filename to include timestamp
-        blob_info_to_serve = blob_infos[0]
-        filename_to_serve = blob_info_to_serve.filename.replace(
-            '.csv',
-            '-%s.csv' % timestamp(blob_info_to_serve.creation)
-        )
-
-        # serve the blob as an attachment
-        self.response.headers['Content-Disposition'] = (
-            str('attachment; filename="%s"' % filename_to_serve)
-        )
-        self.send_blob(blob_info_to_serve)

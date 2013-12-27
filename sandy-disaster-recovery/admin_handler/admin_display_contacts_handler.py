@@ -66,23 +66,27 @@ class AdminHandler(base.AuthenticatedHandler):
             order_string = " ORDER BY " + order_kind
         else:
             order_string = ""
-            
+
         if global_admin:
             query_string = "SELECT * FROM Contact " + order_string
-            contacts = db.GqlQuery(query_string)    
+            contacts = db.GqlQuery(query_string)
             
         if local_admin:
+            local_admin_incident_keys = [
+                incident.key() for incident in org.incidents
+            ]
             contacts = [
                 contact for contact in db.GqlQuery(
                     "SELECT * FROM Contact " + order_string
                 )
-                if contact.organization.incident.key() == org.incident.key()
+                if any(
+                    incident.key() in local_admin_incident_keys
+                    for incident in contact.organization.incidents
+                )
             ]
 
-        self.response.out.write(template.render(
-        {
+        self.response.out.write(template.render({
             "contacts": contacts,
             "display_contacts": True,
             "global_admin": global_admin,
         }))
-        return

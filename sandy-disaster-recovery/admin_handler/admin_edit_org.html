@@ -9,8 +9,18 @@
 
 <form method="POST">
   <table>
+    <h3>Incidents</h3>
+    <ul>
+      {% for incident_field in form.incidents %}
+        {# iterating to override field names for webapp2 multiple select bug workaround #}
+        <li>
+          <input {% if incident_field.checked %}checked{% endif %} id="incidents-{{ loop.index0 }}" name="incidents-{{ loop.index0 }}" type="checkbox" value="{{ incident_field.data }}">
+          {{ incident_field.label }}
+        </li>
+      {% endfor %}
+    </ul>
     <input type="hidden" name="org_id" value="{{ organization.key().id() }}">
-    {% for field in form %}
+    {% for field in form if field.name != 'incidents' %}
       {{ render_field_row(field) }}
     {% endfor %}
   </table>

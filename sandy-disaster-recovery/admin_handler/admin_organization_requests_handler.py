@@ -23,42 +23,31 @@ import base
 
 from google.appengine.ext import db
 
+
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('admin_organization_requests.html')
-GLOBAL_ADMIN_NAME = "Admin"
+
 
 class AdminHandler(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
-        global_admin = False
-        local_admin = False
-        if org.name == GLOBAL_ADMIN_NAME:
-            global_admin = True
-        if org.is_admin == True and global_admin == False:
-            local_admin = True
-            
-        if global_admin == False and local_admin == False:
-            self.redirect("/")
-            return
-            
-        query = None
-        if global_admin:
+        if not (org.is_global_admin or org.is_local_admin):
+            self.abort(403)
+
+        # select orgs to show
+        if org.is_global_admin:
             query_string = "SELECT * FROM Organization WHERE org_verified = False"
             query = db.GqlQuery(query_string)
-            
-        if local_admin:
-            query = []
-            query_string = "SELECT * FROM Organization WHERE org_verified = False"
-            query_list = db.GqlQuery(query_string)
-            for q in query_list:
-                if q.incident and q.incident.key() == org.incident.key():
-                    query.append(q)
+        elif org.is_local_admin:
+            query = db.GqlQuery(
+                "SELECT * FROM Organization WHERE org_verified = False "
+                "AND incidents in :incidents",
+                incidents=[incident.key() for incident in org.incidents]
+            )
 
-        self.response.out.write(template.render(
-        {
-            "global_admin": global_admin,
+        self.response.out.write(template.render({
+            "global_admin": org.is_global_admin,
             "org_query": query,
             "url": "/admin-new-organization?new_organization=",
         }))
-        return

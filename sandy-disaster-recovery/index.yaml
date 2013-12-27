@@ -648,6 +648,7 @@ indexes:
   - name: claimed_by
   - name: county
   - name: reported_by
+  - name: request_date
   - name: status
   - name: work_type
 

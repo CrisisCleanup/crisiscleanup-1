@@ -21,3 +21,6 @@
 {% for county in counties -%}
 ,{{ county }},{{ county_open_counts[county] if county_open_counts[county] is defined else 0 }},{{ county_closed_counts[county] if county_closed_counts[county] is defined else 0 }},{{ county_totals[county] }}
 {% endfor %}
+,,,,,,,,
+,,Since Entered,
+,Average Days Waiting for Open Work Orders,{{ "%0.2f" % average_days_waiting_for_open_work_orders  }},

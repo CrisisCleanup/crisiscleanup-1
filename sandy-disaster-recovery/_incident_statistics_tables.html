@@ -130,3 +130,20 @@
     {% endfor %}
   </tbody>
 </table>
+
+<br><br>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Since Requested</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Average Days Waiting for Open Work Orders</th>
+      <td>{{ "%0.2f" % average_days_waiting_for_open_work_orders  }}</td>
+    </tr>
+  </tbody>
+</table>

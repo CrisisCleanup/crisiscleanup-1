@@ -57,10 +57,20 @@ def crunch_incident_statistics(event):
     org_closed_counts = {org.key().id(): 0 for org in orgs}
     org_reported_counts = {org.key().id(): 0 for org in orgs}
 
+    now = datetime.datetime.utcnow()
+    total_open_request_age = 0 # sec
+
     # create and batch query
     sites_query = db.Query(
         Site,
-        projection=['claimed_by', 'reported_by', 'status', 'work_type', 'county']
+        projection=[
+            'claimed_by',
+            'reported_by',
+            'request_date',
+            'status',
+            'work_type',
+            'county',
+        ]
     ).filter('event', event.key())
     batched_sites = BatchingQuery(sites_query, SITES_BATCH_SIZE)
 
@@ -82,6 +92,7 @@ def crunch_incident_statistics(event):
                 work_type_open_counts.get(work_type, 0) + 1
             county_open_counts[county] = \
                 county_open_counts.get(county, 0) + 1
+            total_open_request_age += (now - site.request_date).seconds
         if closed:
             work_type_closed_counts[work_type] = \
                 work_type_closed_counts.get(work_type, 0) + 1
@@ -140,8 +151,14 @@ def crunch_incident_statistics(event):
         for county in counties
     }
 
+    # compute averages
+    average_days_waiting_for_open_work_orders = (
+        float(total_open_request_age) / total_open_total / 60 / 60 / 24
+        if total_open_total else 0
+    )
+
     return {
-        'timestamp': datetime.datetime.utcnow(),
+        'timestamp': now,
         'event_key': event.key(),
         'statuses': STATUSES,
         'work_types': work_types,
@@ -176,6 +193,8 @@ def crunch_incident_statistics(event):
         'county_open_counts': county_open_counts,
         'county_closed_counts': county_closed_counts,
         'county_totals': county_totals,
+
+        'average_days_waiting_for_open_work_orders': average_days_waiting_for_open_work_orders,
     }
 
 

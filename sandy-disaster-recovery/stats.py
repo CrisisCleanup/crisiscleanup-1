@@ -7,13 +7,13 @@ from google.appengine.ext import deferred
 from google.appengine.ext import blobstore
 from google.appengine.api import files
 
-import webapp2
 import jinja2
 
 import base
 from site_db import Site, STATUSES
 from event_db import Event
 from db_utils import BatchingQuery
+from cron_utils import AbstractCronHandler
 
 
 # constants
@@ -189,7 +189,7 @@ def incident_statistics_html_filename(event):
     return u"%s.stats.html" % event.short_name
 
 
-class CrunchAllStatisticsHandler(webapp2.RequestHandler):
+class CrunchAllStatisticsHandler(AbstractCronHandler):
 
     @classmethod
     def _crunch_and_save(cls, event_key):
@@ -219,10 +219,6 @@ class CrunchAllStatisticsHandler(webapp2.RequestHandler):
 
 
     def get(self):
-        # allow only requests from cron
-        if self.request.headers['X-Appengine-Cron'] != 'true':
-            self.abort(403)
-
         # defer crunch and save for each event
         for event in Event.all():
             deferred.defer(self._crunch_and_save, str(event.key()))

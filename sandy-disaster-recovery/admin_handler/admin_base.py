@@ -40,7 +40,7 @@ class AdminAuthenticatedHandler(AuthenticatedHandler):
             self.jinja_template = jinja_environment.get_template(self.template)
         super(AdminAuthenticatedHandler, self).__init__(*args, **kwargs)
 
-    def dispatch(self):
+    def dispatch(self, *args, **kwargs):
         " Redirect or forbid if not authorised. "
         org, event = key.CheckAuthorization(self.request)
         if not org:
@@ -50,7 +50,7 @@ class AdminAuthenticatedHandler(AuthenticatedHandler):
         elif not (org.is_admin or org.is_global_admin):
             # forbid
             self.abort(403)
-        super(AdminAuthenticatedHandler, self).dispatch()
+        super(AdminAuthenticatedHandler, self).dispatch(*args, **kwargs)
 
     def render(self, **kwargs):
         " Render jinja template to response out. "

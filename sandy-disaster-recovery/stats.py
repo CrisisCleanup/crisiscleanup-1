@@ -80,8 +80,8 @@ def crunch_incident_statistics(event):
         claimed = bool(claiming_org)
         reporting_org = site.reported_by
         status = site.status
-        work_type = site.work_type
-        if not work_type.strip():
+        work_type = site.work_type.strip() if site.work_type else None
+        if not work_type:
             work_type = u'[Blank]'
         county = site.county if site.county else u'[Unknown]'
         open = status.startswith('Open')

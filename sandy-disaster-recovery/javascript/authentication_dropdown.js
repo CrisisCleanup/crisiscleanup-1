@@ -21,6 +21,8 @@ $(function(){
     $("#event").on('change keyup', function(){
         var selected_event = $(this).val();
 
+        $('.existing-organization-toggle').hide();
+
         if (selected_event !== '' && selected_event != prev_selected_event) {
             // clear the organization selects
             $organizationSelect.children().remove();

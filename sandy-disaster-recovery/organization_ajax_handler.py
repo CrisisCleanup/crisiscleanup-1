@@ -57,7 +57,7 @@ class OrganizationAjaxHandler(base.RequestHandler):
                 'WHERE is_active = True ORDER BY name'
             )
             if org.name not in event_org_names
-            and not org.is_admin and not org.is_legacy
+            and not org.is_admin and not org.deprecated
         ]
 
         self.response.headers['Content-Type'] = 'application/json'

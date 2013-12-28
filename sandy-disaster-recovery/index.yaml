@@ -647,6 +647,7 @@ indexes:
   - name: event
   - name: claimed_by
   - name: county
+  - name: state
   - name: reported_by
   - name: request_date
   - name: status

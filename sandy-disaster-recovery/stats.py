@@ -70,6 +70,7 @@ def crunch_incident_statistics(event):
             'status',
             'work_type',
             'county',
+            'state',
         ]
     ).filter('event', event.key())
     batched_sites = BatchingQuery(sites_query, SITES_BATCH_SIZE)
@@ -83,7 +84,10 @@ def crunch_incident_statistics(event):
         work_type = site.work_type.strip() if site.work_type else None
         if not work_type:
             work_type = u'[Blank]'
-        county = site.county if site.county else u'[Unknown]'
+        county = (
+            (site.county if site.county else u'[Unknown]') +
+            ((u', %s' % site.state) if site.state else u'')
+        )
         open = status.startswith('Open')
         closed = status.startswith('Closed')
 

@@ -49,7 +49,7 @@ class AdminHandler(base.AuthenticatedHandler):
             self.abort(403)
 
         form = (
-            GlobalAdminOrganizationForm(None, org_by_id) if global_admin
+            GlobalAdminOrganizationForm(None, org_by_id) if org.is_global_admin
             else OrganizationForm(None, org_by_id)
         )
         self.response.out.write(template.render({

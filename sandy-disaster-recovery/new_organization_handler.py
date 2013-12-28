@@ -129,15 +129,20 @@ class NewOrganizationHandler(base.RequestHandler):
             org.key().id()
         )
         organization_form = organization.OrganizationForm(None, org)
+        contact_forms = [
+            primary_contact_db.ContactFormFull(None, contact)
+            for contact in new_contacts
+        ]
         email_administrators_using_templates(
             event=chosen_event,
             subject_template_name='new_organization.subject.txt',
             body_template_name='new_organization.body.txt',
-            primary_contact=new_contacts[0],
             new_organization=org,
+            primary_contact=new_contacts[0],
             application_id=get_application_id(),
             approval_url=approval_url,
-            organization_form=organization_form
+            organization_form=organization_form,
+            contact_forms=contact_forms,
         )
 			    
 	self.redirect("/welcome")

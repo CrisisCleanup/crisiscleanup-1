@@ -46,6 +46,7 @@ class Organization(db.Expando):
   org_verified = db.BooleanProperty(required=False)
   is_active = db.BooleanProperty(default=False)
   is_admin = db.BooleanProperty(default=False)
+  is_legacy = db.BooleanProperty(default=False)
   address = db.StringProperty(required=False)
   city = db.StringProperty(required=False)
   state = db.StringProperty(required=False)

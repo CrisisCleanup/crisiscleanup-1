@@ -64,7 +64,6 @@ import public_map_handler
 import public_map_ajax_handler
 import get_event_ajax_handler
 import import_co_handler
-import change_password_handler
 
 from handlers import incident_definition
 from handlers import incident_form_creator
@@ -147,7 +146,6 @@ app = webapp2.WSGIApplication([
     Route(r'/export_bulk_download', download_handler.DownloadBulkExportHandler, 'export_bulk_download'),
     Route(r'/export_all_download', download_handler.DownloadEventAllWorkOrdersHandler, 'export_all_download'),
     Route(r'/get_event_ajax', get_event_ajax_handler.GetEventAjaxHandler, 'get_event_ajax'),
-    Route(r'/change_password', change_password_handler.ChangePasswordHandler, 'change_password'),
 
     Route(r'/logout', LogoutHandler, 'logout'),
     Route(r'/delete', delete_handler.DeleteHandler, 'delete'),

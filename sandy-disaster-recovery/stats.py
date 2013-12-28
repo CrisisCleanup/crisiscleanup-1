@@ -96,7 +96,8 @@ def crunch_incident_statistics(event):
                 work_type_open_counts.get(work_type, 0) + 1
             county_open_counts[county] = \
                 county_open_counts.get(county, 0) + 1
-            total_open_request_age += (now - site.request_date).seconds
+            if site.request_date:
+                total_open_request_age += (now - site.request_date).total_seconds()
         if closed:
             work_type_closed_counts[work_type] = \
                 work_type_closed_counts.get(work_type, 0) + 1

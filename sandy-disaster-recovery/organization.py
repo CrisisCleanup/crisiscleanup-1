@@ -76,7 +76,7 @@ class Organization(db.Expando):
 
   admin_notes = db.TextProperty(required=False)
   
-  #OTHER
+  # timestamps
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
   timestamp_login = db.DateTimeProperty(required=False)
 

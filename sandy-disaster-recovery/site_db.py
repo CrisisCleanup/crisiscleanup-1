@@ -651,7 +651,6 @@ def GetReference(obj, prop, values):
   except db.ReferencePropertyResolveError:
     return None
 
-cache_ids = False
 def GetSitesAndSetReferences(ids, events, organizations):
   sites = Site.get_by_id(ids)
   for site in sites:
@@ -662,26 +661,9 @@ def GetSitesAndSetReferences(ids, events, organizations):
 
 def GetAllCached(event, ids = None):
   if ids == None:
-    if cache_ids:
-      cache_key_for_ids = "SiteDictIds:" + event.key().id() + ":" + county 
-      ids = memcache.get(cache_key_for_ids)
-      if not ids:
-        # Retrieve all matching keys. As a keys_only scan,
-        # This should be more efficient than a full data scan.
-        q = Query(model_class = Site, keys_only = True)
-        q.filter("event =", event)
-        ids = [key.id() for key in q]
-        # Cache these for up to six minutes.
-        # TODO(Jeremy): This may do more harm than
-        # good, depending on how often
-        # people reload the map.
-        memcache.set(cache_key_for_ids, ids,
-                     time = 360)
-    else:
-      q = Query(model_class = Site, keys_only = True)
-      q.filter("event =", event)
-    
-      ids = [key.id() for key in q.run(batch_size = 2000)]
+    q = Query(model_class = Site, keys_only = True)
+    q.filter("event =", event)
+    ids = [key.id() for key in q.run(batch_size = 2000)]
   lookup_ids = [str(id) for id in ids]
   cache_results = memcache.get_multi(lookup_ids, key_prefix = cache_prefix)
   not_found = [id for id in ids if not str(id) in cache_results.keys()]

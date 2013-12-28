@@ -1,6 +1,7 @@
 
 import os
 import datetime
+import logging
 
 from google.appengine.ext import db
 from google.appengine.ext import deferred
@@ -265,7 +266,11 @@ class CrunchAllStatisticsHandler(AbstractCronHandler):
     def get(self):
         # defer crunch and save for each event
         for event in Event.all():
-            deferred.defer(self._crunch_and_save, str(event.key()))
+            if event.logged_in_to_recently:
+                logging.info(u"Crunching statistics for %s" % event.short_name)
+                deferred.defer(self._crunch_and_save, str(event.key()))
+            else:
+                logging.info(u"Crunching statistics: skipping %s" % event.short_name)
 
 
 class IncidentStatisticsHandler(base.AuthenticatedHandler):

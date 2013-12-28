@@ -16,18 +16,17 @@
 #
 # System libraries.
 import datetime
-import hashlib
 from google.appengine.ext import db
 import logging
 
 from google.appengine.api import memcache
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
+import wtforms
+from wtforms import TextField
 from wtforms.ext.appengine.db import model_form
 
 # Local libraries.
 from organization import Organization
 import cache
-import wtforms
 
 
 class Event(db.Model):
@@ -43,6 +42,7 @@ class Event(db.Model):
   longitudes = db.ListProperty(float)
   reminder_days = db.IntegerProperty(default=15)
   reminder_contents = db.TextProperty()
+  timestamp_last_login = db.DateTimeProperty()
 
   @property
   def organizations(self):
@@ -60,6 +60,15 @@ class Event(db.Model):
           if org.key().id() not in org_ids:
               orgs.append(org)
       return orgs
+
+  @property
+  def logged_in_to_recently(self):
+      " An org logged in within the last 24 hours. "
+      now = datetime.datetime.utcnow()
+      return (
+          self.timestamp_last_login and 
+          (now - self.timestamp_last_login).total_seconds() < 24 * 60 * 60
+      )
 
 
 def DefaultEventName():

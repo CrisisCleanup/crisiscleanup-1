@@ -117,9 +117,12 @@ class AuthenticationHandler(base.RequestHandler):
 	org = l
 
     if event and org and org.password == form.password.data:
-      # login was successful: timestamp org, set cookie, and redirect
-      org.timestamp_login = datetime.datetime.utcnow()
+      # login was successful: timestamp org & event, set cookie, and redirect
+      now = datetime.datetime.utcnow()
+      org.timestamp_login = now
       org.save()
+      event.timestamp_last_login = now
+      event.save()
       keys = key.Key.all()
       keys.order("date")
       selected_key = None

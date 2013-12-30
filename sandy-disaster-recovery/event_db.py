@@ -27,7 +27,6 @@ from wtforms import TextField
 from wtforms.ext.appengine.db import model_form
 
 # Local libraries.
-from organization import Organization
 import cache
 
 
@@ -53,6 +52,7 @@ class Event(db.Model):
 
       Handles current and legacy incident/s properties.
       """
+      from organization import Organization  # avoid circular import
       orgs = (
           list(Organization.all().filter('name', 'Admin')) +
           list(Organization.all().filter('incidents', self.key()))

@@ -5,8 +5,8 @@ import logging
 
 from google.appengine.ext import db
 from google.appengine.ext import deferred
-from google.appengine.ext import blobstore
-from google.appengine.api import files
+from google.appengine.api import app_identity
+import cloudstorage
 
 import jinja2
 
@@ -20,6 +20,9 @@ from cron_utils import AbstractCronHandler
 # constants
 
 SITES_BATCH_SIZE = 100
+
+APP_ID = app_identity.get_application_id()
+BUCKET_NAME = '/' + APP_ID
 
 
 # jinja
@@ -245,23 +248,22 @@ class CrunchAllStatisticsHandler(AbstractCronHandler):
         csv_content = incident_statistics_csv(stats_d)
         html_content = incident_statistics_html(stats_d)
 
-        # save
-        csv_blobstore_filename = files.blobstore.create(
-            mime_type='text/csv',
-            _blobinfo_uploaded_filename=incident_statistics_csv_filename(event)
+        # save csv & html
+        csv_gcs_fd = cloudstorage.open(
+            BUCKET_NAME + '/' + incident_statistics_csv_filename(event),
+            'w',
+            content_type='text/csv'
         )
-        with files.open(csv_blobstore_filename, 'a') as fd:
-            fd.write(csv_content)
-        files.finalize(csv_blobstore_filename)
+        csv_gcs_fd.write(csv_content.encode('utf-8'))
+        csv_gcs_fd.close()
 
-        html_blobstore_filename = files.blobstore.create(
-            mime_type='text/html',
-            _blobinfo_uploaded_filename=incident_statistics_html_filename(event)
+        html_gcs_fd = cloudstorage.open(
+            BUCKET_NAME + '/' + incident_statistics_html_filename(event),
+            'w',
+            content_type='text/html'
         )
-        with files.open(html_blobstore_filename, 'a') as fd:
-            fd.write(html_content)
-        files.finalize(html_blobstore_filename)
-
+        html_gcs_fd.write(html_content.encode('utf-8'))
+        html_gcs_fd.close()
 
     def get(self):
         # defer crunch and save for each event
@@ -282,12 +284,16 @@ class IncidentStatisticsHandler(base.AuthenticatedHandler):
     template = jinja_environment.get_template('incident_statistics.html') 
 
     def AuthenticatedGet(self, org, event):
-        blob_infos = blobstore.BlobInfo.all() \
-            .filter('filename', incident_statistics_html_filename(event)) \
-            .order('-creation')
-        if blob_infos.count() > 0:
-            blob_reader = blobstore.BlobReader(blob_infos[0].key())
-            tables_html = blob_reader.read()
+        html_filename = BUCKET_NAME + '/' + incident_statistics_html_filename(event)
+
+        try:
+            cloudstorage.stat(html_filename)
+            file_exists = True
+        except cloudstorage.errors.NotFoundError:
+            file_exists = False
+
+        if file_exists:
+            tables_html = cloudstorage.open(html_filename).read().decode('utf-8')
             csv_filename = incident_statistics_csv_filename(event)
         else:
             tables_html = u"<p>Statistics not yet generated for this incident.</p>"

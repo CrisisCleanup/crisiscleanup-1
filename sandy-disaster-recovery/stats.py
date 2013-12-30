@@ -268,7 +268,11 @@ class CrunchAllStatisticsHandler(AbstractCronHandler):
         for event in Event.all():
             if event.logged_in_to_recently:
                 logging.info(u"Crunching statistics for %s" % event.short_name)
-                deferred.defer(self._crunch_and_save, str(event.key()))
+                deferred.defer(
+                    self._crunch_and_save,
+                    str(event.key()),
+                    _queue='crunch-statistics',
+                )
             else:
                 logging.info(u"Crunching statistics: skipping %s" % event.short_name)
 

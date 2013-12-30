@@ -194,8 +194,11 @@ class AuthenticationHandler(base.RequestHandler):
           org.save()
 
       # timestamp login
-      org.timestamp_login = datetime.datetime.utcnow()
+      now = datetime.datetime.utcnow()
+      org.timestamp_login = now
       org.save()
+      event.timestamp_last_login = now
+      event.save()
 
       # create login key
       keys = key.Key.all()

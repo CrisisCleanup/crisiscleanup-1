@@ -1,0 +1,55 @@
+{% extends "base_template_without_log_in_checks.html" %}
+{% block main_title %}
+<h2>Incident Statistics</h2>
+{% endblock %}
+
+{% block main_content%}
+<style>
+  table {
+    width: auto !important;
+  }
+  td {
+    text-align: left !important;
+  }
+</style>
+
+{% if csv_filename %}
+  <p>[<a href="/export_bulk_download?filename={{ csv_filename }}">Download as CSV</a>]</p>
+{% endif %}
+
+{{ incident_statistics_tables }}
+
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/sites">Browse Cases.</a></li>
+<li><a href="/organization-settings">See My Organizations.</a></li>
+<li><a href="/organization-info">See All Organizations.</a></li>
+<li><a href="/see-all-contacts">See All Contacts.</a></li>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a></li>
+</ul>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+
+$('table#organization-table').tablesorter({
+  sortList: [[1,0]]
+});
+
+$('table#work-type-table').tablesorter({
+  sortList: [[3,0]]
+});
+
+$('table#county-table').tablesorter({
+  sortList: [[0,0]]
+});
+
+});
+</script>
+{% endblock %}

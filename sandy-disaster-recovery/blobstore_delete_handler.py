@@ -29,18 +29,23 @@ MAX_BLOB_LIFESPAN_DAYS = 14
 # handlers
 
 class BlobstoreDeleteHandler(webapp.RequestHandler):
+
     def get(self):
         query = blobstore.BlobInfo.all()
         blobs = query.fetch(10000)
         deletion_count = 0
+
         for blob in blobs:
             age = datetime.datetime.utcnow() - blob.creation
 
-            # delete CSV blobs
-            if blob.filename.endswith('.csv') and age.days >= MAX_BLOB_LIFESPAN_DAYS:
+            # delete CSV & HTML blobs
+            should_delete = (
+                (blob.filename.endswith('.csv') or blob.filename.endswith('.html'))
+                and age.days > MAX_BLOB_LIFESPAN_DAYS
+            )
+            if should_delete:
                 blob.delete()
                 deletion_count += 1
 
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('Deleted %d blob(s) from blobstore.' % deletion_count)
-

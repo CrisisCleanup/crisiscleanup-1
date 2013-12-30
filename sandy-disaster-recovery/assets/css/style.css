@@ -253,6 +253,10 @@ td { vertical-align: top; }
 }
 
 
+/*
+ * Crisis Cleanup app
+ */
+
 .MapIncident {
   border-style:solid;
   border-width:2px;
@@ -262,3 +266,22 @@ td { vertical-align: top; }
 body.wait-cursor, body.wait-cursor *{
   cursor: wait !important;   
 }
+
+/* styles for sortable tables */
+th.header {
+  cursor: pointer;
+}
+
+th.headerSortUp {
+}
+
+th.headerSortUp:after {
+  content: " \002227";
+}
+
+th.headerSortDown {
+}
+
+th.headerSortDown:after {
+  content: " \002228";
+}

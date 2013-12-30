@@ -64,6 +64,7 @@ import public_map_handler
 import public_map_ajax_handler
 import get_event_ajax_handler
 import import_co_handler
+import stats
 
 from handlers import incident_definition
 from handlers import incident_form_creator
@@ -205,6 +206,7 @@ app = webapp2.WSGIApplication([
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),
     Route(r'/contact-info', contact_info_handler.ContactInfoHandler, 'contact_info_handler'),
     Route(r'/organization-settings', organization_settings_handler.OrganizationSettingsHandler, 'organization_settings_handler'),
+    Route(r'/incident-statistics', stats.IncidentStatisticsHandler, 'incident_statistics_handler'),
     Route(r'/export_contacts_handler', export_contacts_handler.ExportContactsHandler, 'export_contacts_handler'),
     Route(r'/organization-add-contact', organization_add_contacts_handler.OrganizationAddContactsHandler, 'organization_add_contacts_handler'),   
     Route(r'/organization-edit-contact', organization_edit_contacts_handler.OrganizationEditContactsHandler, 'organization_edit_contacts_handler'),   
@@ -227,5 +229,6 @@ app = webapp2.WSGIApplication([
     Route(r'/refresh_counties', refresh_handler.RefreshHandler, name='refresh_counties'),
     Route(r'/blobstore-delete', blobstore_delete_handler.BlobstoreDeleteHandler, 'blobstore_delete_handler'),
     Route(r'/task/export-all-events', export_bulk_handler.ExportAllEventsHandler, 'export_all_events'),
+    Route(r'/task/crunch-all-events-stats', stats.CrunchAllStatisticsHandler, 'crunch_all_events_stats'),
     
 ], debug=True)

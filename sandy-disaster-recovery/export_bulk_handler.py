@@ -16,6 +16,7 @@ import base
 from site_db import Site
 from event_db import Event
 from time_utils import timestamp_now
+from cron_utils import AbstractCronHandler
 
 
 # constants
@@ -150,23 +151,23 @@ def all_event_timeless_filename(event):
     return "%s-ALL.csv" % event.filename_friendly_name
 
 
-class ExportAllEventsHandler(webapp2.RequestHandler, AbstractExportBulkHandler):
+class ExportAllEventsHandler(AbstractCronHandler, AbstractExportBulkHandler):
 
     def get(self):
-        # allow only requests from cron
-        if self.request.headers['X-Appengine-Cron'] != 'true':
-            self.abort(403)
-
         # start export Task chain for each event
         for event in Event.all():
-            filename = all_event_timeless_filename(event)
-            self.start_export(
-                org=None,
-                event=event,
-                worker_url='/export_bulk_worker',
-                filtering_event_key=event.key(),
-                filename=filename,
-            )
+            if event.logged_in_to_recently:
+                logging.info(u"Export all sites in %s" % event.short_name)
+                filename = all_event_timeless_filename(event)
+                self.start_export(
+                    org=None,
+                    event=event,
+                    worker_url='/export_bulk_worker',
+                    filtering_event_key=event.key(),
+                    filename=filename,
+                )
+            else:
+                logging.info(u"Export all sites: skipping %s" % event.short_name)
 
 
 class AbstractExportBulkWorker(webapp2.RequestHandler):

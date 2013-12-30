@@ -43,7 +43,6 @@ libraries:
   version: latest
 builtins:
   - deferred: on
-  - appstats: on
   - remote_api: on
 skip_files:
 - ^(.*/)?app\.yaml

@@ -109,6 +109,10 @@ from admin_handler import admin_import_contacts_handler as admin_import_contacts
 
 from admin_handler import admin_create_incident_form_handler
 
+from api import private_map_handler
+from api import get_incident_definition
+from api import private_site_handler
+
 import form_ajax_handler
 import update_csv_handler
 from admin_handler import admin_create_incident_csv_handler
@@ -241,6 +245,9 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_edit_communications_definition', incident_edit_communications_definition.IncidentEditCommunicationsDefinition, 'incident_edit_communications_definition'),
     
     Route(r'/check_similar_by_phase_api', check_similar_by_phase_api.CheckSimilarByPhaseAPI, "check_similar_by_phase_api"),
+    Route(r'/api/private_map_handler', private_map_handler.PrivateMapHandler, "private_map_handler"),
+    Route(r'/api/get_incident_definition', get_incident_definition.GetIncidentDefinition, "get_incident_definition"),
+    Route(r'/api/private_site_handler', private_site_handler.PrivateSiteHandler, "private_site_handler"),
 
     Route(r'/incident_create_definition_version', incident_create_definition_version.IncidentCreateDefinitionVersion, 'incident_create_definition_version'),
 

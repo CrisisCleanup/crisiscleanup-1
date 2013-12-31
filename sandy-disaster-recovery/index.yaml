@@ -37,6 +37,25 @@ indexes:
   - name: is_active
   - name: name
 
+- kind: Phase
+  properties:
+  - name: event
+  - name: phase_id
+  - name: status
+
+- kind: Phase
+  properties:
+  - name: event_name
+  - name: phase_id
+  - name: status
+
+- kind: Site
+  properties:
+  - name: case_number
+  - name: event
+  - name: is_legacy_and_first_phase
+  - name: status
+
 - kind: Site
   properties:
   - name: county
@@ -67,6 +86,12 @@ indexes:
   - name: latitude
   - name: longitude
   - name: work_type
+
+- kind: Site
+  properties:
+  - name: event
+  - name: is_legacy_and_first_phase
+  - name: status
 
 - kind: Site
   properties:

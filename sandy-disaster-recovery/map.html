@@ -1,54 +1,55 @@
-{% extends "base_template.html" %}
-
-{% block head_content %}
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>          
-
-  <script type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?sensor=false">
-  </script>
-  
-  <script type="text/javascript">
-  function initialize() {
-
-
-  }
-  </script>
-  
-    <script type="text/javascript" src="javascript/public_map15.js"></script>      
-    
-    <script type="text/javascript" src="javascript/map_clusterer.js"></script>       
-    <script type="text/javascript" src="javascript/messi.js"></script>       
+<html>
+<head>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+      <script type="text/javascript" src="javascript/messi.js"></script>       
       <link rel="stylesheet" href="stylesheets/messi.css">
-      <link rel="stylesheet" href="assets/css/public-map.css">
+    <script type="text/javascript" src="javascript/map_clusterer.js"></script>       
 
+    <script type="text/javascript" src="javascript/private_map.js"></script>      
+    <script type="text/javascript" src="javascript/map_get_legend.js"></script>      
 
-{% endblock %}
+<script type="text/javascript">
+var forms_json = "{{ forms_json }}";
 
-{% block publicmap %}
-class="activePage"
-{% endblock %}
+</script>
+<style type="text/css" >
+body { background-color: #d4d4d4; }
+</style>
+      <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?sensor=false">
+    </script>
+    <script type="text/javascript">
+    // TODO
+    // get center from inc def
+      function initialize() { }
+      populateMapByIncident("{{shortname}}", 0, []);
+    </script>
+</head>
 
-{% block description_title %}
-{{ public_map_description_title_page_block|safe }}
-{% endblock %}
+<body>
+    
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
 
-{% block description_subtitle %}
-{{ public_map_description_subtitle_page_block|safe }}
-{% endblock %}
+        <div class="col-md-2">
+              <br>
 
-{% block sidebar_title %}
-
-{% endblock %}
-
-{% block sidebar_content %}
 {{ menubox }}
-<img id="legend_img" src="/icons/Legend.png" />
+<div id="legend_div">
+<h2>Legend</h2>
+</div>
+<div id="filters_div">
 <h2>Filters</h2>
-Only show the following types:<br />
-{% for f in filters %}
-<input type="checkbox" onClick="sandy.map.Refilter()" name="filter" id="{{f[0]}}">
-<label for="{{f[0]}}">{{f[1]}}</label><br />
-{% endfor %}
+</div>
 <br>
 <form method="POST" action="/export" target="_blank">
   <input name="id" class="id_list" type="hidden" value="" />
@@ -60,15 +61,23 @@ Only show the following types:<br />
     Please wait...
   </div>
 </form>
-{% endblock %}
+        </div>
+        <div class="col-md-10">
+	  <div id="map-canvas"/>
+       </div>
 
-{% block main_title %}
-Public Maps
-{% endblock %}
+      </div>
 
-{% block main_content %}
-<div id="display_incident"></div>
-<div id="display_filter"></div>
-<div id="map_canvas"></div>
+    </div> <!-- /container -->
 
-{% endblock %}
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+

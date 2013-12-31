@@ -54,7 +54,7 @@ HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 
-PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
+PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
 
 class IncidentForm(site_db.Site):
   pass
@@ -264,6 +264,7 @@ class FormHandler(base.AuthenticatedHandler):
 	  similar_site = site.similar(event)
 	  message = None
 	elif site.event or event_db.AddSiteToEvent(site, event.key().id()):
+	  setattr(site, "is_legacy_and_first_phase", True)
 	  site_db.PutAndCache(site)
 
 	  self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
@@ -279,6 +280,8 @@ class FormHandler(base.AuthenticatedHandler):
 	phase_obj = phase.Phase(incident = inc_def_query.key(), site = site.key(), phase_id = phase_id)
 	for k, v in self.request.POST.iteritems():
 	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+	    if k == "work_type":
+	      raise Exception(v)
 	    #raise Exception(k)
 	    setattr(phase_obj, k, str(v))
 	try:
@@ -328,11 +331,13 @@ class FormHandler(base.AuthenticatedHandler):
 	      setattr(site, k, str(v))
 	
 	if event_db.AddSiteToEvent(site, event.key().id()):
-	  #raise Exception(2)
+	  setattr(site, "is_legacy_and_first_phase", False)
 	  site_db.PutAndCache(site)
       	phase_obj = phase.Phase(incident = inc_def_query.key(), site = site.key(), phase_id = phase_id)
 	for k, v in self.request.POST.iteritems():
 	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+	    if k == "work_type":
+	      raise Exception(v)
 	    #raise Exception(k)
 	    setattr(phase_obj, k, str(v))
 	phase_obj.put()

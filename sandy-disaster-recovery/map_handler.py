@@ -40,7 +40,18 @@ menubox_template = jinja_environment.get_template('_menubox.html')
 
 class MapHandler(base.RequestHandler):
   def get(self):
+    org, event = key.CheckAuthorization(self.request)
+
     phase_number = self.request.get("phase_number")
+    if not phase_number:
+      phase_number = 0
+    q = db.Query(incident_definition.IncidentDefinition)
+    q.filter("incident =", event.key())
+    inc_def_query = q.get()
+    
+    phases_json = json.loads(inc_def_query.phases_json)
+    phase_id = phases_json[int(phase_number)]['phase_id']
+      
     filters = [
               #["debris_only", "Remove Debris Only"],
               #["electricity", "Has Electricity"],
@@ -53,7 +64,6 @@ class MapHandler(base.RequestHandler):
               #["NJ", "New Jersey"],
               #["NY", "New York"]]
 
-    org, event = key.CheckAuthorization(self.request)
     if org:
       filters = [["claimed", "Claimed by " + org.name],
                  ["unclaimed", "Unclaimed"],
@@ -69,6 +79,7 @@ class MapHandler(base.RequestHandler):
       template_values = page_db.get_page_block_dict()
       template_values.update({
           "version" : os.environ['CURRENT_VERSION_ID'],
+          "shortname": event.short_name,
           #"uncompiled" : True,
           "counties" : event.counties,
           "org" : org,
@@ -116,6 +127,7 @@ class MapHandler(base.RequestHandler):
                  }) for s in [p[0] for p in site_db.GetAllCached(event)]],
           "filters" : filters,
           "demo" : True,
+          "shortname": event.short_name
         })
     self.response.out.write(template.render(template_values))
 

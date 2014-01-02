@@ -53,14 +53,31 @@ class Event(db.Model):
       Handles current and legacy incident/s properties.
       """
       from organization import Organization  # avoid circular import
-      orgs = (
-          list(Organization.all().filter('name', 'Admin')) +
-          list(Organization.all().filter('incidents', self.key()))
-      )
-      org_ids = set(org.key().id() for org in orgs)
+
+      # lookup using new incidents field
+      orgs = list(Organization.all().filter('incidents', self.key()))
+
+      # build list of id and look for global admin
+      org_ids = set()
+      seen_global_admin = False
+      for org in orgs:
+          if org.is_global_admin:
+              seen_global_admin = True
+          org_id = org.key().id()
+          if org_id not in org_ids:
+              org_ids.add(org_id)
+
+      # check legacy incident field
       for org in Organization.all().filter('incident', self.key()):
           if org.key().id() not in org_ids:
               orgs.append(org)
+
+      # prepend global admin if not encountered
+      if not seen_global_admin:
+          orgs = (
+              list(Organization.all().filter('name', 'Admin')) +
+              orgs
+          )
       return orgs
 
   @property

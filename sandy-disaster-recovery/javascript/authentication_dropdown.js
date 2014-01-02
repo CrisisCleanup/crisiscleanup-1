@@ -50,7 +50,7 @@ $(function(){
                     });
 
                     $organizationSelect.prepend(
-                        "<option value='Admin' selected='selected'>Admin</option>"
+                        "<option value='' selected='selected'>--Select--</option>"
                     );
                     $organizationSelect.append(
                         "<option value='Other'>Other (Existing)</option>"

@@ -36,21 +36,7 @@ class OrganizationAjaxHandler(base.RequestHandler):
         if not event:
             self.abort(404)
 
-        event_org_names = set([
-            # check incidents field
-            org.name for org in organization.Organization.gql(
-                'WHERE incidents = :1 and is_active = :2 ORDER BY name',
-                event.key(),
-                True
-            )
-        ] + [
-            # check legacy incident field
-            org.name for org in organization.Organization.gql(
-                'WHERE incident = :1 and is_active = :2 ORDER BY name',
-                event.key(),
-                True
-            )
-        ])
+        event_org_names = [org.name for org in event.organizations]
 
         other_org_names = [
             org.name for org in organization.Organization.gql(

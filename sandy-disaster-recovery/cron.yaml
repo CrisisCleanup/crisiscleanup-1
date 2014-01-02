@@ -1,5 +1,12 @@
 cron:
 
+- description: Daily backup
+  # as per https://developers.google.com/appengine/articles/scheduled_backups
+  # note: entity kinds must be manually specified here
+  url: /_ah/datastore_admin/backup.create?name=BackupToBlobstore&filesystem=blobstore&kind=CSVFile&kind=CSVRow&kind=Contact&kind=Event&kind=ExceptionRecord&kind=FormTypes&kind=IncidentCSV1&kind=IncidentForm&kind=Key&kind=Organization&kind=PageBlock&kind=Site
+  schedule: every 24 hours
+  target: ah-builtin-python-bundle
+
 - description: Cache latest sites
   url: /refresh_counties
   schedule: every 20 minutes

@@ -37,7 +37,7 @@ import map_handler
 import print_handler 
 import problem_handler
 import refresh_handler
-import blobstore_delete_handler
+import old_file_delete_handler
 import scripts_handler
 import site_ajax_handler
 import site_api_handler
@@ -227,7 +227,7 @@ app = webapp2.WSGIApplication([
 
     # cronned tasks
     Route(r'/refresh_counties', refresh_handler.RefreshHandler, name='refresh_counties'),
-    Route(r'/blobstore-delete', blobstore_delete_handler.BlobstoreDeleteHandler, 'blobstore_delete_handler'),
+    Route(r'/task/delete-old-files', old_file_delete_handler.OldFileDeleteHandler, 'old_file_delete'),
     Route(r'/task/export-all-events', export_bulk_handler.ExportAllEventsHandler, 'export_all_events'),
     Route(r'/task/crunch-all-events-stats', stats.CrunchAllStatisticsHandler, 'crunch_all_events_stats'),
     

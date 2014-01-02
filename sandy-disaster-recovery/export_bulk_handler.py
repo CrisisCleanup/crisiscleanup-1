@@ -7,8 +7,8 @@ import csv
 from StringIO import StringIO
 
 from google.appengine.api import taskqueue
-from google.appengine.api import files
-from google.appengine.ext import blobstore
+from google.appengine.api import app_identity
+import cloudstorage
 
 import webapp2
 
@@ -28,6 +28,9 @@ DEFAULT_CSV_FIELDS_LIST = ["claimed_by", "reported_by", "modified_by", "case_num
 MOORE_CSV_FIELDS_LIST = ["claimed_by", "reported_by", "modified_by", "case_number", "Days Waiting From %(today)s", "name","request_date","address","city","county","state","zip_code", "latitude", "longitude", "blurred_latitude", "blurred_longitude", "cross_street","phone1","phone2","time_to_call","work_type","house_affected","outbuilding_affected","exterior_property_affected","rent_or_own","work_without_resident","member_of_assessing_organization","first_responder","older_than_60","special_needs","priority","destruction_level","house_roof_damage","outbuilding_roof_damage","tarps_needed","help_install_tarp","num_trees_down","num_wide_trees","interior_debris_removal","nonvegitative_debris_removal","vegitative_debris_removal","unsalvageable_structure","heavy_machinary_required","damaged_fence_length","fence_type","fence_notes","notes","habitable","electricity","electrical_lines","unsafe_roof","unrestrained_animals","other_hazards","status","assigned_to","total_volunteers", "hours_worked_per_volunteer", "initials_of_resident_present","status_notes","prepared_by","do_not_work_before"]
 
 PULASKI_CSV_FIELDS_LIST = ["claimed_by", "reported_by", "modified_by", "case_number", "Days Waiting From %(today)s", "name", "request_date", "address", "city", "county", "state", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_assessing_organization", "first_responder", "older_than_60", "special_needs", "priority", "flood_height", "floors_affected", "carpet_removal", "hardwood_floor_removal", "drywall_removal", "appliance_removal", "heavy_item_removal", "standing_water", "mold_remediation", "pump_needed", "work_requested", "notes", "nonvegitative_debris_removal", "vegitative_debris_removal", "house_roof_damage", "outbuilding_roof_damage", "tarps_needed", "help_install_tarp", "num_trees_down", "num_wide_trees", "habitable", "electricity", "electrical_lines", "unsafe_roof", "flammables", "other_hazards", "rebuild", "num_stories", "num_rooms", "occupied", "dwelling_type", "residency", "air_conditioning_type", "heat_type", "gas_source", "gas_status", "gas_shutoff_location", "water_source", "water_status", "water_shutoff_location", "septic_type", "septic_location", "damage_overall", "damage_electrical", "damage_gas", "damage_septic", "damage_wells", "damage_fencing", "damage_concrete", "damage_yard", "damage_shingles", "damage_roof_metal", "damage_roof_tile", "damage_foundation", "damage_brick_wall", "damage_siding", "damage_cmu", "damage_windows", "damage_doors", "exterior_notes", "damage_drywall", "damage_plaster_walls", "damage_paneling", "damage_hardwood_floor", "damage_carpet", "damage_ceiling", "damage_kitchen", "damage_bathroom", "damage_refrigerator", "damage_stove", "interior_notes", "damage_furnace", "damage_ac", "damage_ducts", "hvac_notes", "status", "claim_for_org", "status", "assigned_to", "total_volunteers", "hours_worked_per_volunteer", "initials_of_resident_present", "status_notes", "prepared_by", "do_not_work_before", "cost_estimate_total", "cost_estimate_notes"]
+
+APP_ID = app_identity.get_application_id()
+BUCKET_NAME = '/' + APP_ID
 
 
 # functions
@@ -56,7 +59,6 @@ class AbstractExportBulkHandler(object):
             'cursor': '',
             'event': self.filtering_event_key,
             'filename': self.filename,
-            'blobstore_filename': self.blobstore_filename,
             'csv_header': self.csv_header,
             'worker_url': self.worker_url,
         }
@@ -72,12 +74,6 @@ class AbstractExportBulkHandler(object):
                 timestamp_now(),
             )
         self.filename = filename
-
-        # create file in blobstore
-        self.blobstore_filename = files.blobstore.create(
-            mime_type='text/csv',
-           _blobinfo_uploaded_filename=filename
-        )
 
         # decide header/title row
         header_sio = StringIO()
@@ -195,7 +191,6 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
             'cursor': self.end_cursor,
             'event': self.filtering_event_key,
             'filename': self.filename,
-            'blobstore_filename': self.blobstore_filename,
             'csv_header': self.csv_header,
             'worker_url': self.worker_url,
         }
@@ -205,7 +200,6 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         self.start_cursor = self.request.get('cursor')
         self.filtering_event_key = self.request.get('event')
         self.filename = self.request.get('filename')
-        self.blobstore_filename = self.request.get('blobstore_filename')
         self.csv_header = self.request.get('csv_header')
         self.worker_url = self.request.get('worker_url')
 
@@ -218,12 +212,14 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         fetched_sites = query.fetch(limit=self.sites_per_task)
         sites = self.filter_sites(fetched_sites)
 
-        # write sites to sio, then blob file
-        # (can only keep blob file open for limited time...)
-        sio = StringIO()
-        self._write_csv_rows(sio, sites)
-        with files.open(self.blobstore_filename, 'a') as fd:
-            fd.write(sio.getvalue())
+        # write part of csv file to GCS
+        csv_part_gcs_fd = cloudstorage.open(
+            BUCKET_NAME + '/' + self.filename + '.part.' + self.start_cursor,
+            'w',
+            content_type='text/csv'
+        )
+        self._write_csv_rows(csv_part_gcs_fd, sites)
+        csv_part_gcs_fd.close()
 
         # decide what to do next
         self.end_cursor = query.cursor()
@@ -235,25 +231,29 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
                 retry_options=taskqueue.TaskRetryOptions(task_retry_limit=3),
             )
         else:
-            # finish file: deduplicate lines
+            # finish file: combine parts and deduplicate lines
             logging.info(u"Deduplicating to create %s ..." % self.filename)
-            files.finalize(self.blobstore_filename)
-            generated_file_blob_key = files.blobstore.get_blob_key(
-                self.blobstore_filename)
-            blob_reader = blobstore.BlobReader(generated_file_blob_key)
-            deduplicated_lines = set(line for line in blob_reader)
-            blobstore.delete(generated_file_blob_key)
+
+            sio = StringIO()
+            path_prefix = BUCKET_NAME + '/' + self.filename + '.part'
+            for gcs_file_stat in cloudstorage.listbucket(path_prefix):
+                csv_part_gcs_fd = cloudstorage.open(gcs_file_stat.filename)
+                for line in csv_part_gcs_fd:
+                    sio.write(line)
+                csv_part_gcs_fd.close()
+            sio.seek(0)
+            deduplicated_lines = set(line for line in sio)
 
             # write csv header and deduplicated lines to new file
-            deduplicated_blobstore_filename = files.blobstore.create(
-                mime_type='text/csv',
-               _blobinfo_uploaded_filename=self.filename
+            csv_complete_gcs_fd = cloudstorage.open(
+                BUCKET_NAME + '/' + self.filename,
+                'w',
+                content_type='text/csv'
             )
-            with files.open(deduplicated_blobstore_filename, 'a') as fd:
-                fd.write(self.csv_header)
-                for line in deduplicated_lines:
-                    fd.write(line)
-            files.finalize(deduplicated_blobstore_filename)
+            csv_complete_gcs_fd.write(self.csv_header.encode('utf-8'))
+            for line in deduplicated_lines:
+                csv_complete_gcs_fd.write(line)
+            csv_complete_gcs_fd.close()
 
 
 class ExportBulkWorker(AbstractExportBulkWorker):

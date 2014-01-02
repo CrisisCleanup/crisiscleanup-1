@@ -1,15 +1,23 @@
 
-from google.appengine.ext.blobstore import BlobInfo
-from google.appengine.ext.webapp import blobstore_handlers
+import datetime
+
+from google.appengine.api import app_identity
+import cloudstorage
 
 import base
 from time_utils import timestamp
 from export_bulk_handler import all_event_timeless_filename
 
 
-class DownloadBulkExportHandler(
-        base.AuthenticatedHandler,
-        blobstore_handlers.BlobstoreDownloadHandler):
+# constants
+
+APP_ID = app_identity.get_application_id()
+BUCKET_NAME = '/' + APP_ID
+
+
+# classes
+
+class DownloadBulkExportHandler(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
         filename = self.request.get('filename')
@@ -25,41 +33,49 @@ class DownloadBulkExportHandler(
         if not allowed_to_access:
             self.abort(403)
 
-        # find blob
-        blob_infos = BlobInfo.all().filter('filename', filename).order('-creation')
-
-        if blob_infos.count() == 0:
+        # find file in GCS
+        bucket_path = BUCKET_NAME + '/' + filename
+        try:
+            file_stat = cloudstorage.stat(bucket_path)
+        except cloudstorage.NotFoundError:
             # say not ready yet (HTTP 202)
             self.response.set_status(202)
-        else:
-            # send the blob as a file, forcing download
-            blob_info = blob_infos[0]
-            self.response.headers['Content-Disposition'] = (
-                str('attachment; filename="%s"' % filename)
-            )
-            self.send_blob(blob_info)
+            return
+
+        # send the file contents & force download
+        gcs_fd = cloudstorage.open(bucket_path)
+        if file_stat.content_type:
+            self.response.headers['Content-Type'] = file_stat.content_type
+        self.response.headers['Content-Disposition'] = (
+            str('attachment; filename="%s"' % filename)
+        )
+        self.response.write(gcs_fd.read())
 
 
-class DownloadEventAllWorkOrdersHandler(
-        base.AuthenticatedHandler,
-        blobstore_handlers.BlobstoreDownloadHandler):
+class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
-        # retrieve most recent blob with filename of event
         filename = all_event_timeless_filename(event)
-        blob_infos = BlobInfo.all().filter('filename', filename).order('-creation')
-        if blob_infos.count() == 0:
+        bucket_path = BUCKET_NAME + '/' + filename
+
+        try:
+            file_stat = cloudstorage.stat(bucket_path)
+        except cloudstorage.NotFoundError:
             self.abort(404)
 
         # rewrite filename to include timestamp
-        blob_info_to_serve = blob_infos[0]
-        filename_to_serve = blob_info_to_serve.filename.replace(
+        custom_timestamp = timestamp(
+            datetime.datetime.utcfromtimestamp(file_stat.st_ctime))
+        filename_to_serve = file_stat.filename.replace(
             '.csv',
-            '-%s.csv' % timestamp(blob_info_to_serve.creation)
+            '-%s.csv' % custom_timestamp 
         )
 
-        # serve the blob as an attachment
+        # serve the file as an attachment, forcing download
+        gcs_fd = cloudstorage.open(bucket_path)
+        if file_stat.content_type:
+            self.response.headers['Content-Type'] = file_stat.content_type
         self.response.headers['Content-Disposition'] = (
             str('attachment; filename="%s"' % filename_to_serve)
         )
-        self.send_blob(blob_info_to_serve)
+        self.response.write(gcs_fd.read())

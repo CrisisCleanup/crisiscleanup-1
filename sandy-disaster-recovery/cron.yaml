@@ -4,8 +4,8 @@ cron:
   url: /refresh_counties
   schedule: every 20 minutes
 
-- description: Purge blobstore of old blobs
-  url: /blobstore-delete
+- description: Purge old files
+  url: /task/delete-old-files
   schedule: every 24 hours
 
 - description: Generate CSV exports of sites for all events

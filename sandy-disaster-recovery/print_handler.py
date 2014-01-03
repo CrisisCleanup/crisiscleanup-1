@@ -25,6 +25,7 @@ from google.appengine.ext import db
 # Local libraries.
 import base
 import site_util
+import site_db
 
 # Only works for EST!
 LOCAL_TIME_OFFSET = datetime.timedelta(seconds=-5 * 3600)
@@ -51,14 +52,27 @@ class PrintHandler(base.AuthenticatedHandler):
     case_number = self.request.get("case_number")
     phase_id = self.request.get("phase_id")
     phase_number = self.request.get("phase_number")
+    site_id = None
+    if case_number:
+      q = db.Query(site_db.Site)
+      q.filter("case_number =", case_number)
+      query = q.get()
+      case_id = query.key().id()
+      
     print_single_template = jinja_environment.get_template('print_single.html')
     if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       print_single_template = jinja_environment.get_template('print_single_derechos.html')
     if event.short_name == MOORE_OKLAHOMA_SHORT_NAME:
       print_single_template = jinja_environment.get_template('print_single_moore.html')
 
-        
-    sites = site_util.SitesFromIds(self.request.get('id'), event)
+    sites = None
+    if case_id:
+      site = site_db.Site.get_by_id(case_id)
+      sites = [site]
+      #raise Exception(site)
+    else:
+      sites = site_util.SitesFromIds(self.request.get('id'), event)
+    #raise Exception(sites)
     self.response.out.write(template.render({
       'content': ''.join(print_single_template.render({
         'page_break': i > 0,

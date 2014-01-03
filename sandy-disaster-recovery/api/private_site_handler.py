@@ -56,6 +56,7 @@ class PrivateSiteHandler(base.RequestHandler):
     phase_number = self.request.get("phase_number")
     case_number = self.request.get("case_number")
     phase_id = self.request.get("phase_id")
+    edit = self.request.get("edit")
     try:
       int(phase_number)
     except:
@@ -90,6 +91,7 @@ class PrivateSiteHandler(base.RequestHandler):
     q = None
 
     ids = []
+    # add a condition for 'edit' here
     if inc_def_query.is_version_one_legacy and int(phase_number) == 0:
       gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2 and is_legacy_and_first_phase = :3 and case_number = :4'
       q = db.GqlQuery(gql_string, where_string, this_key, True, case_number)
@@ -106,13 +108,14 @@ class PrivateSiteHandler(base.RequestHandler):
     # Get all entities in a phase.
       ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = 0)]
 
-	
+    #raise Exception(ids)
     output = json.dumps(
 	[s[1] for s in site_db.GetAllCached(event, ids)],
 	default=dthandler
     )
     output_array = []
     json_output = json.loads(output)
+    
     #output_copy = deepcopy(json_output)
     remove_from_output_list = ["event_name", "city_metaphone", 'address_metaphone', 'name_metaphone', 'event', 'latitude', 'longitude', 'blurred_latitude', 'blurred_longitude', 'phase_id', 'phone_normalised', 'is_legacy_and_first_phase', 'address_digits', 'id']
     for key in json_output[0]:
@@ -128,7 +131,7 @@ class PrivateSiteHandler(base.RequestHandler):
 	final_output[key] = json_output[0][key]
 	
     #raise Exception(final_output)
-    html_string = format_output(final_output)
+    html_string = format_output(final_output, case_number, phase_number, phase_id, ids[0])
     #raise Exception(html_string)
 
     #raise Exception(final_output)
@@ -137,15 +140,21 @@ class PrivateSiteHandler(base.RequestHandler):
     self.response.out.write(html_string)
 
 
-def format_output(final_output):
+def format_output(final_output, case_number, phase_number, phase_id, site_id):
+  case_number = str(case_number)
+  phase_number = str(phase_number)
+  phase_id = str(phase_id)
   output_html = ""
-  standard_html_output = '<b>Name:</b> ' + final_output['name'] + '<br><b>Date:</b> ' + final_output['request_date'] + '<br><b>Address:</b> ' + final_output['address'] + ' ' + final_output['city'] + ' ' + final_output['state'] + ' ' + final_output['zip_code'] + '<br><b>Status:</b> ' + final_output['status']
+  standard_html_output = '<div class="messi_python"><b>Name:</b> ' + final_output['name'] + '<br><b>Date:</b> ' + final_output['request_date'] + '<br><b>Address:</b> ' + final_output['address'] + ' ' + final_output['city'] + ' ' + final_output['state'] + ' ' + final_output['zip_code'] + '<br><b>Status:</b> ' + final_output['status']
   
   standard_list = ['name', 'request_date','address', 'city', 'state', 'zip_code', 'status', 'reported_by', 'claimed_by', 'county', 'work_type', 'case_number']
+  
+  edit_url = '/edit?id=' + str(site_id) + '&phase=' + phase_number
+  
   
   for key in final_output:
     if key not in standard_list and final_output[key]!= '':
       output_html = output_html + '<br><b>' + str(key) + ':</b> ' + str(final_output[key])
-  buttons_html = '<hr><div class="btnbox"><a class="btn " href="/print?case_number=9" target="_blank">Printer Friendly</a><a class="btn " href="#" >Change Status</a><a class="btn " href="#" >Claim</a><a class="btn " id="thi" href="#" >Edit</a></div><script>  $("#thi").click(function() { alert(1); });</script>'
+  buttons_html = '</div><hr><div class="btnbox"><a class="btn " href="/print?case_number=' + case_number + '&phase_number=' + phase_number + '&phase_id=' + phase_id +'" target="_blank">Printer Friendly</a><a class="btn " href="#" >Change Status</a><a class="btn " href="#" >Claim</a><a class="btn " id="messi_edit" href="' + edit_url + '" target="_blank">Edit</a></div>'
   final_html = standard_html_output + output_html + buttons_html
   return final_html

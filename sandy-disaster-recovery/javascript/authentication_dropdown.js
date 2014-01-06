@@ -1,6 +1,7 @@
 $(function(){
 
     prev_selected_event = '';  // global
+    active_xhr = null; // global
 
     $organizationSelect = $('#organization');
     $existingOrganizationSelect = $('#existing-organization');
@@ -17,7 +18,7 @@ $(function(){
     // prepend non-option
     $("#event").prepend("<option value='' selected='selected'>Choose From Below</option>").val('');
 
-    // bind events on event
+    // bind to load orgs on event change
     $("#event").on('change keyup', function(){
         var selected_event = $(this).val();
 
@@ -28,8 +29,11 @@ $(function(){
             $organizationSelect.children().remove();
             $existingOrganizationSelect.children().remove();
 
+            // abort any previous call
+            if (active_xhr) active_xhr.abort();
+
             // load organizations
-            $.getJSON(
+            active_xhr = $.getJSON(
                 "/organization_ajax_handler",
                 {
                     event_name: $(this).val(), ajax: 'true'

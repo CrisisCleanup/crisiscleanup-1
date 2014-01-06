@@ -169,7 +169,7 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   for org in organizations:
     if org.name != "Admin":
 
-      string_value = org.name + " | " + org.incident.name
+      string_value = org.name
       obj = (org.key().id(), string_value)
       organizations_array.append(obj)
   

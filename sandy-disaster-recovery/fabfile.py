@@ -22,7 +22,9 @@ BUILD_DIR_PREFIX = 'ccbuild'
 # find GAE SDK
 
 POSSIBLE_SDK_DIRECTORIES = [
+    '../google_appengine/',
     '../../google_appengine/',
+    '../../../google_appengine/',
 ]
 
 try:

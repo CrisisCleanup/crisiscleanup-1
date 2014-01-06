@@ -510,6 +510,12 @@ $(function() {
     $("#add_options_to_radio").empty();
     $("#add_options_to_radio").append(new_option);
   });
+
+  // ----------- CLONE EXISTING FORM ----------------
+  $("#clone_form").click(function() {
+	hide_divs();	
+	$("#clone_form_div").show();
+  });
   // ----------- ADD WORK TYPE ----------------
   $("#add_work_type").click(function() {
 	hide_divs();	
@@ -611,6 +617,8 @@ function hide_divs() {
   $("#subheader_div").hide();
   $("#textarea_div").hide();
   $("#work_type_div").hide();
+  $("#clone_form_div").hide();
+
 }
 function hide_tabs() {
   $("#tabs-1").hide();

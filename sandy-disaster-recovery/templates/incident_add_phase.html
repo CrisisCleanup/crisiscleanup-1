@@ -1,0 +1,60 @@
+
+{% extends "base_template.html" %}
+
+{% block head_content %}
+<link href="/stylesheets/default.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block login %}
+{% endblock %}
+
+
+{% block description_title %}
+{% endblock %}
+
+{% block description_subtitle %}
+{% endblock %}
+
+{% block sidebar_title %}
+{% endblock %}
+
+{% block sidebar_content %}
+{% endblock %}
+
+{% block main_title %}
+{% endblock %}
+
+{% block main_content %}
+<h2>Incident: {{ incident_definition_object.name }}</h2>
+<h2>Add Phase</h2>
+<h3>This can't be undone.</h3>
+<p>Adding a phase is one of the most important things you can do with an incident, but it must be done carefully.</p>
+<p>If you are sure, please continue.</p>
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<form id="first_phase_form" action="/incident_add_phase" method="POST">
+<div>{{ form.phase_name.label}}{{form.phase_name}}</div>
+<div>{{ form.description.label }}{{ form.description }}</div>
+  <input type="hidden" name="incident_id" value="{{ incident_definition_object.key().id() }}">
+  <button class="submit">Submit</button>
+</form>
+
+{% endblock %}
+

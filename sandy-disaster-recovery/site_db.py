@@ -27,6 +27,7 @@ from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.ext.db import Query
 from google.appengine.api import search
+from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
 # Local libraries.
 import event_db
@@ -38,6 +39,8 @@ STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 
 				'phone1', 'phone2', 'name_metaphone', 'address_digits', 'address_metaphone',
 				'city_metaphone', 'phone_normalised', 'latitude', 'longitude',
 				'work_type', 'priority']
+
+PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
 
 def _GetOrganizationName(site, field):
   """Returns the name of the organization in the given field, if possible.
@@ -165,7 +168,7 @@ class Site(db.Expando):
   latitude = db.FloatProperty(default = 0.0)
   longitude = db.FloatProperty(default = 0.0)
   ## Priority assigned by organization (1 is highest).
-  priority = db.IntegerProperty(choices=[1, 2, 3, 4, 5], default = 3)
+  #priority = db.IntegerProperty(choices=[1, 2, 3, 4, 5], default = 3)
   
   #priority = db.StringProperty()
   ## Name of org. rep (e.g. "Jill Smith")
@@ -686,5 +689,9 @@ def GetAllCached(event, ids = None):
 def _filter_non_digits(s):
     return ''.join(filter(lambda x: x.isdigit(), s))
 
+
 class StandardSiteForm(model_form(Site)):
     pass
+
+
+  

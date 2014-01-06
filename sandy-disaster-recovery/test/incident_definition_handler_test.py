@@ -1,6 +1,7 @@
 #import unittest
-#import webtest
 #import webapp2
+#import webtest
+
 #from google.appengine.ext import db
 #from google.appengine.ext import testbed
 #from google.appengine.datastore import datastore_stub_util

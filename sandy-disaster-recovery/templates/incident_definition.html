@@ -2,10 +2,25 @@
 {% extends "base_template.html" %}
 
 {% block head_content %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <link href="/stylesheets/default.css" rel="stylesheet">
+<link href="/stylesheets/glDatePicker.default.css" rel="stylesheet" type="text/css">
+
 {% endblock %}
 
 {% block scripts %}
+<script src="../javascript/glDatePicker.min.js"></script>
+
+<script>
+$(function() {
+  $('#incident_date').glDatePicker();
+  $('#cleanup_start_date').glDatePicker();
+//   $('#work_order_prefix').attr("disabled", true);
+  
+
+
+});
+</script>
 {% endblock %}
 
 {% block login %}
@@ -28,165 +43,42 @@
 {% endblock %}
 
 {% block main_content %}
+<h2>New Incident Definition</h2>
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<h3>Basic Information</h3>
 <form action="/incident_definition" method="POST">
-<h2>Incident</h2>
-Incident Definition Version: (req) <select id="incident_version" name="incident_version">
-  <option value="None">Choose a version</option>
-  <option value="1">Verson 1</option>
-</select>
-<br>
-
-Full Name: (req) <input type = "text" id="incident_full_name" name="incident_full_name" placeholder="string">
-<br/>
-
-
-Short Name: (req) <input type = "text" id="incident_short_name" name="incident_short_name" placeholder="string">
-<br/>
-
-
-Time Zone: (req) <select name="timezone" id="timezone">
-      <option value="-12.0">(GMT -12:00) Eniwetok, Kwajalein</option>
-      <option value="-11.0">(GMT -11:00) Midway Island, Samoa</option>
-      <option value="-10.0">(GMT -10:00) Hawaii</option>
-      <option value="-9.0">(GMT -9:00) Alaska</option>
-      <option value="-8.0">(GMT -8:00) Pacific Time (US &amp; Canada)</option>
-      <option value="-7.0">(GMT -7:00) Mountain Time (US &amp; Canada)</option>
-      <option value="-6.0">(GMT -6:00) Central Time (US &amp; Canada), Mexico City</option>
-      <option value="-5.0">(GMT -5:00) Eastern Time (US &amp; Canada), Bogota, Lima</option>
-      <option value="-4.0">(GMT -4:00) Atlantic Time (Canada), Caracas, La Paz</option>
-      <option value="-3.5">(GMT -3:30) Newfoundland</option>
-      <option value="-3.0">(GMT -3:00) Brazil, Buenos Aires, Georgetown</option>
-      <option value="-2.0">(GMT -2:00) Mid-Atlantic</option>
-      <option value="-1.0">(GMT -1:00 hour) Azores, Cape Verde Islands</option>
-      <option value="0.0">(GMT) Western Europe Time, London, Lisbon, Casablanca</option>
-      <option value="1.0">(GMT +1:00 hour) Brussels, Copenhagen, Madrid, Paris</option>
-      <option value="2.0">(GMT +2:00) Kaliningrad, South Africa</option>
-      <option value="3.0">(GMT +3:00) Baghdad, Riyadh, Moscow, St. Petersburg</option>
-      <option value="3.5">(GMT +3:30) Tehran</option>
-      <option value="4.0">(GMT +4:00) Abu Dhabi, Muscat, Baku, Tbilisi</option>
-      <option value="4.5">(GMT +4:30) Kabul</option>
-      <option value="5.0">(GMT +5:00) Ekaterinburg, Islamabad, Karachi, Tashkent</option>
-      <option value="5.5">(GMT +5:30) Bombay, Calcutta, Madras, New Delhi</option>
-      <option value="5.75">(GMT +5:45) Kathmandu</option>
-      <option value="6.0">(GMT +6:00) Almaty, Dhaka, Colombo</option>
-      <option value="7.0">(GMT +7:00) Bangkok, Hanoi, Jakarta</option>
-      <option value="8.0">(GMT +8:00) Beijing, Perth, Singapore, Hong Kong</option>
-      <option value="9.0">(GMT +9:00) Tokyo, Seoul, Osaka, Sapporo, Yakutsk</option>
-      <option value="9.5">(GMT +9:30) Adelaide, Darwin</option>
-      <option value="10.0">(GMT +10:00) Eastern Australia, Guam, Vladivostok</option>
-      <option value="11.0">(GMT +11:00) Magadan, Solomon Islands, New Caledonia</option>
-      <option value="12.0">(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka</option>
-</select>
-<br>
-
-Incident Date: (req) <input type = "text" id="incident_date" name="incident_date" placeholder="mm/dd/yyyy" value="{{ todays_date }}">
-<br/>
+<div>{{ form.name.label }}: {{ form.name}}</div>
+<div>{{ form.location.label }}: {{ form.location}}</div>
+<div>{{ form.timezone.label }}: {{ form.timezone }}</div>
+<div>{{ form.incident_date.label }}: {{ form.incident_date(readonly=true) }}</div>
+<div>{{ form.cleanup_start_date.label }}: {{ form.cleanup_start_date(readonly=true) }}</div>
+<div>{{ form.work_order_prefix.label }}: {{ form.work_order_prefix(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('work_order_prefix').readOnly=false; document.getElementById('work_order_prefix').focus(); return false;">edit</a>)</small></div>
+<div>{{ form.incident_lat.label }}: {{ form.incident_lat }}</div>
+<div>{{ form.incident_lng.label }}: {{ form.incident_lng }}</div>
+<h3>Local Admin Information</h3>
+<div>{{ form.local_admin_name.label }}: {{ form.local_admin_name }}</div>
+<div>{{ form.local_admin_title.label }}: {{ form.local_admin_title }}</div>
+<div>{{ form.local_admin_organization.label }}: {{ form.local_admin_organization }}</div>
+<div>{{ form.local_admin_email.label }}: {{ form.local_admin_email }}</div>
+<div>{{ form.local_admin_cell_phone.label }}: {{ form.local_admin_cell_phone }}</div>
+<div>{{ form.local_admin_password.label }}: {{ form.local_admin_password(readonly = true) }}<small>(<a href="#" onclick="document.getElementById('local_admin_password').readOnly=false; document.getElementById('local_admin_password').focus(); return false;">edit</a>)</small></div> 
 
 
-Start Date: (req) <input type = "text" id="incident_start_date" name="incident_start_date" placeholder="mm/dd/yyyy" value="{{ todays_date }}">
-<br/>
-
-
-End Date: <input type = "text" id="incident_end_date" name="incident_end_date" placeholder="mm/dd/yyyy">
-<br/>
-
-
-Work Order Prefix: <input type = "text" id="work_order_prefix" name="work_order_prefix" placeholder="capital letter defined by system" value="{{ work_order_prefix }}">
-<br/>
-
-Centroid latitude: (req) <input type = "text" id="centroid_latitude" name="centroid_latitude" placeholder="approximate latitude center of the incident">
-<br/>
-
-
-Centroid longitude: (req) <input type = "text" id="centroid_longitude" name="centroid_longitude" placeholder="approximate longitude center of the incident">
-<br/>
-
-Camera latitude: (req) <input type = "text" id="camera_latitude" name="camera_latitude" placeholder="approximate latitude camera of the incident">
-<br/>
-
-
-Camera longitude: (req) <input type = "text" id="camera_longitude" name="camera_longitude" placeholder="approximate longitude camera of the incident">
-<br/>
-
-Developer Mode: (req) <input type="checkbox" name="developer_mode" value="y">
-<br/>
-
-Ignore Validation: (req) <input type="checkbox" name="ignore_validation" value="y">
-<br/>
-
-
-<h2>Local Admin</h2>
-
-
-Name: (req) <input type = "text" id="local_admin_name" name="local_admin_name" placeholder="Full Name">
-<br/>
-
-
-Title: (req) <input type = "text" id="local_admin_title" name="local_admin_title" placeholder="Title within that person's organization">
-<br/>
-
-
-Organization: (req) <input type = "text" id="local_admin_organization" name="local_admin_organization" placeholder="string">
-<br/>
-
-
-Email: (req) <input type = "text" id="local_admin_email" name="local_admin_email" placeholder="that person's personal email address">
-<br/>
-
-
-Cell Phone: (req) <input type = "text" id="local_admin_cell_phone" name="local_admin_cell_phone" placeholder="that person's personal cell phone number">
-<br/>
-
-
-Password: (req) <input type = "text" id="local_admin_password" name="local_admin_password" placeholder="set that user's password">
-<br/>
-<br/>
-
-
-<h2>Maps</h2>
-<h3>Internal Map</h3>
-Map Title<input type = "text" id="internal_map_title" name="internal_map_title" placeholder="">
-<br>
-
-External Map URL: (req) <input type = "text" id="internal_map_url" name="internal_map_url" placeholder="">
-<br>
-
-Cluster map (Yes is strongly recommended)| Yes:<input type="checkbox" name="internal_map_cluster" id="internal_map_cluster" value="y" selected><br>
-Default Zoom Setting: <select name="internal_map_zoom" id="internal_map_zoom">
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
-      <option value="7" selected>7-default</option>
-      <option value="8">8</option>
-      <option value="9">9</option>
-      <option value="10">10</option>
-      <option value="11">11</option>
-      <option value="12">12</option>
-
-</select>
-
-<h3>Public Map</h3>
-Map Title<input type = "text" id="public_map_title" name="public_map_title" placeholder="">
-<br>
-
-Public Map URL: (req) <input type = "text" id="public_map_url" name="public_map_url" placeholder="">
-<br>
-
-Cluster map (Yes is strongly recommended)| Yes:<input type="checkbox" name="public_map_cluster" id="public_map_cluster" value="y" selected><br>
-Default Zoom Setting: <select name="public_map_zoom" id="internal_map_zoom">
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
-      <option value="7" selected>7-default</option>
-      <option value="8">8</option>
-      <option value="9">9</option>
-      <option value="10">10</option>
-      <option value="11">11</option>
-      <option value="12">12</option>
-
-</select>
-<br>
-<br>
 <button class="submit">Submit</button>
 </form>
 

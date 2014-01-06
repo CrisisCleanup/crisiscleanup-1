@@ -23,6 +23,7 @@ BUILD_DIR_PREFIX = 'ccbuild'
 
 POSSIBLE_SDK_DIRECTORIES = [
     '../../google_appengine/',
+    '../../../google_appengine/',
 ]
 
 try:

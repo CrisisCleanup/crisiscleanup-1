@@ -21,6 +21,7 @@ import json
 import os
 from google.appengine.ext import db
 from google.appengine.api import memcache
+import json
 
 # Local libraries.
 import base
@@ -28,16 +29,29 @@ import event_db
 import key
 import site_db
 import page_db
+from models import incident_definition
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('main.html')
+template = jinja_environment.get_template('map.html')
 menubox_template = jinja_environment.get_template('_menubox.html')
 
 
 class MapHandler(base.RequestHandler):
   def get(self):
+    org, event = key.CheckAuthorization(self.request)
+
+    phase_number = self.request.get("phase_number")
+    if not phase_number:
+      phase_number = 0
+    q = db.Query(incident_definition.IncidentDefinition)
+    q.filter("incident =", event.key())
+    inc_def_query = q.get()
+    
+    phases_json = json.loads(inc_def_query.phases_json)
+    phase_id = phases_json[int(phase_number)]['phase_id']
+      
     filters = [
               #["debris_only", "Remove Debris Only"],
               #["electricity", "Has Electricity"],
@@ -50,7 +64,6 @@ class MapHandler(base.RequestHandler):
               #["NJ", "New Jersey"],
               #["NY", "New York"]]
 
-    org, event = key.CheckAuthorization(self.request)
     if org:
       filters = [["claimed", "Claimed by " + org.name],
                  ["unclaimed", "Unclaimed"],
@@ -66,6 +79,7 @@ class MapHandler(base.RequestHandler):
       template_values = page_db.get_page_block_dict()
       template_values.update({
           "version" : os.environ['CURRENT_VERSION_ID'],
+          "shortname": event.short_name,
           #"uncompiled" : True,
           "counties" : event.counties,
           "org" : org,
@@ -73,6 +87,7 @@ class MapHandler(base.RequestHandler):
                                              "event": event,
                                              "include_search": True,
                                              "admin": org.is_admin,
+                                             "phase_links": populate_phase_links(event)
                                              }),
           "status_choices" : [json.dumps(c) for c in
                               site_db.Site.status.choices],
@@ -112,5 +127,28 @@ class MapHandler(base.RequestHandler):
                  }) for s in [p[0] for p in site_db.GetAllCached(event)]],
           "filters" : filters,
           "demo" : True,
+          "shortname": event.short_name
         })
     self.response.out.write(template.render(template_values))
+
+
+def populate_phase_links(event):
+  q = db.Query(incident_definition.IncidentDefinition)
+  q.filter("incident =", event.key())
+  inc_def_query = q.get()
+  if inc_def_query == None:
+    return ""
+  
+  phases_json = json.loads(inc_def_query.phases_json)
+  
+  links = "<br><br><b>Phases:</b> "
+  i = 0
+  for phase in phases_json:
+    num = str(i).replace('"', '')
+    separator = ""
+    if i > 0:
+      separator = " | "
+    links = links + separator + '<a href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    i+=1
+    
+  return links

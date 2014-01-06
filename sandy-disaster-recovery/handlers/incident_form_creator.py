@@ -24,7 +24,6 @@ from datetime import datetime
 import base
 import key
 from models import incident_definition
-import event_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
@@ -33,13 +32,13 @@ template = jinja_environment.get_template('incident_form_creator.html')
 def make_date_object(date_string):
   pass
 
-class IncidentFormCreator(base.RequestHandler):
-  def get(self):
-    incidents = event_db.Event.all()
+class IncidentFormCreator(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
+    incidents = incident_definition.IncidentDefinition.all()
     data = {
         "incidents": incidents,
     }
     self.response.out.write(template.render(data))
 
-  def post(self):
+  def AuthenticatedPost(self, org, event):
     pass

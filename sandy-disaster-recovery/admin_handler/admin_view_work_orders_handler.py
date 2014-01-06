@@ -31,7 +31,7 @@ from admin_base import AdminAuthenticatedHandler
 
 import event_db
 import api_key_db
-from site_db import Site, STATUSES
+from site_db import Site, STATUSES_UNICODE
 from organization import Organization
 from zip_code_db import ZipCode
 from export_bulk_handler import AbstractExportBulkHandler, AbstractExportBulkWorker
@@ -424,8 +424,8 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         candidate_ids = set()
         for zip_code in zip_codes:
             officials = votesmart.officials_by_zip(zip_code)
-            zip_data[zip_code]['officials'] = officials
-            candidate_ids.update(official['candidateId'] for official in officials)
+            zip_data[zip_code][u'officials'] = officials
+            candidate_ids.update(official[u'candidateId'] for official in officials)
 
         # lookup addresses of officials
         official_addresses = {
@@ -436,36 +436,36 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         # create CSV sio of officials by zip code
         candidate_field_names = officials[0].keys()
         official_field_names = (
-            ['zip_code', 'primary_city'] + 
-            STATUSES + 
-            ['candidateId'] + candidate_field_names
+            [u'zip_code', u'primary_city'] + 
+            STATUSES_UNICODE + 
+            [u'candidateId'] + candidate_field_names
         )
         officials_csv_sio = StringIO()
         csv_writer = UnicodeDictWriter(officials_csv_sio, official_field_names)
         csv_writer.writeheader()
         for zip_code in zip_data:
-            for official in zip_data[zip_code]['officials']:
+            for official in zip_data[zip_code][u'officials']:
                 row_d = {
-                    'zip_code': zip_code,
-                    'primary_city': zip_data[zip_code]['primary_city']
+                    u'zip_code': zip_code,
+                    u'primary_city': zip_data[zip_code][u'primary_city']
                 }
-                row_d.update(zip_data[zip_code]['stats'])
+                row_d.update(zip_data[zip_code][u'stats'])
                 row_d.update(official)
                 csv_writer.writerow(row_d)
 
         # create CSV sio of addresses by candidate
         def flatten_office_dict(d):
             return dict([
-                ('address.' + k, v) for (k,v) in d.get('address', {}).items()
+                (u'address.' + k, v) for (k,v) in d.get(u'address', {}).items()
             ] + [
-                ('phone.' + k, v) for (k,v) in d.get('phone', {}).items()
+                (u'phone.' + k, v) for (k,v) in d.get(u'phone', {}).items()
             ])
 
         addresses_field_names = (
-            ['candidateId'] + 
+            [u'candidateId'] + 
             sorted(
                 flatten_office_dict(
-                    next(official_addresses.itervalues())['offices'][0]
+                    next(official_addresses.itervalues())[u'offices'][0]
                 ).keys()
             )
         )
@@ -474,17 +474,17 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         csv_writer = UnicodeDictWriter(addresses_csv_sio, addresses_field_names)
         csv_writer.writeheader()
         for candidate_id, addresses_sub_dict in official_addresses.items():
-            for office in addresses_sub_dict['offices']:
+            for office in addresses_sub_dict[u'offices']:
                 row_d = flatten_office_dict(office)
-                row_d['candidateId'] = candidate_id
+                row_d[u'candidateId'] = candidate_id
                 csv_writer.writerow(row_d)
 
         # create XML sio of addresses
         rewritten_addresses_for_xml = {
-            'root': {
-                'addresses': [
+            u'root': {
+                u'addresses': [
                     dict(
-                        [('@candidateID', candidate_id)] +
+                        [(u'@candidateID', candidate_id)] +
                         addresses_sub_dict.items()
                     ) for candidate_id, addresses_sub_dict in official_addresses.items()
                 ]
@@ -495,7 +495,7 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
             pretty=True
         )
         xml_sio = StringIO()
-        xml_sio.write(xml)
+        xml_sio.write(xml.encode('utf-8'))
 
         # create zip archive of both
         zip_sio = StringIO()

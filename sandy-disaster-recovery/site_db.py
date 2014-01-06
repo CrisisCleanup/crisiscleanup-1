@@ -74,6 +74,8 @@ STATUSES = [
   "Closed, duplicate",
 ]
 
+STATUSES_UNICODE = map(unicode, STATUSES)
+
 
 class Site(db.Expando):
   # The list of fields that will be included in the CSV output.

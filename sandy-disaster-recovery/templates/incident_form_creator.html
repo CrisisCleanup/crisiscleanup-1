@@ -27,9 +27,13 @@
     <a href="#" id="save_all_changes1" class="button button-icon icon icon-envelope">Save All Changes</a>
   </div>
   <h2>Add Inputs to form</h2>
+  <hr>
+  <a id="clone_form" href="#form_editor">Clone an existing form</a></br>
+  <hr>
   <a id="add_work_type" href="#form_editor">Add Work Type</a></br>
   <a id="add_personal_info_module" href="#form_editor">Add personal info module</a></br>
   <a id="add_status_info_module" href="#form_editor">Add Status and Claim info module</a></br>
+  <hr>
   <a id="add_label" href="#form_editor">map label + </a><br>
   <a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>
   <a id="add_header" href="#form_editor">header +</a><br>
@@ -39,6 +43,7 @@
   <a id="add_checkbox" href="#form_editor"">checkbox input +</a><br>
   <a id="add_select" href="#form_editor"">select input +</a><br>
   <a id="add_radio" href="#form_editor"">radio input +</a><br>
+  <hr>
 
 
   <div id="text_div">
@@ -208,6 +213,7 @@
       <h3><a href="#form_editor" id="add_paragraph_to_form">Add to form</a></h3>
     </form>
   </div>
+  
   <div id="work_type_div">
     <h2>Add Work Types</h2>
     <p>Other (<img src="/icons/Other_black.png">) will be added automatically.</p>
@@ -228,6 +234,11 @@
       <h3><a href="#form_editor" id="add_work_type_to_form">Add to form</a></h3>
     </form>
   </div>
+  <div id="clone_form_div">
+    <h2>Click a form to clone</h2>
+    {{inc_array}}
+  </div>
+
 <a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>
 
 </div>

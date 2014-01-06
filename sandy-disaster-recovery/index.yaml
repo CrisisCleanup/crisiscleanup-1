@@ -675,3 +675,9 @@ indexes:
   - name: filename
   - name: creation
     direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: is_legacy_and_first_phase
+  - name: status

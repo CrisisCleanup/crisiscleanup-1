@@ -23,7 +23,8 @@ from StringIO import StringIO
 
 from google.appengine.ext.db import Query, Key
 from google.appengine.ext import deferred
-from google.appengine.api import files
+from google.appengine.api import app_identity
+import cloudstorage
 
 from wtforms import Form, TextField, HiddenField, SelectField
 
@@ -40,6 +41,14 @@ import xmltodict
 import votesmart
 from unicode_csv import UnicodeDictWriter
 
+
+# constants
+
+APP_ID = app_identity.get_application_id()
+BUCKET_NAME = '/' + APP_ID
+
+
+# functions
 
 def create_work_order_search_form(events, work_types, limiting_event=None):
     events_by_recency = sorted(events, key=lambda event: event.key().id(), reverse=True)
@@ -506,10 +515,11 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         zf.close()
 
         # create CSV file from data
-        blobstore_filename = files.blobstore.create(
-            mime_type='application/zip',
-           _blobinfo_uploaded_filename=filename
+        bucket_path = BUCKET_NAME + '/' + filename
+        zip_gcs_fd = cloudstorage.open(
+            bucket_path,
+            'w',
+            content_type='application/zip'
         )
-        with files.open(blobstore_filename, 'a') as fd:
-            fd.write(zip_sio.getvalue())
-        files.finalize(blobstore_filename)
+        zip_gcs_fd.write(zip_sio.getvalue())
+        zip_gcs_fd.close()

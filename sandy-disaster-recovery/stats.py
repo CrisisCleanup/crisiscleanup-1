@@ -129,6 +129,20 @@ def crunch_incident_statistics(event):
         if reporting_org:
             org_reported_counts[reporting_org.key().id()] += 1
 
+    # filter unverified and inactive orgs that have not participated
+    def has_participated(org):
+        org_id = org.key().id()
+        return (
+            org_claimed_counts[org_id] or
+            org_open_counts[org_id] or
+            org_closed_counts[org_id] or
+            org_reported_counts[org_id]
+        )
+    orgs = filter(
+        lambda org: (org.org_verified and org.is_active) or has_participated(org),
+        orgs
+    )
+
     # compute totals
     total_status_counts = {
         status: claimed_status_counts.get(status, 0) + \
@@ -169,6 +183,8 @@ def crunch_incident_statistics(event):
     return {
         'timestamp': now,
         'event_key': event.key(),
+        'event': event,
+        'orgs': orgs,
         'statuses': STATUSES,
         'work_types': work_types,
         'counties': counties,
@@ -208,23 +224,11 @@ def crunch_incident_statistics(event):
 
 
 def incident_statistics_csv(incident_statistics_dict):
-    event = Event.get(incident_statistics_dict['event_key'])
-    orgs = event.organizations
-
-    incident_statistics_dict['event'] = event
-    incident_statistics_dict['orgs'] = orgs
-
     stats_csv_template = jinja_environment.get_template(STATS_CSV_TEMPLATE_NAME)
     return stats_csv_template.render(incident_statistics_dict)
 
 
 def incident_statistics_html(incident_statistics_dict):
-    event = Event.get(incident_statistics_dict['event_key'])
-    orgs = event.organizations
-
-    incident_statistics_dict['event'] = event
-    incident_statistics_dict['orgs'] = orgs
-
     stats_html_template = jinja_environment.get_template('_incident_statistics_tables.html')
     return stats_html_template.render(incident_statistics_dict)
 

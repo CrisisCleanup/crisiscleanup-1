@@ -7,6 +7,10 @@ cron:
   schedule: every 24 hours
   target: ah-builtin-python-bundle
 
+- description: Exception report
+  url: /_ereporter?versions=all
+  schedule: every 10 minutes
+
 - description: Cache latest sites
   url: /refresh_counties
   schedule: every 20 minutes

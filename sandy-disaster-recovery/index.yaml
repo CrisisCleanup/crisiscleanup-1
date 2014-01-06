@@ -675,3 +675,13 @@ indexes:
   - name: filename
   - name: creation
     direction: desc
+
+
+# for ereporter
+
+- kind: ExceptionRecord
+  properties:
+  - name: date
+  - name: major_version
+  - name: minor_version
+    direction: desc

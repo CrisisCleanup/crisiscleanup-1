@@ -29,6 +29,11 @@ handlers:
   static_dir: assets
   expiration: "7d"
 
+- url: /_ereporter.*
+  ##script: google.appengine.ext.ereporter.report_generator.application
+  script: ereporter.report_generator_today.application
+  login: admin  # cron only
+
 - url: /adminconsole/.*
   script: google.appengine.ext.admin.application
   login: admin

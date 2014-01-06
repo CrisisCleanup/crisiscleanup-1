@@ -21,7 +21,7 @@ from google.appengine.api import app_identity, mail
 
 import jinja2
 
-from admin_handler.admin_identity import get_event_admins
+from admin_handler.admin_identity import get_global_admins, get_event_admins
 
 
 # jinja
@@ -78,20 +78,25 @@ def get_app_system_email_address():
     )
 
 
-def email_administrators(event, subject, body):
+def email_administrators(event, subject, body, html=None, include_local=True):
     prefixed_subject = "[%s] %s" % (app_identity.get_application_id(), subject)
     sender_address = get_app_system_email_address()
 
-    for admin_org in get_event_admins(event):
+    admin_orgs = get_event_admins(event) if include_local else get_global_admins()
+
+    for admin_org in admin_orgs:
         for contact in admin_org.primary_contacts:
             if contact.email:
                 recipient_address = "%s <%s>" % (contact.email, contact.full_name)
-                mail.send_mail(
-                    sender_address,
-                    recipient_address,
-                    prefixed_subject,
-                    body
-                )
+                mail_args = {
+                    'sender': sender_address,
+                    'to': recipient_address,
+                    'subject': prefixed_subject,
+                    'body': body,
+                }
+                if html:
+                    mail_args['html'] = html
+                mail.send_mail(**mail_args)
 
 
 def email_administrators_using_templates(

@@ -18,9 +18,14 @@
 
 # System libraries.
 import cgi
-import logging
-import urllib
 import webapp2
+
+
+# enable GAE ereporter
+
+from google.appengine.ext import ereporter
+ereporter.register_logger()
+
 
 # For authentication
 

@@ -500,8 +500,8 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         # create zip archive of both
         zip_sio = StringIO()
         zf = zipfile.ZipFile(zip_sio, 'w')
-        zf.writestr('zips.csv', officials_csv_sio.getvalue().encode('utf-8'))
-        zf.writestr('addresses.xml', xml_sio.getvalue().encode('utf-8'))
+        zf.writestr('zips.csv', officials_csv_sio.getvalue())
+        zf.writestr('addresses.xml', xml_sio.getvalue())
         zf.writestr('addresses.csv', addresses_csv_sio.getvalue())
         zf.close()
 

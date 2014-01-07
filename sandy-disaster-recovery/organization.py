@@ -147,16 +147,11 @@ class Organization(db.Expando):
 
   @property
   def contacts(self):
-      return primary_contact_db.Contact.gql(
-          "WHERE organization = :1", self.key()
-      )
+      return primary_contact_db.Contact.all().filter('organization', self.key())
 
   @property
   def primary_contacts(self):
-    return primary_contact_db.Contact.gql(
-      "WHERE organization = :1 and is_primary = True",
-      self.key()
-    )
+      return self.contacts.filter('is_primary', True)
 
   def __repr__(self):
       return u"<Organization: %s>" % self.name

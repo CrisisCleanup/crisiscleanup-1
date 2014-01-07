@@ -153,7 +153,7 @@ class ExportAllEventsHandler(AbstractCronHandler, AbstractExportBulkHandler):
         # start export Task chain for each event
         for event in Event.all():
             if event.logged_in_to_recently:
-                logging.info(u"Export all sites in %s" % event.short_name)
+                logging.info(u"Exporting all sites in %s" % event.short_name)
                 filename = all_event_timeless_filename(event)
                 self.start_export(
                     org=None,

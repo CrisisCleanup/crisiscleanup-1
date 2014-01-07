@@ -395,6 +395,7 @@ def write_local_app_yaml():
 def dev():
     " Start development server. "
     sdk_version_ok()
+    write_local_app_yaml()
     local(
         "%s --require_indexes=true --show_mail_body=true ." %
         os.path.join(env.sdk_path, 'dev_appserver.py')

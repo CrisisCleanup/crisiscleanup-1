@@ -428,7 +428,7 @@ class Site(db.Expando):
   def ToCsvLine(self, extra_csv_list):
     """
     Returns the site as a list of string values, one per field in
-    CSV_FIELDS.
+    CSV_FIELDS, removing linebreaks.
     """
     csv_row = []
     fields_list = extra_csv_list
@@ -446,7 +446,8 @@ class Site(db.Expando):
         csv_row.append('')
       else:
         try:
-          csv_row.append(unicode(value).encode("utf-8"))
+          unicode_no_linebreaks = u' '.join(unicode(value).splitlines())
+          csv_row.append(unicode_no_linebreaks.encode('utf-8'))
         except:
           logging.critical("Failed to parse: " + value + " " + str(self.key().id()))
     return csv_row

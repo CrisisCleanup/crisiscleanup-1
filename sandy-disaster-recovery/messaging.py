@@ -85,7 +85,7 @@ def email_administrators(event, subject, body, html=None, include_local=True):
     admin_orgs = get_event_admins(event) if include_local else get_global_admins()
 
     for admin_org in admin_orgs:
-        for contact in admin_org.primary_contacts:
+        for contact in admin_org.contacts:
             if contact.email:
                 recipient_address = "%s <%s>" % (contact.email, contact.full_name)
                 mail_args = {

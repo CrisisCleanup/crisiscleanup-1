@@ -67,6 +67,6 @@ class AdminHandler(base.AuthenticatedHandler):
         {
             "global_admin": global_admin,
             "org_query": query,
-            "url": "/admin-single-organization?organization=",
+            "url": "/admin-edit-organization?organization=",
         }))
         return

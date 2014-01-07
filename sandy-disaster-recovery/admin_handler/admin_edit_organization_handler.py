@@ -87,7 +87,7 @@ class AdminHandler(base.AuthenticatedHandler):
             # update org
             form.populate_obj(org_by_id)
             org_by_id.save()
-            self.redirect('/admin-single-organization?organization=%d' % org_by_id.key().id())
+            self.redirect('/admin-edit-organization?organization=%d' % org_by_id.key().id())
         else:
             self.response.out.write(template.render({
                 "organization": org_by_id,

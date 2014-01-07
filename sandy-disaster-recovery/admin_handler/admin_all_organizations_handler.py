@@ -79,6 +79,6 @@ class AdminAllOrgsHandler(AdminAuthenticatedHandler):
         self.render(
             form=form,
             org_query=query,
-            url="/admin-single-organization?organization=",
+            url="/admin-edit-organization?organization=",
             global_admin=org.is_global_admin,
         )

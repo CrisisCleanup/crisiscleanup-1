@@ -2,10 +2,12 @@
 {% from "_form_utils.html" import render_field_row %}
 
 {% block main_title %}
-<h2>Edit Organization</h2>
+<h2 id="main-title">Edit Organization</h2>
 {% endblock %}
 
 {% block main_content %}
+
+<button id="edit-org" class="btn btn-primary" disabled>Edit</button>
 
 <form method="POST">
   <table>
@@ -24,7 +26,31 @@
       {{ render_field_row(field) }}
     {% endfor %}
   </table>
-  <button type="submit" name="submit">Submit</button>
+  <button type="submit" name="submit" id="submit" class="btn btn-primary">Save</button>
 </form>
 
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+
+  $editButton = $('button#edit-org');
+  $saveButton = $('button#submit');
+
+  // disable form elements and switch title
+  $('input, textarea, button').attr('readonly', true);
+  $('h2#main-title').text('View Organization');
+  $editButton.attr('disabled', false);
+  $saveButton.attr('disabled', true);
+
+  // upon clicking the edit button, enable the form
+  $editButton.click(function() {
+    $('input, textarea, button').attr('readonly', false);
+    $('h2#main-title').text('Edit Organization');
+    $editButton.attr('disabled', true);
+    $saveButton.attr('disabled', false);
+  });
+
+});
+</script>
 {% endblock %}

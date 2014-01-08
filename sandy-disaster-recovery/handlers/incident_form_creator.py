@@ -57,6 +57,6 @@ def create_radio_group(inc_array):
   radio_html = ""
   for inc in inc_array:
     for key in inc.keys():
-      new_html = '<div class="clone"><input type="radio" name="group1" id="' + key + ' value="' + inc[key] + '">'  + key + ' | Phase:' + inc[key] + '</div>'
+      new_html = '<div class="clone"><input type="radio" name="clone_group" class="clone_class" id="' + key + '" value="' + inc[key] + '">'  + key + ' | Phase:' + inc[key] + '</div>'
       radio_html = radio_html + new_html
   return radio_html

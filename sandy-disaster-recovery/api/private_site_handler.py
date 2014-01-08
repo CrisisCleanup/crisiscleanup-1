@@ -50,6 +50,8 @@ class PrivateSiteHandler(base.RequestHandler):
     if not org and event:
       return
 
+    if self.request.get("get_phase_form"):
+      raise Exception(1)
     #raise Exception(event.key())
     
     this_key = event.key()

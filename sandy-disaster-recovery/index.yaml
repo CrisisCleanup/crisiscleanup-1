@@ -1,5 +1,553 @@
 indexes:
 
+# manually specified indexes, to use 'zigzag merging'
+# (and avoid combinatorial definition of indexes)
+#
+# Structure: for all filterable fields f, for all sort orders o,
+# create index for (f, o ascending), (f, o descending)
+#
+# (for rationale, see https://developers.google.com/appengine/articles/indexselection )
+#
+#
+# Site
+#
+
+- kind: Site
+  properties:
+  - name: event
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: claimed_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: work_type
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: status
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: status
+    direction: desc
+
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: request_date
+    direction: desc
+
+#- kind: Site
+#  properties:
+#  - name: reported_by
+#  - name: reported_by
+#    direction: asc
+#
+#- kind: Site
+#  properties:
+#  - name: reported_by
+#  - name: reported_by
+#    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: claimed_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: work_type
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+    direction: desc
+
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: reported_by
+    direction: desc
+
+#- kind: Site
+#  properties:
+#  - name: claimed_by
+#  - name: claimed_by
+#    direction: asc
+#
+#- kind: Site
+#  properties:
+#  - name: claimed_by
+#  - name: claimed_by
+#    direction: desc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: work_type
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: status
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: claimed_by
+  - name: status
+    direction: desc
+
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: reported_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: claimed_by
+    direction: desc
+
+#- kind: Site
+#  properties:
+#  - name: work_type
+#  - name: work_type
+#    direction: asc
+#
+#- kind: Site
+#  properties:
+#  - name: work_type
+#  - name: work_type
+#    direction: desc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: status
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: work_type
+  - name: status
+    direction: desc
+
+
+- kind: Site
+  properties:
+  - name: status
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: reported_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: claimed_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: status
+  - name: work_type
+    direction: desc
+
+#- kind: Site
+#  properties:
+#  - name: status
+#  - name: status
+#    direction: asc
+#
+#- kind: Site
+#  properties:
+#  - name: status
+#  - name: status
+#    direction: desc
+
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: case_number
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: case_number
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: reported_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: reported_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: claimed_by
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: claimed_by
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: work_type
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: work_type
+    direction: desc
+
+
+#
+# Organization
+# 
+
+- kind: Organization
+  properties:
+  - name: incidents
+  - name: is_active
+
+- kind: Organization
+  properties:
+  - name: incidents
+  - name: org_verified
+
+- kind: Organization
+  properties:
+  - name: incidents
+  - name: timestamp_login
+
+
+- kind: Organization
+  properties:
+  - name: is_active
+  - name: org_verified
+
+- kind: Organization
+  properties:
+  - name: is_active
+  - name: timestamp_login
+
+
+- kind: Organization
+  properties:
+  - name: org_verified
+  - name: timestamp_login
+
+
+
 # AUTOGENERATED
 
 # This index.yaml is automatically updated whenever the dev_appserver
@@ -34,27 +582,25 @@ indexes:
 
 - kind: Organization
   properties:
+  - name: incidents
   - name: is_active
   - name: name
 
-- kind: Phase
+- kind: Organization
   properties:
-  - name: event
-  - name: phase_id
-  - name: status
+  - name: incidents
+  - name: is_admin
+  - name: name
 
-- kind: Phase
+- kind: Organization
   properties:
-  - name: event_name
-  - name: phase_id
-  - name: status
+  - name: incidents
+  - name: name
 
-- kind: Site
+- kind: Organization
   properties:
-  - name: case_number
-  - name: event
-  - name: is_legacy_and_first_phase
-  - name: status
+  - name: is_active
+  - name: name
 
 - kind: Site
   properties:
@@ -90,22 +636,18 @@ indexes:
 - kind: Site
   properties:
   - name: event
-  - name: is_legacy_and_first_phase
-  - name: status
-
-- kind: Site
-  properties:
-  - name: event
-  - name: name
-
-- kind: Site
-  properties:
-  - name: event
+  - name: claimed_by
+  - name: county
+  - name: state
+  - name: reported_by
   - name: request_date
+  - name: status
+  - name: work_type
 
 - kind: Site
   properties:
   - name: event
+  - name: is_legacy_and_first_phase
   - name: status
 
 - kind: Site
@@ -118,15 +660,14 @@ indexes:
   - name: latitude
   - name: longitude
   - name: work_type
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: status
 
 - kind: __BlobInfo__
   properties:
   - name: filename
   - name: creation
     direction: desc
-
-- kind: Site
-  properties:
-  - name: event
-  - name: is_legacy_and_first_phase
-  - name: status

@@ -185,8 +185,8 @@ class AuthenticationHandler(base.RequestHandler):
           organization_form = organization.OrganizationForm(None, org)
           email_administrators_using_templates(
             event=event,
-            subject_template_name='organization_joins_incident.subject.txt',
-            body_template_name='organization_joins_incident.body.txt',
+            subject_template_name='organization_joins_incident.to_admins.subject.txt',
+            body_template_name='organization_joins_incident.to_admins.body.txt',
             organization=org,
             review_url=review_url,
             organization_form=organization_form,

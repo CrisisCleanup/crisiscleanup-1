@@ -558,11 +558,6 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-- kind: Site
-  properties:
-  - name: zip_code
-  - name: status
-
 - kind: CSVRow
   properties:
   - name: csv_file
@@ -641,6 +636,18 @@ indexes:
 - kind: Site
   properties:
   - name: event
+  - name: claimed_by
+  - name: county
+  - name: state
+  - name: reported_by
+  - name: request_date
+  - name: status
+  - name: work_type
+
+- kind: Site
+  properties:
+  - name: event
+  - name: is_legacy_and_first_phase
   - name: status
 
 - kind: Site
@@ -656,28 +663,11 @@ indexes:
 
 - kind: Site
   properties:
-  - name: event
-  - name: work_type
-
-- kind: Site
-  properties:
-  - name: event
-  - name: claimed_by
-  - name: county
-  - name: state
-  - name: reported_by
-  - name: request_date
+  - name: zip_code
   - name: status
-  - name: work_type
 
 - kind: __BlobInfo__
   properties:
   - name: filename
   - name: creation
     direction: desc
-
-- kind: Site
-  properties:
-  - name: event
-  - name: is_legacy_and_first_phase
-  - name: status

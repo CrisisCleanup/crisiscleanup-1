@@ -521,8 +521,6 @@ $(function() {
     
     var incident_short_name = $(this).attr("id");
     var phase_name = $(this).attr("value");
-    alert(incident_short_name);
-    alert(phase_name);
     getFormFromApi(form_json_array, incident_short_name, phase_name);
     
   });
@@ -1095,11 +1093,10 @@ function GetUrlValue(VarSearch){
 
 function getFormFromApi(form_json_array, incident_short_name, phase_name) {
    $.getJSON( "/api/private_site_handler", { get_phase_form: true, phase_name:phase_name, incident_short_name: incident_short_name},  function( data ) {
-    phases_json_array.push(JSON.parse(data.phases_json));
-    if (data.phases_json == "[]") {
-      show_first_phase_form(incident_short_name, incident_short_name);
-    } else {
-      read_phases_json_to_html(data.phases_json, incident_short_name);
+    console.log(data);
+    add_to_form(data);
+    for (var x = 1; x < data.length; x++) {
+      form_json_array.push(data[x]);
     }
   }); 
   

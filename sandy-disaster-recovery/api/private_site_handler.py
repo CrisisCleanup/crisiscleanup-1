@@ -25,6 +25,9 @@ from google.appengine.api import memcache
 from google.appengine.ext.db import Query
 from collections import OrderedDict
 from copy import deepcopy
+import hashlib
+import time
+
 
 # Local libraries
 import base
@@ -51,7 +54,35 @@ class PrivateSiteHandler(base.RequestHandler):
       return
 
     if self.request.get("get_phase_form"):
-      raise Exception(1)
+      incident_short_name = self.request.get("incident_short_name")
+      phase_name = self.request.get("phase_name")
+      
+      q = db.Query(event_db.Event)
+      q.filter("short_name =", incident_short_name)
+      event_query = q.get()
+      
+      q = db.Query(incident_definition.IncidentDefinition)
+      q.filter = ("incident = ", event_query.key())
+      inc_def_query = q.get()
+      
+      salt = "lkj234"
+      h = hashlib.md5()
+      h.update(str(time.time()))
+      h.update(salt)
+      h.update(incident_short_name)
+      new_phase_id = h.hexdigest()
+      
+      forms_json = json.loads(inc_def_query.forms_json)
+      return_form = None
+      for form in forms_json:
+	if form[0]['phase_name'] == phase_name:
+	  form[0]['phase_id'] = new_phase_id
+	  return_form = form
+	  return_form[0]['phase_id'] = new_phase_id
+      self.response.out.write(json.dumps(return_form))
+      return
+	  
+      
     #raise Exception(event.key())
     
     this_key = event.key()

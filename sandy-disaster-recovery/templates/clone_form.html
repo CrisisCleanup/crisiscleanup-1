@@ -1,0 +1,40 @@
+
+{% extends "base_template.html" %}
+
+{% block head_content %}
+<link href="/stylesheets/default.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block login %}
+{% endblock %}
+
+
+{% block description_title %}
+{% endblock %}
+
+{% block description_subtitle %}
+{% endblock %}
+
+{% block sidebar_title %}
+{% endblock %}
+
+{% block sidebar_content %}
+{% endblock %}
+
+{% block main_title %}
+{% endblock %}
+
+{% block main_content %}
+<h2>Choose an event</h2>
+<form action="/clone_incident_phases_and_forms" method="POST">
+{% for event in events %}
+<input type="radio" name="incident_group" value="{{ event.key().id() }}"> {{ event.name }}<br>
+{% endfor %}
+<input type="hidden" name="incident_id" value="{{ incident_id }}">
+<button class="submit">Submit</button>
+</form>
+{% endblock %}
+

@@ -39,10 +39,14 @@ class IncidentAddPhase(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
     _id = self.request.get("id")
     incident_definition_object = incident_definition.IncidentDefinition.get_by_id(int(_id))
+    phases_empty_boolean = False
+    if incident_definition_object.phases_json:
+      phases_empty_boolean = True
     form = incident_definition.IncidentPhaseForm()
     data = {
       "incident_definition_object": incident_definition_object,
-      "form": form
+      "form": form,
+      "phases_empty": phases_empty_boolean,
     }
     self.response.out.write(template.render(data))
   def AuthenticatedPost(self, org, event):

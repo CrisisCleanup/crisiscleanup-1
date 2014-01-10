@@ -83,6 +83,7 @@ from handlers import incident_edit_communications_definition
 from handlers import incident_definition_legacy
 from handlers import check_similar_by_phase_api
 from handlers import incident_definition_home
+from handlers import clone_form
 
 
 from admin_handler import admin_create_organization_handler
@@ -270,5 +271,6 @@ app = webapp2.WSGIApplication([
     Route(r'/task/delete-old-files', old_file_delete_handler.OldFileDeleteHandler, 'old_file_delete'),
     Route(r'/task/export-all-events', export_bulk_handler.ExportAllEventsHandler, 'export_all_events'),
     Route(r'/task/crunch-all-events-stats', stats.CrunchAllStatisticsHandler, 'crunch_all_events_stats'),
+    Route(r'/clone_incident_phases_and_forms', clone_form.CloneForm, 'clone_form')
     
 ], debug=True)

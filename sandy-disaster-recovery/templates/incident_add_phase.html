@@ -33,6 +33,9 @@
 <h3>This can't be undone.</h3>
 <p>Adding a phase is one of the most important things you can do with an incident, but it must be done carefully.</p>
 <p>If you are sure, please continue.</p>
+{% if phases_empty %}
+<p><strong>This phase is empty. Would you like to clone a pre-existing phase? This would clone the phases and the forms, while changing the phase id numbers.</strong><a href="/clone_incident_phases_and_forms?incident_id={{ incident_definition_object.key().id() }}"> Click here</a> to clone.</p>
+{% endif %}
 {% if errors %}
 <section id="errors">
   <header>The submission had errors</header>

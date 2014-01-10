@@ -65,12 +65,7 @@ class PrivateSiteHandler(base.RequestHandler):
       q.filter = ("incident = ", event_query.key())
       inc_def_query = q.get()
       
-      salt = "lkj234"
-      h = hashlib.md5()
-      h.update(str(time.time()))
-      h.update(salt)
-      h.update(incident_short_name)
-      new_phase_id = h.hexdigest()
+      new_phase_id = getPhaseId(phase_name, inc_def_query)
       
       forms_json = json.loads(inc_def_query.forms_json)
       return_form = None
@@ -191,3 +186,15 @@ def format_output(final_output, case_number, phase_number, phase_id, site_id):
   buttons_html = '</div><hr><div class="btnbox"><a class="btn " href="/print?case_number=' + case_number + '&phase_number=' + phase_number + '&phase_id=' + phase_id +'" target="_blank">Printer Friendly</a><a class="btn " href="#" >Change Status</a><a class="btn " href="#" >Claim</a><a class="btn " id="messi_edit" href="' + edit_url + '" target="_blank">Edit</a></div>'
   final_html = standard_html_output + output_html + buttons_html
   return final_html
+
+
+def getPhaseId(phase_name, inc_def_query):
+  phase_id = None
+  phases_json = json.loads(inc_def_query.phases_json)
+  for form in phases_json:
+    #raise Exception(form)
+
+    if form['phase_name'] == phase_name:
+      phase_id = form['phase_id']
+  return phase_id
+  

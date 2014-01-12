@@ -336,8 +336,8 @@ class FormHandler(base.AuthenticatedHandler):
       	phase_obj = phase.Phase(incident = inc_def_query.key(), site = site.key(), phase_id = phase_id)
 	for k, v in self.request.POST.iteritems():
 	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
-	    if k == "work_type":
-	      raise Exception(v)
+	    #if k == "work_type":
+	      #raise Exception(v)
 	    #raise Exception(k)
 	    setattr(phase_obj, k, str(v))
 	phase_obj.put()

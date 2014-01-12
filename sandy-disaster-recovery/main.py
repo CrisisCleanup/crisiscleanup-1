@@ -119,6 +119,7 @@ from api import private_site_handler
 
 import form_ajax_handler
 import update_csv_handler
+import update_handler
 from admin_handler import admin_create_incident_csv_handler
 from admin_handler import admin_stats_handler
 
@@ -144,6 +145,7 @@ class Route(routes.RedirectRoute):
     routes.RedirectRoute.__init__(self, *args, **kwargs)
 
 app = webapp2.WSGIApplication([
+    Route(r'/update', update_handler.UpdateHandler, 'update'),
     Route(r'/contact', contact_us_handler.ContactUsHandler, 'dev'),
     Route(r'/update_csv_handler', update_csv_handler.UpdateCSVHandler, 'dev'),
 

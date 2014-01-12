@@ -84,8 +84,8 @@ class PrivateMapHandler(base.RequestHandler):
 
     ids = []
     if inc_def_query.is_version_one_legacy and int(phase_number) == 0:
-      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2 and is_legacy_and_first_phase = :3'
-      q = db.GqlQuery(gql_string, where_string, event.key(), True)
+      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2 and is_legacy_and_first_phase != :3'
+      q = db.GqlQuery(gql_string, where_string, event.key(), False)
       ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
     else: 
       q = Query(model_class = phase_db.Phase)

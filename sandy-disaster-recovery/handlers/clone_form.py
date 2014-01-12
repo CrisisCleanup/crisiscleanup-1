@@ -20,6 +20,8 @@ import os
 import webapp2_extras
 from google.appengine.ext import db
 import json
+import time
+import hashlib
 
 # Local libraries.
 import base
@@ -53,6 +55,47 @@ class CloneForm(base.AuthenticatedHandler):
     
     
 def clone_by_id(old_id, new_id):
-  pass
+  old_int = int(old_id)
+  new_int = int(new_id)
+  old_event = event_db.Event.get_by_id(old_int)
   
+  # get old inc_def
+  
+  q = incident_definition.IncidentDefinition.all()
+  q.filter("incident =", old_event)
+  old_inc_def = q.get()
+  
+
+  new_inc_def = incident_definition.IncidentDefinition.get_by_id(new_int)
+  new_phases_def = json.loads(old_inc_def.phases_json)
+  new_forms_def = json.loads(old_inc_def.forms_json)
+  
+  time_now = time.time()
+
+  for phase in new_phases_def:
+    # create hex
+    phase["phase_id"] = create_hex_by_phase_name_and_time(phase["phase_name"], time_now)
     
+  for form in new_forms_def:
+    #hash_ = create_hex_by_phase_name_and_time(phase["phase_name"], time_now)
+    #raise Exception(hash_)
+    form[0]["phase_id"] = create_hex_by_phase_name_and_time(phase["phase_name"], time_now)
+    
+      
+  new_inc_def.phases_json = json.dumps(new_phases_def)
+  new_inc_def.forms_json = json.dumps(new_forms_def)
+  new_inc_def.put()
+        
+  
+ 
+ 
+def create_hex_by_phase_name_and_time(phase_name, time_now):
+  salt = "234adfsjkl235"
+  m = hashlib.md5(salt)
+  m.update(str(phase_name))
+  m.update(str(time_now))
+  new_hash = m.hexdigest()
+  return new_hash
+
+  
+  

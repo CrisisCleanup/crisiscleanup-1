@@ -685,3 +685,9 @@ indexes:
   - name: event
   - name: is_legacy_and_first_phase
   - name: status
+  
+- kind: Phase
+  properties:
+  - name: event_name
+  - name: phase_id
+  - name: status

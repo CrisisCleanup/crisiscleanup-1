@@ -8,7 +8,6 @@ BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
 import site_db
 
 def UpdateSchema(cursor=None, num_updated=0):
-    query = models.Picture.all()
     if cursor:
         query.with_cursor(cursor)
 

@@ -604,6 +604,13 @@ indexes:
 
 - kind: Site
   properties:
+  - name: case_number
+  - name: event
+  - name: is_legacy_and_first_phase
+  - name: status
+
+- kind: Site
+  properties:
   - name: county
   - name: event
   - name: status
@@ -671,3 +678,10 @@ indexes:
   - name: filename
   - name: creation
     direction: desc
+
+- kind: Site
+  properties:
+  - name: case_number
+  - name: event
+  - name: is_legacy_and_first_phase
+  - name: status

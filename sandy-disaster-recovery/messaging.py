@@ -15,7 +15,6 @@
 # limitations under the License.
 #
 
-import logging
 import os
 
 from google.appengine.api import app_identity, mail
@@ -58,6 +57,11 @@ def get_default_version_hostname():
     return app_identity.get_default_version_hostname()
 
 
+def get_base_url():
+    " Returns http as the scheme - assumes requests will be redirected. "
+    return "http://" + get_default_version_hostname()
+
+
 def get_app_system_email_address():
     app_id = app_identity.get_application_id()
     # HOTFIX START
@@ -80,24 +84,34 @@ def get_app_system_email_address():
     )
 
 
-def email_contacts(event, contacts, subject, body, html=None):
+def friendly_email_address(contact):
+    return u"%s <%s>" % (contact.email, contact.full_name)
+
+
+def email_contacts(event, contacts, subject, body, html=None, bcc_contacts=None):
     prefixed_subject = "[%s] %s" % (app_identity.get_application_id(), subject)
     sender_address = get_app_system_email_address()
 
-    for contact in contacts:
-        if contact.email:
-            recipient_address = "%s <%s>" % (contact.email, contact.full_name)
-            mail_args = {
-                'sender': sender_address,
-                'to': recipient_address,
-                'subject': prefixed_subject,
-                'body': body,
-            }
-            if html:
-                mail_args['html'] = html
-            mail.send_mail(**mail_args)
-        else:
-            logging.warning("Contact '%s' has no email address" % contact.full_name)
+    to_addresses = map(
+        friendly_email_address,
+        (contact for contact in contacts if contact.email)
+    )
+    bcc_addresses = map(
+        friendly_email_address,
+        (contact for contact in bcc_contacts if contact.email)
+    ) if bcc_contacts else []
+
+    mail_args = {
+        'sender': sender_address,
+        'to': to_addresses,
+        'subject': prefixed_subject,
+        'body': body,
+    }
+    if bcc_addresses:
+        mail_args['bcc'] = bcc_addresses
+    if html:
+        mail_args['html'] = html
+    mail.send_mail(**mail_args)
 
 
 def email_contacts_using_templates(
@@ -118,9 +132,8 @@ def email_contacts_using_templates(
 
 def email_administrators(event, subject, body, html=None, include_local=True):
     admin_orgs = get_event_admins(event) if include_local else get_global_admins()
-
-    for admin_org in admin_orgs:
-        email_contacts(event, admin_org.contacts, subject, body, html=html)
+    admin_contacts = reduce(lambda x, y: x+y, (org.contacts for org in admin_orgs))
+    email_contacts(event, admin_contacts, subject, body, html=html)
 
 
 def email_administrators_using_templates(
@@ -129,15 +142,15 @@ def email_administrators_using_templates(
     Email all relevant administrators for event, using Jinja2 templates.
     """
     admin_orgs = get_event_admins(event) if include_local else get_global_admins()
+    admin_contacts = reduce(lambda x, y: x+y, (org.contacts for org in admin_orgs))
+    email_contacts_using_templates(
+        event,
+        admin_contacts,
+        subject_template_name,
+        body_template_name,
+        **kwargs
+    )
 
-    for admin_org in admin_orgs:
-        email_contacts_using_templates(
-            event,
-            admin_org.contacts,
-            subject_template_name,
-            body_template_name,
-            **kwargs
-        )
 
 
 

@@ -44,6 +44,7 @@ import site_api_handler
 import sites_handler
 import new_organization_handler
 import welcome_handler
+import activation_handler
 import organization_ajax_handler
 from admin_handler import admin_handler
 import organization_info_handler
@@ -164,6 +165,7 @@ app = webapp2.WSGIApplication([
     Route(r'/problems', problem_handler.ProblemHandler, 'problems'),
     Route(r'/sites', sites_handler.SitesHandler, 'sites'),
     Route(r'/signup', new_organization_handler.NewOrganizationHandler, 'new_organization'),
+    Route(r'/activate', activation_handler.ActivationHandler, 'activate'),
     Route(r'/admin', admin_handler.AdminHandler, 'admin_handler'),
     Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'),
     Route(r'/admin-view-incidents', admin_view_incidents_handler.AdminViewIncidentsHandler, 'admin-view-incidents'),

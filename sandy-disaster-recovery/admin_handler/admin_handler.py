@@ -203,11 +203,14 @@ class AdminHandler(base.AuthenticatedHandler):
             except:
                 self.abort(400)
 
+            # check we are allowed
             if not org.may_administer(org_by_id):
                 self.abort(403)
 
-            org_by_id.org_verified = True
-            org_by_id.is_active = True
+            # perform verification
+            org_by_id.verify()
+
+            # cache
             organization.PutAndCache(org_by_id, 600)
             self.redirect("/admin")
             return

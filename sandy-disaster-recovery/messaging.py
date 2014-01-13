@@ -152,6 +152,38 @@ def email_administrators_using_templates(
     )
 
 
+#
+# Specific email convenience functions
+#
+
+def send_activation_emails(org_for_activation):
+    activation_url = "%s/activate?code=%s" % (
+        get_base_url(), org_for_activation.activation_code)
+    email_contacts_using_templates(
+        None,
+        org_for_activation.primary_contacts,
+        'activation.subject.txt',
+        'activation.body.txt',
+        org=org_for_activation,
+        activation_url=activation_url,
+        bcc_contacts=get_global_admins()[0].contacts
+    )
+
+
+def send_activated_emails(org_activated):
+    email_contacts_using_templates(
+        None,
+        org_activated.primary_contacts,
+        'activated.subject.txt',
+        'activated.body.txt',
+        org=org_activated,
+        bcc_contacts=get_global_admins()[0].contacts
+    )
+
+
+#
+# Test Handler
+#
 
 
 import base

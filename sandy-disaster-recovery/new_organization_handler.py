@@ -127,10 +127,9 @@ class NewOrganizationHandler(base.RequestHandler):
             primary_contact_db.ContactFormFull(None, contact)
             for contact in new_contacts
         ]
-        import pdb; pdb.set_trace()
         messaging.email_contacts_using_templates(
             event=chosen_event,
-            contacts=org.primary_contacts,
+            contacts=[c for c in new_contacts if c.is_primary],
             subject_template_name='new_organization.to_contacts.subject.txt',
             body_template_name='new_organization.to_contacts.body.txt',
             new_organization=org,

@@ -1,0 +1,32 @@
+{% extends "base_template.html" %}
+
+{% block description_title %}
+{{ activation_description_title_page_block|safe }}
+{% endblock %}
+
+{% block description_subtitle %}
+{{ activation_description_subtitle_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_title %}
+{{ activation_sidebar_title_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_content %}
+{{ activation_sidebar_content_page_block|safe }}
+{% endblock %}
+
+{% block main_title %}
+{{ activation_main_title_page_block|safe }}
+{% endblock %}
+
+{% block main_content %}
+{{ activation_main_content_page_block|safe }}
+
+<h2>Organization: {{ org.name }}</h2>
+
+<form method="POST">
+  <button>Activate account</button>
+</form>
+
+{% endblock %}

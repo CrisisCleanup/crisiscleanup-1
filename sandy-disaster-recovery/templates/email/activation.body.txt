@@ -1,0 +1,5 @@
+Your application to join Crisis Cleanup has been approved.
+
+To activate your account, please visit the link below and follow the instructions on the page:
+
+{{ activation_url }}

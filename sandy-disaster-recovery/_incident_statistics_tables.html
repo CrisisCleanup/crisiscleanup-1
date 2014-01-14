@@ -129,9 +129,11 @@
     </tr>
   </thead>
   <tbody>
-    {% for county in counties %}
+    {% for county in counties %}  {# county+state #}
       <tr>
-        <td>{{ county }}</td>
+        <td>
+          <a href="/sites?county_and_state={{ county }}">{{ county }}</td>
+        </td>
         <td>{{ county_open_counts[county] }}</td>
         <td>{{ county_closed_counts[county] }}</td>
         <td>{{ county_totals[county] }}</td>

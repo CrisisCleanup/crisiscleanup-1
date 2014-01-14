@@ -15,7 +15,7 @@ import yaml
 
 REQUIRED_SDK_VERSION = '1.8.8'
 APP_YAML_FILENAME = 'app.yaml'
-APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template'
+APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template.yaml'
 BUILD_DIR_PREFIX = 'ccbuild'
 
 

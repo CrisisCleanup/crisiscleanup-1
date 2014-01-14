@@ -15,12 +15,112 @@
 # limitations under the License.
 #
 
+from time import sleep
+
+from wtforms import Form, TextField, validators, FieldList
+
+
 from admin_base import AdminAuthenticatedHandler
+
+from question_db import MultipleChoiceQuestion
+
+
+class MultipleChoiceQuestionEditForm(Form):
+
+    def __init__(self, *args, **kwargs):
+        # attach question object to form for ease of retrieval
+        self.question_obj = args[1] if len(args) >= 2 else None
+        super(MultipleChoiceQuestionEditForm, self).__init__(*args, **kwargs)
+    
+    question = TextField('Question', [
+        validators.Length(min=1, max=100)
+    ])
+    correct_answer = TextField('Correct Answer', [
+        validators.Length(min=1, max=100)
+    ])
+    wrong_answers = FieldList(
+        TextField('Wrong Answer', [
+            validators.optional(),
+            validators.Length(max=100)
+        ]),
+        min_entries=3
+    )
+    explanation = TextField('Explanation', [
+        validators.Length(min=1, max=100)
+    ])
 
 
 class AdminValidationQuestionsHandler(AdminAuthenticatedHandler):
 
     template = "admin_validation_questions.html"
 
+    def _get_forms(self):
+        existing_question_forms = [
+            MultipleChoiceQuestionEditForm(
+                self.request.POST,
+                question,
+                prefix=unicode(i)
+            )
+            for i, question in enumerate(MultipleChoiceQuestion.all())
+        ]
+        new_question_form = MultipleChoiceQuestionEditForm(self.request.POST)
+        return existing_question_forms, new_question_form
+
     def AuthenticatedGet(self, org, event):
-        self.render()
+        existing_question_forms, new_question_form = self._get_forms()
+        self.render(
+            existing_question_forms=existing_question_forms,
+            new_question_form=new_question_form,
+        )
+
+    def AuthenticatedPost(self, org, event):
+        action = self.request.get('action')
+        existing_question_forms, new_question_form = self._get_forms()
+
+        if action == 'create':
+            # create new question
+            form = new_question_form
+            if form.validate():
+                question = MultipleChoiceQuestion(
+                    question=form.question.data,
+                    correct_answer=form.correct_answer.data,
+                    wrong_answers=[
+                        field.data for field in form.wrong_answers.entries
+                    ],
+                    explanation=form.explanation.data
+                )
+                question.save()
+                sleep(2)  # hack for possible datastore consistency
+                self.redirect(self.request.path)
+
+        elif action == 'edit':
+            # edit existing question
+            edited_form = [
+                form for form in existing_question_forms
+                if form._prefix == self.request.get('prefix')
+            ][0]
+            if edited_form.validate():
+                edited_form.populate_obj(edited_form.question_obj)
+                edited_form.question_obj.save()
+                sleep(2)  # hack for possible datastore consistency
+                self.redirect(self.request.path)
+
+        elif action == 'delete':
+            # delete existing question
+            edited_form = [
+                form for form in existing_question_forms
+                if form._prefix == self.request.get('prefix')
+            ][0]
+            edited_form.question_obj.delete()
+            sleep(2)  # hack for possible datastore consistency
+            self.redirect(self.request.path)
+
+        else:
+            # unknown action
+            self.abort(404)
+
+        # fallen through due to errors: render page
+        self.render(
+            existing_question_forms=existing_question_forms,
+            new_question_form=new_question_form,
+        )

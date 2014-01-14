@@ -23,10 +23,35 @@
 {% block main_content %}
 {{ activation_main_content_page_block|safe }}
 
-<h2>Organization: {{ org.name }}</h2>
+<h2>Activation for {{ org.name }}</h2>
 
 <form method="POST">
-  <button>Activate account</button>
+  <input type="hidden" name="seed" value="{{ seed }}">
+  {% for question_form in question_forms %}
+    <p><b>Q:</b> {{ question_form.question.question }}</p>
+    {% for answer_radio_button in question_form.answers %}
+      <div>
+        {% if not errors %}
+          {{ answer_radio_button }}
+        {% else %}
+          {{ answer_radio_button(disabled=True) }}
+        {% endif %}
+        <label for="{{ answer_radio_button.name }}">{{ answer_radio_button.label }}</label>
+      </div>
+    {% endfor %}
+    {% if question_form.errors %}
+      <div>
+        <b>WRONG</b> {{ question_form.question.explanation }}
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  {% if not errors %}
+    <button>Activate account</button>
+  {% else %}
+    <button onclick="window.location=window.location; return false;">Try again</button>
+  {% endif %}
+
 </form>
 
 {% endblock %}

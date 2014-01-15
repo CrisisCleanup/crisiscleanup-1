@@ -207,7 +207,7 @@ app = webapp2.WSGIApplication([
     Route(r'/contact-info', contact_info_handler.ContactInfoHandler, 'contact_info_handler'),
     Route(r'/organization-settings', organization_settings_handler.OrganizationSettingsHandler, 'organization_settings_handler'),
     Route(r'/incident-statistics', stats.IncidentStatisticsHandler, 'incident_statistics_handler'),
-    Route(r'/export_contacts_handler', export_contacts_handler.ExportContactsHandler, 'export_contacts_handler'),
+    Route(r'/export_contacts', export_contacts_handler.ExportContactsHandler, 'export_contacts'),
     Route(r'/organization-add-contact', organization_add_contacts_handler.OrganizationAddContactsHandler, 'organization_add_contacts_handler'),   
     Route(r'/organization-edit-contact', organization_edit_contacts_handler.OrganizationEditContactsHandler, 'organization_edit_contacts_handler'),   
     Route(r'/welcome', welcome_handler.WelcomeHandler, 'welcome_handler'),

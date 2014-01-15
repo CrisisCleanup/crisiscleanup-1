@@ -17,10 +17,11 @@
 # System libraries.
 import os
 import jinja2
-from google.appengine.ext import db
 
 # Local libraries.
 import base
+
+from primary_contact_db import Contact
 
 
 jinja_environment = jinja2.Environment(
@@ -31,23 +32,13 @@ template = jinja_environment.get_template('see_all_contacts.html')
 class SeeAllContactsHandler(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
-        contacts = None
-        order_string = ""
-        if self.request.get("order"):
-            order_kind = self.request.get("order")
-            order_string = " ORDER BY " + order_kind
+        all_contacts_query = Contact.all()
+        relevant_contacts = (
+            contact for contact in all_contacts_query
+            if contact.organization.may_access(event)
+        )
 
-        query_string = "SELECT * FROM Contact" + order_string
-
-        contacts = db.GqlQuery(query_string)    
-        final_list = []
-        for q in contacts:
-            if q.organization:
-                if event.key() in (inc.key() for inc in q.organization.incidents):
-                    final_list.append(q)
-            
         self.response.out.write(template.render(
         {
-            "contacts": final_list,
-            "display_contacts": True,
+            "contacts": relevant_contacts,
         }))

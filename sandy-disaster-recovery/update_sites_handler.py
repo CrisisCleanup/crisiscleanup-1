@@ -18,8 +18,9 @@ def UpdateSchema(cursor=None, num_updated=0):
         # In this example, the default values of 0 for num_votes and avg_rating
         # are acceptable, so we don't need this loop.  If we wanted to manually
         # manipulate property values, it might go something like this:
-        p.notify_contact = None
+        p.notify_contacts = None
         p.notify_contacts = "Primary"
+        logging.debug(p.notify_contacts)
         to_put.append(p)
         logging.debug("end loop")
 

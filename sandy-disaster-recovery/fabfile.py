@@ -86,6 +86,13 @@ MINI_YAML = """
   secure: optional
   overwrite:
     "assets/images/crisis-cleanup-logo-in.png" : "assets/images/crisis-cleanup-logo.png"
+
+- application: crisiscleanup-backup-testing
+  secure: always
+  allow_unclean_deploy: true
+  sandbox: true
+  overwrite:
+    "assets/images/crisis-cleanup-logo-default.png" : "assets/images/crisis-cleanup-logo.png"
 """
 
 APPS = {

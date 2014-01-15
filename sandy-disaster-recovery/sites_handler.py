@@ -23,6 +23,8 @@ import base
 import cgi
 import jinja2
 
+import page_db
+
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -63,9 +65,9 @@ class SitesHandler(base.AuthenticatedHandler):
       query_string = "SELECT * FROM Site WHERE county = :county and event = :event_key " + order_string + " LIMIT %s OFFSET %s" % (SITES_PER_PAGE, page * SITES_PER_PAGE)
       query = db.GqlQuery(query_string, where_variable = county, event_key = event.key())
       
-    self.response.out.write(template.render(
-    {
+    self.response.out.write(template.render(dict(
+        page_db.get_page_block_dict(), **{
 	"sites_query": query,
 	"page_number": page,
         "sites_per_page": SITES_PER_PAGE,
-    }))
+    })))

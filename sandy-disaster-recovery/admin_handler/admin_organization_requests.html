@@ -3,10 +3,33 @@
 <h2>Organization Signups</h2>
 {% endblock %}
 {% block main_content %}
-{% for result in org_query %}
 
-<p><a href="{{url}}{{ result.key().id()}}">{{ result.name }}</a></p>
-{% endfor %}
+{% if orgs.count() > 0 %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Primary Contacts</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for org in orgs %}
+        <tr>
+          <td>
+            <a href="{{ url }}{{ org.key().id() }}">{{ org.name }}</a>
+          </td>
+          <td>
+            {% for contact in org.primary_contacts %}  {# TODO replace with map in Jinja 2.7 #}
+              {% if loop.index0 > 0 %},{% endif %}
+              {{ contact.full_name }}
+            {% endfor %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>There are currently no organizations to approve.</p>
+{% endif %}
+
 {% endblock %}
-
-

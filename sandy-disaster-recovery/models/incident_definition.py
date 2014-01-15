@@ -96,7 +96,7 @@ class IncidentDefinition(db.Model):
   
   notify_unfinished = db.IntegerProperty(required=False, default=14)
   notify_on_new_orgs = db.BooleanProperty(required=False, default=False)
-  notify_contacts = db.BooleanProperty(required=False, default="Primary")
+  #notify_contacts = db.StringProperty(required=False, default="Primary")
   
   is_version_one_legacy = db.BooleanProperty(required=True, default=False)
   

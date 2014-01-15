@@ -5,10 +5,10 @@ from google.appengine.ext import db
 
 BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
 
-import site_db
+from models import incident_definition
 
 def UpdateSchema(cursor=None, num_updated=0):
-    query = site_db.Site.all()
+    query = incident_definition.Incident.all()
 
     if cursor:
         query.with_cursor(cursor)
@@ -18,7 +18,7 @@ def UpdateSchema(cursor=None, num_updated=0):
         # In this example, the default values of 0 for num_votes and avg_rating
         # are acceptable, so we don't need this loop.  If we wanted to manually
         # manipulate property values, it might go something like this:
-        p.is_legacy_and_first_phase = True
+        p.notify_contacts = "Primary"
         to_put.append(p)
         logging.debug("end loop")
 
@@ -34,4 +34,3 @@ def UpdateSchema(cursor=None, num_updated=0):
         logging.debug(
             'UpdateSchema complete with %d updates!', num_updated)
     finish()
-    raise Exception("done")

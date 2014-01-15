@@ -44,6 +44,7 @@ def make_date_object(date_string):
 
 class IncidentDefinitionLegacy(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
+    get_local_admin_password(event)
     id = self.request.get("id")
     events = event_db.Event.all()
     if id:
@@ -85,7 +86,7 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
     except:
       pass
     
-    data.local_admin_organization.data = long(data.local_admin_organization.data)
+    #data.local_admin_organization.data = long(data.local_admin_organization.data)
     if not data.validate():
       self.response.out.write(template.render(
 	{
@@ -107,7 +108,7 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
 
       local_admin_name = data.local_admin_name.data
       local_admin_title = data.local_admin_title.data
-      local_admin_organization = data.local_admin_organization.data
+      #local_admin_organization = data.local_admin_organization.data
       local_admin_email = data.local_admin_email.data
       local_admin_cell_phone = data.local_admin_cell_phone.data
       local_admin_password = data.local_admin_password.data
@@ -116,7 +117,7 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
       incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
       start_date_object = datetime.strptime(cleanup_start_date, "%m/%d/%Y").date()
 
-      org = organization.Organization.get_by_id(local_admin_organization)
+      #org = organization.Organization.get_by_id(local_admin_organization)
 
 
       # TODO
@@ -125,7 +126,7 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
       
       # add this version = incident_version
       
-      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = this_event.name, short_name = this_event.short_name, timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = this_event.case_label, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_organization = org.key(), local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key(), is_version_one_legacy = True)
+      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = this_event.name, short_name = this_event.short_name, timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = this_event.case_label, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key(), is_version_one_legacy = True)
       inc_def.put()
 
       
@@ -133,3 +134,11 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
 
 def get_phases_from_json(phases_json):
   pass
+
+def get_local_admin_password(event):
+  local_admin_name = "Local Admin - " + event.short_name
+  q = organization.Organization.all()
+  q.filter("name =", local_admin_name)
+  local_admin = q.get()
+  
+  return local_admin.password

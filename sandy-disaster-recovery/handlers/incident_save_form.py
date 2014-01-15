@@ -36,6 +36,8 @@ class IncidentSaveForm(base.AuthenticatedHandler):
     new_array = json.loads(form_json_array)
     q = incident_definition.IncidentDefinition.all()
     for array in new_array:
+      #raise Exception(new_array)
+
       if "incident_short_name" in array:
 	id_array = array
 	phase_id = array["phase_id"]

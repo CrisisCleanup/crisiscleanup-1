@@ -95,7 +95,7 @@ class FormHandler(base.AuthenticatedHandler):
     if inc_def_query:
       string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
   
-      phases_links = populate_phase_links(json.loads(inc_def_query.phases_json))
+      phases_links = populate_phase_links(json.loads(inc_def_query.phases_json), phase_number)
 
       submit_button = "<button class='submit'>Submit</button>"
     inc_form = None
@@ -397,7 +397,9 @@ class FormHandler(base.AuthenticatedHandler):
 	"post_json": post_json	,
 	"event_name": event.name}))
 
-def populate_phase_links(phases_json):
+def populate_phase_links(phases_json, this_phase = None):
+  if this_phase == None:
+    this_phase == "0"
   links = "<h3>Phases</h3>"
   i = 0
   for phase in phases_json:
@@ -405,7 +407,11 @@ def populate_phase_links(phases_json):
     separator = ""
     if i > 0:
       separator = " | "
-    links = links + separator + '<a href="/?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    if str(i) == this_phase:
+      links = links + separator + '<a style="font-weight:bold; font-size:150%" href="/?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    else:
+      links = links + separator + '<a href="/?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+
     i+=1
     
   return links

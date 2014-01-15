@@ -521,6 +521,9 @@ $(function() {
     
     var incident_short_name = $(this).attr("id");
     var phase_name = $(this).attr("value");
+    var add_to = form_json_array[0];
+    form_json_array = [];
+    form_json_array.push(add_to);
     getFormFromApi(form_json_array, incident_short_name, phase_name);
     
   });
@@ -1096,10 +1099,16 @@ function getFormFromApi(form_json_array, incident_short_name, phase_name) {
     console.log(data);
     add_to_form(data);
     for (var x = 1; x < data.length; x++) {
+//       clearFormJsonArray(form_json_array);
       form_json_array.push(data[x]);
     }
   }); 
   
+}
+
+function clearFormJsonArray(form_json_array) {
+  form_json_array.clear;
+  return form_json_array;
 }
 var personal_info_module_string = '[{"order_number": 1, "header": "Personal and Property Information", "type": "header"}, {"sensitive": true, "type": "text", "required": true, "order_number": 2, "_id": "name", "label": "Name", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 3, "_id": "request_date", "label": "Date of Request", "validations": "date"}, {"sensitive": true, "type": "text", "required": true, "order_number": 4, "_id": "address", "label": "Street Address", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 5, "_id": "city", "label": "City", "validations": "None"}, {"sensitive": false, "type": "text", "required": false, "order_number": 6, "_id": "county", "label": "County", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 7, "_id": "state", "label": "State", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 8, "_id": "zip_code", "label": "Zip Code", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 9, "_id": "latitude", "label": "Latitude", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 10, "_id": "longitude", "label": "Longitude", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 11, "_id": "cross_street", "label": "Cross Street or Nearby Landmark", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 12, "_id": "phone1", "label": "Phone 1", "validations": "phone"}, {"sensitive": true, "type": "text", "required": false, "order_number": 13, "_id": "phone2", "label": "Phone 2", "validations": "phone"}, {"sensitive": false, "type": "text", "required": false, "order_number": 14, "_id": "time_to_call", "label": "Best time to call", "validations": "None"}, {"select_option_1": "Rent", "select_option_2": "Own", "sensitive": false, "type": "select", "select_option_5": "Business", "required": false, "order_number": 16, "_id": "rent_or_own", "select_option_3": "Public Land", "label": "Rent/Own/Public", "select_option_4": "Non-Profit"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 17, "_id": "work_without_resident", "label": "Work without resident present"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 18, "_id": "member_of_organization", "label": "Member of your organization"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 19, "_id": "first_responder", "label": "First Responder"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 20, "_id": "older_than_60", "label": "Older than 60"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 21, "_id": "disabled", "label": "Disabled"}, {"order_number": 22, "_id": "special_needs", "type": "textarea", "label": "Special Needs", "validations": "None"}, {"sensitive": false, "type": "radio", "low_hint": "Low (1)", "required": false, "order_number": 23, "_id": "priority", "label": "Priority", "radio_option_4": "4", "radio_option_5": "5", "high_hint": "High (5)", "radio_option_1": "1", "radio_option_2": "2", "radio_option_3": "3"}]';
 

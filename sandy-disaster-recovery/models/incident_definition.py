@@ -96,7 +96,7 @@ class IncidentDefinition(db.Model):
   
   notify_unfinished = db.IntegerProperty(required=False, default=14)
   notify_on_new_orgs = db.BooleanProperty(required=False, default=False)
-  notify_contacts = db.BooleanProperty(required=False, default=False)
+  notify_contacts = db.StringProperty(required=False, default="Primary")
   
   is_version_one_legacy = db.BooleanProperty(required=True, default=False)
   
@@ -125,7 +125,7 @@ class AdvancedCommunicationsForm(Form):
     (20, 20),
     (21, 21),
   ]
-  notify_contacts = BooleanField("Notify All Contacts In Organization?", default=False)
+  notify_contacts = RadioField(choices=[("Primary", "Primary"), ("All", "All")])
   notify_on_new_orgs = BooleanField("Notify organizations when new organizations join?", default=False)
   notify_unfinished = wtforms.fields.SelectField("Notify when claimed sites are unchanged for", choices = notify_choices_array, coerce=int)
   
@@ -211,7 +211,7 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   message = "Local Admin Name must be between 1 and 100 characters")])
   local_admin_title = TextField('Local Admin Title', [wtforms.validators.Length(min = 1, max = 100,
   message = "Local Admin Title must be between 1 and 100 characters")])
-  local_admin_organization = wtforms.fields.SelectField("Organization (by Incident)", choices = organizations_array)
+  #local_admin_organization = wtforms.fields.SelectField("Organization (by Incident)", choices = organizations_array)
   local_admin_email = TextField('Local Admin Email', [wtforms.validators.Email(message=u'Invalid email address.')])
   local_admin_cell_phone = TextField('Local Admin Cell Phone', [phone_validator])
   local_admin_password = TextField('Local Admin Password', [wtforms.validators.Regexp(r'([A-Za-z])+([0-9])+|([0-9])+([A-Za-z])+', flags=0, message=u'Password: Must contain at least one letter and at least one number')])

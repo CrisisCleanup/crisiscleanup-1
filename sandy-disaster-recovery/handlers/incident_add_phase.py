@@ -85,7 +85,7 @@ class IncidentAddPhase(base.AuthenticatedHandler):
       
       incident.put()
       
-      self.redirect("incident_definition?id=" + str(incident_id))
+      self.redirect("incident_form_creator?incident_short_name=" + str(event.short_name) + "&phase_id=" + str(phase_short_name))
     else:
       data = {
 	"incident_definition_object": incident,

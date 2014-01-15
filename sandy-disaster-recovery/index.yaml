@@ -602,6 +602,12 @@ indexes:
   - name: is_active
   - name: name
 
+- kind: Phase
+  properties:
+  - name: event_name
+  - name: phase_id
+  - name: status
+
 - kind: Site
   properties:
   - name: case_number
@@ -678,16 +684,3 @@ indexes:
   - name: filename
   - name: creation
     direction: desc
-
-- kind: Site
-  properties:
-  - name: case_number
-  - name: event
-  - name: is_legacy_and_first_phase
-  - name: status
-  
-- kind: Phase
-  properties:
-  - name: event_name
-  - name: phase_id
-  - name: status

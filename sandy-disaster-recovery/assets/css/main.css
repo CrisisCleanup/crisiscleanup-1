@@ -66,6 +66,7 @@ nav ul, nav ol {
   margin: 0;
   padding: 0;
 }
+
 a {
   color: #dda100;
   text-decoration: none;
@@ -1029,4 +1030,3 @@ ol.fifteen > li:before {
     margin-left: -100px;
     margin-right: -100px;
 }
-

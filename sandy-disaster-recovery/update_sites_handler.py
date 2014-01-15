@@ -33,4 +33,3 @@ def UpdateSchema(cursor=None, num_updated=0):
     else:
         logging.debug(
             'UpdateSchema complete with %d updates!', num_updated)
-    finish()

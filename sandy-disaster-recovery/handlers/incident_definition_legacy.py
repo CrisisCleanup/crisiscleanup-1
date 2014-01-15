@@ -44,7 +44,6 @@ def make_date_object(date_string):
 
 class IncidentDefinitionLegacy(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
-    local_admin_pwd = get_local_admin_password(event)
     id = self.request.get("id")
     events = event_db.Event.all()
     if id:
@@ -57,7 +56,7 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
       self.response.out.write(read_template.render(data))
     else:
       form = incident_definition.IncidentDefinitionForm()
-      form.local_admin_password.data = local_admin_pwd
+      form.local_admin_password.data = random_password.generate_password()
       work_order_prefix = "Set from event_db"
       query_string = "SELECT * FROM Event"
       events_list = db.GqlQuery(query_string)
@@ -134,11 +133,3 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
 
 def get_phases_from_json(phases_json):
   pass
-
-def get_local_admin_password(event):
-  local_admin_name = "Local Admin - " + event.short_name
-  q = organization.Organization.all()
-  q.filter("name =", local_admin_name)
-  local_admin = q.get()
-  
-  return local_admin.password

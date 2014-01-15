@@ -13,7 +13,7 @@
   }
 </style>
 
-<button id="edit-org" class="btn btn-primary" disabled>Edit</button>
+<button class="btn btn-primary edit-org-btn" disabled>Edit</button>
 
 {% if errors %}
   <div class="alert alert-danger">
@@ -61,15 +61,17 @@
     </table>
   {% endfor %}
 
-  <div>
+  <div style="margin-bottom: 10px;">
     <a id="add-contact-link" style="display: none" href="#">
       [+] Add Another Contact
     </a>
   </div>
 
+  <button class="btn btn-primary edit-org-btn">Edit</button>
   <button type="submit" name="submit" id="submit" class="btn btn-primary">Save</button>
 
 </form>
+
 
 
 
@@ -78,15 +80,24 @@
 <script type="text/javascript">
 $(function() {
 
-  $editButton = $('button#edit-org');
+  $editButtons = $('button.edit-org-btn');
   $saveButton = $('button#submit');
   $addContactLink = $('a#add-contact-link');
 
   var setEditMode = function(flag) {
     $('input, textarea, button').attr('readonly', !flag);
     $('h2#main-title').text(flag ? 'Edit Organization' : 'View Organization');
-    $editButton.attr('disabled', flag);
+    $editButtons.attr('disabled', flag);
     $saveButton.attr('disabled', !flag);
+    if (flag) {
+      $addContactLink.show();
+      $editButtons.hide();
+      $saveButton.show();
+    } else {
+      $addContactLink.hide()
+      $editButtons.show();
+      $saveButton.hide();
+    };
   };
 
   // edit mode is initially off unless there are errors
@@ -94,7 +105,8 @@ $(function() {
   setEditMode(errors);
 
   // upon clicking the edit button, enable the form
-  $editButton.click(function() {
+  $editButtons.click(function(evt) {
+    evt.preventDefault();
     setEditMode(true);
   });
 

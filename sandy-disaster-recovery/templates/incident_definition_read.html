@@ -8,14 +8,31 @@
 {% block scripts %}
 <script>
 $(function() {
-  $("#advanced_tab").hide();
-
+  if (GetUrlValue("show_advanced") == "yes") {
+    console.log(GetUrlValue("show_advanced_tab"));
+    document.getElementById("advanced_tab").scrollIntoView();
+  } else {
+    
+    $("#advanced_tab").hide();
+  }
+  
   $("#show_advanced_tab").click(function() {
     $("#advanced_tab").show();
   });
 
 
 });
+
+function GetUrlValue(VarSearch){
+    var SearchString = window.location.search.substring(1);
+    var VariableArray = SearchString.split('&');
+    for(var i = 0; i < VariableArray.length; i++){
+        var KeyValuePair = VariableArray[i].split('=');
+        if(KeyValuePair[0] == VarSearch){
+            return KeyValuePair[1];
+        }
+    }
+}
 </script>
 {% endblock %}
 
@@ -104,14 +121,13 @@ $(function() {
   <td>{{ incident_definition_object.local_admin_title }}</td>
 </tr>
 <tr>
-  <td>Organization:</td>
-  <td>{{ incident_definition_object.local_admin_organization.name }}</td>
+  <td>Cell Phone:</td>
+  <td>{{ incident_definition_object.local_admin_cell_phone }}</td>
   <td>Email:</td>
   <td>{{ incident_definition_object.local_admin_email }}</td>
 </tr>
 <tr>
-  <td>Cell Phone:</td>
-  <td>{{ incident_definition_object.local_admin_cell_phone }}</td>
+
   <td>Password:</td>
   <td>{{ incident_definition_object.local_admin_password }}</td>
 </tr>

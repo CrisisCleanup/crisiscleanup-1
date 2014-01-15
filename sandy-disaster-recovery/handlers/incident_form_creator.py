@@ -54,7 +54,7 @@ class IncidentFormCreator(base.AuthenticatedHandler):
     pass
 
 def create_radio_group(inc_array):
-  radio_html = ""
+  radio_html = '<div class="clone"><input type="radio" name="clone_group" class="clone_class" id="empty" value="empty">None</div>'
   for inc in inc_array:
     for key in inc.keys():
       new_html = '<div class="clone"><input type="radio" name="clone_group" class="clone_class" id="' + key + '" value="' + inc[key] + '">'  + key + ' | Phase:' + inc[key] + '</div>'

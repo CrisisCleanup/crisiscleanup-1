@@ -187,7 +187,6 @@ Object.keys(post_json).forEach(function(key) {
 </head>
 
 <body onLoad="sandy.form.Initialize()">
-
 <div id="form_background">
 <div id="form">
 {% if delete %}
@@ -201,7 +200,7 @@ Object.keys(post_json).forEach(function(key) {
 {% endif %}
 <form id="incident_form" method="POST" action="{{page}}">
 <div id="similar_by_site"></div>
-  {{ hidden_site_id }}
+<!--  {{ hidden_site_id }}-->
 
 {% endif %} {# not mode_js #}
 <input type="hidden" name="event_name" value="{{event_name}}" />

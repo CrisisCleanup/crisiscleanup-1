@@ -57,6 +57,10 @@ class PrivateSiteHandler(base.RequestHandler):
       incident_short_name = self.request.get("incident_short_name")
       phase_name = self.request.get("phase_name")
       
+      if incident_short_name == "empty":
+	self.response.out.write("[]")
+	return
+      
       q = db.Query(event_db.Event)
       q.filter("short_name =", incident_short_name)
       event_query = q.get()
@@ -83,7 +87,7 @@ class PrivateSiteHandler(base.RequestHandler):
     this_key = event.key()
     phase_number = self.request.get("phase_number")
     case_number = self.request.get("case_number")
-    phase_id = self.request.get("phase_id")
+    
     edit = self.request.get("edit")
     try:
       int(phase_number)
@@ -96,7 +100,7 @@ class PrivateSiteHandler(base.RequestHandler):
     #raise Exception(phase_number)
     phases_json = json.loads(inc_def_query.phases_json)
     phase_id = phases_json[int(phase_number)]['phase_id']
-    
+
     event_shortname = self.request.get("shortname")
 
     phase = self.request.get("phase")
@@ -125,8 +129,12 @@ class PrivateSiteHandler(base.RequestHandler):
       q = db.GqlQuery(gql_string, where_string, this_key, True, case_number)
       ids = [key.key().id() for key in q.fetch(1)]
     else: 
+      s = Query(model_class = site_db.Site)
+      s.filter("case_number =", case_number)
+      this_site = s.get()
+
       q = Query(model_class = phase_db.Phase)
-      #q.filter("event_name =", this_key)
+      q.filter("site =", this_site)
       q.is_keys_only()
       #q.filter("phase_id =", phase_id)
 	    
@@ -135,6 +143,7 @@ class PrivateSiteHandler(base.RequestHandler):
     # TODO
     # Get all entities in a phase.
       ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = 0)]
+      #raise Exception(ids)
 
     #raise Exception(ids)
     output = json.dumps(
@@ -182,7 +191,7 @@ def format_output(final_output, case_number, phase_number, phase_id, site_id):
   
   for key in final_output:
     if key not in standard_list and final_output[key]!= '':
-      output_html = output_html + '<br><b>' + str(key) + ':</b> ' + str(final_output[key])
+      output_html = output_html + ' <b>' + str(key) + ':</b> ' + str(final_output[key])
   buttons_html = '</div><hr><div class="btnbox"><a class="btn " href="/print?case_number=' + case_number + '&phase_number=' + phase_number + '&phase_id=' + phase_id +'" target="_blank">Printer Friendly</a><a class="btn " href="#" >Change Status</a><a class="btn " href="#" >Claim</a><a class="btn " id="messi_edit" href="' + edit_url + '" target="_blank">Edit</a></div>'
   final_html = standard_html_output + output_html + buttons_html
   return final_html

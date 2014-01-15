@@ -52,8 +52,9 @@ var populateMapByIncident = function(incident, page, old_markers) {
 	
 	google.maps.event.addListener(marker, "click", function() {
 	  var this_phase_id = this.site_info.phase_id;
+	  console.log(this.site_info)
 
-	  new Messi.load('/api/private_site_handler?case_number=' + this.site_info.case_number +'&phase_number=' + phase_number + '&phase_id=' + this.site_info.phase_id,
+	  new Messi.load('/api/private_site_handler?case_number=' + this.site_info.case_number +'&phase_number=' + phase_number,
 	  {title: 'Case Number: ' + this.site_info.case_number + '<br>Work Type: ' + this.site_info.work_type, titleClass: 'info'});
 
 	});

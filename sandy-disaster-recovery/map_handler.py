@@ -35,7 +35,7 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) el
 
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('map.html')
-menubox_template = jinja_environment.get_template('_menubox.html')
+menubox_template = jinja_environment.get_template('_menubox_bootstrap.html')
 
 
 class MapHandler(base.RequestHandler):
@@ -87,7 +87,7 @@ class MapHandler(base.RequestHandler):
                                              "event": event,
                                              "include_search": True,
                                              "admin": org.is_admin,
-                                             "phase_links": populate_phase_links(event)
+                                             "phase_links": populate_phase_links(event, phase_number)
                                              }),
           "status_choices" : [json.dumps(c) for c in
                               site_db.Site.status.choices],
@@ -132,7 +132,9 @@ class MapHandler(base.RequestHandler):
     self.response.out.write(template.render(template_values))
 
 
-def populate_phase_links(event):
+def populate_phase_links(event, this_phase = None):
+  if this_phase == None:
+    this_phase = "0"
   q = db.Query(incident_definition.IncidentDefinition)
   q.filter("incident =", event.key())
   inc_def_query = q.get()
@@ -141,14 +143,20 @@ def populate_phase_links(event):
   
   phases_json = json.loads(inc_def_query.phases_json)
   
-  links = "<br><br><b>Phases:</b> "
+  links = "<br><br><b>Phases:</b><br>"
   i = 0
   for phase in phases_json:
     num = str(i).replace('"', '')
     separator = ""
     if i > 0:
       separator = " | "
-    links = links + separator + '<a href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    #raise Exception(str(i) + this_phase)
+
+    if str(i) == str(this_phase):
+
+      links = links + separator + '<a style="font-weight:bold; font-size:150%" href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    else:
+      links = links + separator + '<a href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
     i+=1
     
   return links

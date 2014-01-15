@@ -8,7 +8,7 @@ BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
 from models import incident_definition
 
 def UpdateSchema(cursor=None, num_updated=0):
-    query = incident_definition.Incident.all()
+    query = incident_definition.IncidentDefinition.all()
 
     if cursor:
         query.with_cursor(cursor)

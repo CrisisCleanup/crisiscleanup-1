@@ -122,7 +122,13 @@ class Organization(db.Expando):
 
   def may_access(self, obj):
       if type(obj) is event_db.Event:
-          return self.is_global_admin or obj.key() in self._incidents_keys
+          return (
+              self.is_global_admin
+              or obj.key() in self._incidents_keys
+              or obj.key() == self._incident_legacy
+          ) and (
+             self.org_verified and self.is_active
+          )
       else:
           raise NotImplementedError("may_access(obj) of type %s" % type(obj))
 

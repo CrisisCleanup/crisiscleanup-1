@@ -193,7 +193,7 @@ Object.keys(post_json).forEach(function(key) {
 
 <div id="similars"></div>
 
-{{ single_site|safe }}
+{{ single_site|safe }}  {# main form #}
 
 {% if id %}
 <input type="hidden" name="_id" value="{{id}}">
@@ -209,6 +209,7 @@ Object.keys(post_json).forEach(function(key) {
 
 {% endif %}
 {% endif %}
+</form>
 </div>
 </div>
 

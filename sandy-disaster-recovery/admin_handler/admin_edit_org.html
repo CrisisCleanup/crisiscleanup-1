@@ -54,7 +54,7 @@
   
   {# potential new contacts #}
   {% for contact_form in blank_contact_forms %}
-    <table class="contact-table" style="{% if not contact_form.errors %}display: none{% endif %}">
+    <table class="contact-table" style="{% if not contact_form.has_data %}display: none{% endif %}">
       {% for field in contact_form %}
         {{ render_field_row(field) }}
       {% endfor %}

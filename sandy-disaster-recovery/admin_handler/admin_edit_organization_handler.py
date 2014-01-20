@@ -113,6 +113,8 @@ class AdminEditOrganizationHandler(base.AuthenticatedHandler):
 
         # remove unused blank contact forms
         blank_contact_forms = filter(lambda f: any(f.data.values()), blank_contact_forms)
+        for bcf in blank_contact_forms:
+            bcf.has_data = True
 
         # validate forms
         all_forms = [organization_form] + existing_contact_forms + blank_contact_forms

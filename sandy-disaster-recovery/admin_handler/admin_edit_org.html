@@ -2,16 +2,30 @@
 {% from "_form_utils.html" import render_field_row %}
 
 {% block main_title %}
-<h2>Edit Organization</h2>
+<h2 id="main-title">Edit Organization</h2>
 {% endblock %}
 
 {% block main_content %}
+
+<style type="text/css">
+  .contact-table {
+    margin-top: 10px;
+  }
+</style>
+
+<button class="btn btn-primary edit-org-btn" disabled>Edit</button>
+
+{% if errors %}
+  <div class="alert alert-danger">
+    There are errors in the form. See below.
+  </div>
+{% endif %}
 
 <form method="POST">
   <table>
     <h3>Incidents</h3>
     <ul>
-      {% for incident_field in form.incidents %}
+      {% for incident_field in organization_form.incidents %}
         {# iterating to override field names for webapp2 multiple select bug workaround #}
         <li>
           <input {% if incident_field.checked %}checked{% endif %} id="incidents-{{ loop.index0 }}" name="incidents-{{ loop.index0 }}" type="checkbox" value="{{ incident_field.data }}">
@@ -19,12 +33,89 @@
         </li>
       {% endfor %}
     </ul>
+
+    <h3>Organization</h3>
     <input type="hidden" name="org_id" value="{{ organization.key().id() }}">
-    {% for field in form if field.name != 'incidents' %}
+    {% for field in organization_form if field.name != 'org-incidents' %}
       {{ render_field_row(field) }}
     {% endfor %}
   </table>
-  <button type="submit" name="submit">Submit</button>
+
+  <h3>Contacts</h3>
+
+  {# existing contacts #}
+  {% for contact_form in existing_contact_forms %}
+    <table class="contact-table">
+      {% for field in contact_form %}
+        {{ render_field_row(field) }}
+      {% endfor %}
+    </table>
+  {% endfor %}
+  
+  {# potential new contacts #}
+  {% for contact_form in blank_contact_forms %}
+    <table class="contact-table" style="{% if not contact_form.errors %}display: none{% endif %}">
+      {% for field in contact_form %}
+        {{ render_field_row(field) }}
+      {% endfor %}
+    </table>
+  {% endfor %}
+
+  <div style="margin-bottom: 10px;">
+    <a id="add-contact-link" style="display: none" href="#">
+      [+] Add Another Contact
+    </a>
+  </div>
+
+  <button class="btn btn-primary edit-org-btn">Edit</button>
+  <button type="submit" name="submit" id="submit" class="btn btn-primary">Save</button>
+
 </form>
 
+
+
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+
+  $editButtons = $('button.edit-org-btn');
+  $saveButton = $('button#submit');
+  $addContactLink = $('a#add-contact-link');
+
+  var setEditMode = function(flag) {
+    $('input, textarea, button').attr('readonly', !flag);
+    $('h2#main-title').text(flag ? 'Edit Organization' : 'View Organization');
+    $editButtons.attr('disabled', flag);
+    $saveButton.attr('disabled', !flag);
+    if (flag) {
+      $addContactLink.show();
+      $editButtons.hide();
+      $saveButton.show();
+    } else {
+      $addContactLink.hide()
+      $editButtons.show();
+      $saveButton.hide();
+    };
+  };
+
+  // edit mode is initially off unless there are errors
+  var errors = !!"{{ errors }}";
+  setEditMode(errors);
+
+  // upon clicking the edit button, enable the form
+  $editButtons.click(function(evt) {
+    evt.preventDefault();
+    setEditMode(true);
+  });
+
+  // on click link, show next contact table-form
+  $('a#add-contact-link').click(function(evt) {
+    evt.preventDefault();
+    $('table.contact-table:hidden').first().show();
+  });
+
+});
+</script>
 {% endblock %}

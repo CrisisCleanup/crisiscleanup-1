@@ -21,7 +21,7 @@ from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 from google.appengine.api import memcache
 
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
+from wtforms import BooleanField, TextField, HiddenField, validators
 
 # Local libraries.
 import cache
@@ -136,6 +136,7 @@ def RemoveOrgFromContacts(org):
 
 class ContactForm(model_form(Contact, exclude=['organization'])):
 
+    id = HiddenField()
     first_name = TextField('First Name', [
         validators.Length(
             min=1, max=100,

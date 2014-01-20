@@ -7,7 +7,7 @@
 
 {% if contacts %}
 {% for result in contacts %}
-<p><a href="/admin-make-admin?contact={{result.key().id()}}&organization={{org_id}}">Add As Admin</a> - Name: <a href="/admin-single-contact?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/admin-single-organization?organization={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
+<p><a href="/admin-make-admin?contact={{result.key().id()}}&organization={{org_id}}">Add As Admin</a> - Name: <a href="/admin-single-contact?contact={{result.key().id()}}">{{result.first_name}} {{result.last_name }}</a> Organization: {% if result.organization %}<a href="/admin-edit-organization?organization={{ result.organization.key().id() }}">{{result.organization.name}}</a>{% else %}None{% endif %}</p>
 
 {% endfor %}
 {% endif %}

@@ -28,7 +28,7 @@
           </td>
           <td>
             {% if result.organization %}
-              <a href="/admin-single-organization?organization={{ result.organization.key().id() }}">
+              <a href="/admin-edit-organization?organization={{ result.organization.key().id() }}">
                 {{result.organization.name}}
               </a>
             {% else %}

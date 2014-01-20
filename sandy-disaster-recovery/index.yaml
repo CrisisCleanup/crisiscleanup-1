@@ -676,6 +676,11 @@ indexes:
   - name: creation
     direction: desc
 
+- kind: Contact
+  properties:
+  - name: organization
+  - name: is_primary
+    direction: desc
 
 # for ereporter
 

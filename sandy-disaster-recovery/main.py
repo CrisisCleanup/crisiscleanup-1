@@ -89,7 +89,6 @@ from admin_handler import admin_social_media_handler
 from admin_handler import admin_website_alerts_handler
 from admin_handler import admin_import_csv_handler
 from admin_handler import admin_edit_pages_handler
-from admin_handler import admin_single_organization_handler
 from admin_handler import admin_edit_organization_handler
 from admin_handler import admin_edit_contact_handler
 from admin_handler import admin_validation_questions_handler
@@ -176,8 +175,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-create-contact', admin_create_contact_handler.AdminHandler, 'admin_create_contact_handler'),
     Route(r'/admin-display-contacts', admin_display_contacts_handler.AdminHandler, 'admin_display_contacts_handler'),
     Route(r'/admin-single-contact', admin_single_contact_handler.AdminHandler, 'admin_single_contact_handler'),
-    Route(r'/admin-single-organization', admin_single_organization_handler.AdminHandler, 'admin_single_organization_handler'),
-    Route(r'/admin-edit-organization', admin_edit_organization_handler.AdminHandler, 'admin_edit_organization_handler'),
+    Route(r'/admin-edit-organization', admin_edit_organization_handler.AdminEditOrganizationHandler, 'admin_edit_organization_handler'),
     Route(r'/admin-edit-contact', admin_edit_contact_handler.AdminHandler, 'admin_edit_contact_handler'),
     Route(r'/admin-validation-questions', admin_validation_questions_handler.AdminValidationQuestionsHandler, 'admin_validation_questions'),
     Route(r'/admin-see-admins', admin_see_admins_handler.AdminHandler, 'admin_see_admins_handler'),

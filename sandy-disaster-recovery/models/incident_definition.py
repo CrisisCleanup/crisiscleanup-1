@@ -211,7 +211,7 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   message = "Local Admin Name must be between 1 and 100 characters")])
   local_admin_title = TextField('Local Admin Title', [wtforms.validators.Length(min = 1, max = 100,
   message = "Local Admin Title must be between 1 and 100 characters")])
-  #local_admin_organization = wtforms.fields.SelectField("Organization (by Incident)", choices = organizations_array)
+  local_admin_organization = wtforms.fields.SelectField("Organization (by Incident)", choices = organizations_array)
   local_admin_email = TextField('Local Admin Email', [wtforms.validators.Email(message=u'Invalid email address.')])
   local_admin_cell_phone = TextField('Local Admin Cell Phone', [phone_validator])
   local_admin_password = TextField('Local Admin Password', [wtforms.validators.Regexp(r'([A-Za-z])+([0-9])+|([0-9])+([A-Za-z])+', flags=0, message=u'Password: Must contain at least one letter and at least one number')])

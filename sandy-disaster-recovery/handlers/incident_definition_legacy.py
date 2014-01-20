@@ -75,6 +75,7 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
     version = data.name.data
     event_id = self.request.get("event_id")
     this_event = None
+    events = event_db.Event.all()
     if event_id:
       this_event = event_db.Event.get_by_id(int(event_id))
       data.name.data = this_event.name
@@ -90,6 +91,7 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
       self.response.out.write(template.render(
 	{
 	  "form": data,
+          "events": events,
 	  "errors": data.errors,
       }))
     else:

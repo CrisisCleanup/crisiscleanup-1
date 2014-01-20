@@ -15,28 +15,46 @@
       <th>Created</th>
       <th>Started</th>
       <th>Sites (est.)</th>
+      <th>Incident defn.</th>
     </tr>
   </thead>
   <tbody>
     {% for event in events %}
       <tr>
         <td>
-          <a href="#" onclick="alert('TODO: link to incident definition editor'); return False;">
-            {{ event.name }}
-          </a>
+          {% if event.incident_definition %}
+            <a href="/incident_definition?id={{ event.incident_definition.key().id() }}">
+              {{ event.name }}
+            </a>
+          {% else %}
+            <a href="/admin-create-incident-form">
+              {{ event.name }}
+            </a>
+          {% endif %}
         </td>
         <td>{{ event.short_name }}</td>
         <td>{{ event.case_label }}</td>
         <td>{{ event.created_date }}</td>
         <td>{{ event.start_date }}</td>
         <td>{{ event.num_sites }}</td>
+        <td>
+          {% if event.incident_definition %}
+            &#10003; {# tick #}
+          {% endif %}
+        </td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<a class="btn btn-primary" href="/admin-create-incident">
-  Create Incident
-</a>
+
+<div>
+  <a class="btn btn-primary" href="/incident_definition">
+    Create Incident
+  </a>
+  <a class="btn btn-default" href="/incident_definition_legacy">
+    Add Incident Defn. to Existing
+  </a>
+</div>
 
 {% endblock %}

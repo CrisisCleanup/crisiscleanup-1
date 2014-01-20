@@ -16,42 +16,95 @@ class="activePage"
 {% endblock %}
 
 {% block sidebar_title %}
-Order
 {% endblock %}
 
 {% block sidebar_content %}
-<p><a href='/sites?order=request_date'>Order by date created</a></p> <p><a href='/sites?order=name'>Order by name</a></p>
-
+[<a href="/export_all_download">Download All (CSV)</a>]
 {% endblock %}
 
 {% block main_title %}
-Browse Sites
+Browse Cases 
 {% endblock %}
 
 {% block main_content %}
 
 {%- macro previous_and_next() -%}
   <p>
-    {% if page_number %}
-      [<a href='/sites?page={{ page_number - 1}}'>Previous Page</a>]
+    {% if form.page.data %}
+      [<a href="#" class="change-page" data-change="-1">Previous Page</a>]
     {% endif %}
-
-    [<a href='/sites?page={{ page_number + 1 }}'>Next Page</a>]
+    
+    {% if sites|length == sites_per_page %}
+      [<a href='#' class="change-page" data-change="+1">Next Page</a>]
+    {% endif %}
   </p>
 {%- endmacro -%}
 
 {{ previous_and_next() }}
 
-<ul>
-  {% for result in sites_query %}
-    <li>
-      {{ result.case_number }}: {{ result.name }} &ndash; {{ result.address }}
-      [<a href="/edit?id={{ result.key().id() }}">Edit</a>]
-      [<a href="/delete?id={{ result.key().id() }}">Delete</a>]
-    </li>
-  {% endfor %}
-</ul>
+<form id="site-filter" method="GET" style="margin-bottom: 10px">
+  {{ form.page }}
+  <label for="county_and_state">County &amp; State</label>
+  {{ form.county_and_state }}
+  <label for="order">Order</label>
+  {{ form.order }}
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Address</th>
+      <th>County</th>
+      <th>State</th>
+      <th>Zip</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for site in sites %}
+      <tr>
+        <td>{{ site.case_number }}</td>
+        <td>{{ site.name }}</td>
+        <td>{{ site.address }}</td>
+        <td>{{ site.county }}</td>
+        <td>{{ site.state }}</td>
+        <td>{{ site.zip_code }}</td>
+        <td>
+          [<a href="/edit?id={{ site.key().id() }}">Edit</a>]
+          {###### [<a href="/delete?id={{ site.key().id() }}">Delete</a>] #}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {{ previous_and_next() }}
 
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+
+  // show wait cursor when form is submitted
+  $('form').on('submit', function() {
+    $('body').addClass('wait-cursor');
+  });
+
+  // submit form on change of select
+  $('select').change(function() {
+    $(this).parent('form').submit();
+  });
+
+  // submit form on click of prev or next links
+  $('a.change-page').click(function() {
+    var newPageNum = {{ form.page.data }} + parseInt($(this).attr('data-change'));
+    $('input[name=page]').val(newPageNum);
+    $('form#site-filter').submit()
+  });
+
+});
+</script>
 {% endblock %}

@@ -16,12 +16,16 @@
 #
 # System libraries.
 import os
+
 from google.appengine.ext import db
 
 # Local libraries.
 import base
-import cgi
+
 import jinja2
+from wtforms import Form, IntegerField, SelectField, widgets
+
+from site_db import Site
 
 import page_db
 
@@ -30,44 +34,62 @@ jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('sites.html')
 
-SITES_PER_PAGE = 200
+
+def create_site_filter_form(counties_and_states):
+
+    class SiteFilterForm(Form):
+
+        page = IntegerField(default=0, widget=widgets.HiddenInput())
+        county_and_state = SelectField(
+            choices=[(u'', u'(All)')] + [
+                (cas, cas) for cas in counties_and_states 
+            ],
+            default=u'',
+        )
+        order = SelectField(
+            choices=[
+                (u'-request_date', u'Request Date (recent first)'),
+                (u'request_date', u'Request Date (oldest first)'),
+                (u'name', u'Name (asc)'),
+                (u'-name', u'Name (desc)'),
+            ],
+            default=u'-request_date',
+        )
+
+    return SiteFilterForm
 
 
 class SitesHandler(base.AuthenticatedHandler):
-
-  def AuthenticatedGet(self, org, event):
-    try:
-        page = max(0, int(self.request.get("page", 0)))
-    except ValueError:
-        page = 0
-    message = cgi.escape(self.request.get("message"))
-    order = cgi.escape(self.request.get("order", "name"))
-    county = self.request.get("county", default_value = "NoCounty")
-
-    # GQL query string builder
-    # escapes WHERE clause with :where_variable
-    # system is throwing errors when I try to escape ORDER BY
-    # so instead I'm curating with an if/else statement
-    # GQL can't do anything destructive (like delete an entity)
-    # but I still feel more comfortable with protecting this against future changes to GQL
-    if order == "name":  
-      order_string = " ORDER BY name"
-    elif order == "request_date":
-      order_string = " ORDER BY request_date"
-    # end query string
     
-    if county == "NoCounty":
-      query_string = "SELECT * FROM Site WHERE event = :event_key" + order_string +" LIMIT %s OFFSET %s" % (SITES_PER_PAGE, page * SITES_PER_PAGE)      
-      
-      query = db.GqlQuery(query_string, event_key = event.key())
-        
-    else:
-      query_string = "SELECT * FROM Site WHERE county = :county and event = :event_key " + order_string + " LIMIT %s OFFSET %s" % (SITES_PER_PAGE, page * SITES_PER_PAGE)
-      query = db.GqlQuery(query_string, where_variable = county, event_key = event.key())
-      
-    self.response.out.write(template.render(dict(
-        page_db.get_page_block_dict(), **{
-	"sites_query": query,
-	"page_number": page,
-        "sites_per_page": SITES_PER_PAGE,
-    })))
+    SITES_PER_PAGE = 200
+
+    def AuthenticatedGet(self, org, event):
+        counties_and_states = {
+            site.county_and_state : (site.county, site.state) for site
+            in db.Query(Site, projection=('county', 'state'), distinct=True)
+        }
+        Form = create_site_filter_form(counties_and_states)
+        form = Form(self.request.GET)
+        if not form.validate():
+            form = Form()  # => use defaults
+
+        # construct query
+        query = Site.all().filter('event', event.key())
+        if form.county_and_state.data:
+            county, state = counties_and_states[form.county_and_state.data]
+            query = query.filter('county', county).filter('state', state)
+        if form.order.data:
+            query = query.order(form.order.data)
+
+        # run query
+        sites = list(query.run(
+            offset=form.page.data * self.SITES_PER_PAGE,
+            limit=self.SITES_PER_PAGE
+        ))
+
+        self.response.out.write(template.render(dict(
+            page_db.get_page_block_dict(), **{
+            "form": form,
+            "sites": sites,
+            "sites_per_page": self.SITES_PER_PAGE,
+        })))

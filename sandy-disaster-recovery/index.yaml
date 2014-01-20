@@ -661,6 +661,43 @@ indexes:
 
 - kind: Site
   properties:
+  - name: county
+  - name: state
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
+  - name: state
+  - name: request_date
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
+  - name: state
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
+  - name: state
+  - name: name
+    direction: asc
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
+  - name: state
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
   - name: event
   - name: claimed_by
   - name: county

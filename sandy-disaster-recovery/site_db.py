@@ -190,6 +190,13 @@ class Site(db.Expando):
       )
     )
 
+  @property
+  def county_and_state(self):
+      return (
+          (self.county if self.county else u'[Unknown]') +
+          ((u', %s' % self.state) if self.state else u'')
+      )
+
   def put(self, **kwargs):
       " On-save "
       # set blurred co-ordinates

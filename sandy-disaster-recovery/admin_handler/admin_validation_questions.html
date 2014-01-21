@@ -2,10 +2,21 @@
 {% from "_form_utils.html" import render_bootstrap_field %}
 
 {% block main_title %}
-<h2>Validation Questions</h2>
+<h2>Validation/Activation Questions</h2>
 {% endblock %}
 
 {% block main_content %}
+
+<p>Questions asked to new organizations when they activate their account are set here.</p>
+
+<ul>
+  <li>Each question must consist of a question, a correct answer and an explanation.</li>
+  <li>You can set <em>up to</em> three wrong answers.</li>
+  <li>To create a True/False question, set the correct answer to True or False and a single wrong answer to False or True.</li>
+  <li>HTML is allowed in all fields.</li>
+</ul>
+
+<p>To set the preamble, change <a href="/admin-edit-pages">Content Settings</a>.</p>
 
 {% macro render_question_form(form, action) %}
   <form method="POST">
@@ -31,8 +42,12 @@
   </form>
 {% endmacro %}
 
+<h3>Active questions</h3>
+
 {% for form in existing_question_forms %}
   {{ render_question_form(form, 'edit') }}
+{% else %}
+  <p>There are currently no active questions.</p>
 {% endfor %}
 
 <h3>Add a new question</h3>

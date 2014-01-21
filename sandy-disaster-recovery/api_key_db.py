@@ -26,7 +26,7 @@ def get_api_key(name):
     try:
         return ApiKey.all().filter('name', name)[0].value
     except:
-        raise Exception("API key %s not defined" % name)
+        return None
 
 
 # create dummy entry on module load

@@ -16,6 +16,7 @@
 #
 
 from time import sleep
+from xml.sax.saxutils import unescape
 
 from wtforms import Form, TextField, validators, FieldList
 
@@ -55,6 +56,11 @@ class AdminValidationQuestionsHandler(AdminAuthenticatedHandler):
     template = "admin_validation_questions.html"
 
     def _get_forms(self):
+        # unescape POST to allow HTML in forms
+        for k in self.request.POST.keys():
+            self.request.POST[k] = unescape(self.request.POST[k])
+
+        # create forms
         existing_question_forms = [
             MultipleChoiceQuestionEditForm(
                 self.request.POST,
@@ -85,7 +91,9 @@ class AdminValidationQuestionsHandler(AdminAuthenticatedHandler):
                     question=form.question.data,
                     correct_answer=form.correct_answer.data,
                     wrong_answers=[
-                        field.data for field in form.wrong_answers.entries
+                        field.data for field
+                        in form.wrong_answers.entries
+                        if field.data
                     ],
                     explanation=form.explanation.data
                 )

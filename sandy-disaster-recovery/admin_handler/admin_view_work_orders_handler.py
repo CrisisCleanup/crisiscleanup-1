@@ -375,7 +375,10 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
 
     def AuthenticatedPost(self, org, event):
         # check votesmart API is available
-        assert api_key_db.get_api_key('votesmart')
+        try:
+            api_key_db.get_api_key('votesmart')
+        except:
+            raise Exception("votesmart API key is not defined.")
 
         # get selected event
         selected_event = event_db.Event.get(self.request.get('event'))

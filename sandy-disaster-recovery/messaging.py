@@ -85,7 +85,7 @@ def get_app_system_email_address():
 
 
 def friendly_email_address(contact):
-    return u"%s <%s>" % (contact.email, contact.full_name)
+    return u"%s <%s>" % (contact.full_name, contact.email)
 
 
 def email_contacts(event, contacts, subject, body, html=None, bcc_contacts=None):

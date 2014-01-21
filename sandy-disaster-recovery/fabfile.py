@@ -407,3 +407,13 @@ def dev():
         "%s --require_indexes=true --show_mail_body=true ." %
         os.path.join(env.sdk_path, 'dev_appserver.py')
     )
+
+
+@task
+def local_shell():
+    " Start a local shell ."
+    sdk_version_ok()
+    print "\nEnter a fake email address and password.\n"
+    local(
+        "%s -s localhost:8080" % os.path.join(env.sdk_path, 'remote_api_shell.py')
+    )

@@ -55,7 +55,7 @@ class MultipleChoiceQuestionForm(Form):
 
 class ActivationHandler(base.RequestHandler):
 
-    MAX_NUM_QUESTIONS = 4
+    MAX_NUM_QUESTIONS_TO_ASK = 3
 
     def _pick_questions_to_forms(self, n, seed):
         " Return random questions as prefixed forms. "
@@ -123,7 +123,7 @@ class ActivationHandler(base.RequestHandler):
         # pick questions, setting seed here
         seed = unicode(hash(random.random()))
         question_forms = self._pick_questions_to_forms(
-            n=self.MAX_NUM_QUESTIONS,
+            n=self.MAX_NUM_QUESTIONS_TO_ASK,
             seed=seed
         )
         self.render(
@@ -140,7 +140,7 @@ class ActivationHandler(base.RequestHandler):
         if not seed:
             self.abort(404)
         question_forms = self._pick_questions_to_forms(
-            n=self.MAX_NUM_QUESTIONS,
+            n=self.MAX_NUM_QUESTIONS_TO_ASK,
             seed=seed
         )
         if all([form.validate() for form in question_forms]):

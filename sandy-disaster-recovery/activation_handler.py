@@ -57,24 +57,44 @@ class ActivationHandler(base.RequestHandler):
 
     MAX_NUM_QUESTIONS_TO_ASK = 3
 
-    def _pick_questions_to_forms(self, n, seed):
+    def _get_forms(self, n, seed):
         " Return random questions as prefixed forms. "
+        # construct a form for all available questions
         all_questions = list(MultipleChoiceQuestion.all())
-        if len(all_questions) > n:
-            random.seed(seed)
-            selected_questions = random.sample(all_questions, n)
-            random.seed()  # restore RNG
-        else:
-            selected_questions = all_questions
-
-        return [
+        all_forms = [
             MultipleChoiceQuestionForm(
                 self.request.POST,
                 question,
                 prefix=unicode(question.key().id())
             )
-            for question in selected_questions
+            for question in all_questions
         ]
+
+        # mark all question forms
+        for form in all_forms:
+            form.ask = False
+            if form.answers.data and form.answers.data != u'None':
+                form.answered = True
+                if form.validate():
+                    form.correct = True
+                else:
+                    form.correct = False
+            else:
+                form.answered = False
+                form.correct = False
+
+        # pick unanswered questions forms to ask next
+        unanswered_forms = [form for form in all_forms if not form.answered]
+        if len(unanswered_forms) > n:
+            random.seed(seed)
+            selected_new_question_forms = random.sample(unanswered_forms, n)
+            random.seed()  # restore RNG
+        else:
+            selected_new_question_forms = unanswered_forms
+        for form in selected_new_question_forms:
+            form.ask = True
+
+        return all_forms
 
     def render(self, template, **kwargs):
         " Render response, with pageblocks. "
@@ -119,41 +139,47 @@ class ActivationHandler(base.RequestHandler):
         # continue handling request
         super(ActivationHandler, self).dispatch(*args, **kwargs)
 
-    def get(self):
-        # pick questions, setting seed here
-        seed = unicode(hash(random.random()))
-        question_forms = self._pick_questions_to_forms(
+    def render_questions(self, seed, allow_pass=False):
+        all_question_forms = self._get_forms(
             n=self.MAX_NUM_QUESTIONS_TO_ASK,
             seed=seed
         )
         self.render(
             activation_template,
             org=self.org_by_code,
-            question_forms=question_forms,
+            question_forms=all_question_forms,
             seed=seed,
-            errors=False
+            allow_pass=allow_pass,
         )
 
+    def get(self):
+        seed = unicode(hash(random.random()))
+        self.render_questions(seed)
+
     def post(self):
-        # reload questions check ok to activate 
+        # check questions and ask if ok to activate 
         seed = self.request.get('seed')
+        allow_pass = bool(self.request.get('allow_pass'))
         if not seed:
             self.abort(404)
-        question_forms = self._pick_questions_to_forms(
+        question_forms = self._get_forms(
             n=self.MAX_NUM_QUESTIONS_TO_ASK,
             seed=seed
         )
-        if all([form.validate() for form in question_forms]):
-            # if all questions are correct, activate and show password
+        enough_questions_answered = (
+            len(filter(lambda f: f.correct, question_forms)) >= 
+            self.MAX_NUM_QUESTIONS_TO_ASK
+        )
+        no_questions_left = (
+            len(filter(lambda f: not f.answered, question_forms)) == 0
+        )
+        if enough_questions_answered or allow_pass:
             self.org_by_code.activate()
             self.render(
                 show_password_template,
                 org=self.org_by_code
             )
+        elif no_questions_left:
+            self.render_questions(seed, allow_pass=True)
         else:
-            self.render(
-                activation_template,
-                org=self.org_by_code,
-                question_forms=question_forms,
-                errors=True
-            )
+            self.render_questions(seed)

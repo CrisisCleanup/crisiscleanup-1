@@ -195,10 +195,10 @@ class AdminHandler(base.AuthenticatedHandler):
             self.redirect("/admin")
             return
             
-        if self.request.get("activate_organization"):
-            # activate organization
+        if self.request.get("verify_organization"):
+            # verify organization
             try:
-                id = int(self.request.get("activate_organization"))
+                id = int(self.request.get("verify_organization"))
                 org_by_id = organization.Organization.get_by_id(id)
             except:
                 self.abort(400)

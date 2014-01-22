@@ -17,9 +17,18 @@
 from google.appengine.ext import db
 
 
+KNOWN_API_KEY_NAMES = {
+    'system_email_address',
+    'votesmart',
+    'aws_ses_region',
+    'aws_ses_access_key_id',
+    'aws_ses_secret_access_key',
+}
+
+
 class ApiKey(db.Model):
     name = db.StringProperty(required=True)
-    value = db.StringProperty(required=True)
+    value = db.StringProperty()
 
 
 def get_api_key(name):
@@ -29,6 +38,7 @@ def get_api_key(name):
         return None
 
 
-# create dummy entry on module load
-if ApiKey.all().count() == 0:
-    ApiKey(name='dummy', value='dummy').save()
+# create blank API keys on module load
+for known_api_key_name in KNOWN_API_KEY_NAMES:
+    if ApiKey.all().filter('name', known_api_key_name).count() == 0:
+        ApiKey(name=known_api_key_name, value=u'').save()

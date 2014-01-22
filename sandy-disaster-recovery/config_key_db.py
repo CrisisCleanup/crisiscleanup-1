@@ -17,7 +17,7 @@
 from google.appengine.ext import db
 
 
-KNOWN_API_KEY_NAMES = {
+KNOWN_CONFIG_KEY_NAMES = {
     'system_email_address',
     'votesmart',
     'aws_ses_region',
@@ -26,19 +26,19 @@ KNOWN_API_KEY_NAMES = {
 }
 
 
-class ApiKey(db.Model):
+class ConfigKey(db.Model):
     name = db.StringProperty(required=True)
     value = db.StringProperty()
 
 
-def get_api_key(name):
+def get_config_key(name):
     try:
-        return ApiKey.all().filter('name', name)[0].value
+        return ConfigKey.all().filter('name', name)[0].value
     except:
         return None
 
 
-# create blank API keys on module load
-for known_api_key_name in KNOWN_API_KEY_NAMES:
-    if ApiKey.all().filter('name', known_api_key_name).count() == 0:
-        ApiKey(name=known_api_key_name, value=u'').save()
+# create blank config keys on module load
+for known_config_key_name in KNOWN_CONFIG_KEY_NAMES:
+    if ConfigKey.all().filter('name', known_config_key_name).count() == 0:
+        ConfigKey(name=known_config_key_name, value=u'').save()

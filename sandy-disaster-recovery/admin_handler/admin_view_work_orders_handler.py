@@ -31,7 +31,7 @@ from wtforms import Form, TextField, HiddenField, SelectField
 from admin_base import AdminAuthenticatedHandler
 
 import event_db
-import api_key_db
+import config_key_db
 from site_db import Site, STATUSES_UNICODE
 from organization import Organization
 from zip_code_db import ZipCode
@@ -374,11 +374,11 @@ class AdminExportZipCodesByQueryHandler(AdminAuthenticatedHandler):
         self.abort(405)  # GET not supported
 
     def AuthenticatedPost(self, org, event):
-        # check votesmart API is available
+        # check votesmart API key is available
         try:
-            api_key_db.get_api_key('votesmart')
+            config_key_db.get_config_key('votesmart')
         except:
-            raise Exception("votesmart API key is not defined.")
+            raise Exception("votesmart API key is not defined as a ConfigKey.")
 
         # get selected event
         selected_event = event_db.Event.get(self.request.get('event'))

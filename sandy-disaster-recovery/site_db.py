@@ -204,11 +204,6 @@ class Site(db.Expando):
       self.blurred_longitude = self.longitude + random.uniform(-0.001798, 0.001798)
       super(Site, self).put(**kwargs)
 
-  _CSV_ACCESSORS = {
-    'reported_by': _GetOrganizationName,
-    'claimed_by': _GetOrganizationName,
-    }
-
   def compute_similarity_matching_fields(self):
     """Use double metaphone values and store as 'X-Y'."""
     self.name_metaphone = '%s-%s' % metaphone.dm(unicode(self.name)) if self.name else None
@@ -221,6 +216,11 @@ class Site(db.Expando):
     """Find a single similar site in @event using find_similar()."""
     self.compute_similarity_matching_fields()
     return find_similar(self, event)
+
+  _CSV_ACCESSORS = {
+    'reported_by': _GetOrganizationName,
+    'claimed_by': _GetOrganizationName,
+  }
 
   def ToCsvLine(self, extra_csv_list):
     """

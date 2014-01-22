@@ -52,10 +52,10 @@ body { background-color: #d4d4d4; }
 </div>
 <br>
 <p>Download Spreadsheet (CSV):</p>
-<form method="POST" action="/export" target="_blank">
+<form method="POST" action="/export" target="_blank" id="csv_form">
   <input name="id" class="id_list" type="hidden" value="" />
   <button type="submit" class="export-btn" id="filtered-export-btn" name="download" value="selected">
-    Download Visible
+  Download Visible
   </button>
   <button type="submit" class="all-export-btn" id="all-export-btn" name="download" value="all">
     Download All

@@ -20,26 +20,33 @@ import csv
 
 # Local libraries.
 import base
+import site_util
 import site_db
 
 
 class ExportHandler(base.AuthenticatedHandler):
-
   def AuthenticatedGet(self, org, event):
     self.AuthenticatedPost(org, event)
 
   def AuthenticatedPost(self, org, event):
-    # get specified sites
-    id_param = self.request.get('id')
-    if id_param:
-        # get sites from csv of ids
-        ids = map(int, id_param.split(',')) if id_param else []
-        sites = site_db.Site.by_ids(event, ids)
+    # if id is empty or undefined, returns all
+    sites = None
+    open_filter_state = self.request.get("open_filter_state")
+    closed_filter_state = self.request.get("closed_filter_state")
+    claimed_filter_state = self.request.get("claimed_filter_state")
+    unclaimed_filter_state = self.request.get("unclaimed_filter_state")
+    debris_filter_state = self.request.get("debris_filter_state")
+    
+    if debris_filter_state == "true":
+      debris_filter_state = "Debris"
+    if not open_filter_state and not closed_filter_state and not debris_filter_state:
+      sites = site_util.SitesFromIds(self.request.get('id'), event)
     else:
-        # return all
-        sites = site_db.Site.all_in_event(event)
-
-    # set headers
+      q = site_db.Site.all()
+      q.filter("work_type =", debris_filter_state)
+      sites = q.fetch(100)
+    
+    
     self.response.headers['Content-Type'] = 'text/csv'
     self.response.headers['Content-Disposition'] = (
         'attachment; filename="work_sites.csv"')
@@ -71,5 +78,6 @@ class ExportHandler(base.AuthenticatedHandler):
     writer.writerow(final_list)
 
     # write csv rows
+    #raise Exception(sites)
     for site in sites:
       writer.writerow(site.ToCsvLine(final_list))

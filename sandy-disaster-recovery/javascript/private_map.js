@@ -6,8 +6,6 @@ var claimed_filter_state = null;
 var unclaimed_filter_state = null;
 var debris_filter_state = null;
 $(function(){
-  
-
     var myLatlng = new google.maps.LatLng(38.50, -85.35);
     var mapOptions = {
         zoom: 5,
@@ -21,6 +19,18 @@ $(function(){
   MarkerClusterer.IMAGE_PATH = "/icons/m";
   var markerCluster = new MarkerClusterer(map);
   clusterer = markerCluster;
+  
+  $( "form" ).submit(function() {
+    
+    $('<input>').attr({
+      type: 'hidden',
+      id: 'debris_filter_state',
+      name: 'debris_filter_state',
+      value: "true"
+    }).appendTo('form');
+
+  });
+
   
   $("#filters_div").on( "click", "#open",  function() {
     if (open_filter_state == null || open_filter_state == false) {

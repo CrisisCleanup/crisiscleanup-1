@@ -421,7 +421,7 @@ def local_shell():
 @task
 def remote_shell(app):
     sdk_version_ok()
-    print "\Generate a app-specific password via https://www.google.com/settings/security\n"
+    print "\nGenerate a app-specific password via https://www.google.com/settings/security\n"
     local(
         "%s --secure %s" % (
             os.path.join(env.sdk_path, 'remote_api_shell.py'),

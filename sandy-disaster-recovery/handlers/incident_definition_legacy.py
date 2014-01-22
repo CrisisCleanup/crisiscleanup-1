@@ -30,6 +30,7 @@ import event_db
 import cache
 import random_password
 import organization
+import primary_contact_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
@@ -105,19 +106,41 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
       incident_latitude = data.incident_lat.data
       incident_longitude = data.incident_lng.data
 
-      local_admin_name = data.local_admin_name.data
+      local_admin_first_name = data.local_admin_first_name.data
+      local_admin_last_name = data.local_admin_last_name.data      
       local_admin_title = data.local_admin_title.data
       #local_admin_organization = data.local_admin_organization.data
       local_admin_email = data.local_admin_email.data
       local_admin_cell_phone = data.local_admin_cell_phone.data
-      local_admin_password = data.local_admin_password.data
-    
+      
+      
+      
+      q = event_db.Event.all()
+      q.filter("name =", incident_name)
+      this_event = q.get()
+      incident_short_name = this_event.short_name
+      q = organization.Organization.all()
+      q.filter("name =", "Local Admin - " + incident_short_name)
+      this_org = q.get()
+      if not this_org:
+	this_org = create_organization("Local Admin - " + incident_short_name)
+	
+      contact = primary_contact_db.Contact(
+                first_name=data.local_admin_first_name.data,
+                last_name=data.local_admin_last_name.data,
+                title=data.local_admin_title.data,
+                phone=data.local_admin_cell_phone.data,
+                email=data.local_admin_email.data,
+                is_primary = True,
+                organization = this_org.key(),
+            )
+      
+      contact.put()
     
       incident_date_object = datetime.strptime(incident_date, "%m/%d/%Y").date()
       start_date_object = datetime.strptime(cleanup_start_date, "%m/%d/%Y").date()
 
       #org = organization.Organization.get_by_id(local_admin_organization)
-
 
       # TODO
       # Get incident from incident id, save to inc_def below      
@@ -125,7 +148,7 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
       
       # add this version = incident_version
       
-      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = this_event.name, short_name = this_event.short_name, timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = this_event.case_label, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_name = local_admin_name, local_admin_title = local_admin_title, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = local_admin_password, incident = this_event.key(), is_version_one_legacy = True)
+      inc_def = incident_definition.IncidentDefinition(phases_json = "[]", forms_json = "[]", organization_map_latitude = incident_latitude, organization_map_longitude = incident_longitude, public_map_latitude = incident_latitude, public_map_longitude = incident_longitude, location = location, name = this_event.name, short_name = this_event.short_name, timezone = timezone, incident_date = incident_date_object, cleanup_start_date = start_date_object, work_order_prefix = this_event.case_label, incident_lat = incident_latitude, incident_lng = incident_longitude, local_admin_first_name = local_admin_first_name, local_admin_last_name = local_admin_last_name, local_admin_title = local_admin_title, local_admin_email = local_admin_email, local_admin_cell_phone = local_admin_cell_phone, local_admin_password = this_org.password, incident = this_event.key(), is_version_one_legacy = True)
       inc_def.put()
 
       
@@ -133,3 +156,18 @@ class IncidentDefinitionLegacy(base.AuthenticatedHandler):
 
 def get_phases_from_json(phases_json):
   pass
+
+def create_organization(name):
+  org = organization.Organization(
+    name=name,
+    org_verified=True,
+    voad_referral="Y",
+    password=random_password.generate_password(),
+    deprecated=False,
+    is_active=True,
+    is_admin=True,    
+  )
+  org.put()
+  return org
+    
+  

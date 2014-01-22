@@ -1,4 +1,10 @@
 var clusterer=null;
+var all_markers = [];
+var open_filter_state = null;
+var closed_filter_state = null;
+var claimed_filter_state = null;
+var unclaimed_filter_state = null;
+var debris_filter_state = null;
 $(function(){
   
 
@@ -15,8 +21,112 @@ $(function(){
   MarkerClusterer.IMAGE_PATH = "/icons/m";
   var markerCluster = new MarkerClusterer(map);
   clusterer = markerCluster;
+  
+  $("#filters_div").on( "click", "#open",  function() {
+    if (open_filter_state == null || open_filter_state == false) {
+      open_filter_state = true;
+    } else {
+      open_filter_state = false;
+    }
+    set_new_markers();
+  });
+  
+  $("#filters_div").on( "click", "#closed",  function() {
+    if (closed_filter_state == null || closed_filter_state == false) {
+      closed_filter_state = true;
+    } else {
+      closed_filter_state = false;
+    }
+    set_new_markers();
+  });
+  
+  $("#filters_div").on( "click", "#claimed",  function() {
+    if (claimed_filter_state == null || claimed_filter_state == false) {
+      claimed_filter_state = true;
+    } else {
+      claimed_filter_state = false;
+    }
+    set_new_markers();
+  });
+    
+  $("#filters_div").on( "click", "#unclaimed",  function() {
+    if (unclaimed_filter_state == null || unclaimed_filter_state == false) {
+      unclaimed_filter_state = true;
+    } else {
+      unclaimed_filter_state = false;
+    }
+    set_new_markers();
+  });
+  
+  $("#filters_div").on( "click", "#Debris",  function() {
+    if (debris_filter_state == null || debris_filter_state == false) {
+      debris_filter_state = true;
+    } else {
+      debris_filter_state = false;
+    }
+    set_new_markers();
+  });
+  // onclick
+  // console.log all_markers
+  // if it comes up, then just search, filter, and resend to clusterer.addMarkers
 
 })
+
+var set_new_markers = function() {
+  var new_markers = [];
+
+  if (open_filter_state != true && closed_filter_state != true && unclaimed_filter_state != true && claimed_filter_state != true && debris_filter_state != true)  {
+    open_filter_state = true; 
+  }
+  // if all are false, set open to true
+  if (open_filter_state == true && closed_filter_state == true) {
+    clusterer.clearMarkers(); 
+  } else {
+    for (var i = 0; i < all_markers.length; i++) {
+      if (open_filter_state == true) { 
+	  if (all_markers[i]['site_info']['status'].indexOf("Open") != -1) {
+	    // add  
+	      new_markers.push(all_markers[i]);
+	  }
+      }
+      
+      if (closed_filter_state == true) { 
+	  if (all_markers[i]['site_info']['status'].indexOf("Closed") != -1) {
+	    // add  
+	      new_markers.push(all_markers[i]);
+	  }
+      }
+
+      if (claimed_filter_state == true) { 
+	  if (all_markers[i]['site_info']['claimed_by'] != null) {
+	    // add  
+	      new_markers.push(all_markers[i]);
+	  }
+      }
+      
+      if (unclaimed_filter_state == true) { 
+	  if (all_markers[i]['site_info']['claimed_by'] == null) {
+	    // add  
+	      new_markers.push(all_markers[i]);
+	  }
+      }
+      
+      if (debris_filter_state == true) {
+	// must do this by open, closed, etc
+	  if (all_markers[i]['site_info']['work_type'] == "Debris") {
+	    new_markers.push(all_markers[i]);
+	  }
+      }
+      
+    }
+    
+    console.log("234");
+    console.log(new_markers);
+    clusterer.clearMarkers();
+    clusterer.addMarkers(new_markers);
+  }
+
+}
 
     
 var populateMapByIncident = function(incident, page, old_markers) {
@@ -62,6 +172,7 @@ var populateMapByIncident = function(incident, page, old_markers) {
        
        	  var total_markers = old_markers.concat(markers)
 	         clusterer.addMarkers(total_markers);
+	  all_markers = old_markers.concat(markers);
        $("#display_incident").text("Incident: " + incident);
 
          if (run_again == true) {

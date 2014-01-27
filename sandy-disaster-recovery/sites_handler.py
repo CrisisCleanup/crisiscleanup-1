@@ -42,7 +42,7 @@ def create_site_filter_form(counties_and_states):
         page = IntegerField(default=0, widget=widgets.HiddenInput())
         county_and_state = SelectField(
             choices=[(u'', u'(All)')] + [
-                (cas, cas) for cas in counties_and_states 
+                (cas, cas) for cas in sorted(counties_and_states)
             ],
             default=u'',
         )

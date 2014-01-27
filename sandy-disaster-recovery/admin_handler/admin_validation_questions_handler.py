@@ -58,14 +58,21 @@ class AdminValidationQuestionsHandler(AdminAuthenticatedHandler):
         for k in self.request.POST.keys():
             self.request.POST[k] = unescape(self.request.POST[k])
 
+        # load by all questions and order by id
+        questions = list(MultipleChoiceQuestion.all())
+        questions.sort(key=lambda q: q.key().id())
+
         # create forms
+        posted_prefix = self.request.POST.get('prefix', '')
         existing_question_forms = [
             MultipleChoiceQuestionEditForm(
-                self.request.POST,
+                self.request.POST
+                if posted_prefix.startswith(unicode(question.key().id()))
+                else None,
                 question,
-                prefix=unicode(i)
+                prefix=unicode(question.key().id())
             )
-            for i, question in enumerate(MultipleChoiceQuestion.all())
+            for question in questions
         ]
         new_question_form = MultipleChoiceQuestionEditForm(self.request.POST)
         return existing_question_forms, new_question_form

@@ -63,7 +63,7 @@ class AdminValidationQuestionsHandler(AdminAuthenticatedHandler):
 
         # load by all questions and order by id
         questions = list(MultipleChoiceQuestion.all())
-        questions.sort(key=lambda q: q.key().id())
+        questions.sort(key=lambda q: q.key().id(), reverse=True)
 
         # create forms
         posted_prefix = self.request.POST.get('prefix', '')

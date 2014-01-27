@@ -142,7 +142,7 @@ $(function() {
       }).then(function() {
         $('div#password-announcement').show();
       });
-    } else {
+    } else if (!isCorrect) {
       // show another question
       $questionForms.not('.question-open').first().addClass('question-open');
     }

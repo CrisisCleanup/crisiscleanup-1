@@ -53,6 +53,9 @@ class AdminValidationQuestionsHandler(AdminAuthenticatedHandler):
 
     template = "admin_validation_questions.html"
 
+    accessible_to_local_admin = False
+
+
     def _get_forms(self):
         # unescape POST to allow HTML in forms
         for k in self.request.POST.keys():

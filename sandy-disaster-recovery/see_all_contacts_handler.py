@@ -35,7 +35,8 @@ class SeeAllContactsHandler(base.AuthenticatedHandler):
         all_contacts_query = Contact.all()
         relevant_contacts = (
             contact for contact in all_contacts_query
-            if contact.organization.may_access(event)
+            if contact.organization
+            and contact.organization.may_access(event)
         )
 
         self.response.out.write(template.render(

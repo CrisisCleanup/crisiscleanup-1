@@ -23,42 +23,73 @@
 {% block main_content %}
 {{ activation_main_content_page_block|safe }}
 
+<style>
+  p.question-text {
+    text-decoration: underline;
+  }
+
+  div.explanation {
+    display: none;
+    margin-top: 5px;
+  }
+
+  div.explanation > span.correct-marker {
+    display: none;
+    color: green;
+  }
+
+  div.explanation > span.incorrect-marker {
+    display: none;
+    color: red;
+  }
+
+  form.question {
+    /* questions are hidden by default */
+    display: none;
+  }
+
+  form.question-open {
+    display: block !important;
+  }
+
+  form.question-asked {
+    display: block !important;
+  }
+</style>
+
 <h2>Activation for {{ org.name }}</h2>
 
-<form method="POST">
-  <input type="hidden" name="seed" value="{{ seed }}">
-  {% for question_form in question_forms %}
-    {% if question_form.ask or question_form.answered  %}
-      <p><b>Q:</b> {{ question_form.question.question }}</p>
-      {% for answer_radio_button in question_form.answers %}
-        <div>
-          {% if not question_form.answered %}
-            {{ answer_radio_button }}
-          {% else %}
-            {{ answer_radio_button(readonly=True) }}
-          {% endif %}
-          <label for="{{ answer_radio_button.name }}">{{ answer_radio_button.label }}</label>
-        </div>
-      {% endfor %}
-      {% if question_form.answered %}
-        <div>
-          {% if question_form.correct %}
-            <b>Correct:</b> {{ question_form.question.explanation }}
-          {% else %}
-            <b>Wrong:</b> {{ question_form.question.explanation }}
-          {% endif %}
-        </div>
-      {% endif %}
-    {% endif %}
-  {% endfor %}
+{% for question_form in question_forms %}
+  <form class="question {% if loop.index0 < num_questions_to_ask %}question-open{% endif %}"
+    submit="return false;">
+    <p class="question-text"><b>Q:</b> {{ question_form.question.question }}</p>
+    <input name="a" type="hidden" value="{{ question_form.question.correct_answer }}">
+    <!--
+      To anyone reading the source code: this is not meant to be a serious test
+      so the answer is deliberately not hidden! (This avoids a round-trip to the server.)
+    -->
+    {% for answer_radio_button in question_form.answers %}
+      <div>
+        {{ answer_radio_button }}
+        <label for="{{ answer_radio_button.name }}">{{ answer_radio_button.label }}</label>
+      </div>
+    {% endfor %}
+    <div class="explanation">
+      <span class="correct-marker">
+        &#10004; Correct:
+      </span>
+      <span class="incorrect-marker">
+        &#10008; Wrong:
+      </span>
+      <span class="explanation-text">{{ question_form.question.explanation }}</span>
+    </div>
+  </form>
+{% endfor %}
 
-  {% if allow_pass %}
-    <input type="hidden" name="allow_pass" value="allow_pass">
-  {% endif %}
-
-  <button style="margin-top: 5px;">Submit &amp; activate account</button>
-
-</form>
+<div id="password-announcement" style="{% if question_forms %}display:none;{% endif %}">
+  {{ activation_password_reveal_preamble_page_block|safe }}
+  <p>Your password is: <b>{{ org.password }}</b>
+</div>
 
 {% endblock %}
 
@@ -66,8 +97,56 @@
 {{ super() }}
 <script type="text/javascript">
 $(function() {
-  // simulate truly readonly radio buttons
-  $(':radio[readonly]:not(:checked)').attr('disabled', true);
+
+  // globals
+
+  $questionForms = $('form.question');
+
+  numAvailableQuestions = $questionForms.length;
+  numDesiredCorrectAnswers = {{ num_questions_to_ask }};
+  numCorrectAnswers = 0;
+
+
+  // on clicking an answer
+
+  $questionForms.find('input[type=radio]').click(function() {
+    var $this = $(this);
+    var $form = $this.closest('form.question');
+
+    // disable form
+    $form.find('input[type=radio]').attr('disabled', true);
+
+    // check answer
+    var correctAnswer = $form.find('input[name=a]').val();
+    var chosenAnswer = $this.val();
+    var isCorrect = (correctAnswer == chosenAnswer);
+
+    // handle correct vs incorrect
+    numAvailableQuestions -= 1;
+    $form.find('div.explanation').show();
+    if (isCorrect) {
+      $form.find('span.correct-marker').show();
+      numCorrectAnswers += 1;
+    } else {
+      $form.find('span.incorrect-marker').show();
+    };
+
+    // handle change answer/question tally
+    if (numCorrectAnswers == numDesiredCorrectAnswers || numAvailableQuestions == 0) {
+      // enough correct or questions exhaustaed: show password & activate by AJAX
+      $.ajax({
+        uri: window.location.href,
+        method: 'POST'
+      }).then(function() {
+        $('div#password-announcement').show();
+      });
+    } else {
+      // show another question
+      $questionForms.not('.question-open').first().addClass('question-open');
+    }
+
+  });
+
 });
 </script>
 {% endblock %}

@@ -1,1 +1,1 @@
-{{ org.name }} activated on Crisis Cleanup
+Crisis Cleanup Password for {{ org.name }}

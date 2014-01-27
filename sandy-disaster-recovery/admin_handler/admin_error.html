@@ -1,0 +1,11 @@
+{% extends "base_template.html" %}
+
+{% block main_title %}
+<h2>{% if heading %}{{ heading }}{% else %}Error{% endif %}</h2>
+{% endblock %}
+
+{% block main_content %}
+
+<div>{{ message }}</div>
+
+{% endblock %}

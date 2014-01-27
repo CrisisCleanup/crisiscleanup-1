@@ -358,6 +358,14 @@ class OrganizationForm(
         "Last logged in",
         [validators.optional()]
     )
+    activate_by = DateTimeField(
+        "Activate By",
+        [validators.optional()]
+    )
+    activated_at = DateTimeField(
+        "Activated At",
+        [validators.optional()]
+    )
 
     def __init__(self, *args, **kwargs):
         super(OrganizationForm, self).__init__(*args, **kwargs)

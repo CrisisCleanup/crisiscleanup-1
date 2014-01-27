@@ -41,7 +41,6 @@ FILENAMES = [
     'authentication.html',
     'welcome.html',
     'templates/activation.html',
-    'templates/show_password.html',
     'templates/already_activated.html',
     'templates/activation_too_late.html',
 ]

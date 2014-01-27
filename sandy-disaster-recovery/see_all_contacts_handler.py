@@ -32,12 +32,7 @@ template = jinja_environment.get_template('see_all_contacts.html')
 class SeeAllContactsHandler(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
-        all_contacts_query = Contact.all()
-        relevant_contacts = (
-            contact for contact in all_contacts_query
-            if contact.organization
-            and contact.organization.may_access(event)
-        )
+        relevant_contacts = Contact.for_event(event)
 
         self.response.out.write(template.render(
         {

@@ -34,11 +34,7 @@ class ExportContactsHandler(base.AuthenticatedHandler):
         org_id = self.request.get("org")
 
         # select contacts
-        all_contacts_query = Contact.all()
-        relevant_contacts = (
-            contact for contact in all_contacts_query
-            if contact.organization.may_access(event)
-        )
+        relevant_contacts = Contact.for_event(event)
         if org_id:
             relevant_contacts = (
                 contact for contact in relevant_contacts

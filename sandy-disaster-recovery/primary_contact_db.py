@@ -93,6 +93,16 @@ class Contact(db.Model):
           except:
             logging.critical("Failed to parse: " + value + " " + str(self.key().id()))
       return csv_row
+
+    @classmethod
+    def for_event(cls, event):
+        " Return generator of contacts for organizations of event. "
+        return (
+            contact for contact in Contact.all()
+            if contact.organization
+            and contact.organization.may_access(event)
+        )
+
     
 cache_prefix = Contact.__name__ + "-d:"
     

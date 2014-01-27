@@ -24,7 +24,7 @@
 {{ activation_main_content_page_block|safe }}
 
 <style>
-  p.question-text {
+  div.question-text {
     text-decoration: underline;
   }
 
@@ -46,6 +46,7 @@
   form.question {
     /* questions are hidden by default */
     display: none;
+    margin-bottom: 10px;
   }
 
   form.question-open {
@@ -57,12 +58,13 @@
   }
 </style>
 
-<h2>Activation for {{ org.name }}</h2>
-
 {% for question_form in question_forms %}
   <form class="question {% if loop.index0 < num_questions_to_ask %}question-open{% endif %}"
     submit="return false;">
-    <p class="question-text"><b>Q:</b> {{ question_form.question.question }}</p>
+    <div class="question-text">
+      <b>Q:</b>
+      {{ question_form.question.question }}
+    </div>
     <input name="a" type="hidden" value="{{ question_form.question.correct_answer }}">
     <!--
       To anyone reading the source code: this is not meant to be a serious test

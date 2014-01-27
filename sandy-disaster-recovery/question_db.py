@@ -4,7 +4,7 @@ from google.appengine.ext import db
 
 class MultipleChoiceQuestion(db.Model):
 
-    question = db.StringProperty(required=True)
-    correct_answer = db.StringProperty(required=True)
+    question = db.TextProperty(required=True)
+    correct_answer = db.TextProperty(required=True)
     wrong_answers = db.StringListProperty()
-    explanation = db.StringProperty()
+    explanation = db.TextProperty()

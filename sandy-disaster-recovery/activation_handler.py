@@ -7,7 +7,6 @@ import jinja2
 
 from wtforms import Form, RadioField, validators
 
-
 import base
 from organization import Organization
 from question_db import MultipleChoiceQuestion

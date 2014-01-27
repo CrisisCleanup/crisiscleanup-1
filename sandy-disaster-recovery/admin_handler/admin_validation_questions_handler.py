@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 # Copyright 2013 Chris Wood 
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +16,7 @@
 from time import sleep
 from xml.sax.saxutils import unescape
 
-from wtforms import Form, TextField, validators, FieldList
+from wtforms import Form, TextAreaField, validators, FieldList
 
 
 from admin_base import AdminAuthenticatedHandler
@@ -33,21 +31,21 @@ class MultipleChoiceQuestionEditForm(Form):
         self.question_obj = args[1] if len(args) >= 2 else None
         super(MultipleChoiceQuestionEditForm, self).__init__(*args, **kwargs)
     
-    question = TextField('Question', [
-        validators.Length(min=1, max=100)
+    question = TextAreaField('Question', [
+        validators.Length(min=1, max=1000)
     ])
-    correct_answer = TextField('Correct Answer', [
-        validators.Length(min=1, max=100)
+    correct_answer = TextAreaField('Correct Answer', [
+        validators.Length(min=1, max=1000)
     ])
     wrong_answers = FieldList(
-        TextField('Wrong Answer', [
+        TextAreaField('Wrong Answer', [
             validators.optional(),
-            validators.Length(max=100)
+            validators.Length(max=1000)
         ]),
         min_entries=3
     )
-    explanation = TextField('Explanation', [
-        validators.Length(min=1, max=100)
+    explanation = TextAreaField('Explanation', [
+        validators.Length(min=1, max=1000)
     ])
 
 

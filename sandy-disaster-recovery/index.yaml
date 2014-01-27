@@ -666,6 +666,12 @@ indexes:
 
 - kind: Site
   properties:
+  - name: event
+  - name: county
+  - name: state
+
+- kind: Site
+  properties:
   - name: county
   - name: event
   - name: state

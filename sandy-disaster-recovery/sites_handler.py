@@ -64,9 +64,14 @@ class SitesHandler(base.AuthenticatedHandler):
     SITES_PER_PAGE = 200
 
     def AuthenticatedGet(self, org, event):
+        site_proj = db.Query(
+            Site,
+            projection=('county', 'state'),
+            distinct=True
+        ).filter('event', event)
         counties_and_states = {
             site.county_and_state : (site.county, site.state) for site
-            in db.Query(Site, projection=('county', 'state'), distinct=True)
+            in site_proj
         }
         Form = create_site_filter_form(counties_and_states)
         form = Form(self.request.GET)

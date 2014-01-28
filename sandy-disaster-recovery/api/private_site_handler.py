@@ -44,7 +44,60 @@ open_statuses = [s for s in site_db.Site.status.choices if 'Open' in s]
 closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statuses]
 
 
-class PrivateSiteHandler(base.RequestHandler):      
+class PrivateSiteHandler(base.RequestHandler):  
+  
+  def post(self):
+    import key
+
+    org, event = key.CheckAuthorization(self.request)
+    if not org and event:
+      return
+    
+    claim = self.request.get("claim")
+    case_number = self.request.get("case_number")
+    phase_id = self.request.get("phase_id")
+    if claim == "Claim":
+      
+      q = site_db.Site.all()
+      q.filter("case_number = ", case_number)
+      site = q.get()
+      site.claim_for_org = "y"
+      site.claimed_by = org.key()
+      try:
+	site_db.PutAndCache(site)
+	self.response.out.write("<h4>Claimed for " + org.name + "</h4>")
+      except:
+	self.response.out.write('<h4 style="text-color:red;">Claim Failed</h4>')
+    elif claim == "Unclaim":
+            
+      q = site_db.Site.all()
+      q.filter("case_number = ", case_number)
+      site = q.get()
+      site.claim_for_org = "n"
+      site.claimed_by = None
+      try:
+	site_db.PutAndCache(site)
+	self.response.out.write("<h4>Unclaimed by " + org.name + "</h4>")
+      except:
+	self.response.out.write('<h4 style="text-color:red;">Unclaim Failed</h4>')
+      
+    else:
+      work_type = self.request.get("work_type")
+      
+      q = site_db.Site.all()
+      q.filter("case_number = ", case_number)
+      site = q.get()
+      #raise Exception(site)
+      site.work_type = work_type
+      #raise Exception(site.work_type)
+      try:
+	site_db.PutAndCache(site)
+	self.response.out.write("<h4>Update Successful</h4>")
+      except:
+	self.response.out.write('<h4 style="text-color:red;">Update Failed</h4>')
+
+      
+   
 
   def get(self):
     import key
@@ -56,6 +109,7 @@ class PrivateSiteHandler(base.RequestHandler):
     if self.request.get("get_phase_form"):
       incident_short_name = self.request.get("incident_short_name")
       phase_name = self.request.get("phase_name")
+
       
       if incident_short_name == "empty":
 	self.response.out.write("[]")
@@ -168,22 +222,75 @@ class PrivateSiteHandler(base.RequestHandler):
 	final_output[key] = json_output[0][key]
 	
     #raise Exception(final_output)
-    html_string = format_output(final_output, case_number, phase_number, phase_id, ids[0])
+    html_string = format_output(final_output, case_number, phase_number, phase_id, ids[0], inc_def_query)
     #raise Exception(html_string)
 
     #raise Exception(final_output)
     # TODO
     # format the output, so it fits on a messi
+    #raise Exception(inc_def_query.forms_json)
+    # get correct form by getPhaseId
+    # loop through, if phase_id matches, get thing
+    #forms = json.loads(inc_def_query.forms_json)
+
+    #work_types = []
+    #for form_obj in forms[phase_number]:
+      #if "_id" in form_obj and form_obj["_id"] == "work_type":
+	#for key, value in form_obj.iteritems():
+	  #if "select_option" in key:
+	    #work_types.append(value)
+    ## create select, with correct default
+    ## add to format_output 
+    #work_select_string = '<select id="work_type">'
+    #for work in work_types:
+      #work_select_string = work_select_string + '<option value="' + work + '">' + work + '</option>'
+    #work_select_string = work_select_string + "</select>"
+    #raise Exception(work_select_string)
+      	    
+      
     self.response.out.write(html_string)
 
 
-def format_output(final_output, case_number, phase_number, phase_id, site_id):
+def format_output(final_output, case_number, phase_number, phase_id, site_id, inc_def_query):
   case_number = str(case_number)
   phase_number = str(phase_number)
   phase_id = str(phase_id)
   output_html = ""
-  standard_html_output = '<div class="messi_python"><b>Name:</b> ' + final_output['name'] + '<br><b>Date:</b> ' + final_output['request_date'] + '<br><b>Address:</b> ' + final_output['address'] + ' ' + final_output['city'] + ' ' + final_output['state'] + ' ' + final_output['zip_code'] + '<br><b>Status:</b> ' + final_output['status']
+  work_type_script = '<script>$("#work_type_select").change(  function() { var case_number = "' + case_number + '"; var phase_id="' + phase_id + '"; value = $("#work_type_select").val(); $.post( "api/private_site_handler",{ case_number: case_number, phase_id: phase_id, work_type: value}, function( data ) { $( ".messi-content" ).prepend( data ); }); });</script>'
   
+  claim_script = ' <script>$("#claim_btn").click(  function() { var claim_value = $("#claim_btn").html(); if(typeof claim_value === "undefined") { claim_value = "Unclaim"; } ; var case_number = "' + case_number + '"; var phase_id="' + phase_id + '"; $.post( "api/private_site_handler",{ case_number: case_number, phase_id: phase_id, claim: claim_value}, function( data ) { $( ".messi-content" ).append( data ); $("#claim_btn").html("Unclaim"); $("#claim_btn").attr("id","unclaim_btn");  }); });</script>'
+  
+  unclaim_script = ' <script>$("#unclaim_btn").click(  function() { var case_number = "' + case_number + '"; var phase_id="' + phase_id + '"; $.post( "api/private_site_handler",{ case_number: case_number, phase_id: phase_id, unclaim: "true"}, function( data ) { $( ".messi-content" ).append( data ); $("#claim_btn").html("Claim"); $("#claim_btn").attr("id","claim_btn");  }); });</script>'
+  
+  standard_html_output = work_type_script + claim_script + '<div class="messi_python"><b>Name:</b> ' + final_output['name'] + '<br><b>Date:</b> ' + final_output['request_date'] + '<br><b>Address:</b> ' + final_output['address'] + ' ' + final_output['city'] + ' ' + final_output['state'] + ' ' + final_output['zip_code'] + '<br><b>Status:</b> '
+  
+  forms = json.loads(inc_def_query.forms_json)
+
+  work_types = []
+  #raise Exception(phase_number)
+  phase_number_int = None
+  try:
+    phase_number_int = int(phase_number)
+  except:
+    phase_number_int = 0
+  for form_obj in forms[phase_number_int]:
+    if "_id" in form_obj and form_obj["_id"] == "work_type":
+      for key, value in form_obj.iteritems():
+	if "select_option" in key:
+	  work_types.append(value)
+  # create select, with correct default
+  # add to format_output 
+  work_select_string = '<select id="work_type_select">'
+  for work in work_types:
+    add_selected = 'selected="selected"'
+    if work == final_output["work_type"]:
+      work_select_string = work_select_string + '<option ' + add_selected + ' value="' + work + '">' + work + '</option>'
+    else:
+      work_select_string = work_select_string + '<option value="' + work + '">' + work + '</option>'
+  work_select_string = work_select_string + "</select><br>"
+  
+  standard_html_output = standard_html_output + work_select_string
+
   standard_list = ['name', 'request_date','address', 'city', 'state', 'zip_code', 'status', 'reported_by', 'claimed_by', 'county', 'work_type', 'case_number']
   
   edit_url = '/edit?id=' + str(site_id) + '&phase=' + phase_number
@@ -192,7 +299,7 @@ def format_output(final_output, case_number, phase_number, phase_id, site_id):
   for key in final_output:
     if key not in standard_list and final_output[key]!= '':
       output_html = output_html + ' <b>' + str(key) + ':</b> ' + str(final_output[key])
-  buttons_html = '</div><hr><div class="btnbox"><a class="btn " href="/print?case_number=' + case_number + '&phase_number=' + phase_number + '&phase_id=' + phase_id +'" target="_blank">Printer Friendly</a><a class="btn " href="#" >Change Status</a><a class="btn " href="#" >Claim</a><a class="btn " id="messi_edit" href="' + edit_url + '" target="_blank">Edit</a></div>'
+  buttons_html = '</div><hr><div class="btnbox"><a class="btn " href="/print?case_number=' + case_number + '&phase_number=' + phase_number + '&phase_id=' + phase_id +'" target="_blank">Printer Friendly</a><a class="btn " id="change_status_btn" href="#" >Change Status</a><a class="btn " id="claim_btn" href="#" >Claim</a><a class="btn " id="messi_edit" href="' + edit_url + '" target="_blank">Edit</a></div>'
   final_html = standard_html_output + output_html + buttons_html
   return final_html
 

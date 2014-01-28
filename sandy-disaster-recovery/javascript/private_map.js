@@ -5,6 +5,13 @@ var closed_filter_state = null;
 var claimed_filter_state = null;
 var unclaimed_filter_state = null;
 var debris_filter_state = null;
+var ash_filter_state = null;
+var flood_filter_state = null;
+var fire_filter_state = null;
+var other_filter_state = null;
+var fence_filter_state = null;
+
+
 $(function(){
     var myLatlng = new google.maps.LatLng(38.50, -85.35);
     var mapOptions = {
@@ -19,6 +26,13 @@ $(function(){
   MarkerClusterer.IMAGE_PATH = "/icons/m";
   var markerCluster = new MarkerClusterer(map);
   clusterer = markerCluster;
+  
+  $("#search_box").keyup(function() {
+    var value = $("#search_box").val();
+    // search, add link, show pertinent info that will bring up an infobox
+    // name, work_order_number, address, claimed_by
+    get_searches(value);
+  });
   
   $( "form" ).submit(function() {
     
@@ -40,6 +54,51 @@ $(function(){
     }
     set_new_markers();
   });
+  
+  $("#filters_div").on( "click", "#Ash",  function() {
+    if (ash_filter_state == null || ash_filter_state == false) {
+      ash_filter_state = true;
+    } else {
+      ash_filter_state = false;
+    }
+    set_new_markers();
+  });
+
+  $("#filters_div").on( "click", "#Flood",  function() {
+    if (flood_filter_state == null || flood_filter_state == false) {
+      flood_filter_state = true;
+    } else {
+      flood_filter_state = false;
+    }
+    set_new_markers();
+  });  
+  
+  $("#filters_div").on( "click", "#Fire",  function() {
+    if (fire_filter_state == null || fire_filter_state == false) {
+      fire_filter_state = true;
+    } else {
+      fire_filter_state = false;
+    }
+    set_new_markers();
+  });  
+  
+  $("#filters_div").on( "click", "#Other",  function() {
+    if (other_filter_state == null || other_filter_state == false) {
+      other_filter_state = true;
+    } else {
+      other_filter_state = false;
+    }
+    set_new_markers();
+  });  
+
+  $("#filters_div").on( "click", "#Fence",  function() {
+    if (fence_filter_state == null || fence_filter_state == false) {
+      fence_filter_state = true;
+    } else {
+      fence_filter_state = false;
+    }
+    set_new_markers();
+  });  
   
   $("#filters_div").on( "click", "#closed",  function() {
     if (closed_filter_state == null || closed_filter_state == false) {
@@ -82,10 +141,21 @@ $(function(){
 
 })
 
+var get_searches = function(value) {
+//   if (value.length > 2){
+    for (var i = 0; i < all_markers.length; i++) {
+//       alert(value);
+    if (all_markers[i]['site_info']['name'].indexOf(value) != -1) {
+      console.log(i);
+      console.log(all_markers[i]['site_info']['name']);
+    }
+  } 
+//   }
+}
 var set_new_markers = function() {
   var new_markers = [];
 
-  if (open_filter_state != true && closed_filter_state != true && unclaimed_filter_state != true && claimed_filter_state != true && debris_filter_state != true)  {
+  if (open_filter_state != true && closed_filter_state != true && unclaimed_filter_state != true && claimed_filter_state != true && debris_filter_state != true && ash_filter_state != true && flood_filter_state != true && fire_filter_state != true && other_filter_state != true && fence_filter_state != true   )  {
     open_filter_state = true; 
   }
   // if all are false, set open to true
@@ -127,7 +197,42 @@ var set_new_markers = function() {
 	    new_markers.push(all_markers[i]);
 	  }
       }
+  
+      if (ash_filter_state == true) {
+	// must do this by open, closed, etc
+	  if (all_markers[i]['site_info']['work_type'] == "Ash") {
+	    new_markers.push(all_markers[i]);
+	  }
+      }
       
+      if (flood_filter_state == true) {
+	// must do this by open, closed, etc
+	  if (all_markers[i]['site_info']['work_type'] == "Flood") {
+	    new_markers.push(all_markers[i]);
+	  }
+      }
+      
+      if (fire_filter_state == true) {
+	// must do this by open, closed, etc
+	  if (all_markers[i]['site_info']['work_type'] == "Fire") {
+	    new_markers.push(all_markers[i]);
+	  }
+      }
+      
+      if (other_filter_state == true) {
+	// must do this by open, closed, etc
+	  if (all_markers[i]['site_info']['work_type'] == "Other") {
+	    new_markers.push(all_markers[i]);
+	  }
+      }
+
+      if (fence_filter_state == true) {
+	// must do this by open, closed, etc
+	  if (all_markers[i]['site_info']['work_type'] == "Fence") {
+	    new_markers.push(all_markers[i]);
+	  }
+      }
+
     }
     
     console.log("234");

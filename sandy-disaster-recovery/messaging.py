@@ -116,14 +116,14 @@ def send_email_by_service(
 
     if aws_ses_region and aws_ses_access_key_id and aws_ses_secret_access_key:
         return send_email_via_aws_ses(
-            sender, to, subject, body, cc=None, bcc=None, html_body=None,
+            sender, to, subject, body, cc=cc, bcc=bcc, html_body=html_body,
             aws_ses_region=aws_ses_region,
             aws_ses_access_key_id=aws_ses_access_key_id,
             aws_ses_secret_access_key=aws_ses_secret_access_key
         )
     else:
         return send_email_via_appengine(
-            sender, to, subject, body, cc=None, bcc=None, html_body=None
+            sender, to, subject, body, cc=cc, bcc=bcc, html_body=html_body
         )
 
 

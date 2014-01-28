@@ -1,4 +1,4 @@
-Copyright 2012-2013 Jeremy Pack, Andy Gimma, Chris Wood, Aaron Titus, and other contributors
+Copyright 2012-2014 Jeremy Pack, Andy Gimma, Chris Wood, Aaron Titus, and other contributors
 https://www.crisiscleanup.org/about
 
 Licensed under the Apache License, Version 2.0 (the "License");

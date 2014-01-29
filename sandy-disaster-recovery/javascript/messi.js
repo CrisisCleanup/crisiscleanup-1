@@ -123,7 +123,7 @@ Messi.prototype = {
     padding: '10px',                         // content padding
     show: true,                              // show message after load
     unload: true,                            // unload message after hide
-    viewport: {top: '50%', left: '18%'},     // if not center message, sets X and Y position
+    viewport: {top: '30%', left: '18%'},     // if not center message, sets X and Y position
     width: '600px',                          // message width
     zIndex: 99999                            // message z-index
   },

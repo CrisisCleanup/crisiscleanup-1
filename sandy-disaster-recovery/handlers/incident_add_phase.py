@@ -36,6 +36,7 @@ template = jinja_environment.get_template('/incident_add_phase.html')
 
 
 class IncidentAddPhase(base.AuthenticatedHandler):
+
   def AuthenticatedGet(self, org, event):
     _id = self.request.get("id")
     incident_definition_object = incident_definition.IncidentDefinition.get_by_id(int(_id))
@@ -49,6 +50,7 @@ class IncidentAddPhase(base.AuthenticatedHandler):
       "phases_empty": phases_empty_boolean,
     }
     self.response.out.write(template.render(data))
+
   def AuthenticatedPost(self, org, event):
     incident_id = self.request.get("incident_id")
     phase_name = self.request.get("phase_name")
@@ -85,7 +87,7 @@ class IncidentAddPhase(base.AuthenticatedHandler):
       
       incident.put()
       
-      self.redirect("incident_form_creator?incident_short_name=" + str(event.short_name) + "&phase_id=" + str(phase_short_name))
+      self.redirect("incident_form_creator?incident_short_name=" + str(incident.incident.short_name) + "&phase_id=" + str(phase_short_name))
     else:
       data = {
 	"incident_definition_object": incident,

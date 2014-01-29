@@ -604,7 +604,7 @@ $(function() {
 
   
 
-  $("#save_all_changes").click(function() {
+  $(".save_all_changes").click(function() {
     save_changes(form_json_array);
   
   });

@@ -82,7 +82,7 @@ class IncidentEditMapDefinition(base.AuthenticatedHandler):
 
       incident.put()
       
-      self.redirect("/incident_definition?id=" + str(incident_id) + "&message=Saved Successfully")
+      self.redirect("/incident_definition?id=" + str(incident_id) + "&show_advanced=yes")
       
       
       

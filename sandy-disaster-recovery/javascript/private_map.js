@@ -12,21 +12,8 @@ var other_filter_state = null;
 var fence_filter_state = null;
 
 
-$(function(){
-    var myLatlng = new google.maps.LatLng(38.50, -85.35);
-    var mapOptions = {
-        zoom: 5,
-        center: myLatlng,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-  var map = new google.maps.Map(document.getElementById("map-canvas"),
-    mapOptions);
-  google.maps.event.addDomListener(window, 'load', initialize);
+$(function(){  
 
-  MarkerClusterer.IMAGE_PATH = "/icons/m";
-  var markerCluster = new MarkerClusterer(map);
-  clusterer = markerCluster;
-  
   $("#search_box").keyup(function() {
     var value = $("#search_box").val();
     // search, add link, show pertinent info that will bring up an infobox
@@ -245,6 +232,7 @@ var set_new_markers = function() {
 
     
 var populateMapByIncident = function(incident, page, old_markers) {
+  console.log("populateMapByIncident");
   var run_again = false;
   var phase_number = GetUrlValue("phase_number")
   $.getJSON(
@@ -420,4 +408,12 @@ function OpenInNewTab(url )
 {
   var win=window.open(url, '_blank');
   win.focus();
+}
+
+function show_edit() {
+  $("#id_map").removeClass("col-md-10");
+  $("#id_map").addClass("col-md-6");
+  
+  $("#collapsible").removeClass("col-md-0");
+  $("#collapsible").addClass("col-md-3");
 }

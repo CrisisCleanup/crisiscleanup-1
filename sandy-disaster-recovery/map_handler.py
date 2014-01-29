@@ -80,6 +80,12 @@ class MapHandler(base.RequestHandler):
       template_values.update({
           "version" : os.environ['CURRENT_VERSION_ID'],
           "shortname": event.short_name,
+          "organization_map_latitude": inc_def_query.organization_map_latitude,
+          "organization_map_longitude": inc_def_query.organization_map_longitude,
+          "organization_map_zoom": inc_def_query.organization_map_zoom,
+          "organization_map_cluster": inc_def_query.organization_map_cluster,
+          "kml_layer": inc_def_query.organization_map_url,
+          "organization_map_title": inc_def_query.organization_map_title,
           #"uncompiled" : True,
           "counties" : event.counties,
           "org" : org,

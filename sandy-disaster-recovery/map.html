@@ -1,6 +1,7 @@
 <html>
 <head>
   <!-- Latest compiled and minified CSS -->
+  <title>{{organization_map_title}}</title>
   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
    
@@ -10,14 +11,14 @@
       <script type="text/javascript" src="javascript/messi.js"></script>       
       <link rel="stylesheet" href="stylesheets/messi.css">
     <script type="text/javascript" src="javascript/map_clusterer.js"></script>       
-    <script type="text/javascript" src="javascript/typeahead.js"></script>      
+<!--     <script type="text/javascript" src="javascript/typeahead.js"></script>       -->
 
     <script type="text/javascript" src="javascript/private_map.js"></script>      
     <script type="text/javascript" src="javascript/map_get_legend.js"></script>      
 
 <script type="text/javascript">
 var forms_json = "{{ forms_json }}";
-
+;
 </script>
 <style type="text/css" >
 body { background-color: #d4d4d4; }
@@ -33,8 +34,26 @@ body { background-color: #d4d4d4; }
     <script type="text/javascript">
     // TODO
     // get center from inc def
-      function initialize() { }
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng({{organization_map_latitude}}, {{organization_map_longitude}}),
+          zoom: {{organization_map_zoom}}
+        };
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+	var ctaLayer = new google.maps.KmlLayer({
+	  url: "{{kml_layer}}"
+	});
+	ctaLayer.setMap(map);
+	MarkerClusterer.IMAGE_PATH = "/icons/m";
+	var markerCluster = new MarkerClusterer(map);
+	clusterer = markerCluster;
+	 
+      }
+      
+      google.maps.event.addDomListener(window, 'load', initialize);
       populateMapByIncident("{{shortname}}", 0, []);
+
     </script>
 </head>
 
@@ -45,39 +64,43 @@ body { background-color: #d4d4d4; }
       <div class="row">
 
         <div class="col-md-2">
-              <br>
+	  <br>
 
-{{ menubox }}
-<br />Search: <input id="search_box" style="width:200px" />
+	  {{ menubox }}
+	  <br />Search: <input id="search_box" style="width:200px" />
 
-<div id="legend_div">
-<h2>Legend</h2>
-</div>
-<div id="filters_div">
-<h2>Filters</h2>
-</div>
-<br>
-<p>Download Spreadsheet (CSV):</p>
-<form method="POST" action="/export" target="_blank" id="csv_form">
-  <input name="id" class="id_list" type="hidden" value="" />
-  <button type="submit" class="export-btn" id="filtered-export-btn" name="download" value="selected">
-  Download Visible
-  </button>
-  <button type="submit" class="all-export-btn" id="all-export-btn" name="download" value="all">
-    Download All
-  </button>
-  <br>
-  <div id="export-wait-message" style="display: none; margin-top: 10px;">
-    <div id="export-spinner" style="display: inline-block; float: right;"></div>
-    This download may take<br>
-    a number of minutes.<br>
-    Please wait...
-  </div>
-</form>
+	  <div id="legend_div">
+	    <h2>Legend</h2>
+	  </div>
+	  <div id="filters_div">
+	    <h2>Filters</h2>
+	  </div>
+	  <br>
+	  <p>Download Spreadsheet (CSV):</p>
+	  <form method="POST" action="/export" target="_blank" id="csv_form">
+	  <input name="id" class="id_list" type="hidden" value="" />
+	  <button type="submit" class="export-btn" id="filtered-export-btn" name="download" value="selected">
+	  Download Visible
+	  </button>
+	  <button type="submit" class="all-export-btn" id="all-export-btn" name="download" value="all">
+	    Download All
+	  </button>
+	  <br>
+	  <div id="export-wait-message" style="display: none; margin-top: 10px;">
+	    <div id="export-spinner" style="display: inline-block; float: right;"></div>
+	    This download may take<br>
+	    a number of minutes.<br>
+	    Please wait...
+	  </div>
+	</form>
 
         </div>
-        <div class="col-md-10">
-	  <div id="map-canvas"/>
+        <div class="col-md-10" id="id_map">
+	  <div id="map-canvas"></div>
+       </div>
+       
+	<div class="col-md-0" id="collapsible">
+	<h2>test</h2>
        </div>
 
       </div>
@@ -91,7 +114,7 @@ body { background-color: #d4d4d4; }
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
-</body>
+
 
 </html>
 

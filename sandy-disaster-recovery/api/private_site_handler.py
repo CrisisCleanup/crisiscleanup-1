@@ -262,7 +262,9 @@ def format_output(final_output, case_number, phase_number, phase_id, site_id, in
   
   unclaim_script = ' <script>$("#unclaim_btn").click(  function() { var case_number = "' + case_number + '"; var phase_id="' + phase_id + '"; $.post( "api/private_site_handler",{ case_number: case_number, phase_id: phase_id, unclaim: "true"}, function( data ) { $( ".messi-content" ).append( data ); $("#claim_btn").html("Claim"); $("#claim_btn").attr("id","claim_btn");  }); });</script>'
   
-  standard_html_output = work_type_script + claim_script + '<div class="messi_python"><b>Name:</b> ' + final_output['name'] + '<br><b>Date:</b> ' + final_output['request_date'] + '<br><b>Address:</b> ' + final_output['address'] + ' ' + final_output['city'] + ' ' + final_output['state'] + ' ' + final_output['zip_code'] + '<br><b>Status:</b> '
+  edit_script = ' <script>$("#messi_edit").click(  function() { show_edit(); });</script>'
+  
+  standard_html_output = edit_script + work_type_script + claim_script + '<div class="messi_python"><b>Name:</b> ' + final_output['name'] + '<br><b>Date:</b> ' + final_output['request_date'] + '<br><b>Address:</b> ' + final_output['address'] + ' ' + final_output['city'] + ' ' + final_output['state'] + ' ' + final_output['zip_code'] + '<br><b>Status:</b> '
   
   forms = json.loads(inc_def_query.forms_json)
 
@@ -299,7 +301,7 @@ def format_output(final_output, case_number, phase_number, phase_id, site_id, in
   for key in final_output:
     if key not in standard_list and final_output[key]!= '':
       output_html = output_html + ' <b>' + str(key) + ':</b> ' + str(final_output[key])
-  buttons_html = '</div><hr><div class="btnbox"><a class="btn " href="/print?case_number=' + case_number + '&phase_number=' + phase_number + '&phase_id=' + phase_id +'" target="_blank">Printer Friendly</a><a class="btn " id="change_status_btn" href="#" >Change Status</a><a class="btn " id="claim_btn" href="#" >Claim</a><a class="btn " id="messi_edit" href="' + edit_url + '" target="_blank">Edit</a></div>'
+  buttons_html = '</div><hr><div class="btnbox"><a class="btn " href="/print?case_number=' + case_number + '&phase_number=' + phase_number + '&phase_id=' + phase_id +'" target="_blank">Printer Friendly</a><a class="btn " id="change_status_btn" href="#" >Change Status</a><a class="btn " id="claim_btn" href="#" >Claim</a><a class="btn " id="messi_edit">Edit</a></div>'
   final_html = standard_html_output + output_html + buttons_html
   return final_html
 

@@ -40,9 +40,11 @@ class GetIncidentDefinition(base.RequestHandler):
     org, event = key.CheckAuthorization(self.request)
     if not org and event:
       return
+
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
-    
+
+      
     self.response.out.write(inc_def_query.forms_json)
     return

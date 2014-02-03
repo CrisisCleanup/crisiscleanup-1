@@ -195,19 +195,22 @@ class AdminHandler(base.AuthenticatedHandler):
             self.redirect("/admin")
             return
             
-        if self.request.get("activate_organization"):
-            # activate organization
+        if self.request.get("verify_organization"):
+            # verify organization
             try:
-                id = int(self.request.get("activate_organization"))
+                id = int(self.request.get("verify_organization"))
                 org_by_id = organization.Organization.get_by_id(id)
             except:
                 self.abort(400)
 
+            # check we are allowed
             if not org.may_administer(org_by_id):
                 self.abort(403)
 
-            org_by_id.org_verified = True
-            org_by_id.is_active = True
+            # perform verification
+            org_by_id.verify()
+
+            # cache
             organization.PutAndCache(org_by_id, 600)
             self.redirect("/admin")
             return

@@ -29,8 +29,8 @@ This organization is awaiting approval
 {% if form %}
   <p>(this cannot be undone)</p>
   <form method=POST action="/admin" style="display: inline-block">
-    <input type=hidden name=activate_organization value={{new_organization.key().id()}}>
-    <input type="submit" class="btn btn-primary"  value="Verify And Activate Organization">
+    <input type=hidden name=verify_organization value={{ new_organization.key().id() }}>
+    <input type="submit" class="btn btn-primary"  value="Verify Organization">
   </form>
 {% else %}
   <form method=POST action="/admin" style="display: inline-block">

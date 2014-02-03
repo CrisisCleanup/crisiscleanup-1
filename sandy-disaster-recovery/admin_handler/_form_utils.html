@@ -28,3 +28,15 @@
     </td>
   </tr>
 {% endmacro %}
+
+{% macro render_bootstrap_field(field) %}
+  <div class="form-group {% if field.errors %}has-error{% endif %}">
+    {{ field.label(class="control-label col-sm-3") }}
+    <div class="col-sm-9">
+      {{ field(class="form-control", **kwargs) }}
+      {% if field.errors %}
+        <span class="help-block">{{ field.errors[0] }}</span>
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}

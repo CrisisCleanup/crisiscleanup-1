@@ -29,10 +29,17 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 )
 
+admin_error_template = jinja_environment.get_template('admin_error.html')
+
 
 # define base class
 
 class AdminAuthenticatedHandler(AuthenticatedHandler):
+
+    # options for overriding
+
+    accessible_to_local_admin = True
+
 
     def __init__(self, *args, **kwargs):
         # load jinja template if specified as class var
@@ -50,6 +57,16 @@ class AdminAuthenticatedHandler(AuthenticatedHandler):
         elif not (org.is_admin or org.is_global_admin):
             # forbid
             self.abort(403)
+
+        if not self.accessible_to_local_admin and org.is_local_admin:
+            self.response.out.write(
+                admin_error_template.render(
+                    message=u"This page is not accessible to local admins."
+                )
+            )
+            return
+
+        # continue with dispatch
         super(AdminAuthenticatedHandler, self).dispatch(*args, **kwargs)
 
     def render(self, **kwargs):

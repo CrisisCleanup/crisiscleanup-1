@@ -122,37 +122,16 @@ class NewOrganizationHandler(base.RequestHandler):
 	organization.PutAndCacheOrganizationAndContact(org, new_contacts)
 
         # email primary contacts & administrators
-        organization_form = organization.OrganizationForm(None, org)
-        contact_forms = [
-            primary_contact_db.ContactFormFull(None, contact)
-            for contact in new_contacts
-        ]
-        messaging.email_contacts_using_templates(
-            event=chosen_event,
-            contacts=[c for c in new_contacts if c.is_primary],
-            subject_template_name='new_organization.to_contacts.subject.txt',
-            body_template_name='new_organization.to_contacts.body.txt',
-            new_organization=org,
-            primary_contact=new_contacts[0],
-            application_id=messaging.get_application_id(),
-            organization_form=organization_form,
-            contact_forms=contact_forms,
-        )
+        messaging.send_new_organization_email_to_organization(
+            chosen_event, org, new_contacts)
+
         approval_url = "%s://%s/admin-new-organization?new_organization=%d" % (
             urlparse(self.request.url).scheme,
             urlparse(self.request.url).netloc,
             org.key().id()
         )
-        messaging.email_administrators_using_templates(
-            event=chosen_event,
-            subject_template_name='new_organization.to_admins.subject.txt',
-            body_template_name='new_organization.to_admins.body.txt',
-            new_organization=org,
-            primary_contact=new_contacts[0],
-            application_id=messaging.get_application_id(),
-            approval_url=approval_url,
-            organization_form=organization_form,
-            contact_forms=contact_forms,
-        )
+        messaging.send_new_organization_email_to_admins(
+            chosen_event, org, new_contacts, approval_url)
 			    
+        # redirect to the welcome page
 	self.redirect("/welcome")

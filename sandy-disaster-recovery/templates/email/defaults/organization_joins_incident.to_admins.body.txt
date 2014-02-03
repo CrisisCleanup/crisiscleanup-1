@@ -1,0 +1,24 @@
+
+Existing organization {{ org.name }} has joined incident {{ event.name }}.
+
+To review: {{ review_url }}
+
+Existing contacts:
+{% for contact in org.contacts -%}
+* {{ contact.full_name }} {{ contact.phone }} {{ contact.email }} {% if contact.is_primary %}(Primary){% endif %}
+{% endfor %}
+
+Participating in these incidents:
+{% for incident in org.incidents -%}
+* {{ incident.name }}
+{% endfor %}
+
+Organization Information:
+
+Name:    {{ org.name }}
+Address: {{ org.address }}
+City:    {{ org.city }}
+State:   {{ org.state }}
+Zip:     {{ org.zip_code }}
+Phone:   {{ org.phone }}
+Email:   {{ org.email }}

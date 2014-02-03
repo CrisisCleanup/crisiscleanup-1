@@ -91,6 +91,7 @@ from admin_handler import admin_social_media_handler
 from admin_handler import admin_website_alerts_handler
 from admin_handler import admin_import_csv_handler
 from admin_handler import admin_edit_pages_handler
+from admin_handler import admin_edit_emails_handler
 from admin_handler import admin_single_organization_handler
 from admin_handler import admin_edit_organization_handler
 from admin_handler import admin_edit_contact_handler
@@ -203,6 +204,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-edit-pages', admin_edit_pages_handler.AdminEditPagesHandler, 'admin_edit_pages_handler'),
     Route(r'/admin-edit-pages/download/defaults', admin_edit_pages_handler.AdminDownloadPageBlocks, 'admin_edit_pages_handler'),
     Route(r'/admin-create-incident-csv', admin_create_incident_csv_handler.AdminCreateIncidentCSVHandler, 'admin_edit_pages_handler'),
+    Route(r'/admin-edit-emails', admin_edit_emails_handler.AdminEditEmailsHandler, 'admin_edit_emails'),
     Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'),
     Route(r'/import-co-flood-handler', import_co_handler.ImportCOHandler, 'import-co-flood'),
 

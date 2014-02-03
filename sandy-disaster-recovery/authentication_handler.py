@@ -36,7 +36,7 @@ import organization
 import primary_contact_db
 import site_db
 import page_db
-from messaging import email_administrators_using_templates
+import messaging
 
 
 jinja_environment = jinja2.Environment(
@@ -169,6 +169,7 @@ class AuthenticationHandler(base.RequestHandler):
       # add org to incident if not already allowed
       if not org.may_access(event):
           org.join(event)
+          org.save()
           logging.info(
             u"authentication_handler: "
             u"Existing organization %s has joined incident %s." % (
@@ -182,16 +183,8 @@ class AuthenticationHandler(base.RequestHandler):
               urlparse(self.request.url).netloc,
               org.key().id()
           )
-          organization_form = organization.OrganizationForm(None, org)
-          email_administrators_using_templates(
-            event=event,
-            subject_template_name='organization_joins_incident.to_admins.subject.txt',
-            body_template_name='organization_joins_incident.to_admins.body.txt',
-            organization=org,
-            review_url=review_url,
-            organization_form=organization_form,
-          )
-          org.save()
+          messaging.send_organization_joins_incident_email_to_admins(
+              event, org, review_url)
 
       # timestamp login
       now = datetime.datetime.utcnow()

@@ -1,0 +1,23 @@
+
+To review and approve: {{ approval_url }}
+
+Organization:
+
+Name:    {{ org.name }}
+Address: {{ org.address }}
+City:    {{ org.city }}
+State:   {{ org.state }}
+Zip:     {{ org.zip_code }}
+Phone:   {{ org.phone }}
+Email:   {{ org.email }}
+
+
+Contacts:
+
+{% for contact in new_contacts -%}
+Name:    {{ contact.full_name }}
+Title:   {{ contact.title }}
+Phone:   {{ contact.phone }}
+Email:   {{ contact.email }}
+Primary: {% if contact.is_primary %}Yes{% else %}No{% endif %}
+{% endfor %}

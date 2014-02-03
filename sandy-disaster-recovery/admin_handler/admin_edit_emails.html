@@ -1,0 +1,107 @@
+{% extends "base_template.html" %}
+{% from "_form_utils.html" import render_bootstrap_field %}
+
+{% block main_title %}
+<h2>Edit Emails</h2>
+{% endblock %}
+
+{% block main_content %}
+
+<h3>Instructions</h3>
+
+<p>The following variables are available for use in subjects and bodies:</p>
+
+{% macro render_jinja_var(var_text) %}
+  <code>
+    <span>{</span><span>{</span> {{ var_text }} <span>}</span><span>}</span>
+  </code>
+{% endmacro %}
+
+{% macro render_properties_list(cls, short_name) %}
+  {% for prop in cls._properties %}
+    {% if not prop.startswith('_') %}
+      <div>
+        {{ render_jinja_var(short_name + "." + prop) }}
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+<div class="row">
+  <div class="col-sm-3">
+    <h4>Organizations</h4>
+    {{ render_properties_list(Organization, "org") }}
+    <br>
+    <p>Organizations also have the following lists of contacts:</p>
+    <ul>
+      <li>
+        {{ render_jinja_var("org.contacts") }}
+      </li>
+      <li>
+        {{ render_jinja_var("org.primary_contacts") }}
+      </li>
+    </ul>
+  </div>
+  <div class="col-sm-3">
+    <h4>Contacts</h4>
+    {{ render_properties_list(Contact, "contact") }}
+  </div>
+  <div class="col-sm-3">
+    <h4>Events</h4>
+    {{ render_properties_list(Event, "event") }}
+  </div>
+</div>
+
+<form method="POST" role="form" class="form-horizontal">
+  {% for form in forms %}
+    <div class="form-section">
+      <a name="{{ form.name.data }}"></a>
+      <h3>{{ form.description.friendly_name }} ("{{ form.description.name }}")</h3>
+      <p style="font-style: italic">{{ form.description.description }}</p>
+      <p>Available variables: {{ form.description.variables }}</p>
+      {{ render_bootstrap_field(form.subject) }}
+      {{ render_bootstrap_field(form.body, rows=10) }}
+      {{ render_bootstrap_field(form.use_html) }}
+      <div class="html-body-group">
+        {{ render_bootstrap_field(form.html_body, rows=10) }}
+      </div>
+      {{ render_bootstrap_field(form.bcc_global_admins) }}
+      {{ render_bootstrap_field(form.bcc_local_admins) }}
+      <div class="form-group">
+        <div class="col-sm-push-3 col-sm-9">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+
+  var updateFormSection = function($formSection) {
+    var $htmlBodyGroup = $formSection.find('div.html-body-group');
+    var useHtmlChecked = $formSection.find('input[name*="use_html"]').prop('checked');
+    if (useHtmlChecked) {
+      $htmlBodyGroup.show();
+    } else {
+      $htmlBodyGroup.hide();
+    }
+  };
+
+  // on change of checkbox, show or hide & empty html body fields
+  $('input[name*="use_html"]').change(function () {
+    updateFormSection($(this).closest('div.form-section'));
+  });
+
+  // init
+  $('div.form-section').each(function () {
+    updateFormSection($(this));
+  });
+
+});
+</script>
+{% endblock %}

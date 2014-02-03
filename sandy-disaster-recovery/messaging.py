@@ -16,19 +16,26 @@
 #
 
 import os
+from collections import namedtuple
 
+from google.appengine.ext import db
 from google.appengine.api import app_identity, mail
 
 import jinja2
 
 from config_key_db import get_config_key
 
-from admin_handler.admin_identity import get_global_admins, get_event_admins
+from admin_handler.admin_identity import get_global_admins, get_local_admins, get_event_admins
 
 import aws
 
 
 # jinja
+
+DEFAULT_TEMPLATES_PATH = os.path.join(
+    os.path.dirname(__file__),
+    'templates', 'email', 'defaults'
+)
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(
@@ -41,7 +48,101 @@ jinja_environment = jinja2.Environment(
 )
 
 
-# functions
+#
+# define all emails sent by the system inc. the names of their templates
+#
+
+EmailDescription = namedtuple(
+    'EmailDescription', [
+    'name',
+    'friendly_name',
+    'description',
+    'variables',  # so-named in Jinja2
+])
+
+EMAIL_DESCRIPTIONS = [
+
+    EmailDescription(
+        u'new_organization.to_organization',
+        u'New organization email for orgs',
+        u'Sent to primary contacts of an org when they sign up.',
+        u'org, new_contacts, application_id'
+    ),
+
+    EmailDescription(
+        u'new_organization.to_admins',
+        u'New organization email for admins',
+        u'Sent to admins when an org signs up.',
+        u'org, new_contacts, application_id, approval_url'
+    ),
+
+    EmailDescription(
+        u'activation',
+        u'Activation Email',
+        u'Sent to the primary contacts of an org when verified.',
+        u'org, activation_url'
+    ),
+
+    EmailDescription(
+        u'activated',
+        u'Activated Email',
+        u'Sent to the primary contacts of a newly activated org.',
+        u'org'
+    ),
+
+    EmailDescription(
+        u'organization_joins_incident.to_admins',
+        u'Organization joins incident for admins',
+        u'Sent to admins when an org joins a new incident.',
+        u'org, review_url'
+    )
+]
+
+EMAIL_DESCRIPTIONS_BY_NAME = {ed.name: ed for ed in EMAIL_DESCRIPTIONS}
+
+
+#
+# admin-editable email template entities
+#
+
+class EmailTemplate(db.Model):
+
+    name = db.StringProperty(required=True)
+    subject = db.StringProperty(required=True)
+    body = db.TextProperty(required=True)
+    html_body = db.TextProperty()
+    use_html = db.BooleanProperty(default=False)
+    bcc_local_admins = db.BooleanProperty(default=False)
+    bcc_global_admins = db.BooleanProperty(default=False)
+
+    @classmethod
+    def get_by_name(cls, name):
+        " Get or create, using defaults. "
+        if name not in EMAIL_DESCRIPTIONS_BY_NAME:
+            raise Exception("Unknown email: '%s'" % name)
+        existing = cls.all().filter('name', name).get()
+        if existing:
+            return existing
+        else:
+            # create new from defaults
+            default_subject_fd = open(
+                os.path.join(DEFAULT_TEMPLATES_PATH, '%s.subject.txt' % name)
+            )
+            default_body_fd = open(
+                os.path.join(DEFAULT_TEMPLATES_PATH, '%s.body.txt' % name)
+            )
+            new_email_template = EmailTemplate(
+                name=name,
+                subject=default_subject_fd.read().strip(),
+                body=default_body_fd.read().strip(),
+            )
+            new_email_template.save()
+            return new_email_template
+
+
+#
+# helper functions
+#
 
 def get_application_id():
     return app_identity.get_application_id()
@@ -66,6 +167,13 @@ def get_app_system_email_address():
             app_identity.get_application_id()
         )
 
+def friendly_email_address(contact):
+    return u"%s <%s>" % (contact.full_name, contact.email)
+
+
+#
+# email transport functions
+#
 
 def send_email_via_appengine(
         sender, to, subject, body, cc=None, bcc=None, html_body=None
@@ -127,8 +235,9 @@ def send_email_by_service(
         )
 
 
-def friendly_email_address(contact):
-    return u"%s <%s>" % (contact.full_name, contact.email)
+#
+# email to contacts functions
+#
 
 
 def email_contacts(event, contacts, subject, body, html=None, bcc_contacts=None):
@@ -154,20 +263,44 @@ def email_contacts(event, contacts, subject, body, html=None, bcc_contacts=None)
     )
 
 
-def email_contacts_using_templates(
-        event, contacts, subject_template_name, body_template_name, **kwargs):
+def email_contacts_using_templates(event, contacts, email_name, **kwargs):
     """
     Email contacts using Jinja2 templates.
     """
-    subject_template = jinja_environment.get_template(subject_template_name)
-    body_template = jinja_environment.get_template(body_template_name)
+    # lookup templates
+    email_template_entity = EmailTemplate.get_by_name(email_name)
+    subject_template = jinja2.Template(email_template_entity.subject)
+    body_template = jinja2.Template(email_template_entity.body)
+    html_body_template = (
+        jinja2.Template(email_template_entity.html_body) 
+        if email_template_entity.use_html
+        else None
+    )
 
+    # render templates
     kwargs.update({'event': event})
-
     rendered_subject = subject_template.render(kwargs)
     rendered_body = body_template.render(kwargs)
+    rendered_html = html_body_template.render(kwargs) if html_body_template else None
 
-    email_contacts(event, contacts, rendered_subject, rendered_body)
+    # decide additional bccs
+    bcc_contacts = []
+    if email_template_entity.bcc_global_admins:
+        for global_admin in get_global_admins():
+            bcc_contacts.extend(global_admin.contacts)
+    if email_template_entity.bcc_local_admins:
+        for local_admin in get_local_admins(event):
+            bcc_contacts.extend(local_admin.contacts)
+
+    # send rendered emails to contacts
+    email_contacts(
+        event,
+        contacts,
+        rendered_subject,
+        rendered_body,
+        html=rendered_html,
+        bcc_contacts=bcc_contacts
+    )
 
 
 def email_administrators(event, subject, body, html=None, include_local=True):
@@ -176,37 +309,66 @@ def email_administrators(event, subject, body, html=None, include_local=True):
     email_contacts(event, admin_contacts, subject, body, html=html)
 
 
-def email_administrators_using_templates(
-    event, subject_template_name, body_template_name, include_local=True, **kwargs):
+def email_administrators_using_templates(event, email_name, include_local=True, **kwargs):
     """
     Email all relevant administrators for event, using Jinja2 templates.
     """
     admin_orgs = get_event_admins(event) if include_local else get_global_admins()
-    admin_contacts = reduce(lambda x, y: x+y, (org.contacts for org in admin_orgs))
+    admin_contacts = reduce(lambda x, y: x+y, (list(org.contacts) for org in admin_orgs))
     email_contacts_using_templates(
         event,
         admin_contacts,
-        subject_template_name,
-        body_template_name,
+        email_name,
         **kwargs
     )
 
 
 #
-# Specific email convenience functions
+# Specific named email functions
 #
+
+def send_new_organization_email_to_organization(event, org, contacts):
+    primary_contacts = [c for c in contacts if c.is_primary]
+    email_contacts_using_templates(
+        event,
+        primary_contacts,
+        'new_organization.to_organization',
+        org=org,
+        new_contacts=contacts,
+        application_id=get_application_id(),
+    )
+
+
+def send_new_organization_email_to_admins(event, org, contacts, approval_url):
+    email_administrators_using_templates(
+        event,
+        'new_organization.to_admins',
+        org=org,
+        new_contacts=contacts,
+        application_id=get_application_id(),
+        approval_url=approval_url,
+    )
+
+def send_organization_joins_incident_email_to_admins(event, org, review_url):
+    email_administrators_using_templates(
+        event,
+        'organization_joins_incident.to_admins',
+        org=org,
+        review_url=review_url,
+    )
+
 
 def send_activation_emails(org_for_activation):
     activation_url = "%s/activate?code=%s" % (
-        get_base_url(), org_for_activation.activation_code)
+        get_base_url(),
+        org_for_activation.activation_code
+    )
     email_contacts_using_templates(
         None,
         org_for_activation.primary_contacts,
-        'activation.subject.txt',
-        'activation.body.txt',
+        'activation',
         org=org_for_activation,
         activation_url=activation_url,
-        bcc_contacts=get_global_admins()[0].contacts
     )
 
 
@@ -214,10 +376,8 @@ def send_activated_emails(org_activated):
     email_contacts_using_templates(
         None,
         org_activated.primary_contacts,
-        'activated.subject.txt',
-        'activated.body.txt',
+        'activated',
         org=org_activated,
-        bcc_contacts=get_global_admins()[0].contacts
     )
 
 

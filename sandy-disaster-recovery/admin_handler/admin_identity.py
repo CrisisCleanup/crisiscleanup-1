@@ -7,10 +7,15 @@ def get_global_admins():
     return list(global_admins)
 
 
-def get_event_admins(event):
-    global_admins = get_global_admins()
-    local_admins = Organization.gql(
+def get_local_admins(event):
+    return list(Organization.gql(
         'WHERE incidents = :1 AND is_admin = True AND name != :2',
         event.key(), 'Admin'
-    )
-    return global_admins + list(local_admins)
+    ))
+
+
+def get_event_admins(event):
+    " Global and local admins. "
+    global_admins = get_global_admins()
+    local_admins = get_local_admins(event)
+    return global_admins + local_admins

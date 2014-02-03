@@ -1,9 +1,8 @@
-
 Thank you for applying to join Crisis Cleanup.
 
-We will review your application and respond within the next 48 hours.
+We will review your application and respond within the next 48 hours (Actually, we usually respond within just a couple of hours, but don't beat us up if it takes longer).
 
-In the mean time, please view the mandatory 8 minute training video at https://www.youtube.com/watch?v=tpMOgDr_KGI
+In the mean time, please watch the mandatory 8 minute training video at https://www.youtube.com/watch?v=tpMOgDr_KGI
 
 Your sign-up details:
 
@@ -25,3 +24,13 @@ Contacts:
 {{ field.label.text }}: {{ field.data }}
 {% endfor %}
 {% endfor %}
+
+
+-Crisis Cleanup Support Services
+
+Twitter: @CrisisCleanup
+(848) 480-0660 (Support)
+Help: https://crisiscleanup.zendesk.com/hc/
+Donate: http://www.crisiscleanup.org/donate
+Facebook: http://bit.ly/CrisisCleanup
+Crisis Cleanup is a free, open source Collaborative Disaster Recovery Mapping tool.

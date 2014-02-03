@@ -1,0 +1,27 @@
+
+Thank you for applying to join Crisis Cleanup.
+
+We will review your application and respond within the next 48 hours.
+
+In the mean time, please view the mandatory 8 minute training video at https://www.youtube.com/watch?v=tpMOgDr_KGI
+
+Your sign-up details:
+
+Organization:
+
+Name: {{ organization_form.name.data }}
+Address: {{ organization_form.address.data }}
+City: {{ organization_form.city.data }}
+State: {{ organization_form.state.data }}
+Zip code: {{ organization_form.zip_code.data }}
+Phone: {{ organization_form.phone.data }}
+Email: {{ organization_form.email.data }}
+
+
+Contacts:
+
+{% for contact_form in contact_forms -%}
+{% for field in contact_form -%}
+{{ field.label.text }}: {{ field.data }}
+{% endfor %}
+{% endfor %}

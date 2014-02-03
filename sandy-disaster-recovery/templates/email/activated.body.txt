@@ -1,0 +1,3 @@
+{{ org.name }} has been successfully activated on Crisis Cleanup.
+
+Your password is {{ org.password }}.

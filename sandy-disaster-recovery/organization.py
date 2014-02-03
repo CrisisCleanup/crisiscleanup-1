@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import datetime
+
 from google.appengine.ext import db
 
 import wtforms
@@ -26,6 +28,7 @@ import primary_contact_db
 import event_db
 import cache
 from form_utils import MultiCheckboxField
+from random_utils import random_url_safe_code
 
 
 class Organization(db.Expando):
@@ -43,10 +46,18 @@ class Organization(db.Expando):
   # will expire in 1 week.
   only_session_authentication = db.BooleanProperty(default = True)
 
+
   org_verified = db.BooleanProperty(required=False)
+
   is_active = db.BooleanProperty(default=False)
+  activation_code = db.StringProperty(required=False)
+  activate_by = db.DateTimeProperty(required=False)
+  activated_at = db.DateTimeProperty(required=False)
+
   is_admin = db.BooleanProperty(default=False)
+
   deprecated = db.BooleanProperty(default=False)
+
   address = db.StringProperty(required=False)
   city = db.StringProperty(required=False)
   state = db.StringProperty(required=False)
@@ -80,6 +91,9 @@ class Organization(db.Expando):
   # timestamps
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
   timestamp_login = db.DateTimeProperty(required=False)
+
+  def __repr__(self):
+      return u"<Organization: %s>" % self.name
 
   # automatically deferencing incidents field
 
@@ -159,8 +173,37 @@ class Organization(db.Expando):
   def primary_contacts(self):
       return self.contacts.filter('is_primary', True)
 
-  def __repr__(self):
-      return u"<Organization: %s>" % self.name
+  # actions
+
+  def verify(self):
+      """
+      Verify and prepare for activation, inc. trigger emails.
+
+      Performed by an administrator.
+      """
+      ACTIVATION_PERIOD = datetime.timedelta(days=14)
+      if not self.org_verified:
+          self.org_verified = True
+          if not self.is_active:
+              if not self.activation_code:
+                  self.activation_code = random_url_safe_code()
+                  self.activate_by = datetime.datetime.utcnow() + ACTIVATION_PERIOD
+                  import messaging  # avoid circular import
+                  messaging.send_activation_emails(self)
+          self.save()
+
+  def activate(self):
+      """
+      Activate for use, inc. trigger emails.
+
+      Performed by the organization user.
+      """
+      if not self.is_active:
+          self.is_active = True
+          self.activated_at = datetime.datetime.utcnow()
+          import messaging  # avoid circular import
+          messaging.send_activated_emails(self)
+          self.save()
 
   
 cache_prefix = Organization.__name__ + "-d:"
@@ -314,6 +357,14 @@ class OrganizationForm(
     )
     timestamp_login = DateTimeField(
         "Last logged in",
+        [validators.optional()]
+    )
+    activate_by = DateTimeField(
+        "Activate By",
+        [validators.optional()]
+    )
+    activated_at = DateTimeField(
+        "Activated At",
         [validators.optional()]
     )
 

@@ -36,6 +36,8 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) el
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('map.html')
 menubox_template = jinja_environment.get_template('_menubox_bootstrap.html')
+single_site_template = jinja_environment.get_template('single_site_incident_form.html')
+
 
 
 class MapHandler(base.RequestHandler):
@@ -102,6 +104,7 @@ class MapHandler(base.RequestHandler):
           "zoom_level" : zoom_level,
           "site_id" :  site_id,
 	  "event_name": event.name,
+	  "edit_form": 1
 
         })
     else:

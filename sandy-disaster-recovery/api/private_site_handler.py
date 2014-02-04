@@ -301,7 +301,7 @@ def format_output(final_output, case_number, phase_number, phase_id, site_id, in
   for key in final_output:
     if key not in standard_list and final_output[key]!= '':
       output_html = output_html + ' <b>' + str(key) + ':</b> ' + str(final_output[key])
-  buttons_html = '</div><hr><div class="btnbox"><a class="btn " href="/print?case_number=' + case_number + '&phase_number=' + phase_number + '&phase_id=' + phase_id +'" target="_blank">Printer Friendly</a><a class="btn " id="change_status_btn" href="#" >Change Status</a><a class="btn " id="claim_btn" href="#" >Claim</a><a class="btn " id="messi_edit">Edit</a></div>'
+  buttons_html = '</div><hr><div class="btnbox"><a class="btn " href="/print?case_number=' + case_number + '&phase_number=' + phase_number + '&phase_id=' + phase_id +'" target="_blank">Printer Friendly</a><a class="btn " id="claim_btn" href="#" >Claim</a><a class="btn " id="messi_edit">Edit</a></div>'
   final_html = standard_html_output + output_html + buttons_html
   return final_html
 

@@ -7,7 +7,7 @@
 "Incident","Organization","Claimed Work Orders","Open","Closed","Reported Work Orders","Last Login","Number of Logins- last 7 days","Number of Logins- last 30 days"
 {% for org in orgs -%}
 {%- set org_id = org.key().id() -%}
-{{ event.name }},{{ org.name }},{{ org_claimed_counts[org_id] }},{{ org_open_counts[org_id] }},{{ org_closed_counts[org_id] }},{{ org_reported_counts[org_id] }},{{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }},"?","?"
+{{ event.name }},"{{ org.name }}{% if not org.is_active and not org.org_verified %} (inactive; unverified){% elif not org.is_active %} (inactive){% elif not org.org_verified %} (unverified){% endif %}",{{ org_claimed_counts[org_id] }},{{ org_open_counts[org_id] }},{{ org_closed_counts[org_id] }},{{ org_reported_counts[org_id] }},{{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }},"?","?"
 {% endfor -%}
 ,,,,,,,,
 ,"Totals",{{ org_claimed_total }},{{ org_open_total }},{{ org_closed_total }},{{ org_reported_total}}

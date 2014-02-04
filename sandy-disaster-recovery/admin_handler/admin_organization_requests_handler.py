@@ -48,6 +48,6 @@ class AdminHandler(base.AuthenticatedHandler):
 
         self.response.out.write(template.render({
             "global_admin": org.is_global_admin,
-            "org_query": query,
+            "orgs": query,
             "url": "/admin-new-organization?new_organization=",
         }))

@@ -173,9 +173,15 @@ sandy.form.addPrintableTables = function() {
 };
 
 
+sandy.form.limitTextareas = function () {
+    $('textarea').attr('maxlength', 500);
+};
+
+
 sandy.form.fireFormModificationHandlers = function() {
     // fire handlers that setup initial appearance of the form
     sandy.form.addPrintableTables();
+    sandy.form.limitTextareas();
     sandy.form.handleStatusChanged();
 };
 

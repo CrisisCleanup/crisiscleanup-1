@@ -15,7 +15,7 @@ import yaml
 
 REQUIRED_SDK_VERSION = '1.8.8'
 APP_YAML_FILENAME = 'app.yaml'
-APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template'
+APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template.yaml'
 BUILD_DIR_PREFIX = 'ccbuild'
 
 
@@ -402,7 +402,29 @@ def write_local_app_yaml():
 def dev():
     " Start development server. "
     sdk_version_ok()
+    write_local_app_yaml()
     local(
         "%s --require_indexes=true --show_mail_body=true ." %
         os.path.join(env.sdk_path, 'dev_appserver.py')
+    )
+
+
+@task
+def local_shell():
+    " Start a local shell ."
+    sdk_version_ok()
+    print "\nEnter a fake email address and password.\n"
+    local(
+        "%s -s localhost:8080" % os.path.join(env.sdk_path, 'remote_api_shell.py')
+    )
+
+@task
+def remote_shell(app):
+    sdk_version_ok()
+    print "\nGenerate a app-specific password via https://www.google.com/settings/security\n"
+    local(
+        "%s --secure %s" % (
+            os.path.join(env.sdk_path, 'remote_api_shell.py'),
+            app
+        )
     )

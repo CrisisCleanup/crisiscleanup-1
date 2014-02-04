@@ -1,4 +1,4 @@
-
+Dear Administrator,
 Existing organization {{ organization.name }} has joined incident {{ event.name }}.
 
 To review: {{ review_url }}
@@ -18,3 +18,5 @@ Organization Information:
 {% for field in organization_form if field.name != 'incidents' -%}
 {{ field.label.text }}: {{ field.data }}
 {% endfor %}
+
+You do not need to take any action at this time. An organization that has been approved for prior incidents is presumed to be eligible for any other incident. You are receiving this email in case you see a pattern of potential abuse, where an organization inappropriately requests access to multiple incidents.

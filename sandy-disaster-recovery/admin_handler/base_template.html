@@ -50,7 +50,7 @@
             </a>
             <ul class="dropdown-menu">
               <li class="{% if org is not defined %}disabled{% endif %}">
-                <a href="/admin-single-organization?organization={{ org.key().id() if org is defined else None }}">
+                <a href="/admin-edit-organization?organization={{ org.key().id() if org is defined else None }}">
                   Profile
                 </a>
               </li>

@@ -62,7 +62,16 @@
       {%- set org_id = org.key().id() -%}
       <tr>
         <td>{{ event.name }}</td>
-        <td>{{ org.name }}</td>
+        <td>
+          {{ org.name }}
+          {% if not org.is_active and not org.org_verified %}
+            <em>(inactive; unverified)</em>
+          {% elif not org.is_active %}
+            <em>(inactive)</em>
+          {% elif not org.org_verified %}
+            <em>(unverified)</em>
+          {% endif %}
+        </td>
         <td>{{ org_claimed_counts[org_id] }}</td>
         <td>{{ org_open_counts[org_id] }}</td>
         <td>{{ org_closed_counts[org_id] }}</td>
@@ -120,9 +129,11 @@
     </tr>
   </thead>
   <tbody>
-    {% for county in counties %}
+    {% for county in counties %}  {# county+state #}
       <tr>
-        <td>{{ county }}</td>
+        <td>
+          <a href="/sites?county_and_state={{ county }}">{{ county }}</td>
+        </td>
         <td>{{ county_open_counts[county] }}</td>
         <td>{{ county_closed_counts[county] }}</td>
         <td>{{ county_totals[county] }}</td>

@@ -17,12 +17,10 @@
 # System libraries.
 import cgi
 import jinja2
-import logging
 import os
 import urllib2
 import wtforms.validators
 from google.appengine.ext import db
-from wtforms.ext.appengine.db import model_form
 import json
 from datetime import datetime
 
@@ -34,9 +32,7 @@ import event_db
 import site_db
 import site_util
 import form_db
-import site_db
-
-import random
+import page_db
 
 
 
@@ -48,7 +44,9 @@ menubox_template = jinja_environment.get_template('_menubox.html')
 HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
+
 class FormHandler(base.AuthenticatedHandler):
+
   def AuthenticatedGet(self, org, event):
     #single_site_template = jinja_environment.get_template('single_site.html')
       
@@ -84,19 +82,23 @@ class FormHandler(base.AuthenticatedHandler):
         { "form": form,
           "org": org,
           "incident_form_block": inc_form,})
-    self.response.out.write(template.render(
-        {"version" : os.environ['CURRENT_VERSION_ID'],
-         "message" : message,
-         "menubox" : menubox_template.render({"org": org, "event": event, "admin": org.is_admin}),
-         "single_site" : single_site,
-         "form": form,
-         "id": None,
-         "page": "/",
-         "event_name": event.name}))
+    page_blocks = page_db.get_page_block_dict()
+    self.response.out.write(
+        template.render(dict(
+            page_blocks, **{
+                "version" : os.environ['CURRENT_VERSION_ID'],
+                "message" : message,
+                "menubox" : menubox_template.render({"org": org, "event": event, "admin": org.is_admin}),
+                "single_site" : single_site,
+                "form": form,
+                "id": None,
+                "page": "/",
+                "event_name": event.name
+            }
+        ))
+    )
 
   def AuthenticatedPost(self, org, event):
-    post_data = self.request.POST
-    
     my_string = ""
     for k, v in self.request.POST.iteritems():
       if v == "":

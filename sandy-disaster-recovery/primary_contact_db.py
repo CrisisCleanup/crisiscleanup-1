@@ -21,7 +21,7 @@ from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 from google.appengine.api import memcache
 
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
+from wtforms import BooleanField, TextField, HiddenField, validators
 
 # Local libraries.
 import cache
@@ -93,6 +93,16 @@ class Contact(db.Model):
           except:
             logging.critical("Failed to parse: " + value + " " + str(self.key().id()))
       return csv_row
+
+    @classmethod
+    def for_event(cls, event):
+        " Return generator of contacts for organizations of event. "
+        return (
+            contact for contact in Contact.all()
+            if contact.organization
+            and contact.organization.may_access(event)
+        )
+
     
 cache_prefix = Contact.__name__ + "-d:"
     
@@ -136,6 +146,7 @@ def RemoveOrgFromContacts(org):
 
 class ContactForm(model_form(Contact, exclude=['organization'])):
 
+    id = HiddenField()
     first_name = TextField('First Name', [
         validators.Length(
             min=1, max=100,

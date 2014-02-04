@@ -8,11 +8,9 @@
 <h3>Contacts</h3>
 
 <div>
-  <a href="/organization-add-contact">[Add Contact]</a>
+  [<a href="/organization-add-contact">Add Contact</a>]
   &nbsp;
-  <a href="/export_contacts_handler?organization={{organization.name}}">[Export my contacts to CSV]</a>
-  &nbsp;
-  <a href="/export_contacts_handler">[Export all contacts to CSV]</a>
+  [<a href="/export_contacts?org={{ organization.key().id() }}">Export my contacts to CSV</a>]
 </div>
 
 {% if message %}
@@ -39,7 +37,7 @@
           {{ contact.email }}
         </td>
         <td>
-          <a href="/organization-edit-contact?contact={{contact.key().id()}}">[Edit]</a>
+          [<a href="/organization-edit-contact?contact={{contact.key().id()}}">Edit</a>]
         </td>
       </tr>
     {% else %}
@@ -55,7 +53,7 @@
 
 <h2>My Organization</h2>
 
-<a href="organization-edit-info">[Edit Organization Info]</a>
+[<a href="organization-edit-info">Edit Organization Info</a>]
 
 {% include "_org_info_table.html" %}
 

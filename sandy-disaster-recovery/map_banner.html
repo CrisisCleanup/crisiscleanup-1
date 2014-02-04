@@ -1,5 +1,5 @@
 {% if global_map_banner_page_block|trim %}
-  <div style="z-index: 11; position: absolute; text-align: center; width: 100%">
+  <div id="global-map-banner" style="z-index: 11; position: absolute; text-align: center; width: 100%">
     <div style="background: white; padding-left: 10px; padding-right: 10px; padding-top: 1px; padding-bottom: 1px; display: inline-block">
       {{ global_map_banner_page_block|default("", True)|safe }}
     </div>

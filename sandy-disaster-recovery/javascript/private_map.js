@@ -14,6 +14,7 @@ var fence_filter_state = null;
 
 $(function(){  
 
+  $("#collapsible").hide();
   $("#search_box").keyup(function() {
     var value = $("#search_box").val();
     // search, add link, show pertinent info that will bring up an infobox
@@ -129,6 +130,8 @@ $(function(){
 })
 
 var get_searches = function(value) {
+    console.log("Search");
+
 //   if (value.length > 2){
     for (var i = 0; i < all_markers.length; i++) {
 //       alert(value);
@@ -413,7 +416,21 @@ function OpenInNewTab(url )
 function show_edit() {
   $("#id_map").removeClass("col-md-10");
   $("#id_map").addClass("col-md-6");
-  
+
+  $("#collapsible").show();
+
   $("#collapsible").removeClass("col-md-0");
   $("#collapsible").addClass("col-md-3");
+}
+
+function close_edit() {
+  $("#collapsible").hide();
+
+  $("#id_map").removeClass("col-md-6");
+  $("#id_map").addClass("col-md-10");
+
+
+  $("#collapsible").removeClass("col-md-3");
+  $("#collapsible").addClass("col-md-0");
+  
 }

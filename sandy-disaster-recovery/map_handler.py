@@ -137,7 +137,7 @@ class MapHandler(base.AuthenticatedHandler):
           "site_id" :  site_id,
 	  "event_name": event.name,
 	  "edit_form": 1,
-	  "single_site": single_site
+	  "single_site": None
 
         })
     else:
@@ -170,7 +170,7 @@ class MapHandler(base.AuthenticatedHandler):
           "filters" : filters,
           "demo" : True,
           "shortname": event.short_name,
-          "single_site": single_site
+          "single_site": None
         })
     self.response.out.write(template.render(template_values))
 

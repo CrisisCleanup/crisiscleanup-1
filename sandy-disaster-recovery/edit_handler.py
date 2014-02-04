@@ -127,7 +127,7 @@ class EditHandler(base.AuthenticatedHandler):
       form=None
       
       q = db.Query(incident_definition.IncidentDefinition)
-      q.filter("incident =", event.key())
+      q.filter("incident =", "aglkZXZ-bG9jYWxyEgsSBUV2ZW50GICAgICAgIAJDA")
       inc_def_query = q.get()
       if inc_def_query:
 	#raise Exception(id)

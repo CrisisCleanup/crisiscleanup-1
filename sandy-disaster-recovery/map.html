@@ -48,7 +48,6 @@ body { background-color: #d4d4d4; }
 	MarkerClusterer.IMAGE_PATH = "/icons/m";
 	var markerCluster = new MarkerClusterer(map);
 	clusterer = markerCluster;
-	 
       }
       
       google.maps.event.addDomListener(window, 'load', initialize);
@@ -100,10 +99,9 @@ body { background-color: #d4d4d4; }
        </div>
        
 	<div class="col-md-0" id="collapsible">
+	<h2>Add buttons, hidden elements, JQ postJSON, get errors. If not errors, send and clear form, and close form</h2>
 	 <table id="form_table">
-	  <table id="incident_form_block">
-	  {{ edit_form }}
-	  
+	  {{ single_site }}
 	  </table>
        </div>
 

@@ -30,6 +30,8 @@ import key
 import site_db
 import page_db
 from models import incident_definition
+from helpers import populate_incident_form
+
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
@@ -40,10 +42,40 @@ single_site_template = jinja_environment.get_template('single_site_incident_form
 
 
 
-class MapHandler(base.RequestHandler):
-  def get(self):
-    org, event = key.CheckAuthorization(self.request)
+class MapHandler(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
 
+    q = db.Query(incident_definition.IncidentDefinition)
+    q.filter("incident =", event.key())
+    inc_def_query = q.get()
+    #if inc_def_query:
+      ##raise Exception(id)
+      #phases_links = populate_phase_links(json.loads(inc_def_query.phases_json), id)
+
+    #phase_id = None
+    
+    phase_number = 0
+    hidden_elements = {
+      "site_id": id,
+      "phase_number": phase_number
+    }
+    defaults_json = None
+
+    string = "<h2>No Form Added Yet</h2><p>To add a form for this incident, contact your administrator.</p>"
+    label = ""
+    paragraph = ""
+    phases_links = ""
+    submit_button = ""
+    if inc_def_query:
+      string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
+      
+    single_site = single_site_template.render(
+    { "form": 1,
+      "org": 2,
+      "incident_form_block": string,
+      "post_json": 4,
+    })
+    
     phase_number = self.request.get("phase_number")
     if not phase_number:
       phase_number = 0
@@ -104,7 +136,8 @@ class MapHandler(base.RequestHandler):
           "zoom_level" : zoom_level,
           "site_id" :  site_id,
 	  "event_name": event.name,
-	  "edit_form": 1
+	  "edit_form": 1,
+	  "single_site": single_site
 
         })
     else:
@@ -136,9 +169,11 @@ class MapHandler(base.RequestHandler):
                  }) for s in [p[0] for p in site_db.GetAllCached(event)]],
           "filters" : filters,
           "demo" : True,
-          "shortname": event.short_name
+          "shortname": event.short_name,
+          "single_site": single_site
         })
     self.response.out.write(template.render(template_values))
+
 
 
 def populate_phase_links(event, this_phase = None):

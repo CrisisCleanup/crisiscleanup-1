@@ -72,7 +72,7 @@ class IncidentDefinition(db.Model):
   local_admin_first_name = db.StringProperty()
   local_admin_last_name = db.StringProperty()
   local_admin_title = db.StringProperty()
-  local_admin_organization = db.ReferenceProperty(organization.Organization, 'local_admin_organization')
+  #local_admin_organization = db.ReferenceProperty(organization.Organization, 'local_admin_organization')
 
   local_admin_email = db.StringProperty()
   local_admin_cell_phone = db.StringProperty()
@@ -214,7 +214,7 @@ class IncidentDefinitionForm(model_form(IncidentDefinition)):
   message = "Local Admin Last Name must be between 1 and 100 characters")])
   local_admin_title = TextField('Local Admin Title', [wtforms.validators.Length(min = 1, max = 100,
   message = "Local Admin Title must be between 1 and 100 characters")])
-  local_admin_organization = wtforms.fields.SelectField("Organization (by Incident)", choices = organizations_array)
+  #local_admin_organization = wtforms.fields.SelectField("Organization (by Incident)", choices = organizations_array)
   local_admin_email = TextField('Local Admin Email', [wtforms.validators.Email(message=u'Invalid email address.')])
   local_admin_cell_phone = TextField('Local Admin Cell Phone', [phone_validator])
 

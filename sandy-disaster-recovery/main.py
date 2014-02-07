@@ -123,6 +123,8 @@ import update_handler
 from admin_handler import admin_create_incident_csv_handler
 from admin_handler import admin_stats_handler
 
+from migrations import update_handler
+
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -267,6 +269,7 @@ app = webapp2.WSGIApplication([
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
     Route(r'/admin-website-settings', admin_website_settings_handler.AdminWebsiteSettingsHandler, 'admin_website_settings'),
+    Route(r'/update_schema', update_handler.UpdateHandler, name='update_schema'),
 
     # cronned tasks
     Route(r'/refresh_counties', refresh_handler.RefreshHandler, name='refresh_counties'),

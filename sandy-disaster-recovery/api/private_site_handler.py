@@ -177,27 +177,22 @@ class PrivateSiteHandler(base.RequestHandler):
     q = None
 
     ids = []
-    # add a condition for 'edit' here
-    if inc_def_query.is_version_one_legacy and int(phase_number) == 0:
-      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2 and is_legacy_and_first_phase = :3 and case_number = :4'
-      q = db.GqlQuery(gql_string, where_string, this_key, True, case_number)
-      ids = [key.key().id() for key in q.fetch(1)]
-    else: 
-      s = Query(model_class = site_db.Site)
-      s.filter("case_number =", case_number)
-      this_site = s.get()
+    
+    s = Query(model_class = site_db.Site)
+    s.filter("case_number =", case_number)
+    this_site = s.get()
 
-      q = Query(model_class = phase_db.Phase)
-      q.filter("site =", this_site)
-      q.is_keys_only()
-      #q.filter("phase_id =", phase_id)
-	    
-
+    q = Query(model_class = phase_db.Phase)
+    q.filter("site =", this_site)
+    q.is_keys_only()
+    #q.filter("phase_id =", phase_id)
 	  
-    # TODO
-    # Get all entities in a phase.
-      ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = 0)]
-      #raise Exception(ids)
+
+	
+  # TODO
+  # Get all entities in a phase.
+    ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = 0)]
+    #raise Exception(ids)
 
     #raise Exception(ids)
     output = json.dumps(

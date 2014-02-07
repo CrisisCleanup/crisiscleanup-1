@@ -40,15 +40,8 @@ open_statuses = [s for s in site_db.Site.status.choices if 'Open' in s]
 closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statuses]
 
 
-class PrivateMapHandler(base.RequestHandler):      
-
-  def get(self):
-    import key
-
-    org, event = key.CheckAuthorization(self.request)
-    if not org and event:
-      return
-
+class PrivateMapHandler(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
     phase_number = self.request.get("phase_number")
     if not phase_number:
       phase_number = 0

@@ -98,9 +98,7 @@ class IncidentDefinition(db.Model):
   notify_unfinished = db.IntegerProperty(required=False, default=14)
   notify_on_new_orgs = db.BooleanProperty(required=False, default=False)
   notify_contacts = db.StringProperty(required=False, default="Primary")
-  
-  is_version_one_legacy = db.BooleanProperty(required=True, default=False)
-  
+    
 class IncidentPhaseForm(Form):
   phase_name = TextField('Phase Name', [wtforms.validators.Length(min = 1, max = 100,
       message = "Name must be between 1 and 100 characters")])

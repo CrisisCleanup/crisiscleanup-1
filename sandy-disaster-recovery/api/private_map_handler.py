@@ -76,18 +76,14 @@ class PrivateMapHandler(base.AuthenticatedHandler):
     this_offset = page_int * PAGE_OFFSET
 
     ids = []
-    if inc_def_query.is_version_one_legacy and int(phase_number) == 0:
-      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2 and is_legacy_and_first_phase = :3'
-      q = db.GqlQuery(gql_string, where_string, event.key(), True)
-      ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
-    else: 
-      q = Query(model_class = phase_db.Phase)
-      q.filter("event_name =", event.name)
-      q.is_keys_only()
-      q.filter("status >= ", "Open")
-      q.filter("phase_id =", phase_id)
-	    
-      ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
+
+    q = Query(model_class = phase_db.Phase)
+    q.filter("event_name =", event.name)
+    q.is_keys_only()
+    q.filter("status >= ", "Open")
+    q.filter("phase_id =", phase_id)
+	  
+    ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
 
 	  
     # TODO

@@ -8,13 +8,15 @@
 <!--       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script> -->
 
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
       <script type="text/javascript" src="javascript/messi.js"></script>       
       <link rel="stylesheet" href="stylesheets/messi.css">
     <script type="text/javascript" src="javascript/map_clusterer.js"></script>       
 <!--     <script type="text/javascript" src="javascript/typeahead.js"></script>       -->
 
     <script type="text/javascript" src="javascript/private_map.js"></script>      
-    <script type="text/javascript" src="javascript/map_get_legend.js"></script>      
+    <script type="text/javascript" src="javascript/map_get_legend.js"></script>  
 
 <script type="text/javascript">
 var forms_json = "{{ forms_json }}";
@@ -113,11 +115,38 @@ body { background-color: #d4d4d4; }
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script>
+      $( "#search_box" ).autocomplete({
+	source: get_searches
+      });
+      function get_searches(value, response) {
+        var sites = []
+        console.log(response);
+	console.log("Search");
+	console.log(value['term']);
 
+    //   if (value.length > 2){
+	for (var i = 0; i < all_markers.length; i++) {
+	  console.log("log");
+    //       alert(value);
+	  if (all_markers[i]['site_info']['name'].indexOf(value['term']) != -1) {
+	    console.log(i);
+	    console.log(all_markers[i]['site_info']['name']);
+	    sites.push({value: all_markers[i]['site_info']['address'], label: all_markers[i]['site_info']['name']});
+	   	    
+	    
+	}
+	 response($.map(sites, function( item ) {
+		/* At this point I call a function, I use to decide whether to add on the list to be selected by the user. */
+		return item;
+	    }));
+      } 
+    //   }
+}
+    </script>
 
 </html>
 

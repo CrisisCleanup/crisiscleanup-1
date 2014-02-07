@@ -15,12 +15,8 @@ var fence_filter_state = null;
 $(function(){  
 
   $("#collapsible").hide();
-  $("#search_box").keyup(function() {
-    var value = $("#search_box").val();
-    // search, add link, show pertinent info that will bring up an infobox
-    // name, work_order_number, address, claimed_by
-    get_searches(value);
-  });
+  
+
   
   $( "form" ).submit(function() {
     
@@ -129,19 +125,7 @@ $(function(){
 
 })
 
-var get_searches = function(value) {
-    console.log("Search");
 
-//   if (value.length > 2){
-    for (var i = 0; i < all_markers.length; i++) {
-//       alert(value);
-    if (all_markers[i]['site_info']['name'].indexOf(value) != -1) {
-      console.log(i);
-      console.log(all_markers[i]['site_info']['name']);
-    }
-  } 
-//   }
-}
 var set_new_markers = function() {
   var new_markers = [];
 

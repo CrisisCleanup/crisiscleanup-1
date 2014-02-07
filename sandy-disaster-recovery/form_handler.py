@@ -281,9 +281,9 @@ class FormHandler(base.AuthenticatedHandler):
 	for k, v in self.request.POST.iteritems():
 	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
 	    if k == "work_type":
-	      raise Exception(v)
+	      #raise Exception(v)
 	    #raise Exception(k)
-	    setattr(phase_obj, k, str(v))
+	      setattr(phase_obj, k, str(v))
 	try:
 	  if phase_obj.status != None:
 	    phase_obj.put()

@@ -30,7 +30,6 @@ import cache
 import base
 import event_db
 import site_db
-import site_util
 import event_db
 import new_incident_db
 jinja_environment = jinja2.Environment(

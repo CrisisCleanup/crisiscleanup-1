@@ -31,7 +31,6 @@ from collections import OrderedDict
 import base
 import event_db
 import site_db
-import site_util
 import event_db
 import json
 import organization

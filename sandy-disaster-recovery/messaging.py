@@ -132,7 +132,10 @@ def email_contacts_using_templates(
 
 def email_administrators(event, subject, body, html=None, include_local=True):
     admin_orgs = get_event_admins(event) if include_local else get_global_admins()
-    admin_contacts = reduce(lambda x, y: x+y, (org.contacts for org in admin_orgs))
+    admin_contacts = reduce(
+        lambda x, y: list(x) + list(y),
+        (org.contacts for org in admin_orgs)
+    )
     email_contacts(event, admin_contacts, subject, body, html=html)
 
 
@@ -142,7 +145,10 @@ def email_administrators_using_templates(
     Email all relevant administrators for event, using Jinja2 templates.
     """
     admin_orgs = get_event_admins(event) if include_local else get_global_admins()
-    admin_contacts = reduce(lambda x, y: x+y, (org.contacts for org in admin_orgs))
+    admin_contacts = reduce(
+        lambda x, y: list(x) + list(y),
+        (org.contacts for org in admin_orgs)
+    )
     email_contacts_using_templates(
         event,
         admin_contacts,

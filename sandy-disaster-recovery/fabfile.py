@@ -57,6 +57,13 @@ MINI_YAML = """
   overwrite:
     "assets/images/crisis-cleanup-logo-default.png" : "assets/images/crisis-cleanup-logo.png"
 
+
+- application: crisis-cleanup-ph
+  secure: always
+  overwrite:
+    "assets/images/crisis-cleanup-logo-default.png" : "assets/images/crisis-cleanup-logo.png"
+
+
 - application: sandy-disaster-recovery
   secure: always
   overwrite:

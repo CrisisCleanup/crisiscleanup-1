@@ -22,12 +22,11 @@ from google.appengine.ext import db
 import json
 import wtforms.validators
 from datetime import datetime
-
+from xml.sax.saxutils import unescape
 
 # Local libraries.
 import base
 import site_db
-import site_util
 import form_db
 
 jinja_environment = jinja2.Environment(
@@ -195,7 +194,7 @@ class EditHandler(base.AuthenticatedHandler):
         #form = site_db.DerechosSiteForm(self.request.POST, site)
 
     # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
-    data.name.data = site_util.unescape(data.name.data)
+    data.name.data = unescape(data.name.data)
 
 
     data.priority.data = int(data.priority.data)

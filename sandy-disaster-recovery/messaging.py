@@ -52,8 +52,12 @@ def get_default_version_hostname():
 
 
 def get_base_url():
-    " Returns http as the scheme - assumes requests will be redirected. "
-    return "http://" + get_default_version_hostname()
+    configured_base_url = get_config_key('system_base_url')
+    if configured_base_url:
+        return configured_base_url
+    else:
+        # return http as the scheme and assume requests redirected
+        return "http://" + get_default_version_hostname()
 
 
 def get_app_system_email_address():

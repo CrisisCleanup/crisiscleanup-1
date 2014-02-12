@@ -418,6 +418,7 @@ def local_shell():
         "%s -s localhost:8080" % os.path.join(env.sdk_path, 'remote_api_shell.py')
     )
 
+
 @task
 def remote_shell(app):
     sdk_version_ok()

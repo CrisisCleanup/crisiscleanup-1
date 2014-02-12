@@ -17,18 +17,28 @@
 from google.appengine.ext import db
 
 
-class ApiKey(db.Model):
+KNOWN_CONFIG_KEY_NAMES = {
+    'system_email_address',
+    'votesmart',
+    'aws_ses_region',
+    'aws_ses_access_key_id',
+    'aws_ses_secret_access_key',
+}
+
+
+class ConfigKey(db.Model):
     name = db.StringProperty(required=True)
-    value = db.StringProperty(required=True)
+    value = db.StringProperty()
 
 
-def get_api_key(name):
+def get_config_key(name):
     try:
-        return ApiKey.all().filter('name', name)[0].value
+        return ConfigKey.all().filter('name', name)[0].value
     except:
-        raise Exception("API key %s not defined" % name)
+        return None
 
 
-# create dummy entry on module load
-if ApiKey.all().count() == 0:
-    ApiKey(name='dummy', value='dummy').save()
+# create blank config keys on module load
+for known_config_key_name in KNOWN_CONFIG_KEY_NAMES:
+    if ConfigKey.all().filter('name', known_config_key_name).count() == 0:
+        ConfigKey(name=known_config_key_name, value=u'').save()

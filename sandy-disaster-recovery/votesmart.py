@@ -19,7 +19,7 @@ from collections import OrderedDict
 
 from google.appengine.api import urlfetch
 
-import api_key_db
+import config_key_db
 from memoize import memoize
 
 
@@ -29,7 +29,7 @@ _VOTESMART_API_KEY = None
 def get_api_key():
     global _VOTESMART_API_KEY
     if _VOTESMART_API_KEY is None:
-        _VOTESMART_API_KEY = api_key_db.get_api_key('votesmart')
+        _VOTESMART_API_KEY = config_key_db.get_config_key('votesmart')
     return _VOTESMART_API_KEY
 
 

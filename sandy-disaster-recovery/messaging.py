@@ -62,7 +62,7 @@ def get_base_url():
 
 def get_app_system_email_address():
     system_email_address = get_config_key('system_email_address')
-    if system_email_address:
+    if False and system_email_address:  # TEMP DISABLED
         return system_email_address
     else:
         return "%s <noreply@%s.appspotmail.com>" % (

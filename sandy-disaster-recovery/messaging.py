@@ -222,7 +222,7 @@ def send_activation_emails(org_for_activation):
 
 def send_activated_emails(org_activated):
     email_contacts_using_templates(
-        None,
+        org_activated.incidents[0],
         org_activated.primary_contacts,
         'activated.subject.txt',
         'activated.body.txt',

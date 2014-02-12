@@ -19,6 +19,7 @@ from google.appengine.ext import db
 
 KNOWN_CONFIG_KEY_NAMES = {
     'system_email_address',
+    'system_base_url',
     'votesmart',
     'aws_ses_region',
     'aws_ses_access_key_id',

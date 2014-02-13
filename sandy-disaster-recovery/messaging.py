@@ -21,7 +21,11 @@ from google.appengine.api import app_identity, mail
 
 import jinja2
 
+from config_key_db import get_config_key
+
 from admin_handler.admin_identity import get_global_admins, get_event_admins
+
+import aws
 
 
 # jinja
@@ -37,16 +41,6 @@ jinja_environment = jinja2.Environment(
 )
 
 
-# constants
-
-APP_ID_TO_SENDER_ADDRESS = {
-    'sandy-helping-hands': 'CrisisCleanup <help@crisiscleanup.org>',
-    'sandy-disaster-recovery': 'CrisisCleanup <help@crisiscleanup.org>',
-    'crisis-cleanup-au': 'CrisisCleanup <help@crisiscleanup.org.au>',
-    'crisis-cleanup-in': 'CrisisCleanup <help@crisiscleanup.org.in>',
-}
-
-
 # functions
 
 def get_application_id():
@@ -58,30 +52,83 @@ def get_default_version_hostname():
 
 
 def get_base_url():
-    " Returns http as the scheme - assumes requests will be redirected. "
-    return "http://" + get_default_version_hostname()
+    configured_base_url = get_config_key('system_base_url')
+    if configured_base_url:
+        return configured_base_url
+    else:
+        # return http as the scheme and assume requests redirected
+        return "http://" + get_default_version_hostname()
 
 
 def get_app_system_email_address():
-    app_id = app_identity.get_application_id()
-    # HOTFIX START
-    return (
-        "%s <noreply@%s.appspotmail.com>" % (
+    system_email_address = get_config_key('system_email_address')
+    if False and system_email_address:  # TEMP DISABLED
+        return system_email_address
+    else:
+        return "%s <noreply@%s.appspotmail.com>" % (
             app_identity.get_service_account_name(),
             app_identity.get_application_id()
         )
-    )
-    # HOTFIX END
-    return APP_ID_TO_SENDER_ADDRESS.get(
-        # by app id
-        app_id,
 
-        # or else use default
-        "%s <noreply@%s.appspotmail.com>" % (
-            app_identity.get_service_account_name(),
-            app_identity.get_application_id()
-        )
+
+def send_email_via_appengine(
+        sender, to, subject, body, cc=None, bcc=None, html_body=None
+    ):
+    send_mail_args = {
+        'sender': sender,
+        'to': to,
+        'subject': subject,
+        'body': body,
+    }
+    if cc:
+        send_mail_args['cc'] = cc
+    if bcc:
+        send_mail_args['bcc'] = bcc
+    if html_body:
+        send_mail_args['html'] = html_body
+    return mail.send_mail(**send_mail_args)
+
+
+def send_email_via_aws_ses(
+        sender, to, subject, body, cc=None, bcc=None, html_body=None,
+        aws_ses_region=None,
+        aws_ses_access_key_id=None,
+        aws_ses_secret_access_key=None,
+    ):
+    return aws.ses_send_email(
+        source=sender,
+        to_addresses=to,
+        subject=subject,
+        body=body,
+        cc=cc,
+        bcc=bcc,
+        html_body=html_body,
+        aws_region=aws_ses_region,
+        aws_access_key_id=aws_ses_access_key_id,
+        aws_secret_access_key=aws_ses_secret_access_key,
     )
+
+
+def send_email_by_service(
+        sender, to, subject, body, cc=None, bcc=None, html_body=None
+    ):
+    " Send by AWS SES if available, otherwise GAE. "
+    # check for AWS API keys
+    aws_ses_region = get_config_key('aws_ses_region')
+    aws_ses_access_key_id = get_config_key('aws_ses_access_key_id')
+    aws_ses_secret_access_key = get_config_key('aws_ses_secret_access_key')
+
+    if aws_ses_region and aws_ses_access_key_id and aws_ses_secret_access_key:
+        return send_email_via_aws_ses(
+            sender, to, subject, body, cc=cc, bcc=bcc, html_body=html_body,
+            aws_ses_region=aws_ses_region,
+            aws_ses_access_key_id=aws_ses_access_key_id,
+            aws_ses_secret_access_key=aws_ses_secret_access_key
+        )
+    else:
+        return send_email_via_appengine(
+            sender, to, subject, body, cc=cc, bcc=bcc, html_body=html_body
+        )
 
 
 def friendly_email_address(contact):
@@ -89,7 +136,7 @@ def friendly_email_address(contact):
 
 
 def email_contacts(event, contacts, subject, body, html=None, bcc_contacts=None):
-    prefixed_subject = "[%s] %s" % (app_identity.get_application_id(), subject)
+    prefixed_subject = "[%s] %s" % (get_application_id(), subject)
     sender_address = get_app_system_email_address()
 
     to_addresses = map(
@@ -101,17 +148,14 @@ def email_contacts(event, contacts, subject, body, html=None, bcc_contacts=None)
         (contact for contact in bcc_contacts if contact.email)
     ) if bcc_contacts else []
 
-    mail_args = {
-        'sender': sender_address,
-        'to': to_addresses,
-        'subject': prefixed_subject,
-        'body': body,
-    }
-    if bcc_addresses:
-        mail_args['bcc'] = bcc_addresses
-    if html:
-        mail_args['html'] = html
-    mail.send_mail(**mail_args)
+    send_email_by_service(
+        sender_address,
+        to_addresses,
+        prefixed_subject,
+        body,
+        bcc=bcc_addresses,
+        html_body=html,
+    )
 
 
 def email_contacts_using_templates(
@@ -178,7 +222,7 @@ def send_activation_emails(org_for_activation):
 
 def send_activated_emails(org_activated):
     email_contacts_using_templates(
-        None,
+        org_activated.incidents[0],
         org_activated.primary_contacts,
         'activated.subject.txt',
         'activated.body.txt',
@@ -209,11 +253,11 @@ class EmailTestHandler(base.RequestHandler):
         from_addr = self.request.get("from")
 
         if to_addr and from_addr:
-            mail.send_mail(
-                from_addr,
-                to_addr,
-                "Test email",
-                "This is a test email."
+            send_email_by_service(
+                sender=from_addr,
+                to=[to_addr],
+                subject=u"Test email",
+                body=u"This is a test email."
             )
             self.response.out.write("Test email sent.")
         else:

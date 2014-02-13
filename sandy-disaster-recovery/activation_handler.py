@@ -102,6 +102,7 @@ class ActivationHandler(base.RequestHandler):
     def get(self):
         # get questions
         all_questions = list(MultipleChoiceQuestion.all())
+        random.shuffle(all_questions)
         forms = [MultipleChoiceQuestionForm(None, q) for q in all_questions]
 
         # if no questions are defined, activate immediately

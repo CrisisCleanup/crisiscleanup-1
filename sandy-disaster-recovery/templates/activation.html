@@ -138,10 +138,12 @@ $(function() {
       // enough correct or questions exhaustaed: show password & activate by AJAX
       $.ajax({
         uri: window.location.href,
-        method: 'POST'
-      }).then(function() {
-        $('div#password-announcement').show();
+        method: 'POST',
+        error: function() {
+          alert("An error has occurred. Please contact the application administrator.");
+        }
       });
+      $('div#password-announcement').show();
     } else if (!isCorrect) {
       // show another question
       $questionForms.not('.question-open').first().addClass('question-open');

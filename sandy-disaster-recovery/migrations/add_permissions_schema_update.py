@@ -15,26 +15,6 @@ PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "ci
 
 def AddPermissionsSchemaUpdate(cursor=None, num_updated=0):
     single_event_key = None
-    ### 
-    # To choose an event, uncomment the event short name, and run the last commented line in this block.
-    # Make sure you only choose one event_short_name.
-    ###
-    #event_short_name = "sandy"
-    #event_short_name = "test"
-    #event_short_name = "hattiesburg"
-    #event_short_name = "derechos"
-    #event_short_name = "gordon-barto-tornado"
-    #event_short_name = "moore"
-    #event_short_name = "black_forest"
-    #event_short_name = "upstate_flood"
-    #event_short_name = "colorado_floods_test"
-    #event_short_name = "blue_mountains"
-    #event_short_name = "pulaski"
-    #event_short_name = "midwest_tornadoes"
-    #event_short_name = "ncv_floods"
-
-    #single_event_key = get_single_event_key(event_short_name)
-    ###
         
     query = site_db.Site.all()
     if single_event_key:

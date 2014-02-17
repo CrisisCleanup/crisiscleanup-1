@@ -25,5 +25,5 @@ cron:
 
 - description: Crunch statistics for all events
   url: /task/crunch-all-events-stats
-  schedule: every 720 minutes
+  schedule: every 720 minutes  # update _incident_statistics_tables.html if changed
   target: stats

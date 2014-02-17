@@ -15,8 +15,14 @@
 {% endif %}
 <p>Applicant Is Primary Contact for Organization: {{ single_contact.is_primary }}</p>
 
-  <form method=GET action="/admin-edit-contact">
-  <input type=hidden name=contact value={{single_contact.key().id()}}>
-  <input type=submit value="Edit Contact" >
-  </form>
+<form method="GET" action="/admin-edit-contact" style="display: inline-block">
+  <input type="hidden" name="contact" value="{{ single_contact.key().id() }}">
+  <button type="submit" class="btn btn-primary">Edit</button>
+</form>
+
+<form method="POST" action="/admin" style="display: inline-block" onsubmit="return confirm('Are you sure you want to delete this contact? This cannot be undone.')">
+  <input type="hidden" name="delete_contact_id" value="{{ single_contact.key().id() }}">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+
 {% endblock %}

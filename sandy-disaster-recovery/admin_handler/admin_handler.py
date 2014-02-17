@@ -194,6 +194,21 @@ class AdminHandler(base.AuthenticatedHandler):
             db.delete(org_by_id)
             self.redirect("/admin")
             return
+
+        if self.request.get("delete_contact_id"):
+            # delete contact
+            try:
+                id = int(self.request.get("delete_contact_id"))
+                contact_by_id = primary_contact_db.Contact.get_by_id(id)
+            except:
+                self.abort(400)
+
+            if not org.may_administer(org_by_id):
+                self.abort(403)
+
+            db.delete(contact_by_id)
+            self.redirect("/admin")
+            return
             
         if self.request.get("verify_organization"):
             # verify organization

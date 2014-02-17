@@ -91,6 +91,7 @@ class Organization(db.Expando):
   # timestamps
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
   timestamp_login = db.DateTimeProperty(required=False)
+  permissions = db.StringProperty(required=False, default="Full Access")
 
   def __repr__(self):
       return u"<Organization: %s>" % self.name
@@ -345,7 +346,7 @@ def event_key_coerce(x):
 class OrganizationForm(
         model_form(
             Organization,
-            exclude=['incidents', 'is_admin', 'timestamp_signup', 'timestamp_login']
+            exclude=['incidents', 'is_admin', 'timestamp_signup', 'timestamp_login', 'permissions']
         ),
         OrganizationValidatorsMixIn
     ): 
@@ -355,6 +356,13 @@ class OrganizationForm(
         choices=[(event.key(), event.name) for event in event_db.Event.all()],
         coerce=event_key_coerce,
     )
+    
+    permissions = SelectField(u'Permission', choices=[('Full Access', 'Full Access'), ('Partial Access', 'Partial Access'), ('Situational Awareness', 'Situational Awareness')])
+    timestamp_login = DateTimeField(
+        "Last logged in",
+        [validators.optional()]
+    )
+    
     timestamp_login = DateTimeField(
         "Last logged in",
         [validators.optional()]

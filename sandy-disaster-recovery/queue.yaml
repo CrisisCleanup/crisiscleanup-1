@@ -1,8 +1,8 @@
 queue:
 
 - name: default
-  rate: 50/s
-  bucket_size: 50
+  rate: 15/s
+  bucket_size: 15
 
 - name: crunch-statistics
   rate: 1/s

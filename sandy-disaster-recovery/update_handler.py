@@ -1,8 +1,8 @@
 import webapp2
-import update_sites_handler
+import add_permissions_schema_update
 from google.appengine.ext import deferred
 
 class UpdateHandler(webapp2.RequestHandler):
     def get(self):
-        deferred.defer(update_sites_handler.UpdateSchema)
+        deferred.defer(add_permissions_schema_update.AddPermissionsSchemaUpdate)
         self.response.out.write('Schema migration successfully initiated.')

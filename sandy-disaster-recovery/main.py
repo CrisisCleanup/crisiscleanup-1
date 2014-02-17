@@ -66,6 +66,7 @@ import public_map_ajax_handler
 import get_event_ajax_handler
 import import_co_handler
 import stats
+import update_handler
 ###import messaging
 
 from handlers import incident_definition
@@ -236,6 +237,8 @@ app = webapp2.WSGIApplication([
     Route(r'/task/delete-old-files', old_file_delete_handler.OldFileDeleteHandler, 'old_file_delete'),
     Route(r'/task/export-all-events', export_bulk_handler.ExportAllEventsHandler, 'export_all_events'),
     Route(r'/task/crunch-all-events-stats', stats.CrunchAllStatisticsHandler, 'crunch_all_events_stats'),
+    Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
+
 
     # dev/testing
     ###Route(r'/test-email', messaging.EmailTestHandler, 'email_test'),

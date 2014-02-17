@@ -57,7 +57,7 @@ class Event(db.Model):
       # lookup using new incidents field
       orgs = list(
           Organization.all().filter('incidents', self.key())
-              .filter('verified', True)
+              .filter('org_verified', True)
               .filter('is_active', True)
       )
 
@@ -73,7 +73,7 @@ class Event(db.Model):
 
       # check legacy incident field
       legacy_field_orgs = Organization.all().filter('incident', self.key()) \
-          .filter('verified', True) \
+          .filter('org_verified', True) \
           .filter('is_active', True)
       for org in legacy_field_orgs:
           if org.key().id() not in org_ids:

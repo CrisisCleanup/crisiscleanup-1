@@ -23,11 +23,7 @@ from wtforms.ext.appengine.db import model_form
 from wtforms import TextField, validators, SelectField, DateTimeField, BooleanField
 from google.appengine.api import memcache
 from google.appengine.ext.db import Key, to_dict
-from google.appengine.api import search
 
-from indexed import SearchIndexedExpandoModel
-from appengine_utils import search_query_str_from_params, generate_from_search_with_cursors
-from memcache_utils import memcached
 import primary_contact_db
 import event_db
 import cache
@@ -35,9 +31,8 @@ from form_utils import MultiCheckboxField
 from random_utils import random_url_safe_code
 
 
-class Organization(SearchIndexedExpandoModel):
-
-  CACHE_TAGS = {'OrgCaches'}
+class Organization(db.Expando):
+  """ Data about the organization. """
 
   name = db.StringProperty(required = True)
 
@@ -123,36 +118,6 @@ class Organization(SearchIndexedExpandoModel):
       del(self._incidents_keys)
 
   incidents = property(_get_incidents, _set_incidents, _del_incidents)
-
-
-  # search indexes
-
-  def indexes_and_fields(self):
-      return [
-          (search.Index('OrganizationNameIndex'), [
-              search.TextField('name', self.name),
-              search.TextField(
-                'event_keys',
-                u' '.join(unicode(inc.key()) for inc in self.incidents)
-              ),
-              search.NumberField('is_active', int(self.is_active)),
-              search.NumberField('is_admin', int(self.is_admin)),
-              search.NumberField('deprecated', int(self.deprecated)),
-          ]),
-      ]
-
-  @classmethod
-  @memcached(cache_tag='OrgCaches')
-  def names_by_search(cls, event=None, is_active=None, is_admin=None, deprecated=None):
-      search_index = search.Index('OrganizationNameIndex')
-      query_str = search_query_str_from_params([
-          ('event_keys', unicode, event.key() if event else None),
-          ('is_active', int, is_active),
-          ('is_admin', int, is_admin),
-          ('deprecated', int, deprecated),
-      ])
-      results = generate_from_search_with_cursors(search_index, query_str)
-      return [hit['name'][0].value for hit in results]
 
 
   # access controls
@@ -393,6 +358,11 @@ class OrganizationForm(
     )
     
     permissions = SelectField(u'Permission', choices=[('Full Access', 'Full Access'), ('Partial Access', 'Partial Access'), ('Situational Awareness', 'Situational Awareness')])
+    timestamp_login = DateTimeField(
+        "Last logged in",
+        [validators.optional()]
+    )
+    
     timestamp_login = DateTimeField(
         "Last logged in",
         [validators.optional()]

@@ -50,6 +50,8 @@
         {{ render_field_row(field) }}
       {% endfor %}
     </table>
+  {% else %}
+    <p>This organization has no contacts!</p>
   {% endfor %}
   
   {# potential new contacts #}

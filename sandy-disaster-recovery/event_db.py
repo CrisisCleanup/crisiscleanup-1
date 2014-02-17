@@ -48,14 +48,18 @@ class Event(db.Model):
   @property
   def organizations(self):
       """
-      Organizations related to this incident.
+      Active, verified organizations related to this incident.
 
       Handles current and legacy incident/s properties.
       """
       from organization import Organization  # avoid circular import
 
       # lookup using new incidents field
-      orgs = list(Organization.all().filter('incidents', self.key()))
+      orgs = list(
+          Organization.all().filter('incidents', self.key())
+              .filter('verified', True)
+              .filter('is_active', True)
+      )
 
       # build list of id and look for global admin
       org_ids = set()
@@ -68,7 +72,10 @@ class Event(db.Model):
               org_ids.add(org_id)
 
       # check legacy incident field
-      for org in Organization.all().filter('incident', self.key()):
+      legacy_field_orgs = Organization.all().filter('incident', self.key()) \
+          .filter('verified', True) \
+          .filter('is_active', True)
+      for org in legacy_field_orgs:
           if org.key().id() not in org_ids:
               orgs.append(org)
 

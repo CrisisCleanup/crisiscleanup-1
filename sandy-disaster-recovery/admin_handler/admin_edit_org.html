@@ -50,6 +50,8 @@
         {{ render_field_row(field) }}
       {% endfor %}
     </table>
+  {% else %}
+    <p>This organization has no contacts!</p>
   {% endfor %}
   
   {# potential new contacts #}
@@ -73,6 +75,18 @@
 </form>
 
 
+<div id="delete-org-section" style="display: none;">
+  <h3>Delete Organization</h3>
+
+  <p>This cannot be undone. All Contacts will be retained in the system, but their references to this organization will be removed.</p>
+
+  <form method="POST" action="/admin" onsubmit="return confirm('Are you sure you want to delete this organization?')">
+    <input type="hidden" name="delete_org_id" value="{{organization.key().id()}}">
+    <button class="btn btn-danger" type="submit" value="Permanently delete this organization">
+      Permanently delete this organization
+    </button>
+  </form>
+</div>
 
 
 {% endblock %}
@@ -83,6 +97,7 @@ $(function() {
   $editButtons = $('button.edit-org-btn');
   $saveButton = $('button#submit');
   $addContactLink = $('a#add-contact-link');
+  $deleteOrgSection = $('div#delete-org-section');
 
   var setEditMode = function(flag) {
     $('input, textarea, button').attr('readonly', !flag);
@@ -93,10 +108,12 @@ $(function() {
       $addContactLink.show();
       $editButtons.hide();
       $saveButton.show();
+      $deleteOrgSection.show();
     } else {
       $addContactLink.hide()
       $editButtons.show();
       $saveButton.hide();
+      $deleteOrgSection.hide();
     };
   };
 

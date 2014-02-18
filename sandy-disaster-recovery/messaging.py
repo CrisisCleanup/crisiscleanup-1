@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 
+import logging
 import os
 
 from google.appengine.api import app_identity, mail
@@ -60,20 +61,19 @@ def get_base_url():
         return "http://" + get_default_version_hostname()
 
 
-def get_app_system_email_address():
-    system_email_address = get_config_key('system_email_address')
-    if False and system_email_address:  # TEMP DISABLED
-        return system_email_address
-    else:
-        return "%s <noreply@%s.appspotmail.com>" % (
-            app_identity.get_service_account_name(),
-            app_identity.get_application_id()
-        )
+def get_appengine_default_system_email_address():
+    return "%s <noreply@%s.appspotmail.com>" % (
+        app_identity.get_service_account_name(),
+        app_identity.get_application_id()
+    )
 
 
-def send_email_via_appengine(
-        sender, to, subject, body, cc=None, bcc=None, html_body=None
-    ):
+def get_aws_ses_default_system_email_address():
+    " From configuration "
+    return get_config_key('system_email_address')
+
+
+def send_email_via_appengine(sender, to, subject, body, cc=None, bcc=None, html_body=None):
     send_mail_args = {
         'sender': sender,
         'to': to,
@@ -109,25 +109,59 @@ def send_email_via_aws_ses(
     )
 
 
-def send_email_by_service(
-        sender, to, subject, body, cc=None, bcc=None, html_body=None
+def can_send_by_aws_ses(
+        aws_ses_region,
+        aws_ses_access_key_id,
+        aws_ses_secret_access_key,
+        sender_address
     ):
+    keys_available = bool(
+        aws_ses_region and
+        aws_ses_access_key_id and
+        aws_ses_secret_access_key
+    )
+    if keys_available:
+        verified_addresses = aws.ses_get_verified_email_addresses(
+            aws_ses_region,
+            aws_ses_access_key_id,
+            aws_ses_secret_access_key
+        )
+        sender_ok = (sender_address in verified_addresses)
+        if sender_ok:
+            return True
+        else:
+            logging.warning(
+                "Tried to send by AWS SES but %s is not verified." % (
+            sender_address))
+    return False
+
+
+def send_email_by_service(to, subject, body, cc=None, bcc=None, html_body=None):
     " Send by AWS SES if available, otherwise GAE. "
+    assert not isinstance(to, basestring), "'to' must be a list or iterable"
+
     # check for AWS API keys
     aws_ses_region = get_config_key('aws_ses_region')
     aws_ses_access_key_id = get_config_key('aws_ses_access_key_id')
     aws_ses_secret_access_key = get_config_key('aws_ses_secret_access_key')
 
-    if aws_ses_region and aws_ses_access_key_id and aws_ses_secret_access_key:
+    # lookup addresses(s) to send from
+    gae_sender_address = get_appengine_default_system_email_address()
+    aws_sender_address = get_aws_ses_default_system_email_address()
+
+    # send by AWS or fall back to GAE
+    if can_send_by_aws_ses(aws_ses_region, aws_ses_access_key_id, aws_ses_secret_access_key, aws_sender_address):
         return send_email_via_aws_ses(
-            sender, to, subject, body, cc=cc, bcc=bcc, html_body=html_body,
+            aws_sender_address,
+            to, subject, body, cc=cc, bcc=bcc, html_body=html_body,
             aws_ses_region=aws_ses_region,
             aws_ses_access_key_id=aws_ses_access_key_id,
             aws_ses_secret_access_key=aws_ses_secret_access_key
         )
     else:
         return send_email_via_appengine(
-            sender, to, subject, body, cc=cc, bcc=bcc, html_body=html_body
+            gae_sender_address,
+            to, subject, body, cc=cc, bcc=bcc, html_body=html_body
         )
 
 
@@ -137,7 +171,6 @@ def friendly_email_address(contact):
 
 def email_contacts(event, contacts, subject, body, html=None, bcc_contacts=None):
     prefixed_subject = "[%s] %s" % (get_application_id(), subject)
-    sender_address = get_app_system_email_address()
 
     to_addresses = map(
         friendly_email_address,
@@ -149,7 +182,6 @@ def email_contacts(event, contacts, subject, body, html=None, bcc_contacts=None)
     ) if bcc_contacts else []
 
     send_email_by_service(
-        sender_address,
         to_addresses,
         prefixed_subject,
         body,

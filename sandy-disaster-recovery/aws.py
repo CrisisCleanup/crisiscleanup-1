@@ -13,6 +13,7 @@ from wsgiref.handlers import format_date_time
 import hmac
 import hashlib
 import base64
+from xml.etree import ElementTree
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -71,6 +72,31 @@ def post_signed(url, params, aws_access_key_id, aws_secret_access_key):
     return response
 
 
+def ses_get_verified_email_addresses(
+        aws_region,
+        aws_access_key_id,
+        aws_secret_access_key,
+    ):
+    url = aws_api_base_url(aws_region)
+    response = post_signed(
+        url,
+        params={
+            'Action': 'ListIdentities',
+        },
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+    )
+    try:
+        xml_tree = ElementTree.fromstring(response.content)
+        identity_members = xml_tree.findall(
+            ".//xmlns:Identities/xmlns:member",
+            namespaces={'xmlns': 'http://ses.amazonaws.com/doc/2010-12-01/'}
+        )
+        return [el.text for el in identity_members]
+    except:
+        return []
+
+
 def ses_send_email(
         source, to_addresses, subject, body, cc=None, bcc=None, html_body=None,
         aws_region=None,
@@ -91,7 +117,7 @@ def ses_send_email(
 
     # post to AWS SES
     url = aws_api_base_url(aws_region)
-    post_signed(
+    return post_signed(
         url,
         params={
             'Action': 'SendRawEmail',

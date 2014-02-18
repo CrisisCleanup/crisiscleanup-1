@@ -178,3 +178,8 @@ class ContactForm(model_form(Contact, exclude=['organization'])):
 class ContactFormFull(ContactForm):
 
     is_primary = BooleanField()
+
+
+class ContactFormFullWithDelete(ContactFormFull):
+
+    delete_me = BooleanField("Delete (on save)")

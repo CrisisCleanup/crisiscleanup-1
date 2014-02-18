@@ -24,7 +24,7 @@ from google.appengine.ext.db import Key
 import base
 import organization
 from organization import OrganizationForm, GlobalAdminOrganizationForm
-from primary_contact_db import Contact, ContactFormFull
+from primary_contact_db import Contact, ContactFormFull, ContactFormFullWithDelete
 
 
 jinja_environment = jinja2.Environment(
@@ -49,7 +49,7 @@ class AdminEditOrganizationHandler(base.AuthenticatedHandler):
                 post_data, org_by_id, incidents=incidents, prefix='org-')
         )
         existing_contact_forms = [
-            ContactFormFull(
+            ContactFormFullWithDelete(
                 post_data, contact, id=contact.key().id(),
                 prefix="contact-%d-" % contact.key().id()
             )
@@ -132,8 +132,12 @@ class AdminEditOrganizationHandler(base.AuthenticatedHandler):
                     ec for ec in existing_contacts
                     if ec.key().id() == contact_form_id 
                 ][0]
-                contact_form.populate_obj(contact)
-                contact.save()
+                delete_requested = contact_form.delete_me.data
+                if delete_requested:
+                    contact.delete()
+                else:
+                    contact_form.populate_obj(contact)
+                    contact.save()
 
             # create new
             for contact_form in blank_contact_forms:

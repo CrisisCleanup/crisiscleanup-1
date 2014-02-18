@@ -10,16 +10,11 @@ import event_db
 
 BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
 
-PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority", "work_type"]
-
 
 def AddPermissionsSchemaUpdate(cursor=None, num_updated=0):
     single_event_key = None
         
     query = site_db.Site.all()
-    if single_event_key:
-      query.filter("event =", single_event_key)
-
     if cursor:
         query.with_cursor(cursor)
 

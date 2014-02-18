@@ -49,6 +49,10 @@ class ExportHandler(base.AuthenticatedHandler):
     else:
       final_list = others_list
 
+    # remove redacted rows from final list
+    if org.permissions == "Situational Awareness":
+      pass
+      #incident_permissions.situational_awareness. Will return an array, subtract this array from final_list
     # write header/title row
     writer.writerow([
         "%s Work Orders. Downloaded %s UTC by %s" % (
@@ -57,6 +61,7 @@ class ExportHandler(base.AuthenticatedHandler):
             org.name
         )
     ])
+	
 
     # write column headings
     writer.writerow(final_list)

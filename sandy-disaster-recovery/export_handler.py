@@ -21,7 +21,7 @@ import csv
 # Local libraries.
 import base
 import site_util
-import site_db
+import incident_permissions_db
 
 
 class ExportHandler(base.AuthenticatedHandler):
@@ -30,23 +30,8 @@ class ExportHandler(base.AuthenticatedHandler):
 
   def AuthenticatedPost(self, org, event):
     # if id is empty or undefined, returns all
-    sites = None
-    open_filter_state = self.request.get("open_filter_state")
-    closed_filter_state = self.request.get("closed_filter_state")
-    claimed_filter_state = self.request.get("claimed_filter_state")
-    unclaimed_filter_state = self.request.get("unclaimed_filter_state")
-    debris_filter_state = self.request.get("debris_filter_state")
-    
-    if debris_filter_state == "true":
-      debris_filter_state = "Debris"
-    if not open_filter_state and not closed_filter_state and not debris_filter_state:
-      sites = site_util.SitesFromIds(self.request.get('id'), event)
-    else:
-      q = site_db.Site.all()
-      q.filter("work_type =", debris_filter_state)
-      sites = q.fetch(100)
-    
-    
+    sites = site_util.SitesFromIds(self.request.get('id'), event)
+
     self.response.headers['Content-Type'] = 'text/csv'
     self.response.headers['Content-Disposition'] = (
         'attachment; filename="work_sites.csv"')
@@ -66,10 +51,12 @@ class ExportHandler(base.AuthenticatedHandler):
       final_list = others_list
 
     # remove redacted rows from final list
-    if org.permissions == "Situational Awareness":
-      pass
-      #incident_permissions.situational_awareness. Will return an array, subtract this array from final_list
-    # write header/title row
+    if org.permissions == "Partial Access":
+      i_ps = incident_permissions_db.IncidentPermissions.all()
+      i_ps.filter("incident =", event.key())
+      this_i_ps = i_ps.get()
+      redacted_array = this_i_ps.partial_access_redactions
+      final_list = list(set(final_list) - set(redacted_array))
     writer.writerow([
         "%s Work Orders. Downloaded %s UTC by %s" % (
             event.name,
@@ -83,6 +70,5 @@ class ExportHandler(base.AuthenticatedHandler):
     writer.writerow(final_list)
 
     # write csv rows
-    #raise Exception(sites)
     for site in sites:
       writer.writerow(site.ToCsvLine(final_list))

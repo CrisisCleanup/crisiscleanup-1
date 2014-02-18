@@ -22,7 +22,7 @@ def AddPermissionsSchemaUpdate(cursor=None, num_updated=0):
 
     for p in query.fetch(limit=BATCH_SIZE):
         p.permission="Full Access"
-        
+        to_put.append(p)
     if to_put:
         db.put(to_put)
         num_updated += len(to_put)

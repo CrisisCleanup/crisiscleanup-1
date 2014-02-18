@@ -40,6 +40,7 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('form.html')
 single_site_template = jinja_environment.get_template('single_site_incident_form.html')
+sit_aware_redirect_template = jinja_environment.get_template('permissions_redirect_page.html')
 menubox_template = jinja_environment.get_template('_menubox.html')
 HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
@@ -48,6 +49,9 @@ GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 class FormHandler(base.AuthenticatedHandler):
 
   def AuthenticatedGet(self, org, event):
+    if org.permissions == "Situational Awareness":
+      self.redirect("/sit_aware_redirect")
+      return
     #single_site_template = jinja_environment.get_template('single_site.html')
       
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
@@ -99,6 +103,9 @@ class FormHandler(base.AuthenticatedHandler):
     )
 
   def AuthenticatedPost(self, org, event):
+    if org.permissions == "Situational Awareness":
+      self.redirect("/sit_aware_redirect")
+      return
     my_string = ""
     for k, v in self.request.POST.iteritems():
       if v == "":

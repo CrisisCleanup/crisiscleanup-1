@@ -21,6 +21,7 @@ import csv
 # Local libraries.
 import base
 import site_util
+import incident_permissions_db
 
 
 class ExportHandler(base.AuthenticatedHandler):
@@ -50,10 +51,12 @@ class ExportHandler(base.AuthenticatedHandler):
       final_list = others_list
 
     # remove redacted rows from final list
-    if org.permissions == "Situational Awareness":
-      pass
-      #incident_permissions.situational_awareness. Will return an array, subtract this array from final_list
-    # write header/title row
+    if org.permissions == "Partial Access":
+      i_ps = incident_permissions_db.IncidentPermissions.all()
+      i_ps.filter("incident =", event.key())
+      this_i_ps = i_ps.get()
+      redacted_array = this_i_ps.partial_access_redactions
+      final_list = list(set(final_list) - set(redacted_array))
     writer.writerow([
         "%s Work Orders. Downloaded %s UTC by %s" % (
             event.name,

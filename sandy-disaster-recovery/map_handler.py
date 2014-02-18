@@ -51,6 +51,9 @@ class MapHandler(base.RequestHandler):
               #["NY", "New York"]]
 
     org, event = key.CheckAuthorization(self.request)
+    if org.permissions == "Situational Awareness":
+      self.redirect("/sit_aware_redirect")
+      return
     if org:
       filters = [["claimed", "Claimed by " + org.name],
                  ["unclaimed", "Unclaimed"],

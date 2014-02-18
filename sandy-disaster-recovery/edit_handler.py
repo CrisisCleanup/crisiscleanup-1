@@ -40,6 +40,9 @@ GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 class EditHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
+    if org.permissions == "Situational Awareness":
+	self.redirect("/sit_aware_redirect")
+	return
     #single_site_template = jinja_environment.get_template('single_site.html')
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #single_site_template = jinja_environment.get_template('single_site_derechos.html')
@@ -183,6 +186,9 @@ class EditHandler(base.AuthenticatedHandler):
            "page": "/edit"}))
 
   def AuthenticatedPost(self, org, event):
+    if org.permissions == "Situational Awareness":
+      self.redirect("/sit_aware_redirect")
+      return
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #single_site_template = jinja_environment.get_template('single_site_derechos.html')
     try:

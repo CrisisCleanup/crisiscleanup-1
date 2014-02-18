@@ -67,6 +67,7 @@ import get_event_ajax_handler
 import import_co_handler
 import stats
 import update_handler
+import sit_aware_redirect_handler
 ###import messaging
 
 from handlers import incident_definition
@@ -98,6 +99,7 @@ from admin_handler import admin_validation_questions_handler
 from admin_handler import admin_import_contacts_handler
 from admin_handler import admin_create_incident_form_handler
 from admin_handler import admin_website_settings_handler
+from admin_handler import admin_define_permissions
 
 import form_ajax_handler
 import update_csv_handler
@@ -149,6 +151,8 @@ app = webapp2.WSGIApplication([
     Route(r'/export_bulk_download', download_handler.DownloadBulkExportHandler, 'export_bulk_download'),
     Route(r'/export_all_download', download_handler.DownloadEventAllWorkOrdersHandler, 'export_all_download'),
     Route(r'/get_event_ajax', get_event_ajax_handler.GetEventAjaxHandler, 'get_event_ajax'),
+    Route(r'/sit_aware_redirect', sit_aware_redirect_handler.SitAwareRedirectHandler, 'sit_aware_redirect'),
+
 
     Route(r'/logout', LogoutHandler, 'logout'),
     Route(r'/delete', delete_handler.DeleteHandler, 'delete'),
@@ -203,6 +207,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-edit-pages/download/defaults', admin_edit_pages_handler.AdminDownloadPageBlocks, 'admin_edit_pages_handler'),
     Route(r'/admin-create-incident-csv', admin_create_incident_csv_handler.AdminCreateIncidentCSVHandler, 'admin_edit_pages_handler'),
     Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'),
+    Route(r'/admin-define-permissions', admin_define_permissions.AdminDefinePermissions, 'admin_define_permissions'),
     Route(r'/import-co-flood-handler', import_co_handler.ImportCOHandler, 'import-co-flood'),
 
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),

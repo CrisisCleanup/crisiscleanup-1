@@ -11,9 +11,7 @@ import event_db
 BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
 
 
-def AddPermissionsSchemaUpdate(cursor=None, num_updated=0):
-    single_event_key = None
-        
+def AddPermissionsSchemaUpdate(cursor=None, num_updated=0):        
     query = site_db.Site.all()
     if cursor:
         query.with_cursor(cursor)
@@ -30,9 +28,9 @@ def AddPermissionsSchemaUpdate(cursor=None, num_updated=0):
             'Put %d entities to Datastore for a total of %d',
             len(to_put), num_updated)
         deferred.defer(
-            UpdateSchema, cursor=query.cursor(), num_updated=num_updated)
+            AddPermissionsSchemaUpdate, cursor=query.cursor(), num_updated=num_updated)
     else:
         logging.debug(
-            'UpdateSchema complete with %d updates!', num_updated)
+            'AddPermissionsSchemaUpdate complete with %d updates!', num_updated)
 
     

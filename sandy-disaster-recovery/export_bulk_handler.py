@@ -58,6 +58,7 @@ def get_csv_fields_list(event_short_name):
       i_ps.filter("incident =", event.key())
       this_i_ps = i_ps.get()
       redacted_array = this_i_ps.situational_awareness_redactions
+      raise Exception(redacted_array)
       csv_fields_list = list(set(csv_fields_list) - set(redacted_array))
 
     if org.permissions == "Partial Access":
@@ -65,6 +66,7 @@ def get_csv_fields_list(event_short_name):
       i_ps.filter("incident =", event.key())
       this_i_ps = i_ps.get()
       redacted_array = this_i_ps.partial_access_redactions
+      raise Exception(redacted_array)
       csv_fields_list = list(set(csv_fields_list) - set(redacted_array))
 
     return [field % subs for field in csv_fields_list]

@@ -70,10 +70,11 @@ class AdminDefinePermissions(base.AuthenticatedHandler):
 	    i_ps = incident_permissions_db.IncidentPermissions.all()
 	    i_ps.filter("incident =", this_event.key())
 	    this_i_ps = i_ps.get()
-	    if permission_type == "Situational Awareness":
-	      current_redactions = this_i_ps.situational_awareness_redactions
-	    else:
-	      current_redactions = this_i_ps.partial_access_redactions
+	    if this_i_ps:
+	      if permission_type == "Situational Awareness":
+		current_redactions = this_i_ps.situational_awareness_redactions
+	      else:
+		current_redactions = this_i_ps.partial_access_redactions
 	  else:
 	    permissions_list = ["Partial Access", "Situational Awareness"]
 	    

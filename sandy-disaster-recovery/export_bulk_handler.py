@@ -52,14 +52,21 @@ def get_csv_fields_list(event_short_name):
     subs = {
         'today': str(datetime.date.today()),
     }
+    logging.info(org.name)
     if org.permissions == "Situational Awareness":
       i_ps = incident_permissions_db.IncidentPermissions.all()
       i_ps.filter("incident =", event.key())
       this_i_ps = i_ps.get()
       redacted_array = this_i_ps.situational_awareness_redactions
       csv_fields_list = list(set(csv_fields_list) - set(redacted_array))
-    
-    # remove if situational awareness
+
+    if org.permissions == "Partial Access":
+      i_ps = incident_permissions_db.IncidentPermissions.all()
+      i_ps.filter("incident =", event.key())
+      this_i_ps = i_ps.get()
+      redacted_array = this_i_ps.partial_access_redactions
+      csv_fields_list = list(set(csv_fields_list) - set(redacted_array))
+
     return [field % subs for field in csv_fields_list]
 
 

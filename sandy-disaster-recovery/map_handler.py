@@ -19,12 +19,9 @@ import datetime
 import jinja2
 import json
 import os
-from google.appengine.ext import db
-from google.appengine.api import memcache
 
 # Local libraries.
 import base
-import event_db
 import key
 import site_db
 import page_db
@@ -42,16 +39,10 @@ class MapHandler(base.RequestHandler):
 
   def get(self):
     filters = [
-              #["debris_only", "Remove Debris Only"],
-              #["electricity", "Has Electricity"],
-              #["no_standing_water", "No Standing Water"],
-              #["not_habitable", "Home is not habitable"],
-              ["Flood", "Primary problem is flood damage"],
-              ["Trees", "Primary problem is trees"],
-              ["Goods or Services", "Primary need is goods and services"]]
-              #["CT", "Connecticut"],
-              #["NJ", "New Jersey"],
-              #["NY", "New York"]]
+          ["Flood", "Primary problem is flood damage"],
+          ["Trees", "Primary problem is trees"],
+          ["Goods or Services", "Primary need is goods and services"]
+    ]
 
     # check org authed
     org, event = key.CheckAuthorization(self.request)

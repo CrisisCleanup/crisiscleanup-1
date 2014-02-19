@@ -29,9 +29,9 @@ from google.appengine.ext.db import to_dict
 
 
 ten_minutes = 600
-
+empty_array = []
 
 class IncidentPermissions(db.Model):
     incident = db.ReferenceProperty(required=True)
-    situational_awareness_redactions = db.StringListProperty()
-    partial_access_redactions = db.StringListProperty()
+    situational_awareness_redactions = db.StringListProperty(default=empty_array)
+    partial_access_redactions = db.StringListProperty(default=empty_array)

@@ -13,6 +13,7 @@ import cloudstorage
 import webapp2
 
 import base
+import key
 from site_db import Site
 from event_db import Event
 from time_utils import timestamp_now
@@ -38,6 +39,8 @@ BUCKET_NAME = '/' + APP_ID
 def get_csv_fields_list(event_short_name):
     " Return CSV fields list with substitutions interpolated. "
     # choose fields list
+    org, event = key.CheckAuthorization(self.request)
+
     if event_short_name in ('moore', 'midwest_tornadoes'):
         csv_fields_list = MOORE_CSV_FIELDS_LIST
     elif event_short_name == 'pulaski':
@@ -49,6 +52,14 @@ def get_csv_fields_list(event_short_name):
     subs = {
         'today': str(datetime.date.today()),
     }
+    if org.permissions == "Situational Awareness":
+      i_ps = incident_permissions_db.IncidentPermissions.all()
+      i_ps.filter("incident =", event.key())
+      this_i_ps = i_ps.get()
+      redacted_array = this_i_ps.situational_awareness_redactions
+      csv_fields_list = list(set(csv_fields_list) - set(redacted_array))
+    
+    # remove if situational awareness
     return [field % subs for field in csv_fields_list]
 
 

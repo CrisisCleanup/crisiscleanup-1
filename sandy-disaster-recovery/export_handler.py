@@ -51,11 +51,11 @@ class ExportHandler(base.AuthenticatedHandler):
       final_list = others_list
 
     # remove redacted rows from final list
-    if org.permissions == "Partial Access":
+    if org.permissions == "Situational Awareness":
       i_ps = incident_permissions_db.IncidentPermissions.all()
       i_ps.filter("incident =", event.key())
       this_i_ps = i_ps.get()
-      redacted_array = this_i_ps.partial_access_redactions
+      redacted_array = this_i_ps.situational_awareness_redactions
       final_list = list(set(final_list) - set(redacted_array))
     writer.writerow([
         "%s Work Orders. Downloaded %s UTC by %s" % (

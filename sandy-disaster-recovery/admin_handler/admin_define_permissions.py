@@ -53,6 +53,7 @@ class AdminDefinePermissions(base.AuthenticatedHandler):
         form_params_list = None
         permissions_list = []
         permission_type = self.request.get("permission_type")
+        current_redactions = None
         
         if short_name:
 	  if permission_type:
@@ -65,8 +66,17 @@ class AdminDefinePermissions(base.AuthenticatedHandler):
 	    incident_csv_query.filter("incident =", this_event.key())
 	    this_incident = incident_csv_query.get()
 	    form_params_list = this_incident.incident_csv
+	    
+	    i_ps = incident_permissions_db.IncidentPermissions.all()
+	    i_ps.filter("incident =", this_event.key())
+	    this_i_ps = i_ps.get()
+	    if permission_type == "Situational Awareness":
+	      current_redactions = this_i_ps.situational_awareness_redactions
+	    else:
+	      current_redactions = this_i_ps.partial_access_redactions
 	  else:
 	    permissions_list = ["Partial Access", "Situational Awareness"]
+	    
 	
         self.response.out.write(template.render({
 	  "events": events,
@@ -74,7 +84,8 @@ class AdminDefinePermissions(base.AuthenticatedHandler):
 	  "this_event": this_event,
 	  "form_params_list": form_params_list,
 	  "permission_type": permission_type,
-	  "permissions_list": permissions_list
+	  "permissions_list": permissions_list,
+	  "current_redactions": current_redactions
             
         }))
 	
@@ -99,16 +110,17 @@ class AdminDefinePermissions(base.AuthenticatedHandler):
 	this_i_ps = i_ps.get()
 	if this_i_ps:
 	  if permission_type == "Situational Awareness":
-	    this_i_ps.situational_awareness_redaction = array_list
+	    this_i_ps.situational_awareness_redactions = array_list
 	  else:
 	    this_i_ps.partial_access_redactions = array_list
 	  this_i_ps.put()
 	else:
 	  i_p = incident_permissions_db.IncidentPermissions(incident=this_event.key())
 	  if permission_type == "Situational Awareness":
-	    i_p.situational_awareness_redaction = array_list
+	    i_p.situational_awareness_redactions = array_list
 	  else:
 	    i_p.partial_access_redactions = array_list
+	    i_p.situational_awareness_redactions = array_list
 	  i_p.put()
 
 	self.redirect(str("admin-define-permissions?short_name=" + short_name + "&permission_type=" + permission_type))

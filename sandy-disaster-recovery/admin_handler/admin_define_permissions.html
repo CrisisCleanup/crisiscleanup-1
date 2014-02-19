@@ -2,7 +2,13 @@
 
   {% block main_content %}
     <h2>Define Permissions</h2>
-    
+    {% if current_redactions %}
+      <p>Current redactions include
+      {% for redaction in current_redactions %}
+	<strong>{{ redaction }}</strong>
+      {% endfor %}
+      <p><p>Only use the list below to change this</p>
+    {% endif %}
     
     {% if permissions_list %}
       <select id="permissions_select" name="permissions_select">

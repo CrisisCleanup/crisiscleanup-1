@@ -20,17 +20,26 @@ import csv
 
 # Local libraries.
 import base
-import site_util
+import site_db
 
 
 class ExportHandler(base.AuthenticatedHandler):
+
   def AuthenticatedGet(self, org, event):
     self.AuthenticatedPost(org, event)
 
   def AuthenticatedPost(self, org, event):
-    # if id is empty or undefined, returns all
-    sites = site_util.SitesFromIds(self.request.get('id'), event)
+    # get specified sites
+    id_param = self.request.get('id')
+    if id_param:
+        # get sites from csv of ids
+        ids = map(int, id_param.split(',')) if id_param else []
+        sites = site_db.Site.by_ids(event, ids)
+    else:
+        # return all
+        sites = site_db.Site.all_in_event(event)
 
+    # set headers
     self.response.headers['Content-Type'] = 'text/csv'
     self.response.headers['Content-Disposition'] = (
         'attachment; filename="work_sites.csv"')

@@ -21,6 +21,7 @@ from google.appengine.api import search
 
 import base
 import site_db
+from appengine_utils import generate_with_cursors
 
 
 # constants
@@ -31,6 +32,7 @@ GLOBAL_ADMIN_NAME = "Admin"
 # handler
 
 class ScriptsHandler(base.AuthenticatedHandler):
+
     def AuthenticatedGet(self, org, event):
         # require global admin
         if org.name != GLOBAL_ADMIN_NAME:
@@ -46,6 +48,10 @@ class ScriptsHandler(base.AuthenticatedHandler):
         elif script_name == 'insert_all_geosearch_docs':
             offset = int(self.request.get('offset', 0))
             insert_all_geosearch_docs(offset)
+        elif script_name == 'save_all_sites':
+            deferred.defer(save_all_sites)
+        elif script_name == 'index_all_sites':
+            index_all_sites()
         else:
             ran_script = False
 
@@ -56,7 +62,10 @@ class ScriptsHandler(base.AuthenticatedHandler):
         else:
             self.response.out.write('Unknown script name: "%s"' % script_name)
 
+
+#
 # scripts
+#
 
 def compute_all_sims(offset):
     for i, site in enumerate(site_db.Site.all().run(offset=offset)):
@@ -67,6 +76,7 @@ def compute_all_sims(offset):
         else:
             logging.info("skipping %s..." % i)
 
+
 def _geoindex_doc(site_key):
     site = site_db.Site.get(site_key)
     search_doc = search.Document(
@@ -76,10 +86,24 @@ def _geoindex_doc(site_key):
     ])
     search.Index(name='GEOSEARCH_INDEX').put(search_doc)
 
+
 def insert_all_geosearch_docs(offset):
     logging.info('Deferring geoindexing of all sites (offset=%s)...' % offset)
     for i, site in enumerate(site_db.Site.all().run(offset=offset)):
         deferred.defer(_geoindex_doc, site.key())
-        logging.warn('deferred %s' %i)
+        logging.info('deferred %s' %i)
     logging.info('Completed defers')
-        
+
+
+def save_all_sites():
+    logging.info('Deferring re-saving of all sites...')
+    for i, site in enumerate(generate_with_cursors(site_db.Site.all())):
+        deferred.defer(site.save)
+        logging.info('deferred %s' %i)
+    logging.info('Completed defers')
+
+
+def index_all_sites():
+    logging.info('Deferring indexing of all sites...')
+    deferred.defer(site_db.Site.index_all)
+    logging.info('Completed defer')

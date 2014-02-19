@@ -69,7 +69,7 @@ class EditHandler(base.AuthenticatedHandler):
     #form = site_db.SiteForm(self.request.POST, site)
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #form = site_db.DerechosSiteForm(self.request.POST, site)
-    post_json2 = site_db.SiteToDict(site)
+    post_json2 = site.to_dict()
     date_string = str(post_json2['request_date'])
     post_json2['request_date'] = date_string
     post_json2['event'] = site.event.name
@@ -213,8 +213,6 @@ class EditHandler(base.AuthenticatedHandler):
         min = 1, max = 100,
         message = "Please set a primary work type")]
 
-
-    case_number = site.case_number
     claim_for_org = self.request.get("claim_for_org") == "y"
 
     mode_js = self.request.get("mode") == "js"
@@ -268,7 +266,7 @@ class EditHandler(base.AuthenticatedHandler):
       if query:
 	inc_form = query.form_html
 	
-      post_json2 = site_db.SiteToDict(site)
+      post_json2 = site.to_dict()
       date_string = str(post_json2['request_date'])
       post_json2['request_date'] = date_string
       post_json2['event'] = site.event.name

@@ -209,8 +209,6 @@ class FormHandler(base.AuthenticatedHandler):
         message = None
       elif site.event or event_db.AddSiteToEvent(site, event.key().id()):
         site_db.PutAndCache(site)
-	#dict_dict_site = site_db.SiteToDict(site)
-	#raise Exception(dict_dict_site)
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
         return
       else:

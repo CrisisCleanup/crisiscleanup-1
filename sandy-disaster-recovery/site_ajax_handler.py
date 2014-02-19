@@ -17,19 +17,12 @@
 # System libraries.
 import datetime
 import json
-import logging
-import os
-from google.appengine.ext.db import to_dict
-from google.appengine.ext import db
-from google.appengine.api import memcache
-from google.appengine.ext.db import Query
 
 # Local libraries.
 import base
-import key
 import site_db
 
-PAGE_OFFSET = 100
+PAGE_OFFSET = 1000
 
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
@@ -37,7 +30,10 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) el
 open_statuses = [s for s in site_db.Site.status.choices if 'Open' in s]
 closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statuses]
 
+
 class SiteAjaxHandler(base.AuthenticatedHandler):      
+
+  DEFAULT_SITES_PER_PAGE = PAGE_OFFSET
 
   def AuthenticatedGet(self, org, event):
     # get params
@@ -48,7 +44,7 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
     # set response to be json type for all cases
     self.response.headers['Content-Type'] = 'application/json'
     
-    if latitude_param and longitude_param:
+    if latitude_param and longitude_param: # @@TODO this
       try:
         latitude = float(latitude_param)
         longitude = float(longitude_param)
@@ -65,48 +61,29 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
       self.response.out.write(
             json.dumps(json_array, default = dthandler))      
       return
-      
-    if id_param == "all":
-        status = self.request.get("status", default_value = "")
-        page = self.request.get("page", default_value = "0")
-        page_int = int(page)
-        logging.debug("page = " + page)
-        
-        #query_string = "SELECT * FROM Site WHERE event = :event_key LIMIT %s OFFSET %s" % (PAGE_OFFSET, page_int * PAGE_OFFSET)   
-        ##logging.debug("OFFSET = " + PAGE_OFFSET)
-        ##logging.debug("page * OFFSET = " + page_int * PAGE_OFFSET)
-        
-        #query = db.GqlQuery(query_string, event_key = event.key())
-        q = Query(model_class = site_db.Site)
-       
-        ids = []
-      #filter by event
-        q.filter("event =", event.key())
-        q.is_keys_only()
-        if status == "open":
-            logging.debug("status == open")
-            q.filter("status >= ", "Open")
-        elif status == "closed":
-            q.filter("status < ", "Open")
-            logging.debug("status == closed")
-        logging.debug("status = " + status)
-            
-        #query = q.fetch(PAGE_OFFSET, offset = page_int * PAGE_OFFSET)
-        #for q in query:
-            #ids.append(q.key().id())
-            
-        this_offset = page_int * PAGE_OFFSET
-        logging.debug("this_offset = " + str(this_offset))
-            
-        ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
-        logging.debug("ids len = " + str(len(ids)))
-           
-        output = json.dumps(
-            [s[1] for s in site_db.GetAllCached(event, ids)],
-            default=dthandler)
-        self.response.out.write(output)
-        return
 
+    if id_param == 'all':
+        status_param = self.request.get("status", default_value="")
+        short_status = {
+            'open': site_db.SHORT_STATUS_OPEN,
+            'closed': site_db.SHORT_STATUS_CLOSED
+        }.get(status_param, None)
+        page_param = self.request.get("page", default_value="0")
+        page = int(page_param)
+
+        site_pins = site_db.Site.pins_in_event(
+            event.key(),
+            self.DEFAULT_SITES_PER_PAGE,
+            page,
+            short_status=short_status
+        )
+        json_output = json.dumps(
+            site_pins,
+            default=dthandler
+        )
+        self.response.out.write(json_output)
+        return
+      
     try:
       id = int(id_param)
     except:
@@ -122,4 +99,8 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
     # and prepending the proper garbage strings.
     # Javascript security is really a pain.
     self.response.out.write(
-        json.dumps(site_db.SiteToDict(site), default = dthandler))
+        json.dumps(
+            site.as_dict,
+            default=dthandler
+        )
+    )

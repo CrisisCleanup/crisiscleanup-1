@@ -78,4 +78,8 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
         self.response.headers['Content-Disposition'] = (
             str('attachment; filename="%s"' % filename_to_serve)
         )
-        self.response.write(gcs_fd.read())
+	
+	if org.permissions=="Situational Access":
+	  pass
+	else:
+	  self.response.write(gcs_fd.read())

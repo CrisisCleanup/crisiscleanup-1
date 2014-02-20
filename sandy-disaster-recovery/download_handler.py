@@ -8,6 +8,8 @@ import base
 from time_utils import timestamp
 from export_bulk_handler import all_event_timeless_filename
 
+import incident_permissions_db
+
 
 # constants
 
@@ -79,7 +81,24 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
             str('attachment; filename="%s"' % filename_to_serve)
         )
 	
-	if org.permissions=="Situational Access":
-	  pass
+	if org.permissions == "Situational Awareness":
+	  i_ps = incident_permissions_db.IncidentPermissions.all()
+	  i_ps.filter("incident =", event.key())
+	  this_i_ps = i_ps.get()
+	  delete = this_i_ps.situational_awareness_redactions
+	  
+	  fields = ["name", "request_date"]
+	  w = None
+	  with gcs_fd.read() as infile, open("out.csv", "w", newline="") as outfile:
+	      #           in Python 2, use open("out.csv", "wb") as outfile:
+	      r = csv.DictReader(infile)
+	      w = csv.DictWriter(outfile, fields, extrasaction="ignore")
+	      w.writeheader()
+	      for row in r:
+		  w.writerow(row)
+	  self.response.write(w)
+		  
+	  
+	  
 	else:
 	  self.response.write(gcs_fd.read())

@@ -50,7 +50,7 @@ class AdminDefinePermissions(base.AuthenticatedHandler):
         events = query.fetch(100)
         short_name = self.request.get("short_name")
         this_event = None
-        form_params_list = None
+        form_params_list = []
         permissions_list = []
         permission_type = self.request.get("permission_type")
         current_redactions = None
@@ -65,16 +65,17 @@ class AdminDefinePermissions(base.AuthenticatedHandler):
 	    incident_csv_query = incident_csv_db.IncidentCSV.all()
 	    incident_csv_query.filter("incident =", this_event.key())
 	    this_incident = incident_csv_query.get()
-	    form_params_list = this_incident.incident_csv
-	    
-	    i_ps = incident_permissions_db.IncidentPermissions.all()
-	    i_ps.filter("incident =", this_event.key())
-	    this_i_ps = i_ps.get()
-	    if this_i_ps:
-	      if permission_type == "Situational Awareness":
-		current_redactions = this_i_ps.situational_awareness_redactions
-	      else:
-		current_redactions = this_i_ps.partial_access_redactions
+	    if this_incident:
+	      form_params_list = this_incident.incident_csv
+	      
+	      i_ps = incident_permissions_db.IncidentPermissions.all()
+	      i_ps.filter("incident =", this_event.key())
+	      this_i_ps = i_ps.get()
+	      if this_i_ps:
+		if permission_type == "Situational Awareness":
+		  current_redactions = this_i_ps.situational_awareness_redactions
+		else:
+		  current_redactions = this_i_ps.partial_access_redactions
 	  else:
 	    permissions_list = ["Partial Access", "Situational Awareness"]
 	    

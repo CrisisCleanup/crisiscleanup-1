@@ -88,7 +88,7 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
 	  this_i_ps = i_ps.get()
 	  delete = this_i_ps.situational_awareness_redactions
 	  i = 0
-	  for r in csv.reader(gcs_fd.read()):
+	  for r in csv.DictReader(gcs_fd.read()):
 	    i = i + 1
 	    raise Exception(r)
 	    if r == "name":

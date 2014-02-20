@@ -9,6 +9,7 @@ from time_utils import timestamp
 from export_bulk_handler import all_event_timeless_filename
 
 import incident_permissions_db
+import csv
 
 
 # constants

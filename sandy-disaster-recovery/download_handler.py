@@ -81,23 +81,12 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
             str('attachment; filename="%s"' % filename_to_serve)
         )
 	
-	if org.permissions == "Situational Awareness":
+	if org.permissions == "Full Access":
 	  i_ps = incident_permissions_db.IncidentPermissions.all()
 	  i_ps.filter("incident =", event.key())
 	  this_i_ps = i_ps.get()
 	  delete = this_i_ps.situational_awareness_redactions
-	  
-	  fields = ["name", "request_date"]
-	  w = None
-	  with gcs_fd.read() as infile, open("out.csv", "w", newline="") as outfile:
-	      #           in Python 2, use open("out.csv", "wb") as outfile:
-	      r = csv.DictReader(infile)
-	      w = csv.DictWriter(outfile, fields, extrasaction="ignore")
-	      w.writeheader()
-	      for row in r:
-		  w.writerow(row)
-	  self.response.write(w)
-		  
+	  	    
 	  
 	  
 	else:

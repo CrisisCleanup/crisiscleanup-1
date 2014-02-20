@@ -89,6 +89,7 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
 	  i = 0
 	  for r in gcs_fd.read():
 	    i = i + 1
+	    raise Exception(r)
 	    if r == "name":
 	      raise Exception(i)
 	    else:

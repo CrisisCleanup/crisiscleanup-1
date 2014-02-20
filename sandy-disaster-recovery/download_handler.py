@@ -81,7 +81,7 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
             str('attachment; filename="%s"' % filename_to_serve)
         )
 	
-	if org.permissions == "Full Access":
+	if org.permissions == "Situational Awareness":
 	  i_ps = incident_permissions_db.IncidentPermissions.all()
 	  i_ps.filter("incident =", event.key())
 	  this_i_ps = i_ps.get()

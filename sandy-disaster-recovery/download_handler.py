@@ -92,4 +92,5 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
 	  
 	  
 	else:
+	  raise Exception(123)
 	  self.response.write(gcs_fd.read())

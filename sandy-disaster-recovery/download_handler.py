@@ -86,11 +86,30 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
 	  i_ps.filter("incident =", event.key())
 	  this_i_ps = i_ps.get()
 	  delete = this_i_ps.situational_awareness_redactions
-	  raise Exception(delete)
-	  return
-	  	    
+	  i = 0
+	  for r in gcs_fd.read():
+	    i = i + 1
+	    if r == "name":
+	      raise Exception(i)
+	    else:
+	      raise Exception("none found")
+	  raise Exception("didn't loop")
+	    
+	  
 	  
 	  
 	else:
-	  raise Exception(123)
 	  self.response.write(gcs_fd.read())
+
+
+
+def remove_csv_columns(csv_file, column_numbers):
+  for number in column_numbers:
+    pass
+
+
+def get_csv_column_numbers(csv_file, column_names):
+  column_numbers = []
+  
+  
+  return column_numbers

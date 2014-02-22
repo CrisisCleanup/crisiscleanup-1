@@ -8,6 +8,8 @@ import base
 from time_utils import timestamp
 from export_bulk_handler import all_event_timeless_filename
 
+import incident_permissions_db
+
 
 # constants
 
@@ -78,4 +80,5 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
         self.response.headers['Content-Disposition'] = (
             str('attachment; filename="%s"' % filename_to_serve)
         )
-        self.response.write(gcs_fd.read())
+
+	self.response.write(gcs_fd.read())

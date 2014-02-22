@@ -1,0 +1,13 @@
+
+{% extends "base_template.html" %}
+
+
+{% block main_title %}
+<h2>You don't have permission to see this page.</h2>
+{% endblock %}
+
+{% block main_content %}
+<p>Your organization has been assigned the role 'situational awareness'. As such, you can only export CSVs at this time.</p>
+<p>To export this incident's CSV, click <a href="/export_all_download">here</a>.</p>
+<p>You can also view statistics <a href="/incident-statistics">here</a>.</p>
+{% endblock %}

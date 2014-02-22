@@ -1,0 +1,79 @@
+{% extends "base_template.html" %}
+
+  {% block main_content %}
+    <h2>Define Permissions</h2>
+    {% if current_redactions %}
+      <p>Current redactions include
+      {% for redaction in current_redactions %}
+	<strong>{{ redaction }}</strong>
+      {% endfor %}
+      <p><p>Only use the list below to change this</p>
+    {% endif %}
+    
+    {% if permissions_list %}
+      <select id="permissions_select" name="permissions_select">
+	  <option value="">Choose a permission</option>
+	  {% for permission in permissions_list %}
+	    <option value="{{permission}}">{{ permission }}</option>
+	  {% endfor %}
+	</select> 
+	
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+      <script>
+	$( "#permissions_select" ).change(function() {
+	  var permission_type = $("#permissions_select").val();
+	  var short_name_ = GetUrlValue("short_name");
+	  location.href="?short_name=" + GetUrlValue("short_name") + "&permission_type=" + permission_type ;
+	});
+	
+	function GetUrlValue(VarSearch){
+	    var SearchString = window.location.search.substring(1);
+	    var VariableArray = SearchString.split('&');
+	    for(var i = 0; i < VariableArray.length; i++){
+		var KeyValuePair = VariableArray[i].split('=');
+		if(KeyValuePair[0] == VarSearch){
+		    return KeyValuePair[1];
+		}
+	    }
+	}
+      </script>
+    {% endif %}
+    
+    
+    {% if short_name and permission_type %}
+      <h4>{{ this_event.name }}</h4>
+      <h4>Permission - {{ permission_type }}</h4>
+      <p>Choose attributes to <strong>redact</strong> from the form.</p>
+      <form action="/admin-define-permissions" method="POST">
+	{% for param in form_params_list %}
+	  <input type="checkbox" name="{{param}}" value="True">{{param}}<br>
+	{% endfor %}
+	<input type="hidden" name="short_name" value="{{ short_name }}">
+	<input type="hidden" name="permission_type" value="{{ permission_type }}">
+
+	<button class="submit">Submit</button>
+      </form>
+      
+    {% endif %}
+    
+    {% if not short_name %}
+    
+      <select id="event_select" name="event_select">
+	<option value="">Choose an event</option>
+	{% for event in events %}
+	  <option value="{{event.short_name}}">{{ event.name }}</option>
+	{% endfor %}
+      </select>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+      <script>
+      $( "#event_select" ).change(function() {
+	var short_name = $("#event_select").val();
+	location.href="?short_name=" + short_name ;
+      });
+      </script>
+
+    {% endif %}
+
+    
+  {% endblock %}

@@ -106,6 +106,20 @@ def search_doc_to_dict(doc):
         field.name: field.value for field in doc.fields
     }
 
+
+def search_query_str_from_params(triples):
+    """
+    Construct a query string for the GAE Search API
+    from a list of triples of the form
+        (name_of_field, coercion_funcction, value)
+    """
+    query_str = u''
+    for field_name, coerce_fn, value in triples:
+        if value is not None:
+            query_str += '%s:%s ' % (field_name, coerce_fn(value))
+    return query_str
+
+
 def generate_from_search_with_cursors(index, query_str):
     cursor = search.Cursor()
     while cursor != None:

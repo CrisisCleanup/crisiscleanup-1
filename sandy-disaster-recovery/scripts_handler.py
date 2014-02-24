@@ -21,6 +21,7 @@ from google.appengine.api import search
 
 import base
 import site_db
+import organization
 from appengine_utils import generate_with_cursors
 
 
@@ -39,6 +40,9 @@ class ScriptsHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
 
+        # set output content type
+        self.response.headers['Content-Type'] = 'text/plain'
+
         # choose script
         ran_script = True
         script_name = self.request.get('script', None)
@@ -48,15 +52,19 @@ class ScriptsHandler(base.AuthenticatedHandler):
         elif script_name == 'insert_all_geosearch_docs':
             offset = int(self.request.get('offset', 0))
             insert_all_geosearch_docs(offset)
-        elif script_name == 'save_all_sites':
-            deferred.defer(save_all_sites)
+        elif script_name == 'save_all':
+            model_name = self.request.get('model', u'')
+            if model_name:
+                deferred.defer(save_all, model_name)
+            else:
+                self.response.out.write('need model name')
+                return
         elif script_name == 'index_all_sites':
             index_all_sites()
         else:
             ran_script = False
 
         # write output
-        self.response.headers['Content-Type'] = 'text/plain'
         if ran_script:
             self.response.out.write('Ran %s successfully' % script_name)
         else:
@@ -95,10 +103,18 @@ def insert_all_geosearch_docs(offset):
     logging.info('Completed defers')
 
 
-def save_all_sites():
-    logging.info('Deferring re-saving of all sites...')
-    for i, site in enumerate(generate_with_cursors(site_db.Site.all())):
-        deferred.defer(site.save)
+def save_all(model_name):
+    assert isinstance(model_name, basestring)
+    model_class = {
+        'site': site_db.Site,
+        'organization': organization.Organization,
+        'org': organization.Organization,
+    }.get(model_name.lower())
+    if not model_class:
+        raise Exception("Unknown model name: %s" % model_name)
+    logging.info('Deferring re-saving of all %s entities...' % model_name)
+    for i, entity in enumerate(generate_with_cursors(model_class.all())):
+        deferred.defer(entity.save)
         logging.info('deferred %s' %i)
     logging.info('Completed defers')
 

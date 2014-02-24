@@ -20,7 +20,6 @@ $(function(){
 // 	
 //       });
       $( ".MapIncident" ).each(function( index ) {
-// 	console.log( index + ": " + $(this).text() );
 	$(this).css("border-color", "#3891cf");
       });
       $(this).css("border-color", "#10253d");
@@ -66,7 +65,6 @@ var getMarkerIcon = function (site) {
     }
     site.work_type = marker_work_type;
     var icon_type = site.work_type.replace(/ /g, "_");
-    console.log("/icons/" + icon_type + "_" + color + ".png");
     return "/icons/" + icon_type + "_" + color + ".png";
 }
 
@@ -125,7 +123,6 @@ var getInfoboxDetails = function(site) {
 	    }
         }
     }
-    console.log(details);
     return details;
 }
 

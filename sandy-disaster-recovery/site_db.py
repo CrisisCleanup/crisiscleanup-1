@@ -326,7 +326,17 @@ class Site(SearchIndexedExpandoModel):
               search.TextField('zip_code', self.zip_code),
               search.TextField('reported_by_name', self.reported_by_name),
               search.TextField('claimed_by_name', self.claimed_by_name),
-          ])
+          ]),
+          (search.Index('SitePublicPinIndex'), [
+              search.AtomField('event_key', unicode(self.event.key())),
+              search.AtomField('case_number', self.case_number),
+              search.AtomField('status', self.status),
+              search.AtomField('short_status', self.short_status),
+              search.AtomField('work_type', self.work_type),
+              search.AtomField('floors_affected', self.floors_affected),
+              search.NumberField('blurred_latitude', self.blurred_latitude),
+              search.NumberField('blurred_longitude', self.blurred_longitude),
+          ]),
       ]
 
   @classmethod
@@ -364,6 +374,23 @@ class Site(SearchIndexedExpandoModel):
           return d
 
       return map(augment_connected_orgs, map(search_doc_to_dict, results))
+
+  @classmethod
+  @memcached(cache_tag='SiteCaches')
+  def public_pins_in_event(cls, event_key, n, page, short_status=None):
+      search_index = search.Index('SitePublicPinIndex')
+      query_str = (
+          u'event_key:%s' % unicode(event_key) +
+          (u' short_status:%s' % short_status) if short_status else u''
+      )
+      results = generate_from_search(search_index, query_str, n, n*page)
+
+      def filter_fields(d):
+          del(d['event_key'])
+          del(d['short_status'])
+          return d
+
+      return map(filter_fields, map(search_doc_to_dict, results))
 
   @classmethod
   def by_ids(cls, event, ids):

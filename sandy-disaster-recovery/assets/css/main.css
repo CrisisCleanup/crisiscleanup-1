@@ -8,9 +8,6 @@
 /*================================================
     RESET
 ================================================*/
-table.incident_definition_table {
- width:50%; 
-}
 html,
 button,
 input,
@@ -66,7 +63,6 @@ nav ul, nav ol {
   margin: 0;
   padding: 0;
 }
-
 a {
   color: #dda100;
   text-decoration: none;
@@ -652,7 +648,7 @@ footer[role=contentinfo] p .left {
 /*
 	RESPONSIVE STYLES
 */
-@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5), only screen and (max-width: 960px) {
+@media only screen and (max-width: 960px) {
   h2.orphan {
     margin: 0 5% 20px;
     width: 90%;
@@ -1020,13 +1016,4 @@ ol.fifteen > li:before {
 .float_div {
     position:fixed;
     top:20px;
-}
-
-.horizontal {
-  display: inline;
-}
-
-.row {
-    margin-left: -100px;
-    margin-right: -100px;
 }

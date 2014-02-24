@@ -152,7 +152,6 @@ var populateMapByIncident = function(incident, page, old_markers) {
 					     'site_id': sites_list[i].id, 
 					      'case_number': sites_list[i].case_number, 
 					      'work_type': sites_list[i].work_type, 
-					      'floors_affected': sites_list[i].floors_affected, 
 					      'status': sites_list[i].status});
 	 markers.push(marker);
 	 var site_id = sites_list[i].id;

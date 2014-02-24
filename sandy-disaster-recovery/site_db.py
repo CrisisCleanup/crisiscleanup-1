@@ -333,7 +333,6 @@ class Site(SearchIndexedExpandoModel):
               search.AtomField('status', self.status),
               search.AtomField('short_status', self.short_status),
               search.AtomField('work_type', self.work_type),
-              search.AtomField('floors_affected', self.floors_affected),
               search.NumberField('blurred_latitude', self.blurred_latitude),
               search.NumberField('blurred_longitude', self.blurred_longitude),
           ]),

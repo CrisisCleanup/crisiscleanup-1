@@ -18,8 +18,6 @@
 	  {% endfor %}
 	</select> 
 	
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-
       <script>
 	$( "#permissions_select" ).change(function() {
 	  var permission_type = $("#permissions_select").val();
@@ -65,7 +63,6 @@
 	  <option value="{{event.short_name}}">{{ event.name }}</option>
 	{% endfor %}
       </select>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
       <script>
       $( "#event_select" ).change(function() {
 	var short_name = $("#event_select").val();

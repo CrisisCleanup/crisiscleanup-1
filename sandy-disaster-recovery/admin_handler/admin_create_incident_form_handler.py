@@ -263,7 +263,7 @@ class AdminCreateIncidentFormHandler(base.AuthenticatedHandler):
 	ignore_similar = """
 	
 <input type="checkbox" id="ignore_similar" name="ignore_similar">
-<label for="ignore_similar">Ignore similar matches</label>
+<label for="ignore_similar">Skip check for duplicates</label>
 <br/>
 
 """

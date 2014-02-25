@@ -163,6 +163,7 @@ class FormHandler(base.AuthenticatedHandler):
     
     forms_json_obj = json.loads(inc_def_query.forms_json)
     phase_number = get_phase_number(forms_json_obj, phase_id)
+    phase_name = get_phase_name(forms_json_obj, phase_number)
     wt_form = build_form(json.loads(inc_def_query.forms_json), phase_number)
     wt_data = wt_form(self.request.POST)
     validations_array = []
@@ -203,10 +204,11 @@ class FormHandler(base.AuthenticatedHandler):
 	    if k == "work_type":
 	      #raise Exception(v)
 	    #raise Exception(k)
-	      setattr(phase_obj, k, str(v))
+	      k = "phase_" + phase_name.lower + "_" + k
+	      setattr(site, k, str(v))
 	try:
 	  if phase_obj.status != None:
-	    phase_obj.put()
+	    site.put()
 	except:
 	  pass
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
@@ -259,8 +261,10 @@ class FormHandler(base.AuthenticatedHandler):
 	    #if k == "work_type":
 	      #raise Exception(v)
 	    #raise Exception(k)
-	    setattr(phase_obj, k, str(v))
-	phase_obj.put()
+	    k = "phase_" + phase_name.lower + "_" + k
+
+	    setattr(site, k, str(v))
+	site.put()
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
 
 	# get all info.
@@ -385,3 +389,15 @@ def get_personal_information_module_by_site_id(site_id):
     if field in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
       personal_info_data[field] = str(site_dict[field])
   return personal_info_data
+
+def get_phase_name(form_json, phase_number):
+  phase_number = int(phase_number)
+  i = 0
+  phase_name = ""
+  for obj in form_json:
+    if phase_number == i:
+      for data in obj:
+	if 'phase_name' in data:
+	  phase_name = data["phase_name"]
+    i += 1
+  return phase_name

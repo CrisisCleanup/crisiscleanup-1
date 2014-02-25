@@ -261,7 +261,7 @@ class FormHandler(base.AuthenticatedHandler):
 	    #if k == "work_type":
 	      #raise Exception(v)
 	    #raise Exception(k)
-	    k = "phase_" + phase_name.lower + "_" + k
+	    k = "phase_" + phase_name.lower() + "_" + k
 
 	    setattr(site, k, str(v))
 	site.put()

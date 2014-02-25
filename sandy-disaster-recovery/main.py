@@ -93,21 +93,18 @@ from admin_handler import admin_social_media_handler
 from admin_handler import admin_website_alerts_handler
 from admin_handler import admin_import_csv_handler
 from admin_handler import admin_edit_pages_handler
-from admin_handler import admin_single_organization_handler
 from admin_handler import admin_edit_organization_handler
 from admin_handler import admin_edit_contact_handler
 from admin_handler import admin_validation_questions_handler
 from admin_handler import admin_import_contacts_handler
 from admin_handler import admin_create_incident_form_handler
-from admin_handler import admin_website_settings_handler
+from admin_handler import admin_global_settings_handler
 from admin_handler import admin_define_permissions
 
 import form_ajax_handler
 import update_csv_handler
 from admin_handler import admin_create_incident_csv_handler
 from admin_handler import admin_stats_handler
-
-from migrations import update_handler
 
 
 
@@ -186,8 +183,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-create-contact', admin_create_contact_handler.AdminHandler, 'admin_create_contact_handler'),
     Route(r'/admin-display-contacts', admin_display_contacts_handler.AdminHandler, 'admin_display_contacts_handler'),
     Route(r'/admin-single-contact', admin_single_contact_handler.AdminHandler, 'admin_single_contact_handler'),
-    Route(r'/admin-single-organization', admin_single_organization_handler.AdminHandler, 'admin_single_organization_handler'),
-    Route(r'/admin-edit-organization', admin_edit_organization_handler.AdminHandler, 'admin_edit_organization_handler'),
+    Route(r'/admin-edit-organization', admin_edit_organization_handler.AdminEditOrganizationHandler, 'admin_edit_organization_handler'),
     Route(r'/admin-edit-contact', admin_edit_contact_handler.AdminHandler, 'admin_edit_contact_handler'),
     Route(r'/admin-validation-questions', admin_validation_questions_handler.AdminValidationQuestionsHandler, 'admin_validation_questions'),
     Route(r'/admin-see-admins', admin_see_admins_handler.AdminHandler, 'admin_see_admins_handler'),
@@ -218,7 +214,7 @@ app = webapp2.WSGIApplication([
     Route(r'/contact-info', contact_info_handler.ContactInfoHandler, 'contact_info_handler'),
     Route(r'/organization-settings', organization_settings_handler.OrganizationSettingsHandler, 'organization_settings_handler'),
     Route(r'/incident-statistics', stats.IncidentStatisticsHandler, 'incident_statistics_handler'),
-    Route(r'/export_contacts_handler', export_contacts_handler.ExportContactsHandler, 'export_contacts_handler'),
+    Route(r'/export_contacts', export_contacts_handler.ExportContactsHandler, 'export_contacts'),
     Route(r'/organization-add-contact', organization_add_contacts_handler.OrganizationAddContactsHandler, 'organization_add_contacts_handler'),   
     Route(r'/organization-edit-contact', organization_edit_contacts_handler.OrganizationEditContactsHandler, 'organization_edit_contacts_handler'),   
     Route(r'/welcome', welcome_handler.WelcomeHandler, 'welcome_handler'),
@@ -234,8 +230,7 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
-    Route(r'/admin-website-settings', admin_website_settings_handler.AdminWebsiteSettingsHandler, 'admin_website_settings'),
-    Route(r'/update_schema', update_handler.UpdateHandler, name='update_schema'),
+    Route(r'/admin-global-settings', admin_global_settings_handler.AdminGlobalSettingsHandler, 'admin_global_settings'),
 
     # cronned tasks
     Route(r'/refresh_counties', refresh_handler.RefreshHandler, name='refresh_counties'),

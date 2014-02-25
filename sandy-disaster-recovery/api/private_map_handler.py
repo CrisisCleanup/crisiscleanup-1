@@ -77,15 +77,22 @@ class PrivateMapHandler(base.AuthenticatedHandler):
 
     ids = []
 
-    q = Query(model_class = phase_db.Phase)
-    q.filter("event_name =", event.name)
-    q.is_keys_only()
-    q.filter("status >= ", "Open")
-    q.filter("phase_id =", phase_id)
+    #q = Query(model_class = phase_db.Phase)
+    #q.filter("event_name =", event.name)
+    #q.is_keys_only()
+    #q.filter("status >= ", "Open")
+    #q.filter("phase_id =", phase_id)
 	  
-    ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
+    #ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
 
-	  
+    q = Query(model_class = site_db.Site)
+    q.filter("event =", event.key())
+    q.is_keys_only()
+    query = q.fetch(PAGE_OFFSET, offset=this_offset)
+    #raise Exception(query)
+    ids = [site.key().id() for site in query]
+    
+
     # TODO
     # Get all entities in a phase.
     # ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]

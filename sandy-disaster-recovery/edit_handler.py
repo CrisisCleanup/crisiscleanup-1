@@ -103,18 +103,30 @@ class EditHandler(base.AuthenticatedHandler):
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #form = site_db.DerechosSiteForm(self.request.POST, site)
     post_json2 = site_db.SiteToDict(site)
-
+    post_json_final = {}
+    phase_name = get_phase_name(json.loads(inc_def_query.forms_json), phase_number_get).lower()
+    phase_prefix = "phase_" + phase_name + "_"
+    for obj in post_json2:
+      if phase_prefix in obj:
+	#raise Exception(post_json2[obj])
+	new_attr = obj.replace(phase_prefix, "")
+	post_json_final[new_attr] = post_json2[obj]
+      else:
+	post_json_final[obj] = post_json2[obj]
+    post_json2 = post_json_final
+    #raise Exception(post_json2)
+    #raise Exception(post_json_final)
     date_string = str(post_json2['request_date'])
     post_json2['request_date'] = date_string
     post_json2['event'] = site.event.name
     
-    remove_array = []
-    for attr in post_json2:
-      if attr not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
-	remove_array.append(attr)
+    #remove_array = []
+    #for attr in post_json2:
+      #if attr not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+	#remove_array.append(attr)
 	
-    for attr in remove_array:
-      del post_json2[attr]
+    #for attr in remove_array:
+      #del post_json2[attr]
 
 
     phase_id = get_phase_id(json.loads(inc_def_query.forms_json), phase)
@@ -135,6 +147,7 @@ class EditHandler(base.AuthenticatedHandler):
     #
     ################
     post_json = json.dumps(post_json2)
+    #raise Exception(post_json)
 
 
     inc_form = None
@@ -493,3 +506,16 @@ def populate_phase_links(phases_json, site_id):
     i+=1
     
   return links
+
+
+def get_phase_name(form_json, phase_number):
+  phase_number = int(phase_number)
+  i = 0
+  phase_name = ""
+  for obj in form_json:
+    if phase_number == i:
+      for data in obj:
+	if 'phase_name' in data:
+	  phase_name = data["phase_name"]
+    i += 1
+  return phase_name

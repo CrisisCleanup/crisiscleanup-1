@@ -82,6 +82,7 @@ class PrivateMapHandler(base.AuthenticatedHandler):
 
     q = Query(model_class = site_db.Site)
     q.filter("event =", event.key())
+    q.filter("open_phases_list =", phase_name.lower())
     q.is_keys_only()
     query = q.fetch(PAGE_OFFSET, offset=this_offset)
     #raise Exception(query)

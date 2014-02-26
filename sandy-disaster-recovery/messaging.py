@@ -16,6 +16,7 @@
 #
 
 import os
+import codecs
 from collections import namedtuple
 
 from google.appengine.ext import db
@@ -125,11 +126,13 @@ class EmailTemplate(db.Model):
             return existing
         else:
             # create new from defaults
-            default_subject_fd = open(
-                os.path.join(DEFAULT_TEMPLATES_PATH, '%s.subject.txt' % name)
+            default_subject_fd = codecs.open(
+                os.path.join(DEFAULT_TEMPLATES_PATH, '%s.subject.txt' % name),
+                encoding='utf-8'
             )
-            default_body_fd = open(
-                os.path.join(DEFAULT_TEMPLATES_PATH, '%s.body.txt' % name)
+            default_body_fd = codecs.open(
+                os.path.join(DEFAULT_TEMPLATES_PATH, '%s.body.txt' % name),
+                encoding='utf-8'
             )
             new_email_template = EmailTemplate(
                 name=name,

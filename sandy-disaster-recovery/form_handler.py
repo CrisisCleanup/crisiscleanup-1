@@ -206,11 +206,11 @@ class FormHandler(base.AuthenticatedHandler):
 	    #raise Exception(k)
 	      k = "phase_" + phase_name.lower + "_" + k
 	      setattr(site, k, str(v))
-	try:
-	  if phase_obj.status != None:
-	    site_db.PutAndCache(site)
-	except:
-	  pass
+	old_phases_list = site.open_phases_list
+	old_phases_list.append(phase_name.lower())
+	setattr(site, "open_phases_list", phases_list)
+	site_db.PutAndCache(site)
+	
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
 	
       elif site_id == "":
@@ -265,6 +265,10 @@ class FormHandler(base.AuthenticatedHandler):
 
 	    setattr(site, k, str(v))
 	#setattr(site, "open_phases_list", phase_name)
+	phases_list = []
+	phases_list.append(phase_name.lower())
+	setattr(site, "open_phases_list", phases_list)
+	
 	site_db.PutAndCache(site)
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
 

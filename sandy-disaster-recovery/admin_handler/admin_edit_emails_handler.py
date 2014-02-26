@@ -17,6 +17,8 @@
 
 from xml.sax.saxutils import unescape
 
+from google.appengine.ext.db import Property
+
 import wtforms
 from wtforms.ext.appengine.db import model_form
 
@@ -55,10 +57,18 @@ class AdminEditEmailsHandler(AdminAuthenticatedHandler):
     def render(self, **kwargs):
         # augment args to template with entity classes
         # (to list properties)
+
+        def properties(cls):
+            return sorted([
+                name for name, prop in vars(cls).items()
+                if not name.startswith('_')
+                and isinstance(prop, (property, Property))
+            ])
+
         super(AdminEditEmailsHandler, self).render(**dict(kwargs,
-            Event=Event,
-            Organization=Organization,
-            Contact=Contact,
+            event_properties=properties(Event),
+            organization_properties=properties(Organization),
+            contact_properties=properties(Contact),
         ))
 
     def AuthenticatedGet(self, org, event):

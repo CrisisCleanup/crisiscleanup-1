@@ -17,22 +17,22 @@
   </code>
 {% endmacro %}
 
-{% macro render_properties_list(cls, short_name) %}
-  {% for prop in cls._properties %}
-    {% if not prop.startswith('_') %}
-      <div>
-        {{ render_jinja_var(short_name + "." + prop) }}
-      </div>
-    {% endif %}
+{% macro render_properties_list(properties, var_name) %}
+  {% for prop in properties %}
+    <div>
+      {{ render_jinja_var(var_name + "." + prop) }}
+    </div>
   {% endfor %}
 {% endmacro %}
 
 <div class="row">
-  <div class="col-sm-3">
+  <div class="col-sm-4">
     <h4>Organizations</h4>
-    {{ render_properties_list(Organization, "org") }}
-    <br>
-    <p>Organizations also have the following lists of contacts:</p>
+    {{ render_properties_list(organization_properties, "org") }}
+  </div>
+  <div class="col-sm-4">
+    <h4>Lists</h4>
+    <p>Organizations also have the following <em>lists</em> of contacts:</p>
     <ul>
       <li>
         {{ render_jinja_var("org.contacts") }}
@@ -41,14 +41,25 @@
         {{ render_jinja_var("org.primary_contacts") }}
       </li>
     </ul>
-  </div>
-  <div class="col-sm-3">
     <h4>Contacts</h4>
-    {{ render_properties_list(Contact, "contact") }}
-  </div>
-  <div class="col-sm-3">
+    {{ render_properties_list(contact_properties, "contact") }}
     <h4>Events</h4>
-    {{ render_properties_list(Event, "event") }}
+    {{ render_properties_list(event_properties, "event") }}
+  </div>
+  <div class="col-sm-4">
+    <h4>Syntax</h4>
+    <p>Templates use the <a href="http://jinja.pocoo.org/docs/">Jinja2 language</a>.</p>
+    <h5>Variables</h5>
+    <p>Variables to be substituted use pairs of double braces, e.g. <code>{% raw %}{{ org.name }}{% endraw %}</code></p>
+    <h5>Loops</h5>
+    <p>Lists can be iterated over, e.g.</p>
+    <code>
+      {% raw %}
+        {% for contact in org.contacts %}<br>
+        {{ contact.first_name }}<br>
+        {% endfor %}
+      {% endraw %}
+    </code>
   </div>
 </div>
 

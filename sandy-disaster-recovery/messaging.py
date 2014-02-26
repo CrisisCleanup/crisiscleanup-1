@@ -15,7 +15,9 @@
 # limitations under the License.
 #
 
+import logging
 import os
+import functools
 import codecs
 from collections import namedtuple
 
@@ -240,6 +242,7 @@ def send_email_by_service(
 
 #
 # email to contacts functions
+# (not to be used directly)
 #
 
 
@@ -327,9 +330,27 @@ def email_administrators_using_templates(event, email_name, include_local=True, 
 
 
 #
-# Specific named email functions
+# Specific email methods
+#
+# (all prevented from raising exceptions to avoid blowing up the caller)
 #
 
+def catch_exceptions(exception=Exception, logger=logging.getLogger(__name__)):
+    def deco(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                result = func(*args, **kwargs)
+            except exception as err:
+                logging.error(u"Exception occured. Traceback follows.")
+                logger.exception(err)
+            else:
+                return result
+        return wrapper
+    return deco
+
+
+@catch_exceptions()
 def send_new_organization_email_to_organization(event, org, contacts):
     primary_contacts = [c for c in contacts if c.is_primary]
     email_contacts_using_templates(
@@ -342,6 +363,7 @@ def send_new_organization_email_to_organization(event, org, contacts):
     )
 
 
+@catch_exceptions()
 def send_new_organization_email_to_admins(event, org, contacts, approval_url):
     email_administrators_using_templates(
         event,
@@ -352,6 +374,7 @@ def send_new_organization_email_to_admins(event, org, contacts, approval_url):
         approval_url=approval_url,
     )
 
+@catch_exceptions()
 def send_organization_joins_incident_email_to_admins(event, org, review_url):
     email_administrators_using_templates(
         event,
@@ -361,6 +384,7 @@ def send_organization_joins_incident_email_to_admins(event, org, review_url):
     )
 
 
+@catch_exceptions()
 def send_activation_emails(org_for_activation):
     activation_url = "%s/activate?code=%s" % (
         get_base_url(),
@@ -375,6 +399,7 @@ def send_activation_emails(org_for_activation):
     )
 
 
+@catch_exceptions()
 def send_activated_emails(org_activated):
     email_contacts_using_templates(
         None,

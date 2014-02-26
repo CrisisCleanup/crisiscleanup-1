@@ -208,7 +208,7 @@ class FormHandler(base.AuthenticatedHandler):
 	      setattr(site, k, str(v))
 	try:
 	  if phase_obj.status != None:
-	    site.put()
+	    site_db.PutAndCache(site)
 	except:
 	  pass
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
@@ -264,7 +264,8 @@ class FormHandler(base.AuthenticatedHandler):
 	    k = "phase_" + phase_name.lower() + "_" + k
 
 	    setattr(site, k, str(v))
-	site.put()
+	#setattr(site, "open_phases_list", phase_name)
+	site_db.PutAndCache(site)
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
 
 	# get all info.

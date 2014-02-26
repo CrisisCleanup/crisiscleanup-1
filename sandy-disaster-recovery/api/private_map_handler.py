@@ -49,9 +49,12 @@ class PrivateMapHandler(base.AuthenticatedHandler):
     q.filter("incident =", event.key())
     inc_def_query = q.get()
     
+    
     phases_json = json.loads(inc_def_query.phases_json)
     phase_id = phases_json[int(phase_number)]['phase_id']
-    
+    forms_json_obj = json.loads(inc_def_query.forms_json)
+
+    phase_name = get_phase_name(forms_json_obj, phase_number)
     event_shortname = self.request.get("shortname")
     page = self.request.get("page")
     page_int = int(page)
@@ -77,14 +80,6 @@ class PrivateMapHandler(base.AuthenticatedHandler):
 
     ids = []
 
-    #q = Query(model_class = phase_db.Phase)
-    #q.filter("event_name =", event.name)
-    #q.is_keys_only()
-    #q.filter("status >= ", "Open")
-    #q.filter("phase_id =", phase_id)
-	  
-    #ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
-
     q = Query(model_class = site_db.Site)
     q.filter("event =", event.key())
     q.is_keys_only()
@@ -103,3 +98,16 @@ class PrivateMapHandler(base.AuthenticatedHandler):
 	default=dthandler
     )
     self.response.out.write(output)
+
+
+def get_phase_name(form_json, phase_number):
+  phase_number = int(phase_number)
+  i = 0
+  phase_name = ""
+  for obj in form_json:
+    if phase_number == i:
+      for data in obj:
+	if 'phase_name' in data:
+	  phase_name = data["phase_name"]
+    i += 1
+  return phase_name

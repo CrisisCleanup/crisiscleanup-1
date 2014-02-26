@@ -1,3 +1,4 @@
+Dear Administrator,
 
 Existing organization {{ org.name }} has joined incident {{ event.name }}.
 
@@ -22,3 +23,5 @@ State:   {{ org.state }}
 Zip:     {{ org.zip_code }}
 Phone:   {{ org.phone }}
 Email:   {{ org.email }}
+
+You do not need to take any action at this time. An organization that has been approved for prior incidents is presumed to be eligible for any other incident. You are receiving this email in case you see a pattern of potential abuse, where an organization inappropriately requests access to multiple incidents.

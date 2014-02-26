@@ -1,5 +1,14 @@
-Your application to join Crisis Cleanup has been approved.
-
-To activate your account, please visit the link below and follow the instructions on the page:
+Your application to join Crisis Cleanup has been verified. To activate your account, please visit the link below and follow the instructions on the page:
 
 {{ activation_url }}
+
+You will be asked to answer three easy questions about Crisis Cleanup, with plenty of hints. If you get one wrong, don't worry; you'll get another chance. Once you answer three questions correctly, you'll IMMEDIATELY see your organization's passcode on the screen and receive an email with the passcode and further instructions. Check your spam filter if you do not receive the confirmation email.
+
+-Crisis Cleanup Support Services
+
+Twitter: @CrisisCleanup
+(848) 480-0660 (Support)
+Help: https://crisiscleanup.zendesk.com/hc/
+Donate: http://www.crisiscleanup.org/donate
+Facebook: http://bit.ly/CrisisCleanup
+Crisis Cleanup is a free, open source Collaborative Disaster Recovery Mapping tool.

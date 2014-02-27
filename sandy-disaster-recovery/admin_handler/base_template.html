@@ -168,7 +168,7 @@
               Settings <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="/admin-website-settings">Global Admin</a></li>
+              <li><a href="/admin-global-settings">Global Settings</a></li>
               <li class="disabled"><a href="#settings_web_analytics.html">Web Analytics</a></li>
               <li class="disabled"><a href="#settings_display.html">Display Settings</a></li>
               <li><a href="/admin-edit-pages">Content Settings</a></li>
@@ -206,13 +206,10 @@
 
   <div style="height: 40px;"></div>
 
-  <!-- libs -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script>
-    if (!window.jQuery) {
-        document.write('<script src="/assets/js/libs/jquery-1.10.2.min.js"><\/script>');
-    }
-  </script>
+  {# load scripts at the end #}
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
+
   <script src="/assets/js/libs/bootstrap.min.js"></script>
   <script src="/assets/js/libs/spin.min.js"></script>
   <script src="/assets/js/libs/ladda.min.js"></script>

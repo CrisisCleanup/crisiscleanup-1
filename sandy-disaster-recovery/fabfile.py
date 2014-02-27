@@ -13,7 +13,7 @@ import yaml
 
 # constants
 
-REQUIRED_SDK_VERSION = '1.8.8'
+ALLOWED_SDK_VERSIONS = {'1.8.8', '1.8.9'}
 APP_YAML_FILENAME = 'app.yaml'
 APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template.yaml'
 BUILD_DIR_PREFIX = 'ccbuild'
@@ -125,9 +125,9 @@ def sdk_version_ok():
         current_sdk_version = sdk_version_d['release']
     except:
         current_sdk_version = None
-    if current_sdk_version != REQUIRED_SDK_VERSION:
-        abort("Local SDK version is %s - %s is required" % (
-            current_sdk_version, REQUIRED_SDK_VERSION))
+    if current_sdk_version not in ALLOWED_SDK_VERSIONS:
+        abort("Local SDK version is %s - one of %s is required" % (
+            current_sdk_version, ALLOWED_SDK_VERSIONS))
     return True
 
 
@@ -399,14 +399,17 @@ def write_local_app_yaml():
 
 
 @task
-def dev():
+def dev(storage_path=None):
     " Start development server. "
     sdk_version_ok()
     write_local_app_yaml()
-    local(
-        "%s --require_indexes=true --show_mail_body=true ." %
+    command = "%s --require_indexes=true --show_mail_body=true " % (
         os.path.join(env.sdk_path, 'dev_appserver.py')
     )
+    if storage_path:
+        command += "--storage_path=%s " % storage_path
+    command += "."
+    local(command)
 
 
 @task

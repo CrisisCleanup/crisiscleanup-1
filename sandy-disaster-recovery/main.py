@@ -98,7 +98,7 @@ from admin_handler import admin_edit_contact_handler
 from admin_handler import admin_validation_questions_handler
 from admin_handler import admin_import_contacts_handler
 from admin_handler import admin_create_incident_form_handler
-from admin_handler import admin_website_settings_handler
+from admin_handler import admin_global_settings_handler
 from admin_handler import admin_define_permissions
 
 import form_ajax_handler
@@ -230,7 +230,7 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
-    Route(r'/admin-website-settings', admin_website_settings_handler.AdminWebsiteSettingsHandler, 'admin_website_settings'),
+    Route(r'/admin-global-settings', admin_global_settings_handler.AdminGlobalSettingsHandler, 'admin_global_settings'),
 
     # cronned tasks
     Route(r'/refresh_counties', refresh_handler.RefreshHandler, name='refresh_counties'),

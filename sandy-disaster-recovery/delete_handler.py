@@ -28,7 +28,12 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 class DeleteHandler(base.AuthenticatedHandler):
+
   """Handler to confirm and then actually delete a site."""
+
+  def dispatch(self):
+      self.abort(404)  # => handler disabled
+
   def AuthenticatedGet(self, org, event):
     try:
       id = int(self.request.get('id'))

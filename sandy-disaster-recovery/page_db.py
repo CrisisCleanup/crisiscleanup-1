@@ -31,7 +31,7 @@ from wtforms import HiddenField
 FILENAMES = [
     'base_template.html',
     'map_banner.html',
-    'page.html',
+    'home.html',
     'about.html',
     'contact_us.html',
     'new_organization.html',

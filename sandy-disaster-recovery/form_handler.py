@@ -16,7 +16,6 @@
 #
 # System libraries.
 import cgi
-import jinja2
 import os
 import urllib2
 import wtforms.validators
@@ -32,21 +31,20 @@ import event_db
 import site_db
 import site_util
 import form_db
-import page_db
 
 
-
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('form.html')
-single_site_template = jinja_environment.get_template('single_site_incident_form.html')
-sit_aware_redirect_template = jinja_environment.get_template('permissions_redirect_page.html')
-menubox_template = jinja_environment.get_template('_menubox.html')
 HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 
-class FormHandler(base.AuthenticatedHandler):
+class FormHandler(base.FrontEndAuthenticatedHandler):
+
+  template_filenames = [
+    'form.html',
+    'single_site_incident_form.html',
+    'permissions_redirect_page.html',
+    '_menubox.html'
+  ]
 
   def AuthenticatedGet(self, org, event):
     if org.permissions == "Situational Awareness":
@@ -82,24 +80,26 @@ class FormHandler(base.AuthenticatedHandler):
     inc_form = None
     if query:
       inc_form = query.form_html
-    single_site = single_site_template.render(
-        { "form": form,
-          "org": org,
-          "incident_form_block": inc_form,})
-    page_blocks = page_db.get_page_block_dict()
-    self.response.out.write(
-        template.render(dict(
-            page_blocks, **{
-                "version" : os.environ['CURRENT_VERSION_ID'],
-                "message" : message,
-                "menubox" : menubox_template.render({"org": org, "event": event, "admin": org.is_admin}),
-                "single_site" : single_site,
-                "form": form,
-                "id": None,
-                "page": "/",
-                "event_name": event.name
-            }
-        ))
+    single_site = self.get_template('single_site_incident_form.html').render({
+      "form": form,
+      "org": org,
+      "incident_form_block": inc_form
+    })
+    menubox_content = self.get_template('_menubox.html').render({
+      "org": org,
+      "event": event,
+      "admin": org.is_admin
+    })
+    return self.render(
+        template='form.html',
+        version=os.environ['CURRENT_VERSION_ID'],
+        message=message,
+        menubox=menubox_content,
+        single_site=single_site,
+        form=form,
+        id=None,
+        page="/",
+        event_name=event.name,
     )
 
   def AuthenticatedPost(self, org, event):
@@ -239,20 +239,27 @@ class FormHandler(base.AuthenticatedHandler):
     if query:
       inc_form = query.form_html
       
-    single_site = single_site_template.render(
-        { "form": data,
-          "org": org,
-          "incident_form_block": inc_form,
-          })
-    self.response.out.write(template.render(
-        {"message": message,
-         "similar_site": similar_site,
-         "version" : os.environ['CURRENT_VERSION_ID'],
-         "errors": data.errors,
-         "menubox" : menubox_template.render({"org": org, "event": event}),
-         "single_site": single_site,
-         "form": data,
-         "id": None,
-         "page": "/",
-         "post_json": post_json	,
-         "event_name": event.name}))
+    single_site = self.get_template('single_site_incident_form.html').render({
+      "form": data,
+      "org": org,
+      "incident_form_block": inc_form
+    })
+    menubox_content = self.get_template('_menubox.html').render({
+      "org": org,
+      "event": event,
+      "admin": org.is_admin
+    })
+    return self.render(
+        template='form.html',
+        version=os.environ['CURRENT_VERSION_ID'],
+        message=message,
+        similar_site=similar_site,
+        menubox=menubox_content,
+        single_site=single_site,
+        form=data,
+        errors=data.errors,
+        id=None,
+        page="/",
+        event_name=event.name,
+        post_jsn=post_json,
+    )

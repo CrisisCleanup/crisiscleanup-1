@@ -15,9 +15,7 @@
 # limitations under the License.
 #
 # System libraries.
-import jinja2
 import logging
-import os
 from google.appengine.ext import db
 import json
 import wtforms.validators
@@ -30,22 +28,21 @@ import site_db
 import site_util
 import form_db
 
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('form.html')
-single_site_template = jinja_environment.get_template('single_site_incident_form.html')
-menubox_template = jinja_environment.get_template('_menubox.html')
 HATTIESBURG_SHORT_NAME = "derechos"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
-class EditHandler(base.AuthenticatedHandler):
+class EditHandler(base.FrontEndAuthenticatedHandler):
+
+  template_filenames = [
+    'form.html',
+    'single_site_incident_form.html',
+    '_menubox.html'
+  ]
+
   def AuthenticatedGet(self, org, event):
     if org.permissions == "Situational Awareness":
 	self.redirect("/sit_aware_redirect")
 	return
-    #single_site_template = jinja_environment.get_template('single_site.html')
-    #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
-      #single_site_template = jinja_environment.get_template('single_site_derechos.html')
 
     # lookup by id or case_number
     id = self.request.get('id', None)
@@ -168,30 +165,32 @@ class EditHandler(base.AuthenticatedHandler):
       # If the type == Checkbox, and value == y
       # find >, (index)
       # add "checked" just before
-    single_site = single_site_template.render(
+    single_site = self.get_template('single_site_incident_form.html').render(
         { "form": form,
           "org": org,
 	  "incident_form_block": new_inc_form,
 	  "post_json": post_json,
-          })
-    
-    #raise Exception(query.form_html)
-    self.response.out.write(template.render(
-          {"mode_js": self.request.get("mode") == "js",
-           "menubox" : menubox_template.render({"org": org, "event": event}),
-           "single_site": single_site,
-           "event_name": event.name,
-           "form": form,
-           "id": id,
-	   "post_json": post_json	,
-           "page": "/edit"}))
+    })
+    menubox = self.get_template('_menubox.html').render(
+        org=org,
+        event=event
+    )
+    return self.render(
+        template='form.html',
+        mode_js=self.request.get("mode") == "js",
+        menubox=menubox,
+        single_site=single_site,
+        event_name=event.name,
+        form=form,
+        id=id,
+	post_json=post_json,
+        page="/edit",
+    )
 
   def AuthenticatedPost(self, org, event):
     if org.permissions == "Situational Awareness":
       self.redirect("/sit_aware_redirect")
       return
-    #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
-      #single_site_template = jinja_environment.get_template('single_site_derechos.html')
     try:
       id = int(self.request.get('_id'))
     except:
@@ -221,8 +220,6 @@ class EditHandler(base.AuthenticatedHandler):
         min = 1, max = 100,
         message = "Please set a primary work type")]
 
-
-    case_number = site.case_number
     claim_for_org = self.request.get("claim_for_org") == "y"
 
     mode_js = self.request.get("mode") == "js"
@@ -272,7 +269,6 @@ class EditHandler(base.AuthenticatedHandler):
       # send to single site
 
       inc_form = None
-      form=None
       if query:
 	inc_form = query.form_html
 	
@@ -286,20 +282,25 @@ class EditHandler(base.AuthenticatedHandler):
 	#"reported_by": str(site.reported_by.name),
       #}
       post_json = json.dumps(post_json2)
-
-      single_site = single_site_template.render(
+      single_site = self.get_template('single_site_incident_form.html').render(
           { "form": data,
             "org": org,
-	    "incident_form_block": inc_form,
-	  })
+            "incident_form_block": inc_form,
+      })
+      menubox = self.get_template('_menubox.html').render(
+          org=org,
+          event=event
+      )
       if mode_js:
         self.response.set_status(400)
-      self.response.out.write(template.render(
-          {"mode_js": mode_js,
-           "menubox" : menubox_template.render({"org": org, "event": event}),
-           "errors": data.errors,
-           "form": data,
-           "single_site": single_site,
-           "id": id,
-	   "post_json": post_json,
-           "page": "/edit"}))
+      self.render(
+        template='form.html',
+        mode_js=mode_js,
+        menubox=menubox, 
+        errors=data.errors,
+        form=data,
+        single_site=single_site,
+        id=id,
+	post_json=post_json,
+        page="/edit"
+      )

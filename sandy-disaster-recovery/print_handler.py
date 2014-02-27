@@ -16,11 +16,7 @@
 #
 # System libraries.
 import datetime
-import jinja2
-import logging
 import math
-import os
-from google.appengine.ext import db
 
 # Local libraries.
 import base
@@ -32,38 +28,48 @@ HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 MOORE_OKLAHOMA_SHORT_NAME = "moore"
 
+
 def silent_none(value):
   if value is None:
     return ''
   return value
 
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-jinja_environment.finalize = silent_none
-template = jinja_environment.get_template('print.html')
-print_single_template = jinja_environment.get_template('print_single.html')
 
-class PrintHandler(base.AuthenticatedHandler):
+class PrintHandler(base.FrontEndAuthenticatedHandler):
+
+  template_filenames = [
+    'print.html',
+    'print_single.html',
+    'print_single_derechos.html',
+    'print_single_moore.html',
+  ]
+
+  def __init__(self, *args, **kwargs):
+      super(PrintHandler, self).__init__(*args, **kwargs)
+      self.jinja_environment.finalize = silent_none
+
   def AuthenticatedGet(self, org, event):
     self.AuthenticatedPost(org, event)
 
   def AuthenticatedPost(self, org, event):
-    print_single_template = jinja_environment.get_template('print_single.html')
-    if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
-      print_single_template = jinja_environment.get_template('print_single_derechos.html')
-    if event.short_name == MOORE_OKLAHOMA_SHORT_NAME:
-      print_single_template = jinja_environment.get_template('print_single_moore.html')
-
+    template_filename = {
+        HATTIESBURG_SHORT_NAME: 'print_single_derechos.html',
+        GEORGIA_SHORT_NAME: 'print_single_derechos.html',
+        MOORE_OKLAHOMA_SHORT_NAME: 'print_single_moore.html',
+    }.get(event.short_name, 'print_single.html')
+    print_single_template = self.get_template(template_filename)
         
     sites = site_util.SitesFromIds(self.request.get('id'), event)
-    self.response.out.write(template.render({
-      'content': ''.join(print_single_template.render({
-        'page_break': i > 0,
-        'show_map': math.fabs(site.latitude) > 0,
-        'id': site.key().id(),
-        'site': site,
-        'readonly': True,
-        'current_local_time': datetime.datetime.utcnow() + LOCAL_TIME_OFFSET,
-        'request_local_time': site.request_date + LOCAL_TIME_OFFSET
-      }) for i, site in enumerate(sites))
-    }))
+
+    return self.render(
+        template='print.html',
+        content=''.join(print_single_template.render({
+            'page_break': i > 0,
+            'show_map': math.fabs(site.latitude) > 0,
+            'id': site.key().id(),
+            'site': site,
+            'readonly': True,
+            'current_local_time': datetime.datetime.utcnow() + LOCAL_TIME_OFFSET,
+            'request_local_time': site.request_date + LOCAL_TIME_OFFSET
+        }) for i, site in enumerate(sites))
+    )

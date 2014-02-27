@@ -14,33 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# System libraries.
-import cgi
-import jinja2
-import os
-import urllib2
-import wtforms.validators
-from google.appengine.ext import db
-import json
-from datetime import datetime
 
-
-
-# Local libraries.
 import base
-import event_db
-import site_db
-import site_util
-import form_db
-import page_db
 
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-template = jinja_environment.get_template('permissions_redirect_page.html')
+class SitAwareRedirectHandler(base.FrontEndAuthenticatedHandler):
 
-class SitAwareRedirectHandler(base.AuthenticatedHandler):
+  template_filename = 'permissions_redirect_page.html'
 
   def AuthenticatedGet(self, org, event):
-      self.response.out.write(template.render({}))
-
+      return self.render()

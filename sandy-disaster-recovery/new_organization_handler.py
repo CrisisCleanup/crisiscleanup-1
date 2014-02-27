@@ -16,29 +16,21 @@
 #
 
 # System libraries.
-import jinja2
-import os
 from google.appengine.ext import db
 from urlparse import urlparse
-
 
 # Local libraries.
 import base
 import event_db
 import primary_contact_db
 import organization
-import key
-import page_db
 import random_password
 import messaging
 
 
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('new_organization.html')
+class NewOrganizationHandler(base.FrontEndAuthenticatedHandler):
 
-
-class NewOrganizationHandler(base.RequestHandler):
+    template_filename = 'new_organization.html'
 
     CONTACT_PROPERTIES_LIST = ["first_name", "last_name", "title", "personal_phone", "personal_email"]
 
@@ -57,18 +49,11 @@ class NewOrganizationHandler(base.RequestHandler):
     ]
 
     def get(self):
-	logged_in = False
-        org, event = key.CheckAuthorization(self.request)
-        if org and key:
-	  logged_in = True
         events_list = db.GqlQuery("SELECT * FROM Event ORDER BY created_date DESC")
 
-        template_params = page_db.get_page_block_dict()
-        template_params.update({
-	    "logged_in": logged_in,
-            "events_list": events_list,
-        })
-        self.response.out.write(template.render(template_params))
+        self.render(
+            events_list=events_list,
+        )
         
     def post(self):
         # create inactive, unverified org with a random password

@@ -15,36 +15,17 @@
 # limitations under the License.
 #
 # System libraries.
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
-
-import cgi
-import jinja2
-import logging
-import os
-import urllib2
-import wtforms.validators
+from google.appengine.ext import db
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
-
-from datetime import datetime
-import settings
-
-from google.appengine.ext import db
 import organization
-import primary_contact_db
-import random_password
-
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('organization_info.html')
-display_all_template = jinja_environment.get_template('organizations_display_all.html')
 
 
-class OrganizationInfoHandler(base.AuthenticatedHandler):
+class OrganizationInfoHandler(base.FrontEndAuthenticatedHandler):
+
+    template_filenames = ['organization_info.html', 'organizations_display_all.html']
+
     def AuthenticatedGet(self, org, event):
         id = None
         try:
@@ -52,14 +33,18 @@ class OrganizationInfoHandler(base.AuthenticatedHandler):
         except:
 	    id = None
         message = self.request.get("message")
+
+        # show all orgs if no id
         if not id:
             query_string = "SELECT * FROM Organization WHERE incidents = :1 ORDER BY name"
-            organization_list = db.GqlQuery(query_string, event.key())
-            self.response.out.write(display_all_template.render({
-                "org_query": organization_list,
-                "message": message,
-            }))
-            return
+            organizations = db.GqlQuery(query_string, event.key())
+            return self.render(
+                template='organizations_display_all.html',
+                org_query=organizations,
+                message=message
+            )
+
+        # lookup and show the chosen org
         org_by_id = organization.Organization.get_by_id(id)
         if not org_by_id:
             self.redirect("organization-info?message=Organization not found. If you think you are seeing this message in error, please contact your administrator.")
@@ -73,15 +58,11 @@ class OrganizationInfoHandler(base.AuthenticatedHandler):
             "SELECT * From Contact WHERE organization = :org_key",
             org_key=org_key
         )
-        self.response.out.write(template.render(
-        {
-            "organization": org_by_id,
-            "contacts": contact_query,
-            "is_admin": org_by_id.is_admin,
-            "message": message,
-        }))
-        return
-        
-        
 
-            
+        return self.render(
+            template='organization_info.html',
+            organization=org_by_id,
+            contacts=contact_query,
+            is_admin=org_by_id.is_admin,
+            message=message
+        )

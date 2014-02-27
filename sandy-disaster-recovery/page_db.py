@@ -18,12 +18,14 @@
 import os
 import re
 import logging
+import codecs
 
-import jinja2
 from google.appengine.ext import db
 from google.appengine.api import memcache
 from wtforms.ext.appengine.db import model_form
 from wtforms import HiddenField
+
+import base
 
 
 # constants
@@ -40,9 +42,9 @@ FILENAMES = [
     'privacy.html',
     'authentication.html',
     'welcome.html',
-    'templates/activation.html',
-    'templates/already_activated.html',
-    'templates/activation_too_late.html',
+    'activation.html',
+    'already_activated.html',
+    'activation_too_late.html',
 ]
 
 PAGE_BLOCK_MARKER_CRX = re.compile('[a-z0-9_]+_page_block')
@@ -56,30 +58,36 @@ class PageBlock(db.Model):
     name = db.StringProperty(required=True)
     html = db.TextProperty()
 
+
 class PageBlockForm(model_form(PageBlock)):
     name = HiddenField('name')
+
 
 def detect_page_blocks():
     """
     Search for page block names in files with FILENAMES.
     """
     block_names_set = set()
+    template_path = base.get_template_path()
     for filename in FILENAMES:
-        fd = open(filename)
+        path = os.path.join(template_path, filename)
+        fd = codecs.open(path, encoding='utf-8')
         for block_name in PAGE_BLOCK_MARKER_CRX.findall(fd.read()):
             block_names_set.add(block_name)
     sorted_block_names = sorted(list(block_names_set))
     for block_name in sorted_block_names:
         yield block_name
 
+
 def get_page_block_default_html(block_name):
-    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    jinja_env = base.get_template_environment()
     defaults_template = jinja_env.get_template('pageblock.defaults.html')
     default_block_fn = defaults_template.blocks.get(block_name, None)
     if default_block_fn:
         return list(default_block_fn(None))[0]
     else:
         return None
+
 
 def get_all_page_blocks():
     """
@@ -91,6 +99,7 @@ def get_all_page_blocks():
             block.html = get_page_block_default_html(block.name)
             block.save()
     return page_blocks
+
 
 def get_page_block_dict():
     """
@@ -104,8 +113,10 @@ def get_page_block_dict():
         memcache.add(MEMCACHE_DICT_KEY, page_block_dict)
         return page_block_dict
 
+
 def construct_forms(page_blocks):
     return [PageBlockForm(None, block) for block in page_blocks]
+
 
 def save_page_block(name, html):
     logging.warn(name)
@@ -115,6 +126,3 @@ def save_page_block(name, html):
     block.html = html if html else " "
     block.save()
     memcache.delete(MEMCACHE_DICT_KEY)
-    
-
-

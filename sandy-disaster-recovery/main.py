@@ -15,9 +15,6 @@
 # limitations under the License.
 #
 # System libraries.
-import os
-
-import jinja2
 import webapp2
 from webapp2_extras import routes
 
@@ -106,10 +103,6 @@ import update_csv_handler
 from admin_handler import admin_create_incident_csv_handler
 from admin_handler import admin_stats_handler
 
-
-
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 MAP_URL = "http://maps.google.com/?q=http://www.aarontitus.net/maps/sandy_work_orders.kmz"
 SPREADSHEET_URL = "https://docs.google.com/spreadsheet/ccc?key=0AhBdPrWyrhIfdFVHMDFOc0NCQjNNbmVvNHJybTlBUXc#gid=0"

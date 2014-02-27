@@ -15,24 +15,13 @@
 # limitations under the License.
 #
 # System libraries.
-import os
-
 from google.appengine.ext import db
 
 # Local libraries.
-import base
-
-import jinja2
 from wtforms import Form, IntegerField, SelectField, widgets
 
+import base
 from site_db import Site
-
-import page_db
-
-
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('sites.html')
 
 
 def create_site_filter_form(counties_and_states):
@@ -59,9 +48,11 @@ def create_site_filter_form(counties_and_states):
     return SiteFilterForm
 
 
-class SitesHandler(base.AuthenticatedHandler):
+class SitesHandler(base.FrontEndAuthenticatedHandler):
     
     SITES_PER_PAGE = 200
+
+    template_filename = 'sites.html'
 
     def AuthenticatedGet(self, org, event):
         site_proj = db.Query(
@@ -92,9 +83,8 @@ class SitesHandler(base.AuthenticatedHandler):
             limit=self.SITES_PER_PAGE
         ))
 
-        self.response.out.write(template.render(dict(
-            page_db.get_page_block_dict(), **{
-            "form": form,
-            "sites": sites,
-            "sites_per_page": self.SITES_PER_PAGE,
-        })))
+        return self.render(
+            form=form,
+            sites=sites,
+            sites_per_page=self.SITES_PER_PAGE,
+        )

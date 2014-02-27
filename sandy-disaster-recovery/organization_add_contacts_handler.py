@@ -15,24 +15,20 @@
 # limitations under the License.
 #
 # System libraries.
-
-import jinja2
-import os
+from google.appengine.ext import db
 
 # Local libraries.
 import base
 
-from google.appengine.ext import db
 import organization
 import primary_contact_db
 
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('organization_add_contacts.html')
 ten_minutes = 600
 
 
-class OrganizationAddContactsHandler(base.AuthenticatedHandler):
+class OrganizationAddContactsHandler(base.FrontEndAuthenticatedHandler):
+
+    template_filename = 'organization_add_contacts.html'
     
     def _get_org_list(self, org):
         query_string = "SELECT * FROM Organization WHERE name = :1"
@@ -42,13 +38,12 @@ class OrganizationAddContactsHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, authenticated_org, event):
         form = primary_contact_db.ContactFormFull()
 
-        self.response.out.write(template.render({
-            "form": form,
-            "organization_list": self._get_org_list(authenticated_org),
-            "create_contact": True,
-        }))
-        return
-        
+        return self.render(
+            form=form,
+            organization_list=self._get_org_list(authenticated_org),
+            create_contact=True
+        )
+
     def AuthenticatedPost(self, authenticated_org, event):
         form = primary_contact_db.ContactFormFull(self.request.POST)
         org_id = self.request.get("choose_organization")  # TODO: is this intended?
@@ -70,11 +65,9 @@ class OrganizationAddContactsHandler(base.AuthenticatedHandler):
                 organization = org.key(),
             )
             primary_contact_db.PutAndCache(contact, ten_minutes)
-            self.redirect("/organization-settings?message=Contact created. It may take a few moments for the contact to show up on your list.")
-            return
+            return self.redirect("/organization-settings?message=Contact created. It may take a few moments for the contact to show up on your list.")
         else:
-            self.response.out.write(template.render({
-                "form": form,
-                "organization_list": self._get_org_list(org),
-            }))
-            return
+            return self.render(
+                form=form,
+                organization_list=self._get_org_list(org)
+            )

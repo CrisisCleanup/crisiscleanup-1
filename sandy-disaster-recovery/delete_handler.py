@@ -25,7 +25,7 @@ import base
 import site_db
 
 jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    loader=jinja2.FileSystemLoader('templates/html/default/'))
 
 class DeleteHandler(base.AuthenticatedHandler):
 

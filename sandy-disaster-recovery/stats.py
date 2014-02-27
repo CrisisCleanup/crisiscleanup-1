@@ -27,15 +27,26 @@ BUCKET_NAME = '/' + APP_ID
 
 # jinja
 
-jinja_environment = jinja2.Environment(
+csv_jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(
         os.path.join(
-            os.path.dirname(__file__)
+            os.path.dirname(__file__),
+            'templates',
+            'csv',
+        )
+    )
+
+)
+common_html_jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(
+        os.path.join(
+            os.path.dirname(__file__),
+            'templates',
+            'html',
+            'common'
         )
     )
 )
-
-STATS_CSV_TEMPLATE_NAME = 'templates/csv/incident_statistics.csv'
 
 
 # functions
@@ -221,12 +232,12 @@ def crunch_incident_statistics(event):
 
 
 def incident_statistics_csv(incident_statistics_dict):
-    stats_csv_template = jinja_environment.get_template(STATS_CSV_TEMPLATE_NAME)
+    stats_csv_template = csv_jinja_environment.get_template("incident_statistics.csv")
     return stats_csv_template.render(incident_statistics_dict)
 
 
 def incident_statistics_html(incident_statistics_dict):
-    stats_html_template = jinja_environment.get_template('_incident_statistics_tables.html')
+    stats_html_template = common_html_jinja_environment.get_template('_incident_statistics_tables.html')
     return stats_html_template.render(incident_statistics_dict)
 
 
@@ -280,9 +291,9 @@ class CrunchAllStatisticsHandler(AbstractCronHandler):
                 logging.info(u"Crunching statistics: skipping %s" % event.short_name)
 
 
-class IncidentStatisticsHandler(base.AuthenticatedHandler):
+class IncidentStatisticsHandler(base.FrontEndAuthenticatedHandler):
 
-    template = jinja_environment.get_template('incident_statistics.html') 
+    template_name = "incident_statistics.html"
 
     def AuthenticatedGet(self, org, event):
         html_filename = BUCKET_NAME + '/' + incident_statistics_html_filename(event)
@@ -300,11 +311,9 @@ class IncidentStatisticsHandler(base.AuthenticatedHandler):
             tables_html = u"<p>Statistics not yet generated for this incident.</p>"
             csv_filename = None
 
-        self.response.out.write(
-            self.template.render(
-                incident_statistics_tables=tables_html,
-                csv_filename=csv_filename
-            )
+        return self.render(
+            incident_statistics_tables=tables_html,
+            csv_filename=csv_filename
         )
 
 

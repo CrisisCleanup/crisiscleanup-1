@@ -684,3 +684,9 @@ indexes:
   - name: filename
   - name: creation
     direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: county
+  - name: state

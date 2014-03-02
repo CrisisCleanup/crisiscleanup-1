@@ -120,6 +120,12 @@ class Site(db.Expando):
   )
   
   open_phases_list = db.StringListProperty()
+  @property
+  def county_and_state(self):
+      return (
+          (self.county if self.county else u'[Unknown]') +
+          ((u', %s' % self.state) if self.state else u'')
+      )
 
   @property
   def full_address(self):

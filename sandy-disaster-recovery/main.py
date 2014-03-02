@@ -44,7 +44,6 @@ import site_api_handler
 import sites_handler
 import new_organization_handler
 import welcome_handler
-import activation_handler
 import organization_ajax_handler
 from admin_handler import admin_handler
 import organization_info_handler
@@ -66,12 +65,25 @@ import public_map_ajax_handler
 import get_event_ajax_handler
 import import_co_handler
 import stats
-import update_handler
-import sit_aware_redirect_handler
-###import messaging
 
 from handlers import incident_definition
 from handlers import incident_form_creator
+from handlers import incident_definition_ajax
+from handlers import incident_create_first_phase
+from handlers import incident_save_form
+from handlers import incident_list
+from handlers import incident_edit_phase
+from handlers import incident_edit
+from handlers import incident_create_definition_version
+from handlers import incident_add_phase
+from handlers import incident_edit_phases
+from handlers import incident_edit_map_definition
+from handlers import incident_edit_communications_definition
+from handlers import incident_definition_legacy
+from handlers import check_similar_by_phase_api
+from handlers import incident_definition_home
+from handlers import clone_form
+
 
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
@@ -93,19 +105,25 @@ from admin_handler import admin_social_media_handler
 from admin_handler import admin_website_alerts_handler
 from admin_handler import admin_import_csv_handler
 from admin_handler import admin_edit_pages_handler
+from admin_handler import admin_single_organization_handler
 from admin_handler import admin_edit_organization_handler
 from admin_handler import admin_edit_contact_handler
 from admin_handler import admin_validation_questions_handler
 from admin_handler import admin_import_contacts_handler
 from admin_handler import admin_create_incident_form_handler
-from admin_handler import admin_global_settings_handler
-from admin_handler import admin_define_permissions
+from admin_handler import admin_website_settings_handler
+
+from api import private_map_handler
+from api import get_incident_definition
+from api import private_site_handler
 
 import form_ajax_handler
 import update_csv_handler
+import update_handler
 from admin_handler import admin_create_incident_csv_handler
 from admin_handler import admin_stats_handler
 
+from migrations import update_handler
 
 
 jinja_environment = jinja2.Environment(
@@ -129,6 +147,7 @@ class Route(routes.RedirectRoute):
     routes.RedirectRoute.__init__(self, *args, **kwargs)
 
 app = webapp2.WSGIApplication([
+    Route(r'/update', update_handler.UpdateHandler, 'update'),
     Route(r'/contact', contact_us_handler.ContactUsHandler, 'dev'),
     Route(r'/update_csv_handler', update_csv_handler.UpdateCSVHandler, 'dev'),
 
@@ -151,14 +170,14 @@ app = webapp2.WSGIApplication([
     Route(r'/export_bulk_download', download_handler.DownloadBulkExportHandler, 'export_bulk_download'),
     Route(r'/export_all_download', download_handler.DownloadEventAllWorkOrdersHandler, 'export_all_download'),
     Route(r'/get_event_ajax', get_event_ajax_handler.GetEventAjaxHandler, 'get_event_ajax'),
-    Route(r'/sit_aware_redirect', sit_aware_redirect_handler.SitAwareRedirectHandler, 'sit_aware_redirect'),
-
 
     Route(r'/logout', LogoutHandler, 'logout'),
     Route(r'/delete', delete_handler.DeleteHandler, 'delete'),
     Route(r'/dev', form_handler.FormHandler, 'dev'),
     Route(r'/', form_handler.FormHandler, 'dev'),
     Route(r'/dev/map', map_handler.MapHandler, 'map'),
+    Route(r'/phase/', form_handler.FormHandler, 'dev'),
+
     Route(r'/dev/maps', redirect_to_name='map', name='maps_redirect'),
     Route(r'/map', map_handler.MapHandler, 'map'),
     Route(r'/maps', redirect_to_name='map', name='maps_redirect'),
@@ -170,7 +189,6 @@ app = webapp2.WSGIApplication([
     Route(r'/problems', problem_handler.ProblemHandler, 'problems'),
     Route(r'/sites', sites_handler.SitesHandler, 'sites'),
     Route(r'/signup', new_organization_handler.NewOrganizationHandler, 'new_organization'),
-    Route(r'/activate', activation_handler.ActivationHandler, 'activate'),
     Route(r'/admin', admin_handler.AdminHandler, 'admin_handler'),
     Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'),
     Route(r'/admin-view-incidents', admin_view_incidents_handler.AdminViewIncidentsHandler, 'admin-view-incidents'),
@@ -183,6 +201,7 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-create-contact', admin_create_contact_handler.AdminHandler, 'admin_create_contact_handler'),
     Route(r'/admin-display-contacts', admin_display_contacts_handler.AdminHandler, 'admin_display_contacts_handler'),
     Route(r'/admin-single-contact', admin_single_contact_handler.AdminHandler, 'admin_single_contact_handler'),
+    Route(r'/admin-single-organization', admin_single_organization_handler.AdminHandler, 'admin_single_organization_handler'),
     Route(r'/admin-edit-organization', admin_edit_organization_handler.AdminEditOrganizationHandler, 'admin_edit_organization_handler'),
     Route(r'/admin-edit-contact', admin_edit_contact_handler.AdminHandler, 'admin_edit_contact_handler'),
     Route(r'/admin-validation-questions', admin_validation_questions_handler.AdminValidationQuestionsHandler, 'admin_validation_questions'),
@@ -207,14 +226,13 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-edit-pages/download/defaults', admin_edit_pages_handler.AdminDownloadPageBlocks, 'admin_edit_pages_handler'),
     Route(r'/admin-create-incident-csv', admin_create_incident_csv_handler.AdminCreateIncidentCSVHandler, 'admin_edit_pages_handler'),
     Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'),
-    Route(r'/admin-define-permissions', admin_define_permissions.AdminDefinePermissions, 'admin_define_permissions'),
     Route(r'/import-co-flood-handler', import_co_handler.ImportCOHandler, 'import-co-flood'),
 
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),
     Route(r'/contact-info', contact_info_handler.ContactInfoHandler, 'contact_info_handler'),
     Route(r'/organization-settings', organization_settings_handler.OrganizationSettingsHandler, 'organization_settings_handler'),
     Route(r'/incident-statistics', stats.IncidentStatisticsHandler, 'incident_statistics_handler'),
-    Route(r'/export_contacts', export_contacts_handler.ExportContactsHandler, 'export_contacts'),
+    Route(r'/export_contacts_handler', export_contacts_handler.ExportContactsHandler, 'export_contacts_handler'),
     Route(r'/organization-add-contact', organization_add_contacts_handler.OrganizationAddContactsHandler, 'organization_add_contacts_handler'),   
     Route(r'/organization-edit-contact', organization_edit_contacts_handler.OrganizationEditContactsHandler, 'organization_edit_contacts_handler'),   
     Route(r'/welcome', welcome_handler.WelcomeHandler, 'welcome_handler'),
@@ -227,20 +245,37 @@ app = webapp2.WSGIApplication([
     Route(r'/form_ajax_handler', form_ajax_handler.FormAjaxHandler, 'form_ajax_handler'),
 
     Route(r'/incident_definition', incident_definition.IncidentDefinition, 'incident_definition'),
+    Route(r'/incident_definition_home', incident_definition_home.IncidentDefinitionHome, 'incident_definition_home'),
+    Route(r'/incident_definition_legacy', incident_definition_legacy.IncidentDefinitionLegacy, 'incident_definition_legacy'),
+    Route(r'/incident_definition_ajax', incident_definition_ajax.IncidentDefinitionAjax, 'incident_definition_ajax'),
+    Route(r'/incident_create_first_phase', incident_create_first_phase.IncidentCreateFirstPhase, 'incident_create_first_phase'),
+    Route(r'/incident_save_form', incident_save_form.IncidentSaveForm, 'incident_save_form'),
     Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
+    Route(r'/incident_list', incident_list.IncidentList, 'incident_list'),
+    Route(r'/incident_edit_phase', incident_edit_phase.IncidentEditPhase, 'incident_edit_phase'),
+    Route(r'/incident_add_phase', incident_add_phase.IncidentAddPhase, 'incident_add_phase'),
+    Route(r'/incident_edit', incident_edit.IncidentEdit, 'incident_edit'),
+    Route(r'/incident_edit_phases', incident_edit_phases.IncidentEditPhases, 'incident_edit_phases'),
+    Route(r'/incident_edit_map_definition', incident_edit_map_definition.IncidentEditMapDefinition, 'incident_edit_map_definition'),
+    Route(r'/incident_edit_communications_definition', incident_edit_communications_definition.IncidentEditCommunicationsDefinition, 'incident_edit_communications_definition'),
+    
+    Route(r'/check_similar_by_phase_api', check_similar_by_phase_api.CheckSimilarByPhaseAPI, "check_similar_by_phase_api"),
+    Route(r'/api/private_map_handler', private_map_handler.PrivateMapHandler, "private_map_handler"),
+    Route(r'/api/get_incident_definition', get_incident_definition.GetIncidentDefinition, "get_incident_definition"),
+    Route(r'/api/private_site_handler', private_site_handler.PrivateSiteHandler, "private_site_handler"),
+
+    Route(r'/incident_create_definition_version', incident_create_definition_version.IncidentCreateDefinitionVersion, 'incident_create_definition_version'),
+
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
-    Route(r'/admin-global-settings', admin_global_settings_handler.AdminGlobalSettingsHandler, 'admin_global_settings'),
+    Route(r'/admin-website-settings', admin_website_settings_handler.AdminWebsiteSettingsHandler, 'admin_website_settings'),
+    Route(r'/update_schema', update_handler.UpdateHandler, name='update_schema'),
 
     # cronned tasks
     Route(r'/refresh_counties', refresh_handler.RefreshHandler, name='refresh_counties'),
     Route(r'/task/delete-old-files', old_file_delete_handler.OldFileDeleteHandler, 'old_file_delete'),
     Route(r'/task/export-all-events', export_bulk_handler.ExportAllEventsHandler, 'export_all_events'),
     Route(r'/task/crunch-all-events-stats', stats.CrunchAllStatisticsHandler, 'crunch_all_events_stats'),
-    Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
-
-
-    # dev/testing
-    ###Route(r'/test-email', messaging.EmailTestHandler, 'email_test'),
+    Route(r'/clone_incident_phases_and_forms', clone_form.CloneForm, 'clone_form')
     
 ], debug=True)

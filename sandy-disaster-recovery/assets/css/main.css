@@ -648,7 +648,7 @@ footer[role=contentinfo] p .left {
 /*
 	RESPONSIVE STYLES
 */
-@media only screen and (max-width: 960px) {
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5), only screen and (max-width: 960px) {
   h2.orphan {
     margin: 0 5% 20px;
     width: 90%;

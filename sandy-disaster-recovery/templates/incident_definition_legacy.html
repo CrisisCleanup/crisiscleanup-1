@@ -1,0 +1,89 @@
+
+{% extends "base_template.html" %}
+
+{% block head_content %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<link href="/stylesheets/default.css" rel="stylesheet">
+<link href="/stylesheets/glDatePicker.default.css" rel="stylesheet" type="text/css">
+
+{% endblock %}
+
+{% block scripts %}
+<script src="../javascript/glDatePicker.min.js"></script>
+
+<script>
+$(function() {
+  $('#incident_date').glDatePicker();
+  $('#cleanup_start_date').glDatePicker();
+//   $('#work_order_prefix').attr("disabled", true);
+  
+
+
+});
+</script>
+{% endblock %}
+
+{% block login %}
+{% endblock %}
+
+
+{% block description_title %}
+{% endblock %}
+
+{% block description_subtitle %}
+{% endblock %}
+
+{% block sidebar_title %}
+{% endblock %}
+
+{% block sidebar_content %}
+{% endblock %}
+
+{% block main_title %}
+{% endblock %}
+
+{% block main_content %}
+<h2>New Incident Definition</h2>
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<h3>Basic Information</h3>
+<form action="/incident_definition_legacy" method="POST">
+<div>Select Event: <select id="event_id" name="event_id">
+<option value="">Choose one:</option>
+{% for event in events %}
+<option value="{{ event.key().id() }}">{{ event.name }}</option>
+{% endfor %}
+</select>
+<div>{{ form.location.label }}: {{ form.location}}</div>
+<div>{{ form.timezone.label }}: {{ form.timezone }}</div>
+<div>{{ form.incident_date.label }}: {{ form.incident_date(readonly=true) }}</div>
+<div>{{ form.cleanup_start_date.label }}: {{ form.cleanup_start_date(readonly=true) }}</div>
+<div>{{ form.incident_lat.label }}: {{ form.incident_lat }}</div>
+<div>{{ form.incident_lng.label }}: {{ form.incident_lng }}</div>
+<h3>Local Admin Information</h3>
+<div>{{ form.local_admin_first_name.label }}: {{ form.local_admin_first_name }}</div>
+<div>{{ form.local_admin_last_name.label }}: {{ form.local_admin_last_name }}</div>
+<div>{{ form.local_admin_title.label }}: {{ form.local_admin_title }}</div>
+<div>{{ form.local_admin_email.label }}: {{ form.local_admin_email }}</div>
+<div>{{ form.local_admin_cell_phone.label }}: {{ form.local_admin_cell_phone }}</div>
+
+
+<button class="submit">Submit</button>
+</form>
+
+{% endblock %}
+

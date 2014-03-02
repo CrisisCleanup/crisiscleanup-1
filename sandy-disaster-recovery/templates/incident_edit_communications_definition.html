@@ -1,0 +1,59 @@
+
+{% extends "base_template.html" %}
+
+{% block head_content %}
+<link href="/stylesheets/default.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block login %}
+{% endblock %}
+
+
+{% block description_title %}
+{% endblock %}
+
+{% block description_subtitle %}
+{% endblock %}
+
+{% block sidebar_title %}
+{% endblock %}
+
+{% block sidebar_content %}
+{% endblock %}
+
+{% block main_title %}
+{% endblock %}
+
+{% block main_content %}
+
+<h2>Edit Communications Definition</h2>
+{% if errors %}
+<section id="errors">
+  <header>The submission had errors</header>
+  <article>
+    <ul>
+    {% for k in errors %}
+      <li class="error">
+        {% for e in errors[k] %}
+          {{k}}: {{e}}
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  <article>
+</section>
+{% endif %}
+<form method="POST">
+{{ form.notify_contacts.label}}: {{form.notify_contacts}}<br>
+{{ form.notify_on_new_orgs.label}}: {{form.notify_on_new_orgs}}<br>
+{{ form.notify_unfinished.label}}: {{form.notify_unfinished}} days<br>
+
+<input type="hidden" name="incident_id" value="{{ incident_id }}">
+<button class="submit">Submit</button>
+</form>
+
+{% endblock %}
+

@@ -96,6 +96,13 @@ class Event(db.Model):
           (now - self.timestamp_last_login).total_seconds() < 24 * 60 * 60
       )
 
+  @property
+  def incident_definition(self):
+      from models.incident_definition import IncidentDefinition  # avoid circular import
+      try:
+          return IncidentDefinition.all().filter('incident', self.key())[0]
+      except IndexError:
+          return None
 
   @property
   def filename_friendly_name(self):

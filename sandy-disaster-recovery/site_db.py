@@ -24,12 +24,13 @@ from wtforms.ext.appengine.db import model_form
 
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
-from google.appengine.api import memcache
-from google.appengine.ext.db import Query
 from google.appengine.api import search
 from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
 # Local libraries.
+from indexed import SearchIndexedExpandoModel
+from memcache_utils import memcached
+from appengine_utils import deserialize_entity, generate_from_search, search_doc_to_dict
 import event_db
 import organization
 import metaphone
@@ -77,10 +78,16 @@ STATUSES = [
   "Closed, duplicate",
 ]
 
+SHORT_STATUS_OPEN = u'Open'
+SHORT_STATUS_CLOSED = u'Closed'
+
 STATUSES_UNICODE = map(unicode, STATUSES)
 
 
-class Site(db.Expando):
+class Site(SearchIndexedExpandoModel):
+
+  CACHE_TAGS = {'SiteCaches'}
+
   # The list of fields that will be included in the CSV output.
   CSV_FIELDS = []
 
@@ -90,8 +97,10 @@ class Site(db.Expando):
   event = db.ReferenceProperty(event_db.Event)
   reported_by = db.ReferenceProperty(organization.Organization,
                                      collection_name="reported_site_set")
+  reported_by_name = db.StringProperty()  # (denorm)
   claimed_by = db.ReferenceProperty(organization.Organization,
                                     collection_name="claimed_site_set")
+  claimed_by_name = db.StringProperty()  # (denorm)
   request_date = db.DateTimeProperty(auto_now_add=True)
   address = db.StringProperty(required = True)
   city = db.StringProperty()
@@ -114,12 +123,26 @@ class Site(db.Expando):
   #work_type = db.StringProperty()
   latitude = db.FloatProperty(default = 0.0)
   longitude = db.FloatProperty(default = 0.0)
+
+  ## Priority assigned by organization (1 is highest).
+  priority = db.IntegerProperty(choices=[1, 2, 3, 4, 5], default = 3)
+  
+  #priority = db.StringProperty()
+  ## Name of org. rep (e.g. "Jill Smith")
+  #inspected_by = db.StringProperty()
+  ## Name of org. rep (e.g. "Jill Smith")
+  #prepared_by = db.StringProperty()
+  ## Do not work before
+  #do_not_work_before = db.StringProperty()
+
   status = db.StringProperty(
     choices=STATUSES,
     default="Open, unassigned"
   )
+  short_status = db.StringProperty()
   
   open_phases_list = db.StringListProperty()
+
   @property
   def county_and_state(self):
       return (
@@ -136,12 +159,62 @@ class Site(db.Expando):
       )
     )
 
-  def put(self, **kwargs):
-      " On-save "
+  @property
+  def county_and_state(self):
+      return (
+          (self.county if self.county else u'[Unknown]') +
+          ((u', %s' % self.state) if self.state else u'')
+      )
+
+  def to_dict(self):
+      " No datastore lookups allowed here - slows bulk lookups. "
+      return dict(
+          to_dict(self),
+          id=self.key().id(),
+          claimed_by={
+              "name": self.claimed_by_name
+          } if self.claimed_by_name else None,
+          reported_by={
+              "name": self.reported_by_name
+          } if self.reported_by_name else None,
+      )
+
+  @property
+  def as_dict(self):
+      " Property synonym "
+      return self.to_dict()
+
+  def before_put(self):
+      super(Site, self).before_put()
+      self.compute_similarity_matching_fields()
+
+      # set short status
+      self.short_status = (
+          SHORT_STATUS_OPEN
+          if self.status.startswith('Open')
+          else SHORT_STATUS_CLOSED
+      )
+
+      # denorm name fields from referenced orgs
+      if self.reported_by:
+          self.reported_by_name = self.reported_by.name
+      if self.claimed_by:
+          self.claimed_by_name = self.claimed_by.name
+
       # set blurred co-ordinates
       self.blurred_latitude = self.latitude + random.uniform(-0.001798, 0.001798)
       self.blurred_longitude = self.longitude + random.uniform(-0.001798, 0.001798)
-      super(Site, self).put(**kwargs)
+
+  def after_put(self):
+      super(Site, self).after_put()
+      # geospatial index ## NOTE: THIS DOES NOT WORK ON DEV_APPENGINE 
+      # (as per https://code.google.com/p/googleappengine/issues/detail?id=7769 )
+      search_doc = search.Document(
+        doc_id=str(self.key()),
+        fields=[
+          search.GeoField(name='loc', value=search.GeoPoint(self.latitude, self.longitude))
+      ])
+      search.Index(name='GEOSEARCH_INDEX').put(search_doc)
 
 
   _CSV_ACCESSORS = {
@@ -187,6 +260,104 @@ class Site(db.Expando):
         except:
           logging.critical("Failed to parse: " + value + " " + str(self.key().id()))
     return csv_row
+
+  def indexes_and_fields(self):
+      return [
+          (search.Index('SiteCompleteIndex'), [
+              search.TextField('s', self.serialized),
+              search.AtomField('id', unicode(self.key().id())),
+              search.AtomField('event_key', unicode(self.event.key())),
+              search.AtomField('case_number', self.case_number),
+              search.AtomField('short_status', self.short_status),
+          ]),
+          (search.Index('SitePinIndex'), [
+              search.AtomField('id', unicode(self.key().id())),
+              search.AtomField('event_key', unicode(self.event.key())),
+              search.AtomField('case_number', self.case_number),
+              search.AtomField('status', self.status),
+              search.AtomField('short_status', self.short_status),
+              search.AtomField('work_type', self.work_type),
+              search.NumberField('latitude', self.latitude),
+              search.NumberField('longitude', self.longitude),
+              search.TextField('name', self.name),
+              search.TextField('address', self.address),
+              search.TextField('city', self.city),
+              search.TextField('county', self.county),
+              search.TextField('state', self.state),
+              search.TextField('zip_code', self.zip_code),
+              search.TextField('reported_by_name', self.reported_by_name),
+              search.TextField('claimed_by_name', self.claimed_by_name),
+          ]),
+          (search.Index('SitePublicPinIndex'), [
+              search.AtomField('event_key', unicode(self.event.key())),
+              search.AtomField('case_number', self.case_number),
+              search.AtomField('status', self.status),
+              search.AtomField('short_status', self.short_status),
+              search.AtomField('work_type', self.work_type),
+              search.NumberField('blurred_latitude', self.blurred_latitude),
+              search.NumberField('blurred_longitude', self.blurred_longitude),
+          ]),
+      ]
+
+  @classmethod
+  @memcached(cache_tag='SiteCaches')
+  def in_event(cls, event_key, n, page, short_status=None):
+      search_index = search.Index('SiteCompleteIndex')
+      query_str = (
+          u'event_key:%s' % unicode(event_key) +
+          (u' short_status:%s' % short_status) if short_status else u''
+      )
+      results = generate_from_search(search_index, query_str, n, n*page)
+      return [deserialize_entity(hit['s'][0].value) for hit in results]
+
+  @classmethod
+  @memcached(cache_tag='SiteCaches')
+  def pins_in_event(cls, event_key, n, page, short_status=None):
+      search_index = search.Index('SitePinIndex')
+      query_str = (
+          u'event_key:%s' % unicode(event_key) +
+          (u' short_status:%s' % short_status) if short_status else u''
+      )
+      results = generate_from_search(search_index, query_str, n, n*page)
+
+      def augment_connected_orgs(d):
+          " Meets expectation of existing interface. "
+          del(d['event_key'])
+          d['reported_by'] = (
+              {'name': d['reported_by_name']}
+              if d['reported_by_name'] else None
+          )
+          d['claimed_by'] = (
+              {'name': d['claimed_by_name']}
+              if d['claimed_by_name'] else None
+          )
+          return d
+
+      return map(augment_connected_orgs, map(search_doc_to_dict, results))
+
+  @classmethod
+  @memcached(cache_tag='SiteCaches')
+  def public_pins_in_event(cls, event_key, n, page, short_status=None):
+      search_index = search.Index('SitePublicPinIndex')
+      query_str = (
+          u'event_key:%s' % unicode(event_key) +
+          (u' short_status:%s' % short_status) if short_status else u''
+      )
+      results = generate_from_search(search_index, query_str, n, n*page)
+
+      def filter_fields(d):
+          del(d['event_key'])
+          del(d['short_status'])
+          return d
+
+      return map(filter_fields, map(search_doc_to_dict, results))
+
+  @classmethod
+  def by_ids(cls, event, ids):
+      ids = set(ids)
+      for site in cls.all_in_event(event.key()):
+          if site.key().id() in ids:
+              yield site
 
 
 APARTMENT_SIGNIFIERS = ["#", "Suite", "Ste", "Apartment", "Apt", "Unit", "Department", "Dept", "Room", "Rm", "Floor", "Fl", "Bldg", "Building", "Basement", "Bsmt", "Front", "Frnt", "Lobby", "Lbby", "Lot", "Lower", "Lowr", "Office", "Ofc", "Penthouse", "Pent", "PH", "Rear", "Side", "Slip", "Space", "Trailer", "Trlr", "Upper", "Uppr"]
@@ -276,82 +447,17 @@ def SiteToDict(site):
     site_dict["reported_by"] = {"name": reported_by.name}
   return site_dict
 
-# We cache each site together with the AJAX necessary to
-# serve it, since it is expensive to generate.
-cache_prefix = Site.__name__ + "-d:"
-cache_time = 3600
-def GetCached(site_id):
-  result = memcache.get(site_id, key_prefix = cache_prefix)
-  if result:
-    return result
-  site = Site.get_by_id(site_id)
-  cache_entry = (site, SiteToDict(site))
-  memcache.set(cache_prefix + str(site_id), cache_entry,
-               time = cache_time)
-  return cache_entry
 
 def PutAndCache(site):
-  site.compute_similarity_matching_fields()
+  # legacy interface
   site.put()
 
-  # geospatial index ## NOTE: THIS DOES NOT WORK ON DEV_APPENGINE 
-  # (as per https://code.google.com/p/googleappengine/issues/detail?id=7769 )
-  search_doc = search.Document(
-    doc_id=str(site.key()),
-    fields=[
-      search.GeoField(name='loc', value=search.GeoPoint(site.latitude, site.longitude))
-  ])
-  search.Index(name='GEOSEARCH_INDEX').put(search_doc)
-  return memcache.set(cache_prefix + str(site.key().id()),
-                      (site, SiteToDict(site)),
-                      time = cache_time)
 
 def GetAndCache(site_d):
+  # legacy interface
   site = Site.get_by_id(site_d)
-  if site:
-    memcache.set(cache_prefix + str(site.key().id()),
-                 (site, SiteToDict(site)),
-                 time = cache_time)
   return site
 
-def GetReference(obj, prop, values):
-  try:
-    key = prop.get_value_for_datastore(obj)
-    if key:
-      return values[key]
-    return None
-  except db.ReferencePropertyResolveError:
-    return None
-
-def GetSitesAndSetReferences(ids, events, organizations):
-  sites = Site.get_by_id(ids)
-  for site in sites:
-    site.event = GetReference(site, Site.event, events)
-    site.claimed_by = GetReference(site, Site.claimed_by, organizations)
-    site.reported_by = GetReference(site, Site.reported_by, organizations)
-  return sites
-
-def GetAllCached(event, ids = None):
-  if ids == None:
-    q = Query(model_class = Site, keys_only = True)
-    q.filter("event =", event)
-    ids = [key.id() for key in q.run(batch_size = 2000)]
-  lookup_ids = [str(id) for id in ids]
-  cache_results = memcache.get_multi(lookup_ids, key_prefix = cache_prefix)
-  not_found = [id for id in ids if not str(id) in cache_results.keys()]
-  data_store_results = []
-  orgs = dict([(o.key(), o) for o in organization.GetAllCached()])
-  events = dict([(e.key(), e) for e in event_db.GetAllCached()])
-  if len(not_found):
-    data_store_results = [(site, SiteToDict(site)) for site in
-                          GetSitesAndSetReferences(not_found, events, orgs)]
-    memcache.set_multi(dict([(str(site[0].key().id()), site)
-                             for site in data_store_results]),
-                       key_prefix = cache_prefix,
-                       time = cache_time)
-
-  sites = cache_results.values() + data_store_results
-  return sites
 
 def _filter_non_digits(s):
     return ''.join(filter(lambda x: x.isdigit(), s))

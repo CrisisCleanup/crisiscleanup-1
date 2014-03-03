@@ -18,12 +18,14 @@
 # System libraries.
 import jinja2
 import os
+import json
 
 # Local libraries.
 import base
-import event_db
-import json
-import organization
+from event_db import Event
+from organization import Organization
+
+
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
@@ -31,21 +33,29 @@ loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 class OrganizationAjaxHandler(base.RequestHandler):
 
     def get(self):
+        # select event
         event_name = self.request.get("event_name")
-        event = event_db.Event.all().filter('name', event_name).get()
+        event = Event.all().filter('name', event_name).get()
         if not event:
             self.abort(404)
 
-        event_org_names = [org.name for org in event.organizations]
+        # get names of active orgs in and out of the event
+        event_org_names = sorted(
+            Organization.names_by_search(event=event, is_active=True)
+        )
 
-        other_org_names = [
-            org.name for org in organization.Organization.gql(
-                'WHERE is_active = True ORDER BY name'
+        other_org_names = sorted(
+            filter(
+                lambda name: name not in event_org_names,
+                Organization.names_by_search(
+                    is_active=True,
+                    is_admin=False,
+                    deprecated=False
+                )
             )
-            if org.name not in event_org_names
-            and not org.is_admin and not org.deprecated
-        ]
+        )
 
+        # return json
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(
             json.dumps({

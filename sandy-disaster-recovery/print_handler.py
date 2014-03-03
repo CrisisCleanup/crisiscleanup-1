@@ -17,14 +17,11 @@
 # System libraries.
 import datetime
 import jinja2
-import logging
 import math
 import os
-from google.appengine.ext import db
 
 # Local libraries.
 import base
-import site_util
 import site_db
 
 # Only works for EST!
@@ -44,35 +41,32 @@ jinja_environment.finalize = silent_none
 template = jinja_environment.get_template('print.html')
 print_single_template = jinja_environment.get_template('print_single.html')
 
+
 class PrintHandler(base.AuthenticatedHandler):
+
   def AuthenticatedGet(self, org, event):
     self.AuthenticatedPost(org, event)
 
   def AuthenticatedPost(self, org, event):
-    case_number = self.request.get("case_number")
-    phase_id = self.request.get("phase_id")
-    phase_number = self.request.get("phase_number")
-    site_id = None
-    if case_number:
-      q = db.Query(site_db.Site)
-      q.filter("case_number =", case_number)
-      query = q.get()
-      case_id = query.key().id()
-      
+    # select template
     print_single_template = jinja_environment.get_template('print_single.html')
     if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       print_single_template = jinja_environment.get_template('print_single_derechos.html')
     if event.short_name == MOORE_OKLAHOMA_SHORT_NAME:
       print_single_template = jinja_environment.get_template('print_single_moore.html')
 
-    sites = None
-    if case_id:
-      site = site_db.Site.get_by_id(case_id)
-      sites = [site]
-      #raise Exception(site)
+    # get sites from case number or csv of ids
+    case_number_param = self.request.get("case_number")
+    id_param = self.request.get('id')
+    if case_number_param:
+        site_id_case_number = site_db.Site. \
+            filter('case_number_param', case_number_param).get().key().id()
+        ids = [site_id_case_number]
     else:
-      sites = site_util.SitesFromIds(self.request.get('id'), event)
-    #raise Exception(sites)
+        ids = map(int, id_param.split(',')) if id_param else []
+    sites = site_db.Site.by_ids(event, ids)
+
+    # render
     self.response.out.write(template.render({
       'content': ''.join(print_single_template.render({
         'page_break': i > 0,

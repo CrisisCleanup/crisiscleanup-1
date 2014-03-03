@@ -17,76 +17,49 @@
 # System libraries.
 import datetime
 import json
-from google.appengine.ext import db
-from google.appengine.ext.db import Query
+
+from more_itertools import first
 
 # Local libraries
 import base
 import site_db
 import event_db
 
-PAGE_OFFSET = 100
+PAGE_OFFSET = 1000
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
-
-open_statuses = [s for s in site_db.Site.status.choices if 'Open' in s]
-closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statuses]
 
 
 class PublicMapAjaxHandler(base.RequestHandler):      
 
   def get(self):
+    # get params
     event_shortname = self.request.get("shortname")
     page = self.request.get("page")
     page_int = int(page)
 
+    # select event
     if event_shortname == None:
       event_shortname = "sandy"
-    event = None
     events = event_db.GetAllCached()
-    for e in events:
-      if e.short_name == event_shortname:
-	event = e
+    event = first(
+        (event for event in events if event.short_name == event_shortname),
+        None
+    )
+    if not event:
+        self.abort(404)
 
-      
-    ids = []
-    where_string = "Open"
-    q = None
-    if event.short_name != 'moore':
-      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2'
-      q = db.GqlQuery(gql_string, where_string, event.key())
-
-    else:
-      q = Query(model_class = site_db.Site)
-
-      q.filter("event =", event.key())
-      q.is_keys_only()
-      q.filter("status >= ", "Open")
-	  
-      this_offset = page_int * PAGE_OFFSET
-	  
-      ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
-           
-    this_offset = page_int * PAGE_OFFSET
+    # get public pins (as dicts)
+    site_dicts = site_db.Site.public_pins_in_event(
+        event.key(),
+        PAGE_OFFSET,
+        page_int,
+        short_status=site_db.SHORT_STATUS_OPEN
+    )
 	
-    ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
-
-    def public_site_filter(site):
-        # site as dict
-        return {
-            'event': site['event'],
-            'id': site['id'],
-            'case_number': site['case_number'],
-            'work_type': site['work_type'],
-            'claimed_by': site['claimed_by'],
-            'status': site['status'],
-            'floors_affected': site.get('floors_affected'),
-            'blurred_latitude': site.get('blurred_latitude'),
-            'blurred_longitude': site.get('blurred_longitude'),
-        }
-	
+    # return as json
     output = json.dumps(
-	[public_site_filter(s[1]) for s in site_db.GetAllCached(event, ids)],
+        site_dicts,
 	default=dthandler
     )
     self.response.out.write(output)

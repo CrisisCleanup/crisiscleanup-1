@@ -32,7 +32,6 @@ import json
 import base
 import event_db
 import site_db
-import site_util
 import cache
 import form_db
 import event_db

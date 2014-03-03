@@ -158,13 +158,6 @@ class Site(SearchIndexedExpandoModel):
       )
     )
 
-  @property
-  def county_and_state(self):
-      return (
-          (self.county if self.county else u'[Unknown]') +
-          ((u', %s' % self.state) if self.state else u'')
-      )
-
   def to_dict(self):
       " No datastore lookups allowed here - slows bulk lookups. "
       return dict(

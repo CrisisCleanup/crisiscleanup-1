@@ -428,26 +428,6 @@ def find_similar(site, event):
     return None
 
 
-def SiteToDict(site):
-  site_dict = to_dict(site)
-  site_dict["id"] = site.key().id()
-  claimed_by = None
-  try:
-    claimed_by = site.claimed_by
-  except db.ReferencePropertyResolveError:
-    pass
-  if claimed_by:
-    site_dict["claimed_by"] = {"name": claimed_by.name}
-  reported_by = None
-  try:
-    reported_by = site.reported_by
-  except db.ReferencePropertyResolveError:
-    pass
-  if reported_by:
-    site_dict["reported_by"] = {"name": reported_by.name}
-  return site_dict
-
-
 def PutAndCache(site):
   # legacy interface
   site.put()

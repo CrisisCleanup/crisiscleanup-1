@@ -41,7 +41,9 @@ closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statu
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
 class CheckSimilarByPhaseAPI(base.AuthenticatedHandler):      
+
   def AuthenticatedGet(self, org, event):
     phase_id = self.request.get('phase_id')
     address = self.request.get("address")
@@ -79,4 +81,4 @@ class CheckSimilarByPhaseAPI(base.AuthenticatedHandler):
         json.dumps(phase.PhaseToDict(phase_obj), default = dthandler))
       return
     self.response.out.write(
-        json.dumps(site_db.SiteToDict(site), default = dthandler))
+        json.dumps(site.to_dict(), default = dthandler))

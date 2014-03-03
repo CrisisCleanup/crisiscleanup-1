@@ -48,7 +48,7 @@ def AddPhasesSchemaUpdate(cursor=None, num_updated=0):
     inc_def_query_dict = {}
     phase_id_dict = {}
     for p in query.fetch(limit=BATCH_SIZE):
-        site_dict = site_db.SiteToDict(p)
+        site_dict = p.to_dict()
         phase_dict = {}
 
 	inc_def_query_key, inc_def_query_dict = find_inc_def_query_key(p.event.key(), inc_def_query_dict)

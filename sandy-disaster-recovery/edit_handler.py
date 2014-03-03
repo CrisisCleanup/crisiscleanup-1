@@ -101,7 +101,7 @@ class EditHandler(base.AuthenticatedHandler):
     #form = site_db.SiteForm(self.request.POST, site)
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #form = site_db.DerechosSiteForm(self.request.POST, site)
-    post_json2 = site_db.SiteToDict(site)
+    post_json2 = site.to_dict()
     post_json_final = {}
     phase_name = get_phase_name(json.loads(inc_def_query.forms_json), phase_number_get).lower()
     phase_prefix = "phase_" + phase_name + "_"
@@ -408,7 +408,7 @@ class EditHandler(base.AuthenticatedHandler):
       if query:
 	inc_form = query.form_html
 	
-      post_json2 = site_db.SiteToDict(site)
+      post_json2 = site.to_dict()
       date_string = str(post_json2['request_date'])
       post_json2['request_date'] = date_string
       post_json2['event'] = site.event.name

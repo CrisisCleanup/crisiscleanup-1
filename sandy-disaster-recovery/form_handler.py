@@ -381,7 +381,7 @@ def build_form(forms_json, phase_number):
 
 def get_personal_information_module_by_site_id(site_id):
   site = site_db.Site.get_by_id(int(site_id))
-  site_dict = site_db.SiteToDict(site)
+  site_dict = site.to_dict()
   personal_info_data = {}
   for field in site_dict:
     if field in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:

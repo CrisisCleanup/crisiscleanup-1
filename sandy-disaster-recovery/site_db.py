@@ -142,6 +142,14 @@ class Site(SearchIndexedExpandoModel):
   
   open_phases_list = db.StringListProperty()
 
+  def get_phase_field(self, phase_name, field_name):
+      combined_field_name = u'phase_%s_%s' %(phase_name, field_name)
+      return getattr(self, combined_field_name)
+
+  def get_primary_phase_field(self, field_name):
+      primary_phase_name = self.open_phases_list[0]
+      return self.get_phase_field(primary_phase_name, field_name)
+
   @property
   def county_and_state(self):
       return (

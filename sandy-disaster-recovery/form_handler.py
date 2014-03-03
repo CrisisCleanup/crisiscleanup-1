@@ -25,14 +25,13 @@ from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 import json
 from datetime import datetime
-
+from xml.sax import saxutils
 
 
 # Local libraries.
 import base
 import event_db
 import site_db
-import site_util
 import form_db
 import site_db
 
@@ -135,7 +134,7 @@ class FormHandler(base.AuthenticatedHandler):
           
     claim_for_org = self.request.get("claim_for_org") == "y"
 
-    data.name.data = site_util.unescape(data.name.data)
+    data.name.data = saxutils.unescape(data.name.data)
 
     ### SET VALIDATORS HERE
     optional_validator = wtforms.validators.Optional()

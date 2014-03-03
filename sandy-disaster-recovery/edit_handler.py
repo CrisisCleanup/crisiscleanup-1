@@ -27,7 +27,6 @@ from datetime import datetime
 # Local libraries.
 import base
 import site_db
-import site_util
 import form_db
 from models import incident_definition
 from models import phase as phase_model

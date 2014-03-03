@@ -30,7 +30,6 @@ from datetime import datetime
 import base
 import event_db
 import site_db
-import site_util
 import form_db
 import page_db
 

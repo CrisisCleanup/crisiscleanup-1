@@ -25,7 +25,6 @@ from wtforms.ext.appengine.db import model_form
 from google.appengine.ext.db import to_dict
 from google.appengine.ext import db
 from google.appengine.api import search
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
 # Local libraries.
 from indexed import SearchIndexedExpandoModel

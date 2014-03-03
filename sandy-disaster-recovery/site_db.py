@@ -111,7 +111,7 @@ class Site(db.Expando):
   phone_normalised = db.StringProperty()
 
 
-  work_type = db.StringProperty()
+  #work_type = db.StringProperty()
   latitude = db.FloatProperty(default = 0.0)
   longitude = db.FloatProperty(default = 0.0)
   status = db.StringProperty(

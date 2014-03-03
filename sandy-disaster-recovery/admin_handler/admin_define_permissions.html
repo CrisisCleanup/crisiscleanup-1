@@ -1,5 +1,7 @@
 {% extends "base_template.html" %}
-
+  {% block head_content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  {% endblock %}
   {% block main_content %}
     <h2>Define Permissions</h2>
     {% if current_redactions %}

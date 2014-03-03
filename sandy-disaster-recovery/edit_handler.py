@@ -66,7 +66,6 @@ class EditHandler(base.AuthenticatedHandler):
       single_site = single_site_template.render(
 	{ "org": org,
 	  "phases_links": "<u>Choose a phase from below to edit<u><br>" + phases_links,
-	  "message": "Choose a phase from below to edit"
 	})
 	
 		  
@@ -270,10 +269,11 @@ class EditHandler(base.AuthenticatedHandler):
 
 
     if data.validate():
-      q = db.Query(phase_model.Phase)
-      q.filter("site =", site.key())
-      q.filter("phase_id =", phase_id)
-      phase_entity = q.get()
+      # TODO here
+      #q = db.Query(phase_model.Phase)
+      #q.filter("site =", site.key())
+      #q.filter("phase_id =", phase_id)
+      #phase_entity = q.get()
 
       # RETURNING WRONG SITE.
       for k, v in self.request.POST.iteritems():
@@ -309,8 +309,9 @@ class EditHandler(base.AuthenticatedHandler):
 	    setattr(site, k, float(v))
 	  else:
 	    setattr(site, k, str(v))
-	else:
-	  setattr(phase_entity, k, str(v))
+	#else:
+	  ##TODO here
+	  #setattr(phase_entity, k, str(v))
 
 
       #pass

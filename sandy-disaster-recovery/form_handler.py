@@ -125,15 +125,8 @@ class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedPost(self, org, event):
     post_data = self.request.POST
     site_id = self.request.get("site_id")
-    my_string = ""
-    for k, v in self.request.POST.iteritems():
-      if v == "":
-        v = "stub"
-      my_string += k + " = '" + v + "', "
       
     phase_id = self.request.get("phase_id")
-    
-    
 
     data = site_db.StandardSiteForm(self.request.POST)
 
@@ -158,9 +151,7 @@ class FormHandler(base.AuthenticatedHandler):
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
-    
-
-    
+   
     forms_json_obj = json.loads(inc_def_query.forms_json)
     phase_number = get_phase_number(forms_json_obj, phase_id)
     phase_name = get_phase_name(forms_json_obj, phase_number)
@@ -193,12 +184,12 @@ class FormHandler(base.AuthenticatedHandler):
 	  validations_array = []  
     if wt_data.validate():
       if site_id != "":
+	#raise Exception(0)
 	#look up site by id
 	site = site_db.Site.get_by_id(int(site_id))
 	if not site:
 	  #handle
 	  pass
-	phase_obj = phase.Phase(incident = inc_def_query.key(), site = site.key(), phase_id = phase_id)
 	for k, v in self.request.POST.iteritems():
 	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
 	    if k == "work_type":
@@ -214,13 +205,16 @@ class FormHandler(base.AuthenticatedHandler):
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
 	
       elif site_id == "":
+	#raise Exception(1)
 	site = site_db.Site(address = data.address.data,
 			      name = data.name.data)
 			      #event = event.key())
 	
 	for k, v in self.request.POST.iteritems():
-	  if k  in site_db.STANDARD_SITE_PROPERTIES_LIST:
-	    if k == "request_date":
+	  if k in site_db.STANDARD_SITE_PROPERTIES_LIST:
+	    if k == "work_type":
+	      pass
+	    elif k == "request_date":
 	      date_saved = False
 	      try:
 		date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
@@ -251,11 +245,10 @@ class FormHandler(base.AuthenticatedHandler):
 	      setattr(site, k, float(v))
 	    else:
 	      setattr(site, k, str(v))
-	
+	#raise Exception(site.work_type)
 	if event_db.AddSiteToEvent(site, event.key().id()):
-	  setattr(site, "is_legacy_and_first_phase", False)
+	  #setattr(site, "is_legacy_and_first_phase", False)
 	  site_db.PutAndCache(site)
-      	phase_obj = phase.Phase(incident = inc_def_query.key(), site = site.key(), phase_id = phase_id)
 	for k, v in self.request.POST.iteritems():
 	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
 	    #if k == "work_type":

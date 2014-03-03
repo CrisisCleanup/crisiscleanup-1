@@ -1017,3 +1017,7 @@ ol.fifteen > li:before {
     position:fixed;
     top:20px;
 }
+
+.horizontal {
+  display: inline;
+}

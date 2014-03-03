@@ -112,6 +112,9 @@ from admin_handler import admin_validation_questions_handler
 from admin_handler import admin_import_contacts_handler
 from admin_handler import admin_create_incident_form_handler
 from admin_handler import admin_website_settings_handler
+from admin_handler import admin_define_permissions
+from admin_handler import admin_global_settings_handler
+
 
 from api import private_map_handler
 from api import get_incident_definition
@@ -226,6 +229,10 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-edit-pages/download/defaults', admin_edit_pages_handler.AdminDownloadPageBlocks, 'admin_edit_pages_handler'),
     Route(r'/admin-create-incident-csv', admin_create_incident_csv_handler.AdminCreateIncidentCSVHandler, 'admin_edit_pages_handler'),
     Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'),
+    Route(r'/admin-define-permissions', admin_define_permissions.AdminDefinePermissions, 'admin-define-permissions'),
+    Route(r'/admin-website-settings', admin_website_settings_handler.AdminWebsiteSettingsHandler, 'admin_website_settings'),
+    Route(r'/admin-global-settings', admin_global_settings_handler.AdminGlobalSettingsHandler, 'admin_global_settings'),
+
     Route(r'/import-co-flood-handler', import_co_handler.ImportCOHandler, 'import-co-flood'),
 
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),

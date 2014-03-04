@@ -261,5 +261,5 @@ class FormHandler(base.FrontEndAuthenticatedHandler):
         id=None,
         page="/",
         event_name=event.name,
-        post_jsn=post_json,
+        post_json=post_json,
     )

@@ -35,32 +35,26 @@ function GetUrlValue(VarSearch){
 
 {% block main_content %}
 <h2>Incident: {{ incident_definition_object.name }}</h2>
-  <h3>Phases</h3>
+  <h3>Phases &amp; Forms</h3>
   {% if phases %}
-    {% for phase in phases %}
-      {{ phase.phase_name }} |
-    {% endfor %}
+    <ul>
+      {% for phase in phases %}
+        <li><big>
+          <a href="/incident_form_creator?incident_short_name={{phase.incident_short_name}}&phase_id={{phase.phase_short_name}}">{{ phase.phase_name }}</a>
+        </big></li>
+      {% endfor %}
+    </ul>
   {% else %}
-  <u>No Phases: Click to the right to add</u> |
+    <p><u>No Phases</u></p>
   {% endif %}
-    <a href="/incident_add_phase?id={{ incident_definition_object.key().id() }}">Add Phase</a> |
-    <a href="/incident_edit_phases?id={{ incident_definition_object.key().id() }}">Edit Phases</a>
+  <div>
+    <a href="/incident_add_phase?id={{ incident_definition_object.key().id() }}" class="btn btn-primary">Add Phase</a>
+    <a href="/incident_edit_phases?id={{ incident_definition_object.key().id() }}" class="btn btn-primary">Edit Phases</a>
+  </div>
 
-<h3>Forms</h3>
-{% if phases %}
-  {% for phase in phases %}
-    <a href="/incident_form_creator?incident_short_name={{phase.incident_short_name}}&phase_id={{phase.phase_short_name}}">{{ phase.phase_name }}</a> |
-  {% endfor %}
-  <small>Click to edit/view</small>
-{% else %}
-<u>No Forms: Add a phase to initialize a form</u>
+<h3>Incident Information <a href="/incident_edit?id={{ incident_definition_object.key().id() }}" class="btn btn-default">Edit</a></h3>
 
-{% endif %}
-<br>
-
-<br>
-<h3>Incident Information | <a href="/incident_edit?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
-<table>
+<table class="table table-bordered" style="width: auto">
 <tr>
   <td>Incident Name:</td>
   <td>{{ incident_definition_object.name }}</td>
@@ -92,7 +86,7 @@ function GetUrlValue(VarSearch){
 </table>
 
 <h3>Local Admin Information</h2>
-<table>
+<table class="table table-bordered" style="width: auto">
 <tr>
   <td>Name:</td>
   <td>{{ incident_definition_object.local_admin_name }}</td>
@@ -111,13 +105,17 @@ function GetUrlValue(VarSearch){
 </tr>
 </table>
 
-<h3><a href="#show_advanced_tab" id="show_advanced_tab">Click here for advanced options</a></h3>
-<div id="advanced_tab">
-<p><strong><u>These options are set by default. Changing them can greatly affect the performance of your app.</u></strong></p>
+<a href="#show_advanced_tab" id="show_advanced_tab" class="btn btn-default">
+  Advanced Options
+</a>
 
-<h3>Maps | <a href="/incident_edit_map_definition?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
+<div id="advanced_tab" style="padding-top: 10px;">
+
+<div class="alert alert-danger">These options are set by default. Changing them can greatly affect the performance of your app.</div>
+
+<h3>Maps <a href="/incident_edit_map_definition?id={{ incident_definition_object.key().id() }}" class="btn btn-default">Edit</a></h3>
 <h4>Organization Map</h4>	
-<table>
+<table class="table table-bordered" style="width: auto">
 <tr>
   <td>Title</td>
   <td>{{ incident_definition_object.organization_map_title }}</td>
@@ -139,7 +137,7 @@ function GetUrlValue(VarSearch){
 </table>
 
 <h4>Public Map</h4>	
-<table>
+<table class="table table-bordered" style="width: auto">
 <tr>
   <td>Title</td>
   <td>{{ incident_definition_object.public_map_title }}</td>
@@ -160,8 +158,8 @@ function GetUrlValue(VarSearch){
 </tr>
 </table>
 <br>
-<h3>Communications | <a href="/incident_edit_communications_definition?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
-<table>
+<h3>Communications <a href="/incident_edit_communications_definition?id={{ incident_definition_object.key().id() }}" class="btn btn-default">Edit</a></h3>
+<table class="table table-bordered" style="width: auto">
 <tr>
   <td>Notify when claimed site is unfinished for this long:</td>
   <td>{{ incident_definition_object.notify_unfinished }} days</td>

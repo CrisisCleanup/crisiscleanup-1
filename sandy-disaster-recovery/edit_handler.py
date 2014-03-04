@@ -30,7 +30,6 @@ import site_db
 import site_util
 import form_db
 from models import incident_definition
-from models import phase as phase_model
 from helpers import populate_incident_form
 from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
 
@@ -128,17 +127,17 @@ class EditHandler(base.AuthenticatedHandler):
       #del post_json2[attr]
 
 
-    phase_id = get_phase_id(json.loads(inc_def_query.forms_json), phase)
-    q = db.Query(phase_model.Phase)
-    q.filter("phase_id =", phase_id)
-    phase_query = q.get()
-    PHASE_ATTR_LIST = "incident", "phase_id", "site"
-    if phase_query:
-      ## Add info to post_json
-      phase_dict = phase_model.PhaseToDict(phase_query)
-      for attr in phase_dict:
-	if attr not in PHASE_ATTR_LIST:
-	  post_json2[attr] = phase_dict[attr]
+    #phase_id = get_phase_id(json.loads(inc_def_query.forms_json), phase)
+    #q = db.Query(phase_model.Phase)
+    #q.filter("phase_id =", phase_id)
+    #phase_query = q.get()
+    #PHASE_ATTR_LIST = "incident", "phase_id", "site"
+    #if phase_query:
+      ### Add info to post_json
+      #phase_dict = phase_model.PhaseToDict(phase_query)
+      #for attr in phase_dict:
+	#if attr not in PHASE_ATTR_LIST:
+	  #post_json2[attr] = phase_dict[attr]
     ################
     # TODO
     #

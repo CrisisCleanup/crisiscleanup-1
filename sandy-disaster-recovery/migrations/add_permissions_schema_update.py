@@ -4,7 +4,6 @@ from google.appengine.ext import deferred
 from google.appengine.ext import db
 import site_db
 import event_db
-from models import phase
 from models import incident_definition
 
 

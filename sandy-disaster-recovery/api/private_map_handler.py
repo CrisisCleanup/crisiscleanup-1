@@ -29,7 +29,6 @@ from collections import OrderedDict
 import base
 import site_db
 import event_db
-from models import phase as phase_db
 from models import incident_definition
 
 PAGE_OFFSET = 100

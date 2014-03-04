@@ -33,7 +33,6 @@ import time
 import base
 import site_db
 import event_db
-from models import phase as phase_db
 from models import incident_definition
 
 PAGE_OFFSET = 100
@@ -182,39 +181,39 @@ class PrivateSiteHandler(base.RequestHandler):
     s.filter("case_number =", case_number)
     this_site = s.get()
 
-    q = Query(model_class = phase_db.Phase)
-    q.filter("site =", this_site)
-    q.is_keys_only()
-    #q.filter("phase_id =", phase_id)
+    #q = Query(model_class = phase_db.Phase)
+    #q.filter("site =", this_site)
+    #q.is_keys_only()
+    ##q.filter("phase_id =", phase_id)
 	  
 
 	
-  # TODO
-  # Get all entities in a phase.
-    ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = 0)]
-    #raise Exception(ids)
+  ## TODO
+  ## Get all entities in a phase.
+    #ids = [key.site.key().id() for key in q.fetch(PAGE_OFFSET, offset = 0)]
+    ##raise Exception(ids)
 
-    #raise Exception(ids)
-    output = json.dumps(
-	[s[1] for s in site_db.GetAllCached(event, ids)],
-	default=dthandler
-    )
-    output_array = []
-    json_output = json.loads(output)
+    ##raise Exception(ids)
+    #output = json.dumps(
+	#[s[1] for s in site_db.GetAllCached(event, ids)],
+	#default=dthandler
+    #)
+    #output_array = []
+    #json_output = json.loads(output)
     
-    #output_copy = deepcopy(json_output)
-    remove_from_output_list = ["event_name", "city_metaphone", 'address_metaphone', 'name_metaphone', 'event', 'latitude', 'longitude', 'blurred_latitude', 'blurred_longitude', 'phase_id', 'phone_normalised', 'is_legacy_and_first_phase', 'address_digits', 'id']
-    for key in json_output[0]:
-      if key in remove_from_output_list:
-	pass
-	#del output_copy[0][key]
-      else:
-	output_array.append(key)
+    ##output_copy = deepcopy(json_output)
+    #remove_from_output_list = ["event_name", "city_metaphone", 'address_metaphone', 'name_metaphone', 'event', 'latitude', 'longitude', 'blurred_latitude', 'blurred_longitude', 'phase_id', 'phone_normalised', 'is_legacy_and_first_phase', 'address_digits', 'id']
+    #for key in json_output[0]:
+      #if key in remove_from_output_list:
+	#pass
+	##del output_copy[0][key]
+      #else:
+	#output_array.append(key)
     
-    final_output = {}
-    for key in json_output[0]:
-      if key in output_array:
-	final_output[key] = json_output[0][key]
+    #final_output = {}
+    #for key in json_output[0]:
+      #if key in output_array:
+	#final_output[key] = json_output[0][key]
 	
     #raise Exception(final_output)
     html_string = format_output(final_output, case_number, phase_number, phase_id, ids[0], inc_def_query)
@@ -243,7 +242,7 @@ class PrivateSiteHandler(base.RequestHandler):
     #raise Exception(work_select_string)
       	    
       
-    self.response.out.write(html_string)
+    #self.response.out.write(html_string)
 
 
 def format_output(final_output, case_number, phase_number, phase_id, site_id, inc_def_query):

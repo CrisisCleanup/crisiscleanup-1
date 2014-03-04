@@ -80,7 +80,6 @@ from handlers import incident_edit_phases
 from handlers import incident_edit_map_definition
 from handlers import incident_edit_communications_definition
 from handlers import incident_definition_legacy
-from handlers import check_similar_by_phase_api
 from handlers import incident_definition_home
 from handlers import clone_form
 
@@ -266,7 +265,6 @@ app = webapp2.WSGIApplication([
     Route(r'/incident_edit_map_definition', incident_edit_map_definition.IncidentEditMapDefinition, 'incident_edit_map_definition'),
     Route(r'/incident_edit_communications_definition', incident_edit_communications_definition.IncidentEditCommunicationsDefinition, 'incident_edit_communications_definition'),
     
-    Route(r'/check_similar_by_phase_api', check_similar_by_phase_api.CheckSimilarByPhaseAPI, "check_similar_by_phase_api"),
     Route(r'/api/private_map_handler', private_map_handler.PrivateMapHandler, "private_map_handler"),
     Route(r'/api/get_incident_definition', get_incident_definition.GetIncidentDefinition, "get_incident_definition"),
     Route(r'/api/private_site_handler', private_site_handler.PrivateSiteHandler, "private_site_handler"),

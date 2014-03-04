@@ -43,7 +43,6 @@ from helpers import populate_incident_form
 import wtforms.ext.dateutil.fields
 import wtforms.fields
 from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
-from models import phase
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))

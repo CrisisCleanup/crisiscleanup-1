@@ -120,7 +120,6 @@ $(function(){
     set_new_markers();
   });
   // onclick
-  // console.log all_markers
   // if it comes up, then just search, filter, and resend to clusterer.addMarkers
 
 })
@@ -209,8 +208,6 @@ var set_new_markers = function() {
 
     }
     
-    console.log("234");
-    console.log(new_markers);
     clusterer.clearMarkers();
     clusterer.addMarkers(new_markers);
   }
@@ -219,7 +216,6 @@ var set_new_markers = function() {
 
     
 var populateMapByIncident = function(incident, page, old_markers) {
-  console.log("populateMapByIncident");
   var run_again = false;
   var phase_number = GetUrlValue("phase_number")
   $.getJSON(
@@ -229,7 +225,6 @@ var populateMapByIncident = function(incident, page, old_markers) {
     if (sites_list.length > 99) {
       run_again = true;
     }
-    console.log(sites_list);
           var mapOptions = {
     zoom: 8,
     center: new google.maps.LatLng(40.6501038, -73.8495823),
@@ -252,7 +247,6 @@ var populateMapByIncident = function(incident, page, old_markers) {
 	
 	google.maps.event.addListener(marker, "click", function() {
 	  var this_phase_id = this.site_info.phase_id;
-	  console.log(this.site_info)
 
 	  new Messi.load('/api/private_site_handler?case_number=' + this.site_info.case_number +'&phase_number=' + phase_number,
 	  {title: 'Case Number: ' + this.site_info.case_number + '<br>Work Type: ' + this.site_info.work_type, titleClass: 'info'});
@@ -345,7 +339,6 @@ var getInfoboxDetails = function(site) {
 	    }
         }
     }
-    console.log(details);
     return details;
 }
 
@@ -371,8 +364,6 @@ var getMarkerIcon = function (site) {
     }
     site.work_type = marker_work_type;
     var icon_type = site.work_type.replace(/ /g, "_");
-    console.log("/icons/" + icon_type + "_" + color + ".png");
-    console.log(site.work_type);
     return "/icons/" + icon_type + "_" + color + ".png";
 }
 

@@ -199,7 +199,7 @@ class FormHandler(base.AuthenticatedHandler):
 	      setattr(site, k, str(v))
 	old_phases_list = site.open_phases_list
 	old_phases_list.append(phase_name.lower())
-	setattr(site, "open_phases_list", phases_list)
+	setattr(site, "open_phases_list", old_phases_list)
 	site_db.PutAndCache(site)
 	
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))

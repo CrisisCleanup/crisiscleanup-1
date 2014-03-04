@@ -208,7 +208,6 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
 //             var status = xhr.getStatus();
 //             if (status == 200) {
 //                 var new_site = xhr.getResponseJson();
-// 		console.log(new_site['event_name']);
 // 		if (new_site['event_name'] == "sandy") {
 // 		      MarkerClusterer.IMAGE_PATH = "/icons/m";
 // 		      clusterer = new MarkerClusterer(map);

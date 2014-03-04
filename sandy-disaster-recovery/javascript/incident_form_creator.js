@@ -31,7 +31,6 @@ $(function() {
   });
   
   $("#click_to_read").click(function() {
-//     console.log(form_json_array);
   });
   // ----------- FORM LABEL FUNCTIONS ----------------
   $("#add_label").click(function() {
@@ -179,8 +178,6 @@ $(function() {
     }    
     form_json_array.push(text_json);
       var jString = JSON.stringify(form_json_array);
-      console.log(jString);
-      console.log("#@#")
 
   }
   
@@ -539,7 +536,6 @@ $(function() {
   
   $("#add_work_type_to_form").click(function() {
 	hide_divs();
-	console.log(form_json_array);
 	add_work_type_input(form_json_array);
 	$("#work_type_form").trigger('reset');
 	add_to_form(form_json_array);
@@ -893,7 +889,6 @@ function get_form_json(phase,incident_short_name, form_json_array) {
       }
       form_json_array.push(phase_data);
       var jString = JSON.stringify(form_json_array);
-//       console.log(1);
 	  $("#tabs-2").empty();
       $("#tabs-2").append(jString);
     } else {
@@ -918,16 +913,13 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 	    read_json_to_html(form_json_array);
 	  	    $("#tabs-2").empty();
 	    $("#tabs-2").append(jString);
-// 	          console.log(jString);
 
 	  }
 	}
       }
       
-      console.log(form_json_array);
       set_modules_already_added(form_json_array);
       if (!any_equal) {
-// 	console.log(3);
 	  show_sidebar_form_creator();
 	var phases_array = JSON.parse(data.phases_json);
 	
@@ -972,10 +964,8 @@ function read_phases_json_to_html(phases_json_array, incident_short_name) {
 }
 
 function save_changes(form_json_array) {
-//   console.log(form_json_array);
   var jString = JSON.stringify(form_json_array);
   $.post( "incident_save_form", {form_json_array:jString}, function( data ) {
-//     console.log(data);
     var d = JSON.parse(data)
     window.location.replace('/incident_definition?message="Saved Successfully"&id=' + d[0].incident_key.toString());
   });
@@ -1100,7 +1090,6 @@ function swap_order_numbers_up(order_number, form_json_array) {
 }
 
 function add_to_form(form_json_array) {
-  console.log(form_json_array);
   read_json_to_html(form_json_array);
   var jString = JSON.stringify(form_json_array);
   $("#tabs-2").empty();
@@ -1120,7 +1109,6 @@ function GetUrlValue(VarSearch){
 
 function getFormFromApi(form_json_array, incident_short_name, phase_name) {
    $.getJSON( "/api/private_site_handler", { get_phase_form: true, phase_name:phase_name, incident_short_name: incident_short_name},  function( data ) {
-    console.log(data);
     add_to_form(data);
     for (var x = 1; x < data.length; x++) {
 //       clearFormJsonArray(form_json_array);

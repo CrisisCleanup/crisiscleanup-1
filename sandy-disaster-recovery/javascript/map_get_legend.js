@@ -5,7 +5,6 @@ $(function() {
   // create legend in html, and add to proper div
   
   $.getJSON( "/api/get_incident_definition", function( data ) {
-    console.log(data)
     
     var phase_number = GetUrlValue("phase_number");
     
@@ -28,7 +27,6 @@ $(function() {
 	}
       }
     }    
-    console.log(keys_array);
     
     var html_string = "";
     var filter_string = 'Open: <input type="checkbox" name="filter" id="open"><br>Closed: <input type="checkbox" name="filter" id="closed"><br>Claimed: <input type="checkbox" name="filter" id="claimed"><br>Unclaimed: <input type="checkbox" name="filter" id="unclaimed"><br>';

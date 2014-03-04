@@ -28,10 +28,7 @@ formBuilderApp.factory('incidentsFactory', function($http) {
 
 formBuilderApp.controller('incidentsController', function($scope, incidentsFactory) {
   incidentsFactory.getIncidentsAsync(function(results) {
-      console.log('incidentsController async returned value');
-      console.log(results);
       $scope.incidents = results;
-      console.log($scope.incidents);
   });
   
 });

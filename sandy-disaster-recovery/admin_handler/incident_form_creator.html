@@ -1,273 +1,262 @@
 {% extends "base_template.html" %}
 
 {% block head_content %}
-
 {% endblock %}
 
 {% block scripts %}
 <script type="text/javascript" src="../javascript/incident_form_creator.js"></script>
 {% endblock %}
 
-{% block login %}
-{% endblock %}
-
-{% block description_title %}
-{% endblock %}
-
-{% block description_subtitle %}
-{% endblock %}
-
-{% block sidebar_title %}
-{% endblock %}
-
-{% block sidebar_content %}
-
-<div id="sidebar_form_creator">
-  <div id="form_editor">
-    <a href="#" id="save_all_changes1" class="save_all_changes button button-icon icon icon-envelope">Save All Changes</a>
-  </div>
-  <h2>Add Inputs to form</h2>
-  <hr>
-  <a id="clone_form" href="#form_editor">Clone an existing form</a></br>
-  <hr>
-  <a id="add_work_type" href="#form_editor">Add Work Type</a></br>
-  <a id="add_personal_info_module" href="#form_editor">Add personal info module</a></br>
-  <a id="add_status_info_module" href="#form_editor">Add Status and Claim info module</a></br>
-  <hr>
-  <a id="add_label" href="#form_editor">map label + </a><br>
-  <a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>
-  <a id="add_header" href="#form_editor">header +</a><br>
-  <a id="add_subheader" href="#form_editor">subheader +</a><br>
-  <a id="add_text" href="#form_editor">text input +</a><br>
-  <a id="add_textarea" href="#form_editor">textarea input +</a><br>
-  <a id="add_checkbox" href="#form_editor">checkbox input +</a><br>
-  <a id="add_select" href="#form_editor">select input +</a><br>
-  <a id="add_radio" href="#form_editor">radio input +</a><br>
-  <hr>
-
-
-  <div id="text_div">
-    <h3>Add Text Input</h3>
-    <form id="text_form">
-      Label: <input type="text" id="text_label" name="text_label"><br>
-      Form Id: <input type="text" id="text_id" name="text_id"><br>
-
-      Required: <input type="checkbox" id="text_required" name="text_required" value="y">
-      <br>
-      Sensitive Info: <select id="text_sensitive" name="checkbox_default">
-	<option value="None" >Choose One (optional)</option>
-	<option value="name" >Name</option>
-	<option value="contact_information" >Contact Information</option>
-	<option value="address" >Address</option>
-	<option value="narrative" >Narrative</option>
-      </select><br>
-      Extra Validations: <select id="text_validations" name="checkbox_default">
-	<option value="None" >Choose One (optional)</option>
-	<option value="email" >Email</option>
-	<option value="date" >Date</option>
-	<option value="phone" >Phone</option>
-	<option value="url" >Url</option>
-      </select><br>
-      <h3><a href="#form_editor" id="add_text_to_form" class="button orange">Add to form</a></h3>
-    </form>
-  </div>
-
-  <div id="checkbox_div">
-  <h3>Add Checkbox</h3>
-  <form id="checkbox_form">
-    Label: <input type="text" id="checkbox_label" name="checkbox_label"><br>
-    Form Id: <input type="text" id="checkbox_id" name="checkbox_id"><br>
-
-    Default Value:<select id="checkbox_default" name="checkbox_default">
-    <option value="n" >Unchecked</option>
-    <option value="y" >Checked</option>
-    </select><br><br>
-<!--     Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y"> -->
-      Sensitive Info: <select id="checkbox_sensitive" name="checkbox_default">
-	<option value="None" >Choose One (optional)</option>
-	<option value="name" >Name</option>
-	<option value="contact_information" >Contact Information</option>
-	<option value="address" >Address</option>
-	<option value="narrative" >Narrative</option>
-      </select><br>
-      <!--    Extra Validations: <select id="checkbox_validations" name="checkbox_default">
-      <option value="None" >Choose One (optional)</option>
-      <option value="email" >Email</option>
-      <option value="date" >Date</option>
-      <option value="phone" >Phone</option>
-      <option value="url" >Url</option>
-    </select><br>-->
-    <h3><a href="#form_editor" id="add_checkbox_to_form" class="button orange">Add to form</a></h3>
-  </form>
-  </div>
-  <div id="select_div">
-
-  <h3>Add Select</h3> 
-    <form id="select_form">
-      Label: <input type="text" id="select_label" name="select_label"><br>
-      Form Id: <input type="text" id="select_id" name="select_id"><br>
-
-      <div id="add_options_to_select">
-      Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>
-      </div>
-      <a id="add_select_option" href="#form_editor">Add another option</a>
-      <br>
-      <a id="clear_select_options">Clear options</a>
-      <br>
-      <br>
-      <br>
-      Required: <input type="checkbox" id="select_required" name="select_required" value="y">
-      Sensitive Info: <select id="select_sensitive" name="checkbox_default">
-	<option value="None" >Choose One (optional)</option>
-	<option value="name" >Name</option>
-	<option value="contact_information" >Contact Information</option>
-	<option value="address" >Address</option>
-	<option value="narrative" >Narrative</option>
-      </select><br>
-      <h3><a href="#form_editor" id="add_select_to_form" class="button orange">Add to form</a></h3>
-    </form>
-  </div>
-
-  <div id="radio_div">
-    <h3>Add Radio</h3> 
-    <form id="radio_form">
-      Label: <input type="text" id="radio_label" name="radio_label"><br>
-      Form Id: <input type="text" id="radio_id" name="radio_id"><br>
-
-      <div id="add_options_to_radio">
-      Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
-      </div>
-      <a id="add_radio_option" href="#form_editor">Add another option</a>
-      <br>
-      <a id="clear_radio_options">Clear options</a>
-      <br>
-      <br>Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
-      Sensitive Info: <select id="radio_sensitive" name="checkbox_default">
-	<option value="None" >Choose One (optional)</option>
-	<option value="name" >Name</option>
-	<option value="contact_information" >Contact Information</option>
-	<option value="address" >Address</option>
-	<option value="narrative" >Narrative</option>
-      </select><br>
-      Low Hint: <input type="text" id="radio_low_hint" name="radio_low_hint"><br>
-      High Hint: <input type="text" id="radio_high_hint" name="radio_high_hint"><br>
-      <h3><a href="#form_editor" id="add_radio_to_form" class="button orange">Add to form</a></h3>
-    </form>
-  </div>
-
-  <div id="header_div">
-    <h2>Add Header to form</h2>
-
-    <form id="header_form">
-      Label: <input type="text" id="header_label" name="header_label"><br>
-      <h3><a href="#form_editor" id="add_header_to_form" class="button orange">Add to form</a></h3>
-    </form>
-  </div>
-
-  <div id="subheader_div">
-    <h2>Add Subheader to form</h2>
-
-    <form id="subheader_form">
-      Label: <input type="text" id="subheader_label" name="subheader_label"><br>
-      <h3><a href="#form_editor" id="add_subheader_to_form" class="button orange">Add to form</a></h3>
-    </form>
-  </div>
-  <div id="textarea_div">
-    <h2>Add Textarea to form</h2>
-
-    <form id="textarea_form">
-      Name: <input type="text" id="textarea_label" name="textarea_label"><br>
-      Id: <input type="text" id="textarea_id" name="textarea_id"><br>
-      Sensitive Info: <select id="textarea_sensitive" name="checkbox_default">
-	<option value="None" >Choose One (optional)</option>
-	<option value="name" >Name</option>
-	<option value="contact_information" >Contact Information</option>
-	<option value="address" >Address</option>
-	<option value="narrative" >Narrative</option>
-      </select><br>
-      Extra Validations: <select id="textarea_validations" name="checkbox_default">
-	<option value="None" >Choose One (optional)</option>
-	<option value="email" >Email</option>
-	<option value="date" >Date</option>
-	<option value="phone" >Phone</option>
-	<option value="url" >Url</option>
-      </select><br>
-      <h3><a href="#form_editor" id="add_textarea_to_form" class="button orange">Add to form</a></h3>
-    </form>
-  </div>
-  
-  <div id="label_div">
-    <h2>Add Header to form</h2>
-
-    <form id="label_form">
-      Label: <input type="text" id="label_name" name="label_name"><br>
-      <h3><a href="#form_editor" id="add_label_to_form" class="button orange">Add to form</a></h3>
-    </form>
-  </div>
-
-  <div id="paragraph_div">
-    <h2>Add Header to form</h2>
-
-    <form id="paragraph_form">
-      Paragraph:<br><textarea rows="10" cols="30" id="paragraph" name="paragraph"></textarea><br>
-      <h3><a href="#form_editor" id="add_paragraph_to_form" class="button orange">Add to form</a></h3>
-    </form>
-  </div>
-  
-  <div id="work_type_div">
-    <h2>Add Work Types</h2>
-    <p>Other (<img src="/icons/Other_black.png">) will be added automatically.</p>
-    <form id="work_type_form">
-       <input type="checkbox" id="ash" name="ash" value="y">  <img src="/icons/Ash_black.png"> (Ash)<br>
-       <input type="checkbox" id="debris" name="debris" value="y"><img src="/icons/Debris_black.png"> (Debris)<br>
-       <input type="checkbox" id="fence" name="fense" value="y"><img src="/icons/Fence_black.png"> (Fence)<br>
-       <input type="checkbox" id="fire" name="fire" value="y"><img src="/icons/Fire_black.png"> (Fire)<br>
-       <input type="checkbox" id="flood" name="flood" value="y"><img src="/icons/Flood_black.png"> (Flood)<br>
-       <input type="checkbox" id="food" name="food" value="y"><img src="/icons/Food_black.png"> (Food)<br>
-       <input type="checkbox" id="landslide" name="landslide" value="y"><img src="/icons/Landslide_black.png"> (Landslide)<br>
-       <input type="checkbox" id="tarp" name="tarp" value="y"><img src="/icons/Tarp_black.png"> (Tarp)<br>
-       <input type="checkbox" id="tornado" name="tornado" value="y"><img src="/icons/Tornado_black.png"> (Tornado)<br>
-       <input type="checkbox" id="trees" name="trees" value="y"><img src="/icons/Trees_black.png"> (Trees)<br>
-       <input type="checkbox" id="volcano" name="volcano" value="y"><img src="/icons/Volcano_black.png"> (Volcano)<br>
-
-
-      <h3><a href="#form_editor" id="add_work_type_to_form" class="button orange">Add to form</a></h3>
-    </form>
-  </div>
-  <div id="clone_form_div">
-    <h2>Click a form to clone</h2>
-    {{inc_array}}
-  </div>
-
-<a href="#" id="save_all_changes" class="save_all_changes button button-icon icon icon-envelope">Save All Changes</a>
-
-</div>
-{% endblock %}
-
-{% block main_title %}
-{% endblock %}
-
 {% block main_content %}
-<h2>Incident Form Creator</h2>
 
-<div id="phases">
-  <div id="tabs">
-    <h3 class="horizontal"><a href="#" id="show_html">HTML</a></h3>
-    <h3 class="horizontal"><a href="#" id="show_json">JSON</a></h3>
-    <div id="tabs-1">
-	<div id="form_label">
-	</div>
-	<div id="form_paragraph">
-	</div>
-	<div>
-	  <table id="form_table">
-	  </table>
-	</div>
+<div class="row">
+  <div id="sidebar_form_creator" class="col-md-3">
+    <div id="form_editor">
+      <a href="#" id="save_all_changes1" class="save_all_changes btn btn-primary">Save All Changes</a>
     </div>
-    <div id="tabs-2">
+    <h2>Add Inputs to form</h2>
+    <hr>
+    <a id="clone_form" href="#form_editor">Clone an existing form</a></br>
+    <hr>
+    <a id="add_work_type" href="#form_editor">Add Work Type</a></br>
+    <a id="add_personal_info_module" href="#form_editor">Add personal info module</a></br>
+    <a id="add_status_info_module" href="#form_editor">Add Status and Claim info module</a></br>
+    <hr>
+    <a id="add_label" href="#form_editor">map label + </a><br>
+    <a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>
+    <a id="add_header" href="#form_editor">header +</a><br>
+    <a id="add_subheader" href="#form_editor">subheader +</a><br>
+    <a id="add_text" href="#form_editor">text input +</a><br>
+    <a id="add_textarea" href="#form_editor">textarea input +</a><br>
+    <a id="add_checkbox" href="#form_editor">checkbox input +</a><br>
+    <a id="add_select" href="#form_editor">select input +</a><br>
+    <a id="add_radio" href="#form_editor">radio input +</a><br>
+    <hr>
+
+
+    <div id="text_div">
+      <h3>Add Text Input</h3>
+      <form id="text_form">
+        Label: <input type="text" id="text_label" name="text_label"><br>
+        Form Id: <input type="text" id="text_id" name="text_id"><br>
+
+        Required: <input type="checkbox" id="text_required" name="text_required" value="y">
+        <br>
+        Sensitive Info: <select id="text_sensitive" name="checkbox_default">
+    <option value="None" >Choose One (optional)</option>
+    <option value="name" >Name</option>
+    <option value="contact_information" >Contact Information</option>
+    <option value="address" >Address</option>
+    <option value="narrative" >Narrative</option>
+        </select><br>
+        Extra Validations: <select id="text_validations" name="checkbox_default">
+    <option value="None" >Choose One (optional)</option>
+    <option value="email" >Email</option>
+    <option value="date" >Date</option>
+    <option value="phone" >Phone</option>
+    <option value="url" >Url</option>
+        </select><br>
+        <h3><a href="#form_editor" id="add_text_to_form" class="btn btn-primary">Add to form</a></h3>
+      </form>
+    </div>
+
+    <div id="checkbox_div">
+    <h3>Add Checkbox</h3>
+    <form id="checkbox_form">
+      Label: <input type="text" id="checkbox_label" name="checkbox_label"><br>
+      Form Id: <input type="text" id="checkbox_id" name="checkbox_id"><br>
+
+      Default Value:<select id="checkbox_default" name="checkbox_default">
+      <option value="n" >Unchecked</option>
+      <option value="y" >Checked</option>
+      </select><br><br>
+  <!--     Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y"> -->
+        Sensitive Info: <select id="checkbox_sensitive" name="checkbox_default">
+    <option value="None" >Choose One (optional)</option>
+    <option value="name" >Name</option>
+    <option value="contact_information" >Contact Information</option>
+    <option value="address" >Address</option>
+    <option value="narrative" >Narrative</option>
+        </select><br>
+        <!--    Extra Validations: <select id="checkbox_validations" name="checkbox_default">
+        <option value="None" >Choose One (optional)</option>
+        <option value="email" >Email</option>
+        <option value="date" >Date</option>
+        <option value="phone" >Phone</option>
+        <option value="url" >Url</option>
+      </select><br>-->
+      <h3><a href="#form_editor" id="add_checkbox_to_form" class="btn btn-primary">Add to form</a></h3>
+    </form>
+    </div>
+    <div id="select_div">
+
+    <h3>Add Select</h3> 
+      <form id="select_form">
+        Label: <input type="text" id="select_label" name="select_label"><br>
+        Form Id: <input type="text" id="select_id" name="select_id"><br>
+
+        <div id="add_options_to_select">
+        Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>
+        </div>
+        <a id="add_select_option" href="#form_editor">Add another option</a>
+        <br>
+        <a id="clear_select_options">Clear options</a>
+        <br>
+        <br>
+        <br>
+        Required: <input type="checkbox" id="select_required" name="select_required" value="y">
+        Sensitive Info: <select id="select_sensitive" name="checkbox_default">
+    <option value="None" >Choose One (optional)</option>
+    <option value="name" >Name</option>
+    <option value="contact_information" >Contact Information</option>
+    <option value="address" >Address</option>
+    <option value="narrative" >Narrative</option>
+        </select><br>
+        <h3><a href="#form_editor" id="add_select_to_form" class="btn btn-primary">Add to form</a></h3>
+      </form>
+    </div>
+
+    <div id="radio_div">
+      <h3>Add Radio</h3> 
+      <form id="radio_form">
+        Label: <input type="text" id="radio_label" name="radio_label"><br>
+        Form Id: <input type="text" id="radio_id" name="radio_id"><br>
+
+        <div id="add_options_to_radio">
+        Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
+        </div>
+        <a id="add_radio_option" href="#form_editor">Add another option</a>
+        <br>
+        <a id="clear_radio_options">Clear options</a>
+        <br>
+        <br>Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
+        Sensitive Info: <select id="radio_sensitive" name="checkbox_default">
+    <option value="None" >Choose One (optional)</option>
+    <option value="name" >Name</option>
+    <option value="contact_information" >Contact Information</option>
+    <option value="address" >Address</option>
+    <option value="narrative" >Narrative</option>
+        </select><br>
+        Low Hint: <input type="text" id="radio_low_hint" name="radio_low_hint"><br>
+        High Hint: <input type="text" id="radio_high_hint" name="radio_high_hint"><br>
+        <h3><a href="#form_editor" id="add_radio_to_form" class="btn btn-primary">Add to form</a></h3>
+      </form>
+    </div>
+
+    <div id="header_div">
+      <h2>Add Header to form</h2>
+
+      <form id="header_form">
+        Label: <input type="text" id="header_label" name="header_label"><br>
+        <h3><a href="#form_editor" id="add_header_to_form" class="btn btn-primary">Add to form</a></h3>
+      </form>
+    </div>
+
+    <div id="subheader_div">
+      <h2>Add Subheader to form</h2>
+
+      <form id="subheader_form">
+        Label: <input type="text" id="subheader_label" name="subheader_label"><br>
+        <h3><a href="#form_editor" id="add_subheader_to_form" class="btn btn-primary">Add to form</a></h3>
+      </form>
+    </div>
+    <div id="textarea_div">
+      <h2>Add Textarea to form</h2>
+
+      <form id="textarea_form">
+        Name: <input type="text" id="textarea_label" name="textarea_label"><br>
+        Id: <input type="text" id="textarea_id" name="textarea_id"><br>
+        Sensitive Info: <select id="textarea_sensitive" name="checkbox_default">
+    <option value="None" >Choose One (optional)</option>
+    <option value="name" >Name</option>
+    <option value="contact_information" >Contact Information</option>
+    <option value="address" >Address</option>
+    <option value="narrative" >Narrative</option>
+        </select><br>
+        Extra Validations: <select id="textarea_validations" name="checkbox_default">
+    <option value="None" >Choose One (optional)</option>
+    <option value="email" >Email</option>
+    <option value="date" >Date</option>
+    <option value="phone" >Phone</option>
+    <option value="url" >Url</option>
+        </select><br>
+        <h3><a href="#form_editor" id="add_textarea_to_form" class="btn btn-primary">Add to form</a></h3>
+      </form>
+    </div>
+    
+    <div id="label_div">
+      <h2>Add Header to form</h2>
+
+      <form id="label_form">
+        Label: <input type="text" id="label_name" name="label_name"><br>
+        <h3><a href="#form_editor" id="add_label_to_form" class=" btn btn-primary">Add to form</a></h3>
+      </form>
+    </div>
+
+    <div id="paragraph_div">
+      <h2>Add Header to form</h2>
+
+      <form id="paragraph_form">
+        Paragraph:<br><textarea rows="10" cols="30" id="paragraph" name="paragraph"></textarea><br>
+        <h3><a href="#form_editor" id="add_paragraph_to_form" class=" btn btn-primary">Add to form</a></h3>
+      </form>
+    </div>
+    
+    <div id="work_type_div">
+      <h2>Add Work Types</h2>
+      <p>Other (<img src="/icons/Other_black.png">) will be added automatically.</p>
+      <form id="work_type_form">
+         <input type="checkbox" id="ash" name="ash" value="y">  <img src="/icons/Ash_black.png"> (Ash)<br>
+         <input type="checkbox" id="debris" name="debris" value="y"><img src="/icons/Debris_black.png"> (Debris)<br>
+         <input type="checkbox" id="fence" name="fense" value="y"><img src="/icons/Fence_black.png"> (Fence)<br>
+         <input type="checkbox" id="fire" name="fire" value="y"><img src="/icons/Fire_black.png"> (Fire)<br>
+         <input type="checkbox" id="flood" name="flood" value="y"><img src="/icons/Flood_black.png"> (Flood)<br>
+         <input type="checkbox" id="food" name="food" value="y"><img src="/icons/Food_black.png"> (Food)<br>
+         <input type="checkbox" id="landslide" name="landslide" value="y"><img src="/icons/Landslide_black.png"> (Landslide)<br>
+         <input type="checkbox" id="tarp" name="tarp" value="y"><img src="/icons/Tarp_black.png"> (Tarp)<br>
+         <input type="checkbox" id="tornado" name="tornado" value="y"><img src="/icons/Tornado_black.png"> (Tornado)<br>
+         <input type="checkbox" id="trees" name="trees" value="y"><img src="/icons/Trees_black.png"> (Trees)<br>
+         <input type="checkbox" id="volcano" name="volcano" value="y"><img src="/icons/Volcano_black.png"> (Volcano)<br>
+
+
+        <h3><a href="#form_editor" id="add_work_type_to_form" class=" btn btn-primary">Add to form</a></h3>
+      </form>
+    </div>
+    <div id="clone_form_div">
+      <h2>Click a form to clone</h2>
+      {{inc_array}}
+    </div>
+
+  <a href="#" id="save_all_changes" class="save_all_changes btn btn-primary">Save All Changes</a>
+
+  </div>
+
+  <div id="main_body_form_creator" class="col-md-9">
+
+    <h2>Incident Form Creator</h2>
+
+    <div id="phases">
+      <div id="tabs">
+        <h3 class="horizontal"><a href="#" id="show_html">HTML</a></h3>
+        <h3 class="horizontal"><a href="#" id="show_json">JSON</a></h3>
+        <div id="tabs-1">
+      <div id="form_label">
+      </div>
+      <div id="form_paragraph">
+      </div>
+      <div>
+        <table id="form_table">
+        </table>
+      </div>
+        </div>
+        <div id="tabs-2">
+        </div>
+
+      </div>
     </div>
 
   </div>
+
 </div>
 
 {% endblock %}

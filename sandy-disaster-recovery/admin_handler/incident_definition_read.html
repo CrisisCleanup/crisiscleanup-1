@@ -12,15 +12,12 @@ $(function() {
     console.log(GetUrlValue("show_advanced_tab"));
     document.getElementById("advanced_tab").scrollIntoView();
   } else {
-    
     $("#advanced_tab").hide();
   }
   
   $("#show_advanced_tab").click(function() {
     $("#advanced_tab").show();
   });
-
-
 });
 
 function GetUrlValue(VarSearch){
@@ -34,25 +31,6 @@ function GetUrlValue(VarSearch){
     }
 }
 </script>
-{% endblock %}
-
-{% block login %}
-{% endblock %}
-
-
-{% block description_title %}
-{% endblock %}
-
-{% block description_subtitle %}
-{% endblock %}
-
-{% block sidebar_title %}
-{% endblock %}
-
-{% block sidebar_content %}
-{% endblock %}
-
-{% block main_title %}
 {% endblock %}
 
 {% block main_content %}
@@ -112,8 +90,9 @@ function GetUrlValue(VarSearch){
   <td></td>
   <td></td>
 </table>
-<table>
+
 <h3>Local Admin Information</h2>
+<table>
 <tr>
   <td>Name:</td>
   <td>{{ incident_definition_object.local_admin_name }}</td>
@@ -127,7 +106,6 @@ function GetUrlValue(VarSearch){
   <td>{{ incident_definition_object.local_admin_email }}</td>
 </tr>
 <tr>
-
   <td>Password:</td>
   <td>{{ incident_definition_object.local_admin_password }}</td>
 </tr>
@@ -159,6 +137,7 @@ function GetUrlValue(VarSearch){
   <td>{{ incident_definition_object.organization_map_longitude }}</td>
 </tr>
 </table>
+
 <h4>Public Map</h4>	
 <table>
 <tr>
@@ -199,5 +178,3 @@ function GetUrlValue(VarSearch){
 </table>
 </div>
 {% endblock %}
-
-

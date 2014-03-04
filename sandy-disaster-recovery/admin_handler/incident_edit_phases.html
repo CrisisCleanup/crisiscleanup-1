@@ -5,35 +5,20 @@
 <link href="/stylesheets/default.css" rel="stylesheet">
 {% endblock %}
 
-{% block scripts %}
-{% endblock %}
-
-{% block login %}
-{% endblock %}
-
-
-{% block description_title %}
-{% endblock %}
-
-{% block description_subtitle %}
-{% endblock %}
-
-{% block sidebar_title %}
-{% endblock %}
-
-{% block sidebar_content %}
-{% endblock %}
-
-{% block main_title %}
-{% endblock %}
-
 {% block main_content %}
+
 <h2>Incident: {{ incident_definition_object.name }}</h2>
-<h2>Edit Phases</h2>
+
+<h3>Edit Phases</h3>
+
 <p>Editing a phase is one of the most important things you can do with an incident, but it must be done carefully.</p>
+
 <p>If you are sure, please click a phase to edit to continue.</p>
-{% for phase in phases_json %}
-<p><a href="incident_edit_phase?phase_id={{phase.phase_id}}&incident_short_name={{phase.incident_short_name}}">{{phase.phase_name}}</a></p>
-{% endfor %}
+
+<ul>
+  {% for phase in phases_json %}
+  <li><a href="incident_edit_phase?phase_id={{phase.phase_id}}&incident_short_name={{phase.incident_short_name}}">{{phase.phase_name}}</a></li>
+  {% endfor %}
+</ul>
 {% endblock %}
 

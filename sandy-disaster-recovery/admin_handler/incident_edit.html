@@ -5,30 +5,9 @@
 <link href="/stylesheets/default.css" rel="stylesheet">
 {% endblock %}
 
-{% block scripts %}
-{% endblock %}
-
-{% block login %}
-{% endblock %}
-
-
-{% block description_title %}
-{% endblock %}
-
-{% block description_subtitle %}
-{% endblock %}
-
-{% block sidebar_title %}
-{% endblock %}
-
-{% block sidebar_content %}
-{% endblock %}
-
-{% block main_title %}
-{% endblock %}
-
 {% block main_content %}
 <h2>New Incident Definition</h2>
+
 {% if errors %}
 <section id="errors">
   <header>The submission had errors</header>
@@ -45,6 +24,7 @@
   <article>
 </section>
 {% endif %}
+
 <h3>Basic Information</h3>
 <form action="/incident_edit" method="POST">
 <input type="hidden" name="incident_id" value="{{incident.key().id()}}">
@@ -70,4 +50,3 @@
 </form>
 
 {% endblock %}
-

@@ -529,34 +529,57 @@ $(function() {
   });
   // ----------- ADD WORK TYPE ----------------
   $("#add_work_type").click(function() {
-	hide_divs();	
-	$("#work_type_div").show();
+	if ($("#add_work_type").html().indexOf("added") == -1) {
+	  hide_divs();	
+	  $("#work_type_div").show();
+	} else {
+	  alert("Work Type has already been added");
+	}
   });
   
   $("#add_work_type_to_form").click(function() {
 	hide_divs();
+	console.log(form_json_array);
 	add_work_type_input(form_json_array);
 	$("#work_type_form").trigger('reset');
 	add_to_form(form_json_array);
+// 	for (var x = 0; x < form_json_array.length; x++) {
+// 	  if (form_json_array[x]['_id'] == "work_type") {
+// 	    $("#add_work_type").append(" - added");
+// 	  }
+// 	  	  
+// 	}
   });
   
   // ----------- ADD PERSONAL MODULE ----------------
   $("#add_personal_info_module").click(function() {
-    var personal_module_object = JSON.parse(personal_info_module_string);
-    for (var i = 0; i < personal_module_object.length; i++) {
-      form_json_array.push(personal_module_object[i]);
+    if ($("#add_personal_info_module").html().indexOf("added") == -1) {
 
+      var personal_module_object = JSON.parse(personal_info_module_string);
+      for (var i = 0; i < personal_module_object.length; i++) {
+	form_json_array.push(personal_module_object[i]);
+
+      }
+	add_to_form(form_json_array);
+	$("#add_personal_info_module").append(" - added");
+    } else {
+      alert("Personal Information Module Already Added");
     }
-      add_to_form(form_json_array);
+
   });
   
   // ----------- ADD STATUS MODULE ----------------
   $("#add_status_info_module").click(function() {
-    var status_module_object = JSON.parse(status_info_module_string);
-    for (var i = 0; i < status_module_object.length; i++) {
-      form_json_array.push(status_module_object[i]);
+    if ($("#add_status_info_module").html().indexOf("added") == -1) {
+      var status_module_object = JSON.parse(status_info_module_string);
+      for (var i = 0; i < status_module_object.length; i++) {
+	form_json_array.push(status_module_object[i]);
+      }
+      add_to_form(form_json_array);
+      $("#add_status_info_module").append(" - added");
+    } else {
+      alert("Status Information Module Already Added");
     }
-    add_to_form(form_json_array);
   });
   // ----------- END FORM CONTROL FUNCTIONS ----------------
 
@@ -857,7 +880,6 @@ function get_json(incident_short_name, phases_json_array) {
 }
 
 function get_form_json(phase,incident_short_name, form_json_array) {
-  
   $.getJSON( "/incident_definition_ajax", { incident_short_name: incident_short_name, phase: phase},  function( data ) {
     if (data.forms_json == "[]") {
       $("#form_label").append("<h2>Create a form by using the controls on the left</h2>");
@@ -901,7 +923,9 @@ function get_form_json(phase,incident_short_name, form_json_array) {
 	  }
 	}
       }
-    
+      
+      console.log(form_json_array);
+      set_modules_already_added(form_json_array);
       if (!any_equal) {
 // 	console.log(3);
 	  show_sidebar_form_creator();
@@ -1109,6 +1133,20 @@ function getFormFromApi(form_json_array, incident_short_name, phase_name) {
 function clearFormJsonArray(form_json_array) {
   form_json_array.clear;
   return form_json_array;
+}
+
+function set_modules_already_added(form_json_array) {
+  for (var x = 0; x < form_json_array.length; x++) {
+   if (form_json_array[x]["type"] == "header") {
+    if (form_json_array[x]["header"].indexOf("Personal and Property Information")) {
+      	$("#add_personal_info_module").append(" - added");
+    }
+    
+    if (form_json_array[x]["header"].indexOf("Claim, Status and Report")) {
+      	$("#add_status_info_module").append(" - added");
+    }
+   }
+  } 
 }
 var personal_info_module_string = '[{"order_number": 1, "header": "Personal and Property Information", "type": "header"}, {"sensitive": true, "type": "text", "required": true, "order_number": 2, "_id": "name", "label": "Name", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 3, "_id": "request_date", "label": "Date of Request", "validations": "date"}, {"sensitive": true, "type": "text", "required": true, "order_number": 4, "_id": "address", "label": "Street Address", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 5, "_id": "city", "label": "City", "validations": "None"}, {"sensitive": false, "type": "text", "required": false, "order_number": 6, "_id": "county", "label": "County", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 7, "_id": "state", "label": "State", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 8, "_id": "zip_code", "label": "Zip Code", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 9, "_id": "latitude", "label": "Latitude", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 10, "_id": "longitude", "label": "Longitude", "validations": "None"}, {"sensitive": false, "type": "text", "required": false, "order_number": 11, "_id": "cross_street", "label": "Cross Street or Nearby Landmark", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 12, "_id": "phone1", "label": "Phone 1", "validations": "phone"}, {"sensitive": true, "type": "text", "required": false, "order_number": 13, "_id": "phone2", "label": "Phone 2", "validations": "phone"}, {"sensitive": false, "type": "text", "required": false, "order_number": 14, "_id": "time_to_call", "label": "Best time to call", "validations": "None"}, {"select_option_1": "Rent", "select_option_2": "Own", "sensitive": false, "type": "select", "select_option_5": "Business", "required": false, "order_number": 16, "_id": "rent_or_own", "select_option_3": "Public Land", "label": "Rent/Own/Public", "select_option_4": "Non-Profit"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 17, "_id": "work_without_resident", "label": "Work without resident present"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 18, "_id": "member_of_organization", "label": "Member of your organization"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 19, "_id": "first_responder", "label": "First Responder"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 20, "_id": "older_than_60", "label": "Older than 60"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 21, "_id": "disabled", "label": "Disabled"}, {"order_number": 22, "_id": "special_needs", "type": "textarea", "label": "Special Needs", "validations": "None"}, {"sensitive": false, "type": "radio", "low_hint": "Low (1)", "required": false, "order_number": 23, "_id": "priority", "label": "Priority", "radio_option_4": "4", "radio_option_5": "5", "high_hint": "High (5)", "radio_option_1": "1", "radio_option_2": "2", "radio_option_3": "3"}]';
 

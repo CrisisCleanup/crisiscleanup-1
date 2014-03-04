@@ -41,7 +41,7 @@ def show_phases_from_json(phases_json):
     return string
 
 jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
+    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'admin_handler')))
 
 jinja_environment.filters['show_phases_from_json'] = show_phases_from_json
 

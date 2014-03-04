@@ -31,7 +31,7 @@ import cache
 import organization
 
 jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
+    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'admin_handler')))
 
 template = jinja_environment.get_template('/incident_edit.html')
 

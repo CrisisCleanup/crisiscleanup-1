@@ -138,7 +138,9 @@ def get_select_html(obj, string, default_value):
     required = "*"
   begin_option = '<tr><td class=question>' + obj['label'] + required + '</td><td class="answer"><div class="form_field"><select class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '">'
   end_option = '</select></div></td></tr>'
-  select_string = '<option value="">Choose one</option>'
+  select_string = ""
+  if "status" in key:
+    select_string = '<option value="">Choose one</option>'
 
   options_array.sort()
   for option in options_array:

@@ -37,15 +37,18 @@ from wtforms import Form, BooleanField, TextField, TextAreaField, validators, Pa
 
 PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
 
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('form.html')
-single_site_template = jinja_environment.get_template('single_site_incident_form.html')
-menubox_template = jinja_environment.get_template('_menubox.html')
 HATTIESBURG_SHORT_NAME = "derechos"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
-class EditHandler(base.AuthenticatedHandler):
+
+class EditHandler(base.FrontEndAuthenticatedHandler):
+
+  template_filenames = [
+    'form.html',
+    'single_site_incident_form.html',
+    '_menubox.html'
+  ]
+
   def AuthenticatedGet(self, org, event):
     
     id = self.request.get('id', None)
@@ -63,22 +66,24 @@ class EditHandler(base.AuthenticatedHandler):
 
     
     if not phase:
-      single_site = single_site_template.render(
+      single_site = self.get_template('single_site_incident_form.html').render(
 	{ "org": org,
 	  "phases_links": "<u>Choose a phase from below to edit<u><br>" + phases_links,
-	})
-	
-		  
-      self.response.out.write(template.render(
-	    {"mode_js": self.request.get("mode") == "js",
-	    "menubox" : menubox_template.render({"org": org, "event": event}),
-	    "single_site": single_site,
-	    "event_name": event.name,
-	    #"form": form,
-	    "id": id,
-	    #"post_json": post_json	,
-	    "page": "/edit"}))
-      return
+      })
+      menubox = self.get_template('_menubox.html').render(
+          org=org,
+          event=event
+      )
+      return self.render(
+        template='form.html',
+	mode_js=(self.request.get("mode") == "js"),
+        menubox=menubox,
+	single_site=single_site,
+	event_name=event.name,
+	id=id,
+	page="/edit"
+      )
+
     if not id and case_number:
 	q = db.GqlQuery("SELECT * FROM Site WHERE case_number=:1", case_number)
 	if q.count() == 1:
@@ -98,9 +103,6 @@ class EditHandler(base.AuthenticatedHandler):
     if not site.event.key() == event.key():
 	self.redirect("/sites?message=The site you are trying to edit doesn't belong to the event you are signed in to. If you think you are seeing this message in error, contact your administrator")
 	return
-    #form = site_db.SiteForm(self.request.POST, site)
-    #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
-      #form = site_db.DerechosSiteForm(self.request.POST, site)
     post_json2 = site_db.SiteToDict(site)
     post_json_final = {}
     phase_name = get_phase_name(json.loads(inc_def_query.forms_json), phase_number_get).lower()
@@ -183,30 +185,34 @@ class EditHandler(base.AuthenticatedHandler):
       submit_button = ""
     #raise Exception(phase)
     if phase:
-      single_site = single_site_template.render(
+      single_site = self.get_template('single_site_incident_form.html').render(
 	  { "form": form,
 	    "org": org,
 	    "incident_form_block": inc_form,
 	    "post_json": post_json,
 	    "submit_button": submit_button, 
 	    "phases_links": phases_links
-	  })
+      })
     else: 
-	single_site = single_site_template.render(
+	single_site = self.get_template('single_site_incident_form.html').render(
 	  { "org": org,
 	    "phases_links": phases_links
-	  })
-      
-    self.response.out.write(template.render(
-	  {"mode_js": self.request.get("mode") == "js",
-	  "menubox" : menubox_template.render({"org": org, "event": event}),
-	  "single_site": single_site,
-	  "event_name": event.name,
-	  "form": form,
-	  "id": id,
-	  "post_json": post_json	,
-	  "page": "/edit"}))
-
+	})
+    menubox = self.get_template('_menubox.html').render(
+        org=org,
+       event=event
+    )
+    return self.render(
+        template='form.html',
+	mode_js=(self.request.get("mode") == "js"),
+	menubox=menubox,
+	single_site=single_site,
+	event_name=event.name,
+	form=form,
+	id=id,
+	post_json=post_json,
+	page="/edit"
+    )
 
 
   def AuthenticatedPost(self, org, event):
@@ -421,24 +427,30 @@ class EditHandler(base.AuthenticatedHandler):
       
       submit_button = "<button class='submit'>Submit</button>"
 
-      single_site = single_site_template.render(
+      single_site = self.get_template('single_site_incident_form.html').render(
           { "new_form": data,
             "org": org,
 	    "incident_form_block": inc_form,
 	    "submit_button": submit_button
-	  })
+      })
+      menubox = self.get_template('_menubox.html').render(
+        org=org,
+        event=event
+      )
       if mode_js:
         self.response.set_status(400)
       
-      self.response.out.write(template.render(
-          {"mode_js": mode_js,
-           "menubox" : menubox_template.render({"org": org, "event": event}),
-           "errors": data.errors,
-           "form": data,
-           "single_site": single_site,
-           "id": id,
-	   "post_json": post_json,
-           "page": "/edit"}))
+      return self.render(
+        template='form.html',
+        mode_js=mode_js,
+        menubox=menubox,
+        errors=data.errors,
+        form=data,
+        single_site=single_site,
+        id=id,
+	post_json=post_json,
+        page="/edit"
+      )
 
 
 def get_phase_number(form_json, phase_id):

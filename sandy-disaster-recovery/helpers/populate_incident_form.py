@@ -138,31 +138,24 @@ def get_select_html(obj, string, default_value):
     required = "*"
   begin_option = '<tr><td class=question>' + obj['label'] + required + '</td><td class="answer"><div class="form_field"><select class="" id="' + obj['_id'] + '" name="' + obj['_id'] + '">'
   end_option = '</select></div></td></tr>'
-  select_string = "<option value="">Choose one</option>"
-  if obj["_id"] == "status":
-    select_string = ""
+  select_string = '<option value="">Choose one</option>'
 
   options_array.sort()
-  #if obj["_id"] == "status":
-    #raise Exception(options_array)
+  if obj["_id"] == "status":
+    select_string = ""
   for option in options_array:
     selected = ""
     if obj[option] == default_value:
       selected = " selected"
     option_string = ""
     option_string = "<option" + selected + ">" + obj[option] + "</option>"
-
     select_string = select_string + option_string
+
   new_select = begin_option + select_string + end_option
-  #raise Exception(new_select)
-  if "status" in new_select:
-    new_select.replace("<option value=>Choose one</option>", "")
-    raise Exception(new_select)
-
+  ##if "status" in new_select:
+    ##if '<option value="">Choose one</option>' in new_select:
+      ##new_select = new_select.replace('<option value="">Choose one</option>', "")
   string += new_select
-  if "status" in string:
-    raise Exception(string)
-
   return string
 
 def get_radio_html(obj, string, default_value):

@@ -29,7 +29,7 @@ import event_db
 import cache
 
 jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
+    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates/html/default')))
 template = jinja_environment.get_template('/incident_create_definition_version.html')
 
 read_template = jinja_environment.get_template('/incident_definition_read.html')

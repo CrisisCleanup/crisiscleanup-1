@@ -274,7 +274,7 @@ $(function() {
     var work_type_json = {
       type: "select",
       label: "Work Type",
-      required: "true",
+      required: "True",
       sensitive: "true",
       _id: "work_type",
       order_number: order_number,

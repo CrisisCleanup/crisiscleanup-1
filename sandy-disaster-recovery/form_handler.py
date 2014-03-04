@@ -161,6 +161,10 @@ class FormHandler(base.AuthenticatedHandler):
       #raise Exception(forms_json_obj[phase_number])
       if "validations" in obj or "required" in obj:
 	_id = str(obj["_id"])
+	if _id == "work_type":
+	  validations_array.append(required_validator)
+	  wt_data[_id].validators = wt_data[_id].validators + validations_array
+	  validations_array = []  
 	if "validations" in obj and obj[u"validations"] == 'email':
 	  validations_array.append(email_validator)
 	  wt_data[_id].validators = wt_data[_id].validators + validations_array

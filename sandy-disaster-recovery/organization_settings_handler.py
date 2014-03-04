@@ -16,21 +16,16 @@
 #
 # System libraries.
 
-import jinja2
-import os
+from google.appengine.ext import db
 
 # Local libraries.
 import base
 import organization
 
-from google.appengine.ext import db
 
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('organization_settings.html')
+class OrganizationSettingsHandler(base.FrontEndAuthenticatedHandler):
 
-
-class OrganizationSettingsHandler(base.AuthenticatedHandler):
+    template_filename = 'organization_settings.html'
 
     def AuthenticatedGet(self, authenticated_org, event):
         # decide what org to lookup
@@ -39,9 +34,10 @@ class OrganizationSettingsHandler(base.AuthenticatedHandler):
             "SELECT * From Contact WHERE organization = :org_key",
             org_key=org.key()
         )
-        self.response.out.write(template.render({
-            "organization": org,
-            "contacts": contacts,
-            "message": self.request.get("message"),
-            "is_admin": org.is_admin,
-        }))
+
+        return self.render(
+            organization=org,
+            contacts=contacts,
+            message=self.request.get("message"),
+            is_admin=org.is_admin
+        )

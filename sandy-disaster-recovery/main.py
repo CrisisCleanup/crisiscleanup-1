@@ -15,9 +15,6 @@
 # limitations under the License.
 #
 # System libraries.
-import os
-
-import jinja2
 import webapp2
 from webapp2_extras import routes
 
@@ -55,7 +52,7 @@ import organization_edit_contacts_handler
 import organization_edit_info_handler
 import see_all_contacts_handler
 import js_logs_handler
-import page_handler
+import home_handler
 import about_handler
 import terms_handler
 import privacy_handler
@@ -128,10 +125,6 @@ from admin_handler import admin_stats_handler
 
 from migrations import update_handler
 
-
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-
 MAP_URL = "http://maps.google.com/?q=http://www.aarontitus.net/maps/sandy_work_orders.kmz"
 SPREADSHEET_URL = "https://docs.google.com/spreadsheet/ccc?key=0AhBdPrWyrhIfdFVHMDFOc0NCQjNNbmVvNHJybTlBUXc#gid=0"
 
@@ -157,7 +150,7 @@ app = webapp2.WSGIApplication([
     Route(r'/public-map', public_map_handler.PublicMapHandler, 'dev'),
     Route(r'/public_map_ajax_handler', public_map_ajax_handler.PublicMapAjaxHandler, 'dev'),
 
-    Route(r'/home', page_handler.PageHandler, 'dev'),
+    Route(r'/home', home_handler.HomeHandler, 'dev'),
     Route(r'/about', about_handler.AboutHandler, 'about'),
     Route(r'/terms', terms_handler.TermsHandler, 'terms'),
     Route(r'/privacy', privacy_handler.PrivacyHandler, 'privacy'),

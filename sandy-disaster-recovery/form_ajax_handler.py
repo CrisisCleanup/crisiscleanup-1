@@ -15,35 +15,15 @@
 # limitations under the License.
 #
 
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
-
-# System libraries.
-import cgi
-import jinja2
-import logging
-import os
-import urllib2
-import wtforms.validators
-import cache
-from collections import OrderedDict
-
-# Local libraries.
 import base
 import event_db
-import site_db
-import site_util
-import event_db
 import json
-import organization
 import form_db
-
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 
 class FormAjaxHandler(base.RequestHandler):
+
     def get(self):
-        data = {}
         event = None
         incident = None
         event = event_db.Event.get_by_id(int(self.request.get("event_name")))
@@ -54,4 +34,3 @@ class FormAjaxHandler(base.RequestHandler):
 	  return
         
         self.response.out.write(json.dumps(incident.editable_form_html))
- 

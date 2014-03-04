@@ -15,40 +15,19 @@
 # limitations under the License.
 #
 # System libraries.
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
-
-import cgi
-import jinja2
-import logging
-import os
-import urllib2
-import wtforms.validators
+from google.appengine.ext import db
 
 # Local libraries.
 import base
-import event_db
-import site_db
-import site_util
-import cache
-
-from datetime import datetime
-import settings
-
-from google.appengine.ext import db
 import organization
 import primary_contact_db
-import random_password
 
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('organization_edit_contacts.html')
-#CASE_LABELS = settings.CASE_LABELS
-#COUNT = 26
-GLOBAL_ADMIN_NAME = "Admin"
-ten_minutes = 600
+ten_minutes = 10 * 60
 
 
-class OrganizationEditContactsHandler(base.AuthenticatedHandler):
+class OrganizationEditContactsHandler(base.FrontEndAuthenticatedHandler):
+
+    template_filename = 'organization_edit_contacts.html'
 
     def AuthenticatedPost(self, org, event):
         authenticated_org = org
@@ -111,13 +90,11 @@ class OrganizationEditContactsHandler(base.AuthenticatedHandler):
                 email=contact.email,
                 is_primary=int(contact.is_primary)
             )
-            self.response.out.write(template.render(
-            {
-                "edit_contact_id": id,
-                "form": form,
-                "errors": data.errors
-            }))
-            return
+            return self.render(
+                edit_contact_id=id,
+                form=form,
+                errors=data.errors
+            )
         
     def AuthenticatedGet(self, authenticated_org, event):
         # get & check contact
@@ -135,9 +112,9 @@ class OrganizationEditContactsHandler(base.AuthenticatedHandler):
 
         # construct form
         form = primary_contact_db.ContactFormFull(None, contact)
-        self.response.out.write(template.render({
-            "organization_list": organization_list,
-            "edit_contact_id": id,
-            "form": form,
-            "organization_name": contact.organization.name if contact.organization else None
-        }))
+        return self.render(
+            organization_list=organization_list,
+            edit_contact_id=id,
+            form=form,
+            organization_name=contact.organization.name if contact.organization else None
+        )

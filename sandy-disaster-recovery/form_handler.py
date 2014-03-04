@@ -16,11 +16,12 @@
 #
 # System libraries.
 import cgi
-import jinja2
+import random
 import logging
 import os
 import urllib2
 import wtforms.validators
+import jinja2
 from google.appengine.ext import db
 from wtforms.ext.appengine.db import model_form
 import json
@@ -36,7 +37,6 @@ import site_util
 import form_db
 import site_db
 
-import random
 
 from models import incident_definition
 from helpers import populate_incident_form
@@ -45,21 +45,24 @@ import wtforms.fields
 from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
 from models import phase
 
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('form.html')
-single_site_template = jinja_environment.get_template('single_site_incident_form.html')
-menubox_template = jinja_environment.get_template('_menubox.html')
 HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
-
 
 PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
 
 class IncidentForm(site_db.Site):
   pass
 
-class FormHandler(base.AuthenticatedHandler):
+
+class FormHandler(base.FrontEndAuthenticatedHandler):
+
+  template_filenames = [
+    'form.html',
+    'single_site_incident_form.html',
+    'permissions_redirect_page.html',
+    '_menubox.html'
+  ]
+
   def AuthenticatedGet(self, org, event):
     
     phase_number = self.request.get("phase_number")
@@ -101,7 +104,8 @@ class FormHandler(base.AuthenticatedHandler):
     inc_form = None
     if query:
       inc_form = query.form_html
-    single_site = single_site_template.render(
+
+    single_site = self.get_template('single_site_incident_form.html').render(
         { "form": form,
           "org": org,
           "incident_form_block": string,
@@ -109,18 +113,24 @@ class FormHandler(base.AuthenticatedHandler):
           "paragraph": paragraph,
           "submit_button": submit_button,
           "phases_links": phases_links,
-          #"new_form": wt_form()
-	})
-    self.response.out.write(template.render(
-        {"version" : os.environ['CURRENT_VERSION_ID'],
-         "message" : message,
-         "menubox" : menubox_template.render({"org": org, "event": event, "admin": org.is_admin}),
-         "single_site" : single_site,
-         "form": form,
-         "id": None,
-         "page": "/",
-         "event_name": event.name,
-         "hidden_site_id": hidden_site_id}))
+    })
+    menubox_content = self.get_template('_menubox.html').render({
+      "org": org,
+      "event": event,
+      "admin": org.is_admin
+    })
+    return self.render(
+        template='form.html',
+        version=os.environ['CURRENT_VERSION_ID'],
+        message=message,
+        menubox=menubox_content,
+        single_site=single_site,
+        form=form,
+        id=None,
+        page="/",
+        event_name=event.name,
+        hidden_site_id=hidden_site_id,
+    )
 
   def AuthenticatedPost(self, org, event):
     post_data = self.request.POST
@@ -300,24 +310,32 @@ class FormHandler(base.AuthenticatedHandler):
     submit_button = "<button class='submit'>Submit</button>"
     message = "none"
     string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, self.request.POST)
-    single_site = single_site_template.render(
+    single_site = self.get_template('single_site_incident_form.html').render(
 	{ "form": data,
 	  "org": org,
 	  "incident_form_block": string,
 	  "submit_button": submit_button
-	  })
-    self.response.out.write(template.render(
-	{"message": message,
-	"similar_site": None,
-	"version" : os.environ['CURRENT_VERSION_ID'],
-	"errors": wt_data.errors,
-	"menubox" : menubox_template.render({"org": org, "event": event}),
-	"single_site": single_site,
-	"form": data,
-	"id": None,
-	"page": "/",
-	"post_json": post_json	,
-	"event_name": event.name}))
+    })
+    menubox_content = self.get_template('_menubox.html').render({
+      "org": org,
+      "event": event,
+      "admin": org.is_admin
+    })
+    return self.render(
+        template='form.html',
+        version=os.environ['CURRENT_VERSION_ID'],
+        message=message,
+        similar_site=None,
+        menubox=menubox_content,
+        single_site=single_site,
+        form=data,
+        errors=wt_data.errors,
+        id=None,
+        page="/",
+        event_name=event.name,
+        post_json=post_json,
+    )
+
 
 def populate_phase_links(phases_json, this_phase = None):
   if this_phase == None:

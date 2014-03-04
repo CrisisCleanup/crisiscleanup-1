@@ -15,17 +15,11 @@
 # limitations under the License.
 #
 
-# System libraries.
-import jinja2
-import os
-
 # Local libraries.
 import base
 import event_db
 import json
 import organization
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 
 class OrganizationAjaxHandler(base.RequestHandler):

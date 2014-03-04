@@ -14,22 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# System libraries.
 
-import jinja2
-import os
-
-# Local libraries.
 import base
-
 import organization
 
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('organization_edit_info.html')
 
+class OrganizationEditInfoHandler(base.FrontEndAuthenticatedHandler):
 
-class OrganizationEditInfoHandler(base.AuthenticatedHandler):
+    template_filename = 'organization_edit_info.html'
 
     def AuthenticatedPost(self, org, event):
         """ Update info details of authenticated org. """
@@ -38,14 +30,12 @@ class OrganizationEditInfoHandler(base.AuthenticatedHandler):
             form.populate_obj(org)
             org.save()
             organization.PutAndCache(org, 600)
-            self.redirect("/organization-settings")
-            return
+            return self.redirect("/organization-settings")
         else:
-            self.response.out.write(template.render({
-                "form": form,
-                "org": org
-            }))
-            return
+            return self.render(
+                form=form,
+                org=org
+            )
 
     def AuthenticatedGet(self, authenticated_org, event):
         """
@@ -56,7 +46,7 @@ class OrganizationEditInfoHandler(base.AuthenticatedHandler):
 
         form = organization.OrganizationInformationForm(None, org)
 
-        self.response.out.write(template.render({
-            "form": form,
-            "org": org
-        }))
+        return self.render(
+            form=form,
+            org=org
+        )

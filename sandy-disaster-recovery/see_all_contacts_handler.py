@@ -14,27 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# System libraries.
-import os
-import jinja2
 
-# Local libraries.
 import base
-
 from primary_contact_db import Contact
 
 
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('see_all_contacts.html')
+class SeeAllContactsHandler(base.FrontEndAuthenticatedHandler):
 
-
-class SeeAllContactsHandler(base.AuthenticatedHandler):
+    template_filename = 'see_all_contacts.html'
 
     def AuthenticatedGet(self, org, event):
         relevant_contacts = Contact.for_event(event)
-
-        self.response.out.write(template.render(
-        {
-            "contacts": relevant_contacts,
-        }))
+        return self.render(
+            contacts=relevant_contacts
+        )

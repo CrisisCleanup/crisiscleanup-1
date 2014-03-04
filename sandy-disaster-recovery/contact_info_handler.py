@@ -14,21 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# System libraries.
-import jinja2
-import os
 
-# Local libraries.
 import base
-
 from primary_contact_db import Contact, ContactFormFull
 
-jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('contact_info.html')
 
+class ContactInfoHandler(base.FrontEndAuthenticatedHandler):
 
-class ContactInfoHandler(base.AuthenticatedHandler):
+    template_filename = 'contact_info.html'
 
     def AuthenticatedGet(self, org, event):
         try:
@@ -39,7 +32,7 @@ class ContactInfoHandler(base.AuthenticatedHandler):
         if not contact:
             self.abort(404)
 
-        self.response.out.write(template.render({
-            "contact": contact,
-            "form": ContactFormFull(None, contact),  # use form to iterate fields
-        }))
+        return self.render(
+            contact=contact,
+            form=ContactFormFull(None, contact)  # used to iterate over fields
+        )

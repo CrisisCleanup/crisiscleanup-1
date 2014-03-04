@@ -16,8 +16,6 @@
 #
 # System libraries.
 import datetime
-import jinja2
-import os
 import urllib
 from google.appengine.ext import db
 import random
@@ -35,13 +33,7 @@ import key
 import organization
 import primary_contact_db
 import site_db
-import page_db
 from messaging import email_administrators_using_templates
-
-
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('authentication.html')
 
 
 def GetOrganizationForm(post_data):
@@ -100,7 +92,9 @@ def GetOrganizationForm(post_data):
   return form
 
 
-class AuthenticationHandler(base.RequestHandler):
+class AuthenticationHandler(base.FrontEndAuthenticatedHandler):
+
+  template_filename = 'authentication.html'
 
   def get(self):
     org, event = key.CheckAuthorization(self.request)
@@ -108,14 +102,12 @@ class AuthenticationHandler(base.RequestHandler):
       self.redirect(urllib.unquote(self.request.get('destination', default_value='/')).encode('ascii'))
       return
 
-    template_params = page_db.get_page_block_dict()
-    template_params.update({
-      "form" : GetOrganizationForm(self.request.POST),
-      "destination" : self.request.get('destination', default_value='/'),
-      "page" : "/authentication",
-      "error_message": self.request.get("error_message")
-    })
-    self.response.out.write(template.render(template_params))
+    self.render(
+      form=GetOrganizationForm(self.request.POST),
+      destination=self.request.get('destination', default_value='/'),
+      page="/authentication",
+      error_message=self.request.get("error_message")
+    )
 
   def post(self):
     now = datetime.datetime.now()

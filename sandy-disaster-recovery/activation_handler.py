@@ -1,29 +1,12 @@
 
-import os
 import datetime
 import random
-
-import jinja2
 
 from wtforms import Form, RadioField, validators
 
 import base
 from organization import Organization
 from question_db import MultipleChoiceQuestion
-import page_db
-
-
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(
-        os.path.join(
-            os.path.dirname(__file__),
-            'templates'
-        )
-    )
-)
-activation_template = jinja_environment.get_template('activation.html')
-already_activated_template = jinja_environment.get_template('already_activated.html')
-activation_too_late_template = jinja_environment.get_template('activation_too_late.html')
 
 
 class MultipleChoiceQuestionForm(Form):
@@ -47,57 +30,50 @@ class MultipleChoiceQuestionForm(Form):
             raise validators.ValidationError()
 
 
-class ActivationHandler(base.RequestHandler):
+class ActivationHandler(base.FrontEndAuthenticatedHandler):
+
+    template_filenames = [
+        'activation.html',
+        'already_activated.html',
+        'activation_too_late.html'
+    ]
 
     MAX_NUM_QUESTIONS_TO_ASK = 3
 
-    def dispatch(self, *args, **kwargs):
+    def pre_dispatch(self, *args, **kwargs):
         " All requests must have valid, in-date activation codes. "
 
-        self.page_blocks = page_db.get_page_block_dict()
+        # not open to users already logged in
+        if self.request.logged_in:
+            self.abort(403)
 
-        self.activation_code = self.request.get('code')
-        if not self.activation_code:
+        # get activation code
+        activation_code = self.request.get('code')
+        if not activation_code:
             self.abort(404)
 
         # lookup org by activation code
         orgs_by_code = Organization.all() \
-            .filter('activation_code', self.activation_code)
+            .filter('activation_code', activation_code)
         if orgs_by_code.count() != 1:
             self.abort(404)
-        self.org_by_code = orgs_by_code[0]
+        self.request.org_by_code = orgs_by_code[0]
 
         # send response if already activated
-        if self.org_by_code.is_active:
+        if self.request.org_by_code.is_active:
             self.render(
-                already_activated_template,
-                org=self.org_by_code
+                template='already_activated.html',
+                org=self.request.org_by_code
             )
-            return
+            raise Exception
 
         # send response if too late
-        if self.org_by_code.activate_by < datetime.datetime.utcnow():
-            self.render(
-                activation_too_late_template,
-                org=self.org_by_code
+        if self.request.org_by_code.activate_by < datetime.datetime.utcnow():
+            return self.render(
+                template='activation_too_late.html',
+                org=self.request.org_by_code
             )
-            return
-
-        # continue handling request
-        super(ActivationHandler, self).dispatch(*args, **kwargs)
-
-    def render(self, template, **kwargs):
-        " Render a template, including page blocks. "
-        page_blocks = page_db.get_page_block_dict()
-        template_params = dict(
-            page_blocks,
-            **kwargs
-        )
-        self.response.out.write(
-            template.render(
-                template_params
-            )
-        )
+            raise Exception
 
     def get(self):
         # get questions
@@ -107,16 +83,16 @@ class ActivationHandler(base.RequestHandler):
 
         # if no questions are defined, activate immediately
         if not all_questions:
-            self.org_by_code.activate()
+            self.request.org_by_code.activate()
 
         # render page
-        self.render(
-            activation_template,
-            org=self.org_by_code,
+        return self.render(
+            template='activation.html',
+            org=self.request.org_by_code,
             question_forms=forms,
             num_questions_to_ask=self.MAX_NUM_QUESTIONS_TO_ASK,
         )
 
     def post(self):
         " Activate the org - used by AJAX from page. "
-        self.org_by_code.activate()
+        self.request.org_by_code.activate()

@@ -18,6 +18,7 @@ from google.appengine.ext import db
 
 
 KNOWN_CONFIG_KEY_NAMES = {
+    'template_set',
     'system_email_address',
     'system_base_url',
     'votesmart',

@@ -8,7 +8,7 @@ import logging
 from geopy import geocoders  
 import metaphone
 jinja_environment = jinja2.Environment(
-loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+loader=jinja2.FileSystemLoader('templates/html/default/'))
 template = jinja_environment.get_template('import.html')
 from google.appengine.ext import db
 

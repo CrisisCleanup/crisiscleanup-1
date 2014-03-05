@@ -38,6 +38,7 @@ class PublicMapAjaxHandler(base.RequestHandler):
   def get(self):
     event_shortname = self.request.get("shortname")
     page = self.request.get("page")
+    categories = self.request.get("categories")
     page_int = int(page)
 
     if event_shortname == None:
@@ -53,8 +54,8 @@ class PublicMapAjaxHandler(base.RequestHandler):
     where_string = "Open"
     q = None
     if event.short_name != 'moore':
-      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2'
-      q = db.GqlQuery(gql_string, where_string, event.key())
+      gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2 and categories = :3'
+      q = db.GqlQuery(gql_string, where_string, event.key(), categories)
 
     else:
       q = Query(model_class = site_db.Site)

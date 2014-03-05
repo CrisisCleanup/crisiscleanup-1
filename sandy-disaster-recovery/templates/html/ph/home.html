@@ -136,7 +136,8 @@ class="active"
         $(document).ready(function() {
             // populate map
             clusterer.clearMarkers();
-            populateMapByIncident('yolanda', 0, []);
+            categories = $('input[name=categories]:checked').val()
+            populateMapByIncident('yolanda', 0, categories,[]);
         });
 
 

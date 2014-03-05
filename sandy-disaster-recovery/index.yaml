@@ -632,6 +632,12 @@ indexes:
 - kind: Site
   properties:
   - name: categories
+  - name: event
+  - name: status
+
+- kind: Site
+  properties:
+  - name: categories
   - name: request_date
     direction: desc
 

@@ -24,8 +24,6 @@ import json
 
 import base
 
-import logging
-
 
 import event_db
 from site_db import Site

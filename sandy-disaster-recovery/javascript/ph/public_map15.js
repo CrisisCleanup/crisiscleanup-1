@@ -21,7 +21,7 @@ $(function(){
             $(this).css("border-color", "#3891cf");
         });
         $(this).css("border-color", "#10253d");
-        populateMapByIncident(incident_id, 0, []);
+        populateMapByIncident(incident_id, 0, [], []);
     });
 })
 
@@ -126,11 +126,11 @@ var getInfoboxDetails = function(site) {
     return details;
 }
 
-var populateMapByIncident = function(incident, page, old_markers) {
+var populateMapByIncident = function(incident, page, categories, old_markers) {
     var run_again = false;
     $.getJSON(
         "/public_map_ajax_handler",
-        {"shortname" : incident, "page": page},
+        {"shortname" : incident, "page": page, 'categories': categories},
         function(sites_list) {
             if (sites_list.length > 99) {
                 run_again = true;
@@ -170,7 +170,7 @@ var populateMapByIncident = function(incident, page, old_markers) {
             $("#display_incident").text("Incident: " + incident);
 
             if (run_again == true) {
-                populateMapByIncident(incident, page + 1, total_markers);
+                populateMapByIncident(incident, page + 1, categories, total_markers);
             } else {
 
                 var total_markers = old_markers.concat(markers);

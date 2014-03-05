@@ -62,6 +62,11 @@ def create_site_filter_form(counties_and_states, categories_options):
             )
         categories = MultiCheckboxField(
             choices=[
+                (cat_k, str((cat_k if cat_k != '' else 'None'))+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(categories_options.iteritems())
+            ],
+            default=u'-',
+            )
+        """
                 (u'Health', u'Health'),
                 (u'Hosting & Non-food products', u'Hosting & Non-food products'),
                 (u'Food', u'Food'),
@@ -71,11 +76,7 @@ def create_site_filter_form(counties_and_states, categories_options):
                 (u'Protection & Security', u'Protection & Security'),
                 (u'Infrastructure and logistics', u'Infrastructure and logistics'),
                 (u'Various', u'Various'),
-            ] + [
-                (cat_k, str(cat_k)+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(categories_options.iteritems())
-            ],
-            default=u'-',
-            )
+        """
 
     return SiteFilterForm
 

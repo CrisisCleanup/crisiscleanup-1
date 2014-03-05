@@ -1,0 +1,195 @@
+/**
+ * Crisiscleanup ph
+ * @author Nicolas Zanghi <nicolas.zanghi@gmail.com>
+ */
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700);
+
+/**
+ * body
+ */
+body {
+    background: #e8e8e8;
+    font-family:'Droid Sans', sans-serif;
+    color: #222222;
+    -webkit-font-smoothing: antialiased;
+}
+
+/**
+ * link
+ */
+a {
+    color: #57BAE8;
+    text-decoration: none;
+}
+a:visited {
+    text-decoration:none;
+    color:#57BAE8;
+}
+a:hover {
+    color: #f4a777;
+}
+
+/**
+ * titles
+ */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Droid Sans', sans-serif;
+    font-weight: normal;
+    color: #005daa;
+    text-rendering: optimizeLegibility;
+    line-height: 1.1;
+    letter-spacing:0;
+}
+h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
+    font-size: 60%;
+    color: #57bae8;
+    line-height: 0;
+}
+
+/**
+ * hr
+ */
+hr {
+    border: solid #ddd;
+    border-width: 1px 0 0;
+    clear: both;
+    margin: 22px 0 21px;
+    height: 0;
+}
+
+/**
+ * container
+ */
+#container {
+    background: #fff;
+    padding-top: 1.5em;
+}
+
+/**
+ * header
+ */
+#site-title {
+    margin-top: 0;
+    color: #000;
+    font-size: 38px;
+    font-weight: bold;
+}
+#site-slogan {
+    margin-top: 0;
+    color: #eb7125;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+
+/**
+ * navbar
+ * @see http://smarchal.com/twbscolor/?bd=e74c3c&bh=c0392b&cd=ecf0f1&ch=ffbbbc
+ */
+
+.navbar {
+    border-radius: 0px;
+    border: none;
+    min-height: inherit;
+}
+.navbar-brand,
+.navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.navbar-collapse {
+    padding-left: 0;
+}
+.navbar-right li.cccmph {
+    background: #eb7125;
+}
+
+
+.navbar-default {
+	background-color: #333333;
+	border-color: #208cd1;
+}
+.navbar-default .navbar-brand {
+	color: #ffffff;
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+	color: #ffffff;
+}
+.navbar-default .navbar-text {
+	color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a {
+	color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+	color: #ffffff;
+}
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus,
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+	color: #ffffff;
+	background-color: #208cd1;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+	color: #ffffff;
+	background-color: #208cd1;
+}
+.navbar-default .navbar-toggle {
+	border-color: #208cd1;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+	background-color: #208cd1;
+}
+.navbar-default .navbar-toggle .icon-bar {
+	background-color: #ffffff;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+	border-color: #ffffff;
+}
+.navbar-default .navbar-link {
+	color: #ffffff;
+}
+.navbar-default .navbar-link:hover {
+	color: #ffffff;
+}
+
+@media (max-width: 767px) {
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+		color: #ffffff;
+	}
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+		color: #ffffff;
+	}
+	.navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+		color: #ffffff;
+		background-color: #208cd1;
+	}
+}
+
+
+
+
+
+/**
+ * footer
+ */
+footer {
+    border-top: 1px solid #4e616d;
+    padding-top: 1em;
+    padding-bottom: 3em;
+}
+footer>div {
+    margin-bottom: 1em;
+}
+
+
+
+/**
+ * home
+ */
+#categories {
+    list-style: none;
+    padding-left: 0;
+
+}

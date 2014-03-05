@@ -1,30 +1,27 @@
 var clusterer=null;
 $(function(){
-    
-    var myLatlng = new google.maps.LatLng(38.50, -85.35);
+
+    var mapCenter = sandy.util.MAP_CENTER[country];
     var mapOptions = {
         zoom: 5,
-        center: myLatlng,
+        center: new google.maps.LatLng(mapCenter.lat, mapCenter.lon),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-    
+
     MarkerClusterer.IMAGE_PATH = "/icons/m";
     var markerCluster = new MarkerClusterer(map);
     clusterer = markerCluster;
 
     $(".MapIncident").click(function(event) {
-      var incident_id = event.target.id;
-      clusterer.clearMarkers();
-//       $(.MapIncident).each(function() {
-// 	
-//       });
-      $( ".MapIncident" ).each(function( index ) {
+        var incident_id = event.target.id;
+        clusterer.clearMarkers();
+        $( ".MapIncident" ).each(function( index ) {
 // 	console.log( index + ": " + $(this).text() );
-	$(this).css("border-color", "#3891cf");
-      });
-      $(this).css("border-color", "#10253d");
-      populateMapByIncident(incident_id, 0, []);
+            $(this).css("border-color", "#3891cf");
+        });
+        $(this).css("border-color", "#10253d");
+        populateMapByIncident(incident_id, 0, []);
     });
 })
 
@@ -71,8 +68,8 @@ var getMarkerIcon = function (site) {
 }
 
 var getInfoboxDetails = function(site) {
- details = "";
- for (var i in site) {
+    details = "";
+    for (var i in site) {
         if (details.length > 100000) break;
         if (i == "initials of resident present" ||
             i == "address" ||
@@ -110,8 +107,8 @@ var getInfoboxDetails = function(site) {
             i == "email1" ||
             i == "email2" ||
             i == "temporary_address"
-            
-        ) continue;
+
+            ) continue;
         var label = i.replace(/_/g, " ");
         label = label[0].toUpperCase() + label.slice(1);
         if (i == "habitable") {
@@ -119,10 +116,10 @@ var getInfoboxDetails = function(site) {
                 details += "House is not habitable. ";
             }
         } else if (typeof site[i] == "string" && site[i].length > 0 && site[i] != "n") {
-	    if (label != "Event name" && site[i] != "0") {
-	      details += label + ": " + site[i];
-	      if (details[details.length - 1] != ".") details += ". ";
-	    }
+            if (label != "Event name" && site[i] != "0") {
+                details += label + ": " + site[i];
+                if (details[details.length - 1] != ".") details += ". ";
+            }
         }
     }
     console.log(details);
@@ -130,62 +127,58 @@ var getInfoboxDetails = function(site) {
 }
 
 var populateMapByIncident = function(incident, page, old_markers) {
-  var run_again = false;
-  $.getJSON(
-    "/public_map_ajax_handler",
-    {"shortname" : incident, "page": page},
-    function(sites_list) {
-    if (sites_list.length > 99) {
-      run_again = true;
-    }
-          var mapOptions = {
-    zoom: 8,
-    center: new google.maps.LatLng(40.6501038, -73.8495823),
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
+    var run_again = false;
+    $.getJSON(
+        "/public_map_ajax_handler",
+        {"shortname" : incident, "page": page},
+        function(sites_list) {
+            if (sites_list.length > 99) {
+                run_again = true;
+            }
 //     var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-       var markers = [];
-       var i = 0;
-       
-       for (var i = 0; i < sites_list.length; i++) {
-	 var details = getInfoboxDetails(sites_list[i]);
-	 var latLng = new google.maps.LatLng(sites_list[i].blurred_latitude, sites_list[i].blurred_longitude);
-	 var marker = new google.maps.Marker({'position': latLng, 
-					     'icon': getMarkerIcon(sites_list[i]), 
-					     'site_id': sites_list[i].id, 
-					      'case_number': sites_list[i].case_number, 
-					      'work_type': sites_list[i].work_type, 
-					      'floors_affected': sites_list[i].floors_affected, 
-					      'status': sites_list[i].status});
-	 markers.push(marker);
-	 var site_id = sites_list[i].id;
-	google.maps.event.addListener(marker, "click", function() {
-	  new Messi('<p>Name, Address, Phone Number are removed from the public map</p><p>Details: work type: '
-	  + this.work_type+ ', Details: ' + details + '</p>' + '<p>Status: ' + this.status + '</p>',
-	  {title: 'Case Number: ' + this.case_number, titleClass: 'info', 
-	  buttons: [
-	  {id: 0, label: 'Printer Friendly', val: "On the live version, this would send all of this site's data to a printer friendly page." }, 
-	  {id: 1, label: 'Change Status', val: "On the live version, you would be able to change the site's status here."}, 
-	  {id: 2, label: 'Edit', val: "On the live version, you would be able to edit the site's info, as new details come in."}, 
-	  {id: 3, label: 'Claim', val: "On the live version, clicking this button would 'Claim' the site for your organization, letting other organizations know that you intend to work on that site"},
-	  {id: 4, label: 'Close', val: 'None'}], callback: function(val) { if (val != "None") {Messi.alert(val);} }});
+            var markers = [];
+            var i = 0;
 
-	});
-       }
-       
-       	  var total_markers = old_markers.concat(markers)
-	         clusterer.addMarkers(total_markers);
-       $("#display_incident").text("Incident: " + incident);
+            for (var i = 0; i < sites_list.length; i++) {
+                var details = getInfoboxDetails(sites_list[i]);
+                var latLng = new google.maps.LatLng(sites_list[i].blurred_latitude, sites_list[i].blurred_longitude);
+                var marker = new google.maps.Marker({'position': latLng,
+                    'icon': getMarkerIcon(sites_list[i]),
+                    'site_id': sites_list[i].id,
+                    'case_number': sites_list[i].case_number,
+                    'work_type': sites_list[i].work_type,
+                    'floors_affected': sites_list[i].floors_affected,
+                    'status': sites_list[i].status});
+                markers.push(marker);
+                var site_id = sites_list[i].id;
+                google.maps.event.addListener(marker, "click", function() {
+                    new Messi('<p>Name, Address, Phone Number are removed from the public map</p><p>Details: work type: '
+                        + this.work_type+ ', Details: ' + details + '</p>' + '<p>Status: ' + this.status + '</p>',
+                        {title: 'Case Number: ' + this.case_number, titleClass: 'info',
+                            buttons: [
+                                {id: 0, label: 'Printer Friendly', val: "On the live version, this would send all of this site's data to a printer friendly page." },
+                                {id: 1, label: 'Change Status', val: "On the live version, you would be able to change the site's status here."},
+                                {id: 2, label: 'Edit', val: "On the live version, you would be able to edit the site's info, as new details come in."},
+                                {id: 3, label: 'Claim', val: "On the live version, clicking this button would 'Claim' the site for your organization, letting other organizations know that you intend to work on that site"},
+                                {id: 4, label: 'Close', val: 'None'}], callback: function(val) { if (val != "None") {Messi.alert(val);} }});
 
-         if (run_again == true) {
-	    populateMapByIncident(incident, page + 1, total_markers);
-	} else {
+                });
+            }
 
-	  var total_markers = old_markers.concat(markers);
-	         clusterer.addMarkers(total_markers);
-	}
-       
-    }
-  );
+            var total_markers = old_markers.concat(markers)
+            clusterer.addMarkers(total_markers);
+            $("#display_incident").text("Incident: " + incident);
+
+            if (run_again == true) {
+                populateMapByIncident(incident, page + 1, total_markers);
+            } else {
+
+                var total_markers = old_markers.concat(markers);
+                clusterer.addMarkers(total_markers);
+            }
+
+        }
+    );
 
 }
+

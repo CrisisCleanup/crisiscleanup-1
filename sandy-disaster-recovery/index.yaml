@@ -617,9 +617,28 @@ indexes:
 
 - kind: Site
   properties:
+  - name: address
+  - name: categories
+
+- kind: Site
+  properties:
+  - name: categories
+
+- kind: Site
+  properties:
+  - name: categories
+  - name: county
+
+- kind: Site
+  properties:
   - name: categories
   - name: request_date
     direction: desc
+
+- kind: Site
+  properties:
+  - name: categories
+  - name: state
 
 - kind: Site
   properties:

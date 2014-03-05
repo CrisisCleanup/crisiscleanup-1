@@ -24,6 +24,8 @@ import json
 
 import base
 
+import logging
+
 
 import event_db
 from site_db import Site
@@ -38,7 +40,7 @@ class MultiCheckboxField(SelectMultipleField):
     widget = widgets.ListWidget(prefix_label=False)
     option_widget = widgets.CheckboxInput()
 
-def create_site_filter_form(counties_and_states):
+def create_site_filter_form(counties_and_states, categories_options):
 
     class SiteFilterForm(Form):
 
@@ -69,6 +71,8 @@ def create_site_filter_form(counties_and_states):
                 (u'Protection & Security', u'Protection & Security'),
                 (u'Infrastructure and logistics', u'Infrastructure and logistics'),
                 (u'Various', u'Various'),
+            ] + [
+                (cat_k, str(cat_k)+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(categories_options.iteritems())
             ],
             default=u'-',
             )
@@ -102,7 +106,21 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             site.county_and_state : (site.county, site.state) for site
             in site_proj
         }
-        Form = create_site_filter_form(counties_and_states)
+
+        #count messages in categories
+        categories_options_tmp = {}
+        for site in db.GqlQuery('SELECT categories FROM Site'):
+            if site.categories in categories_options_tmp:
+                categories_options_tmp[site.categories] += 1
+            else:
+                categories_options_tmp[site.categories] = 1
+
+        categories_options = {
+            cat_k: cat_v for cat_k , cat_v
+            in categories_options_tmp.iteritems()
+        }
+
+        Form = create_site_filter_form(counties_and_states, categories_options)
         form = Form(self.request.GET)
         if not form.validate():
             form = Form()  # => use defaults

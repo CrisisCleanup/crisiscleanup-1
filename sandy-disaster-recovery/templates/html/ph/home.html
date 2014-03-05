@@ -27,7 +27,7 @@ class="active"
     }
 </script>
 
-<script type="text/javascript" src="javascript/public_map15.js"></script>
+<script type="text/javascript" src="javascript/ph/public_map15.js"></script>
 
 <script type="text/javascript" src="javascript/map_clusterer.js"></script>
 <script type="text/javascript" src="javascript/messi.js"></script>
@@ -96,6 +96,7 @@ class="active"
             <thead>
             <tr>
                 <th>Date</th>
+                <th>Categories</th>
                 <th>Message</th>
                 <th>Barangay</th>
                 <th>State</th>
@@ -106,6 +107,7 @@ class="active"
             {% for site in sites %}
             <tr>
                 <td>{{ site.request_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ site.categories }}</td>
                 <td>{{ site.message|truncate(100) }}</td>
                 <td>{{ site.county }}</td>
                 <td>{{ site.state }}</td>

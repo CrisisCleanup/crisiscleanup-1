@@ -1,10 +1,10 @@
 var clusterer=null;
 $(function(){
-    
-    var myLatlng = new google.maps.LatLng(38.50, -85.35);
+
+    var mapCenter = sandy.util.MAP_CENTER[country];
     var mapOptions = {
         zoom: 5,
-        center: myLatlng,
+        center: new google.maps.LatLng(mapCenter.lat, mapCenter.lon),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);

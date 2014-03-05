@@ -1,0 +1,166 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Community Response Map{% endblock %}</title>
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <meta name="description" content="">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!--<link  href="http://fonts.googleapis.com/css?family=Oswald:regular" rel="stylesheet" type="text/css" >-->
+  <!--<link href='http://fonts.googleapis.com/css?family=Junge' rel='stylesheet' type='text/css'>-->
+  <!-- <link rel="stylesheet" href="assets/fonts/raphaelicons.css"> -->
+
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="assets/css/ph/main.css">
+  <link rel="stylesheet" href="assets/css/form_error.css">
+
+  <script src="assets/js/libs/modernizr-2.5.2.min.js"></script>
+  <script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-42924421-1', 'crisiscleanup.org');
+	  ga('send', 'pageview');
+
+  </script>
+  {% block head_content %}
+  {% endblock %}
+</head>
+<!--[if lt IE 7]> <body class="ie6 oldies"> <![endif]-->
+<!--[if IE 7]>    <body class="ie7 oldies"> <![endif]-->
+<!--[if IE 8]>    <body class="ie8 oldies"> <![endif]-->
+<!--[if gt IE 8]><!--><body><!--<![endif]-->
+
+<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+{% include "map_banner.html" %}
+
+<div id="container" class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 id="site-title">Community Response Map</h1>
+            <h2 id="site-slogan">Rise Together after Yolanda</h2>
+        </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <img src="assets/images/ph/U-report-logo_0.png" width="200" height="68" alt="">
+                <img src="assets/images/ph/Subscribe-logo.png" width="58" height="68" alt="">
+            </div>
+        </div>
+    </div>
+    <header>
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-default" role="navigation">
+                  <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                      <ul class="nav navbar-nav">
+                          <li {% block home %}{% endblock %}>
+                              <a href="/home">Home</a>
+                          </li>
+                          <li {% block about %}{% endblock %}>
+                              <a href="/about">About</a>
+                          </li>
+                          <li {% block publicmap %}{% endblock %}>
+                              <a href={% if logged_in %} "/map" {% else %} "/public-map" {% endif %}>Map</a>
+                          </li>
+                          {% if logged_in %}
+                              <li>
+                                  <a href="/">Assessment Form</a>
+                              </li>
+                              <li>
+                                  <a href="/logout">Log Out</a>
+                              </li>
+                          {% else %}
+                              <li {% block signup %}{% endblock %}>
+                                  <a href="/signup">Sign Up</a>
+                              </li>
+                              <li {% block login %}{% endblock %}>
+                                  <a href="/authentication">Log In</a>
+                              </li>
+                          {% endif %}
+                      </ul>
+                      <ul class="nav navbar-nav navbar-right">
+                          <li>
+                              <a href="http://philippineresponse.iom.int/" target="_blank">Philippine Response</a>
+                          </li>
+                          <li class="cccmph">
+                            <a href="http://cccmphilippines.iom.int/" target="_blank">CCCM-PH</a>
+                          </li>
+                      </ul>
+                    </div>
+                  </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+
+    <section role="banner" class="row">
+        <hgroup>
+            <h1>{% block description_title %}{% endblock %}</h1>
+            <h2>{% block description_subtitle %}{% endblock %}</h2>
+        </hgroup>
+        {% block banner %}
+        {% endblock %}
+
+    </section>
+    <section class="row">
+        <aside class="col-md-3" role="complementary">
+            <h2>{% block sidebar_title %}{% endblock %}</h2>
+            {% block sidebar_content %}
+            {% endblock %}
+        </aside>
+        <article class="col-md-9">
+            <h2>{% block main_title %}{% endblock %}</h2>
+            {% block main_content %}
+            {% endblock %}
+        </article>
+    </section>
+
+
+
+    <footer>
+        <div class="row">
+            <div class="col-md-12">
+                <a href="http://www.iom.int" target="_blank"><img src="assets/images/ph/IOM-logo-blue.png" title="IOM Logo" border="0" /></a>
+                <a href="http://www.dswd.gov.ph" target="_blank"><img src="assets/images/ph/DSWD-Logo.png" title="DSWD Logo" border="0" /></a>
+                <a href="http://news.pia.gov.ph" target="_blank"><img src="assets/images/ph/PIA-logo.png" title="PIA Logo" border="0" /></a>
+                <a href="/"><img src="assets/images/crisis-cleanup-logo.png" title="Crisis Cleanup Logo" border="0" /></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{ footer_page_block|safe }}
+            </div>
+        </div>
+    </footer>
+</div>
+
+
+  {# load scripts at the end #}
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
+
+  <script src="assets/js/script.js"></script>
+
+  {% block scripts %}
+  {% endblock %}
+</body>
+</html>

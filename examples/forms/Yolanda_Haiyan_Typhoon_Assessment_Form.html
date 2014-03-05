@@ -1,0 +1,403 @@
+<p><strong>Phillipines</strong>: HERE WE CAN HAVE A DESCRIPTION OF THE FORM.</p>
+<h2>Property and Personal Information</h2>
+<table>
+<tr>
+    <td class=question>Message type: <span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <select class="" id="message_type" name="message_type">
+                <option value="Alert"/>
+                Alert</option>
+                <option value="Letter">Letter</option>
+                <option value="Imported Messages">Imported Messages</option>
+            </select>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class=question>Resident name: <span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="name" name="name" type="text" value=""/>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class=question>Date of Request:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="request_date" name="request_date" type="text" value=""/>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class=question>Street Address:<span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="address" name="address" type="text" value="-"/>
+        </div>
+        <!--</div>-->
+    </td>
+</tr>
+<tr>
+    <td class=question>City:<span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="city" name="city" type="text" value=""/>
+        </div>
+        <div id=citySuggestion></div>
+    </td>
+</tr>
+<tr>
+    <td class=question>Barangay:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="county" name="county" type="text" value=""/>
+           <!-- @todo rename input as barangay ?-->
+        </div>
+        <div id=countySuggestion></div>
+    </td>
+</tr>
+<!--
+<tr>
+    <td class=question>County:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="county" name="county" type="text" value="" />
+        </div>
+        <div id=countySuggestion></div>
+    </td>
+</tr>
+-->
+<tr>
+    <td class=question>Regions:<span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="state" name="state" type="text" value=""/>
+            <!--@todo rename input as province ?-->
+        </div>
+        <div id=stateSuggestion></div>
+    </td>
+</tr>
+<tr>
+    <td class=question>Zip Code:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="zip_code" name="zip_code" type="text" value=""/>
+        </div>
+        <div id=zipCodeSuggestion></div>
+    </td>
+</tr>
+<tr>
+    <td class=question>
+        Latitude:
+        <small>(<a href="#"
+                   onclick="document.getElementById('latitude').readOnly=false; document.getElementById('latitude').focus(); return false;">edit</a>)
+        </small>
+    </td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="latitude" name="latitude" readonly type="text" value=""/>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class=question>
+        Longitude:
+        <small>(<a href="#"
+                   onclick="document.getElementById('longitude').readOnly=false; document.getElementById('longitude').focus(); return false">edit</a>)
+        </small>
+    </td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="longitude" name="longitude" readonly type="text" value=""/>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="phone1" name="phone1" type="text" value=""/>
+        </div>
+        <div class="form_field">
+            <input class="" id="phone2" name="phone2" type="text" value=""/>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class=question>Best time to call:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="time_to_call" name="time_to_call" type="text" value=""/>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class=question>Age:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="age" name="age" type="text" value=""/>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class=question>Gender:</td>
+    <td class="answer">
+        <div class="form_field">
+            <select class="" id="gender" name="gender">
+                <option value=""/>
+                --Choose One--</option>
+                <option value="F"/>
+                F</option>
+                <option value="M"/>
+                M</option>
+            </select>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class=question><label for="registered_informant">Registered informant:</label></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" name="registered_informant" type="hidden" value="n"/>
+            <input class="" id="registered_informant" name="registered_informant" type="checkbox" value="y">
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class=question><label for="confidential_message">Confidential message:</label></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" name="confidential_message" type="hidden" value="n"/>
+            <input class="" id="confidential_message" name="confidential_message" type="checkbox" value="y">
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class=question>Housing Conditions:<span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="family_displaced" name="housing_conditions" type="radio" value="family_displaced">
+            <label for="family_displaced">Family Displaced</label><br/>
+            <input class="" id="family_undisplaced" name="housing_conditions" type="radio" value="family_undisplaced">
+            <label for="family_undisplaced">Family Undisplaced</label><br/>
+            <input class="" id="host" name="housing_conditions" type="radio" value="host"> <label
+                for="host">Host</label><br/>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class=question>Risk Group:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="children_under_5" name="risk_group" type="radio" value="children_under_5"> <label
+                for="children_under_5">Children Under 5 years old</label><br/>
+            <input class="" id="pregnant_women" name="risk_group" type="radio" value="pregnant_women"> <label
+                for="pregnant_women">Pregnant Women</label><br/>
+            <input class="" id="eldery_person" name="risk_group" type="radio" value="eldery_person"> <label
+                for="eldery_person">Eldery Person</label><br/>
+            <input class="" id="disabled_status" name="risk_group" type="radio" value="disabled_status"> <label
+                for="disabled_status">Disabled Status</label><br/>
+            <input class="" id="hiv_person" name="risk_group" type="radio" value="hiv_person"> <label for="hiv_person">HIV
+            Person</label><br/>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class=question>Type of Assistance:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="information_intake" name="type_of_assistance" type="radio" value="information_intake">
+            <label for="information_intake">Information Intake</label><br/>
+            <input class="" id="request_for_assistance" name="type_of_assistance" type="radio"
+                   value="request_for_assistance"> <label for="request_for_assistance">Request For
+            Assistance</label><br/>
+            <input class="" id="request_for_information" name="type_of_assistance" type="radio"
+                   value="request_for_information"> <label for="request_for_information">Request For Information</label><br/>
+        </div>
+    </td>
+</tr>
+
+
+<tr>
+    <td class=question>Categories:<span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <select class="" id="categories" name="categories">
+                <option value=""/>
+                --Choose One--</option>
+                <option value="Health">Health</option>
+                <option value="Hosting & Non-food products">Hosting & Non-food products</option>
+                <option value="Food">Food</option>
+                <option value="Water & Sanitation">Water & Sanitation</option>
+                <option value="Education">Education</option>
+                <option value="Jobs & Stands socio-economic">Jobs & Stands socio-economic</option>
+                <option value="Protection & Security">Protection & Security</option>
+                <option value="Infrastructure and logistics">Infrastructure and logistics</option>
+                <option value="Cholera epidemic">Cholera epidemic</option>
+                <option value="Various">Various</option>
+            </select>
+        </div>
+    </td>
+</tr>
+
+<input type="hidden" class="" id="work_type" name="work_type" value="Other">
+<!--
+<tr>
+    <td class=question>Primary help needed:<span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <select class="" id="work_type" name="work_type">
+                <option value=""/>
+                --Choose One--</option>
+                <option value="Tarp">Tarp</option>
+                <option value="Trees">Trees</option>
+                <option value="Debris">Debris</option>
+                <option value="Fence">Fencing</option>
+                <option value="Tornado">Tornado</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+    </td>
+</tr>
+-->
+
+<tr>
+    <td class=question>Priority:</td>
+    <td class="answer">
+        <table>
+            <tr>
+                <td>Low (5)</td>
+                <td><input id="priority-0" name="priority" type="radio" value="5"></td>
+                <td><input id="priority-1" name="priority" type="radio" value="4"></td>
+                <td><input checked id="priority-2" name="priority" type="radio" value="3"></td>
+                <td><input id="priority-3" name="priority" type="radio" value="2"></td>
+                <td><input id="priority-4" name="priority" type="radio" value="1"></td>
+                <td>(1) High</td>
+            </tr>
+        </table>
+    </td>
+</tr>
+
+<tr>
+    <td class=question>Number of People Affected:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="number_of_people_affected" name="number_of_people_affected" type="text" value=""/>
+        </div>
+    </td>
+</tr>
+
+</table>
+<br/>
+
+
+<h3>Message</h3>
+<table>
+    <tr>
+        <td class=question>Message:</td>
+        <td class="answer">
+            <div class="form_field">
+                <textarea class="" id="message" name="message"></textarea>
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+<h3>Call For Follow</h3>
+<table>
+    <tr>
+        <td class=question><label for="call_for_follow">Call for follow:</label></td>
+        <td class="answer">
+            <div class="form_field">
+                <input class="" name="call_for_follow" type="hidden" value="n"/>
+                <input class="" id="call_for_follow" name="call_for_follow" type="checkbox" value="y">
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class=question><label for="when_to_call">When to call:</label></td>
+        <td class="answer">
+            <div class="form_field">
+                <input class="" id="when_to_call" name="when_to_call" type="text" value="">
+                <!-- @todo add calendar selection -->
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class=question><label for="already_called">Already called?</label></td>
+        <td class="answer">
+            <div class="form_field">
+                <input class="" name="already_called" type="hidden" value="n"/>
+                <input class="" id="already_called" name="allready_called" type="checkbox" value="y">
+            </div>
+        </td>
+    </tr>
+</table>
+
+<h3>Claim, Status and Report</h3>
+<table>
+    <tr>
+        <td class=question>Claim for Your Organization:</td>
+        <td class="answer">
+            <input class="" name="claim_for_org" type="hidden" value="n"/>
+            <input type=checkbox id="claim_for_org" name="claim_for_org" value="y"/>
+        </td>
+    </tr>
+    <tr>
+        <td class=question>Current Status:</td>
+        <td class="answer">
+            <div class="form_field">
+                <select class="" id="status" name="status">
+                    <option selected value="Open, unassigned">Open, unassigned</option>
+                    <option value="Open, assigned">Open, assigned</option>
+                    <option value="Open, partially completed">Open, partially completed</option>
+                    <option value="Open, needs follow-up">Open, needs follow-up</option>
+                    <option value="Closed, completed">Closed, completed</option>
+                    <option value="Closed, incomplete">Closed, incomplete</option>
+                    <option value="Closed, out of scope">Closed, out of scope</option>
+                    <option value="Closed, done by others">Closed, done by others</option>
+                    <option value="Closed, no help wanted">Closed, no help wanted</option>
+                    <option value="Closed, rejected">Closed, rejected</option>
+                    <option value="Closed, duplicate">Closed, duplicate</option>
+                </select>
+            </div>
+        </td>
+    </tr>
+    <tr id="assigned_to_row" class="hide">
+        <td class="question">Assigned To:</td>
+        <td class="answer">
+            <div class="form_field">
+                <input class="" id="assigned_to" name="assigned_to" type="text" value=""/>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class=question>Status notes:</td>
+        <td class="answer">
+            <div class="form_field">
+                <textarea class="" id="status_notes" name="status_notes"></textarea>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<h3>Other Information</h3>
+<table>
+    <tr>
+        <td class=question>Prepared by:</td>
+        <td class="answer">
+            <div class="form_field">
+                <input class="" id="prepared_by" name="prepared_by" type="text" value=""/>
+            </div>
+        </td>
+    </tr>
+</table>
+

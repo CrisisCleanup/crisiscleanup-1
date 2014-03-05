@@ -1,0 +1,37 @@
+{% extends "base_template.html" %}
+
+{% block home %}
+class="activePage"
+{% endblock %}
+
+{% block banner %}
+   <article role="main" class="clearfix">
+       <div class="post">
+         {{ home_banner_page_block|safe }}
+       </div>
+   </article>
+{% endblock %}
+
+{% block description_title %}
+{{ home_description_title_page_block|safe }}
+{% endblock %}
+
+{% block description_subtitle %}
+{{ home_description_subtitle_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_title %}
+{{ home_sidebar_title_page_block|safe}}
+{% endblock %}
+
+{% block sidebar_content %}
+{{ home_sidebar_content_page_block|safe }}
+{% endblock %}
+
+{% block main_title %}
+{{ home_main_title_page_block|safe }}
+{% endblock %}
+
+{% block main_content %}
+{{ home_main_content_page_block|safe }}
+{% endblock %}

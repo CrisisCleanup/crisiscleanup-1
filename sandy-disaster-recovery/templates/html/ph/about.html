@@ -1,0 +1,30 @@
+
+{% extends "base_template.html" %}
+ 
+{% block about %}
+class="active"
+{% endblock %}
+
+{% block description_title %}
+{{ about_description_title_page_block|safe }}
+{% endblock %}
+
+{% block description_subtitle %}
+{{ about_description_subtitle_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_title %}
+{{ about_sidebar_title_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_content %}
+{{ about_sidebar_page_block|safe }}
+{% endblock %}
+
+{% block main_title %}
+{{ about_main_title_page_block|safe }}
+{% endblock %}
+
+{% block main_content %}
+{{ about_main_page_block|safe }}
+{% endblock %}

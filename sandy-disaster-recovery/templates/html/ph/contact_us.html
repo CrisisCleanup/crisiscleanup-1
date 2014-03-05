@@ -1,0 +1,27 @@
+{% extends "base_template.html" %}
+{% block contact %}
+class="active"
+{% endblock %}
+{% block description_title %}
+{{ contact_description_title_page_block|safe }}
+{% endblock %}
+
+{% block description_subtitle %}
+{{ contact_description_subtitle_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_title %}
+{{ contact_sidebar_title_page_block|safe }}
+{% endblock %}
+
+{% block sidebar_content %}
+{{ contact_sidebar_page_block|safe }}
+{% endblock %}
+
+{% block main_title %}
+{{ contact_main_title_page_block|safe }}
+{% endblock %}
+
+{% block main_content %}
+{{ contact_main_page_block|safe }}
+{% endblock %}

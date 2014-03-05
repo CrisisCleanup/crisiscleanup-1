@@ -1,0 +1,17 @@
+{% extends "base_template.html" %}
+{% from "_form_utils.html" import render_field_row %}
+
+{% block main_content%}
+
+<h2>Organization Information</h2>
+
+<form method="POST">
+  <table>
+    {% for field in form %}
+      {{ render_field_row(field) }}
+    {% endfor %}
+  </table>
+  <button type="submit" name="submit">Submit</button>
+</form>
+
+{% endblock %}

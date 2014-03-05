@@ -1,9 +1,180 @@
 {% extends "base_template.html" %}
 
 {% block home %}
-class="activePage"
+class="active"
 {% endblock %}
 
+
+
+{% block head_content %}
+    <script src="/closure/goog/base.js?v={{version}}"></script>
+    <script src="/javascript/deps.js?v={{version}}"></script>
+    <script type="text/javascript">
+        goog.require("sandy.{% if demo %}demo{% else %}main{% endif %}");
+    </script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
+
+<script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?sensor=false">
+</script>
+
+<script type="text/javascript">
+    function initialize() {
+
+
+    }
+</script>
+
+<script type="text/javascript" src="javascript/public_map15.js"></script>
+
+<script type="text/javascript" src="javascript/map_clusterer.js"></script>
+<script type="text/javascript" src="javascript/messi.js"></script>
+<link rel="stylesheet" href="stylesheets/messi.css">
+<link rel="stylesheet" href="assets/css/public-map.css">
+
+
+{% endblock %}
+
+
+
+
+{% block sidebar_content %}
+    <div>
+
+
+        <p>
+            <a href="/export_all_download">Download All (CSV)</a>
+        </p>
+    </div>
+
+{% endblock %}
+
+{% block main_content %}
+    <div id="home-map">
+
+        {#
+        <h2>Incidents</h2>
+        {% for event in events %}
+        <p class="MapIncident" id="{{event.short_name}}">{{event.name}}</p>
+        {% endfor %}
+        #}
+
+        <div id="display_incident" class="hidden"></div>
+        <div id="display_filter"></div>
+        <div id="map_canvas"></div>
+
+    </div>
+
+    <div id="home-messages">
+        {%- macro previous_and_next() -%}
+        <p>
+            {% if form.page.data %}
+            [<a href="#" class="change-page" data-change="-1">Previous Page</a>]
+            {% endif %}
+
+            {% if sites|length == sites_per_page %}
+            [<a href='#' class="change-page" data-change="+1">Next Page</a>]
+            {% endif %}
+        </p>
+        {%- endmacro -%}
+
+        {{ previous_and_next() }}
+
+        <form id="site-filter" method="GET">
+            {{ form.page }}
+            <label for="county_and_state">County &amp; State</label>
+            {{ form.county_and_state }}
+            <label for="order">Order</label>
+            {{ form.order }}
+            <label for="categories">Categories</label>
+            {{ form.categories }}
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Message</th>
+                <th>Barangay</th>
+                <th>State</th>
+                <th>Zip</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for site in sites %}
+            <tr>
+                <td>{{ site.request_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ site.message|truncate(100) }}</td>
+                <td>{{ site.county }}</td>
+                <td>{{ site.state }}</td>
+                <td>{{ site.zip_code }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {{ previous_and_next() }}
+    </div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+{% block scripts %}
+<script type="text/javascript">
+    $(function() {
+
+        $(document).ready(function() {
+            // populate map
+            clusterer.clearMarkers();
+            populateMapByIncident('yolanda', 0, []);
+        });
+
+
+        // show wait cursor when form is submitted
+        $('form').on('submit', function() {
+            $('body').addClass('wait-cursor');
+        });
+
+        // submit form on change of select
+        $('select').change(function() {
+            $(this).parent('form').submit();
+        });
+
+        $('input[type=checkbox]').change(function() {
+            console.log($(this).parent('form'));
+            $('form#site-filter').submit()
+        });
+
+        // submit form on click of prev or next links
+        $('a.change-page').click(function() {
+            var newPageNum = {{ form.page.data }} + parseInt($(this).attr('data-change'));
+        $('input[name=page]').val(newPageNum);
+        $('form#site-filter').submit()
+    });
+
+    });
+
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+        {#
 {% block banner %}
    <article role="main" class="clearfix">
        <div class="post">
@@ -35,3 +206,4 @@ class="activePage"
 {% block main_content %}
 {{ home_main_content_page_block|safe }}
 {% endblock %}
+        #}

@@ -1,0 +1,51 @@
+{% extends "base_template_without_log_in_checks.html" %}
+{% block main_title %}
+<h2>Organization Info</h2>
+{% endblock %}
+
+{% block main_content%}
+
+{% if contacts %}
+  <h3>Contacts</h3>
+
+  <ul>
+    {% for contact in contacts %}
+      <li>
+        <a href="/contact-info?contact={{ contact.key().id() }}">
+          {{ contact.first_name }} {{ contact.last_name }}
+        </a>
+        ({{ contact.email }})
+      </li>
+    {% endfor %}
+  </ul>
+
+<div>
+  [<a href="/export_contacts?org={{ organization.key().id() }}">Export contacts to CSV</a>]
+</div>
+
+{% endif %}
+
+<form method=POST action="/admin">
+
+<hr>
+{% if organization %}
+  <h3>Organization</h3>
+  {% include "_org_info_table.html" %}
+{% else %}
+  <p>Show list of organizations</p>
+{% endif %}
+
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/sites">Browse Cases.</a></li>
+<li><a href="/organization-settings">See My Organizations.</a></li>
+<li><a href="/organization-info">See All Organizations.</a></li>
+<li><a href="/see-all-contacts">See All Contacts.</a></li>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a></li>
+</ul>
+
+{% endblock %}

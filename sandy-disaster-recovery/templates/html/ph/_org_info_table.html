@@ -1,0 +1,49 @@
+<table style="margin-top: 15px; margin-bottom: 15px">
+  <tr>
+    <td>Incidents:</td>
+    <td>
+      {% for incident in organization.incidents %}
+        {{ incident.name }}<br>
+      {% endfor %}
+    </td>
+  </tr>
+  <tr>
+    <td>Name:</td>
+    <td>{{ organization.name }}</td>
+  </tr>
+  <tr>
+    <td>Email:</td>
+    <td>{{ organization.email }}</td>
+  </tr>
+  <tr>
+    <td>Phone:</td>
+    <td>{{ organization.phone }}</td>
+  </tr>
+  <tr>
+    <td>URL:</td>
+    <td>{{ organization.url }}</td>
+  </tr>
+  <tr>
+    <td>Twitter:</td>
+    <td>{{ organization.twitter }}</td>
+  </tr>
+  <tr>
+    <td>Facebook:</td>
+    <td>{{ organization.facebook }}</td>
+  </tr>
+    <td>Address:</td>
+    <td>{{ organization.address }}</td>
+  </tr>
+  <tr>
+    <td>City:</td>
+    <td>{{ organization.city }}</td>
+  </tr>
+  <tr>
+    <td>State:</td>
+    <td>{{ organization.state }}</td>
+  </tr>
+  <tr>
+    <td>Zip Code:</td>
+    <td>{{ organization.zip_code }}</td>
+  </tr>
+</table>

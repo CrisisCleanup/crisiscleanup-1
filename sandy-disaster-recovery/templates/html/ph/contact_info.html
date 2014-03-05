@@ -1,0 +1,39 @@
+{% extends "base_template_without_log_in_checks.html" %}
+{% from '_form_utils.html' import render_field_row_without_input %}
+
+{% block main_title %}
+<h2>Contact Info</h2>
+{% endblock %}
+
+{% block main_content %}
+
+<table>
+  {% if contact.organization %}
+    <tr>
+      <td>Organization</td>
+      <td>{{ contact.organization.name }}</td>
+    </tr>
+  {% endif %}
+  {% for field in form if field.name != 'is_primary' %}
+    {{ render_field_row_without_input(field) }}
+  {% endfor %}
+  <tr>
+    <td>Primary contact for this organization?</td>
+    <td>{{ form.is_primary.data }}</td>
+  </tr>
+</table>
+
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/sites">Browse Cases.</a></li>
+<li><a href="/organization-settings">See My Organizations.</a></li>
+<li><a href="/organization-info">See All Organizations.</a></li>
+<li><a href="/see-all-contacts">See All Contacts.</a></li>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a></li>
+</ul>
+
+{% endblock %}

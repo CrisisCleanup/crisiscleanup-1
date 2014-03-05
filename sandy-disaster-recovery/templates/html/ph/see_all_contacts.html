@@ -1,0 +1,73 @@
+{% extends "base_template_without_log_in_checks.html" %}
+{% block title %}All Contacts &ndash; Crisis Cleanup{% endblock %}
+{% block main_title %}
+<h2>All Contacts</h2>
+{% endblock %}
+
+{% block main_content%}
+
+<div>
+  [<a href="/export_contacts">Export all contacts to CSV</a>]
+</div>
+
+<table id="contacts-table" style="margin-top: 15px; margin-bottom: 15px;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Organization</th>
+      <th>Phone</th>
+      <th>Email</th>
+      <th>Primary Contact</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for contact in contacts %}
+      <tr>
+        <td>
+          <a href="/contact-info?contact={{ contact.key().id() }}"> {# links to admin only? #}
+            {{ contact.first_name }} {{ contact.last_name }}
+          </a>
+        </td>
+        <td>
+          {% if contact.organization %}
+            <a href="/organization-info?organization={{ contact.organization.key().id() }}">
+              {{ contact.organization.name}}
+            </a>
+          {% else %}
+            No organization
+          {% endif %}
+        </td>
+        <td>{{ contact.phone }}</td>
+        <td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
+        <td style="text-align: center">
+          {% if contact.is_primary %}&#10004;{# a tick #}{% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/sites">Browse Cases.</a></li>
+<li><a href="/organization-settings">See My Organizations.</a></li>
+<li><a href="/organization-info">See All Organizations.</a></li>
+<li><a href="/see-all-contacts">See All Contacts.</a></li>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a></li>
+</ul>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+  $('table#contacts-table').tablesorter({
+  });
+});
+</script>
+{% endblock %}

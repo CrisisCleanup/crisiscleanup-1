@@ -1,0 +1,177 @@
+{% if not readonly %}
+{% macro with_errors(field) %}
+  {% if field.errors %}
+    {% set error_class = ' error_field' %}
+  {% else %}
+    {% set error_class = '' %}
+  {% endif %}
+
+  <div class="form_field{{error_class}}">
+    {{ field(class=css_class, **kwargs) }}
+  </div>
+{% endmacro %}
+{% else %}
+{% macro with_errors(field) %}
+    {{ field }}
+{% endmacro %}
+{% endif %}
+<h2>Personal Information</h2>
+<table>
+<tr><td class=question>Resident name: <span class=required-asterisk>*</span></td>
+<td class="answer">{{ with_errors(form.name) }}</td></tr>
+<tr><td class=question>Date of Request:</td>
+{% if readonly %}
+<td class="answer"> {{with_errors(form.request_date.strftime('%Y-%m-%d')) }}</td></tr>
+{% else %}
+<td class="answer"> {{with_errors(form.request_date) }}</td></tr>
+{% endif %}
+<tr><td class=question>Street Address:<span class=required-asterisk>*</span></td>
+<td class="answer"> {{with_errors(form.address) }}</div></td></tr>
+<tr><td class=question>City:<span class=required-asterisk>*</span></td>
+<td class="answer"> {{with_errors(form.city)}}<div id=citySuggestion></div></td></tr>
+<tr><td class=question>County:</td>
+<td class="answer"> {{with_errors(form.county)}}<div id=countySuggestion></div></td></tr>
+<tr><td class=question>State:<span class=required-asterisk>*</span></td>
+<td class="answer"> {{with_errors(form.state)}}<div id=stateSuggestion></div></td></tr>
+<tr><td class=question>Zip Code:</td>
+<td class="answer"> {{with_errors(form.zip_code) }}<div id=zipCodeSuggestion></td></tr>
+<tr><td class=question>Latitude:</td>
+<td class="answer"> {{with_errors(form.latitude)}}</td></tr>
+<tr><td class=question>Longitude:</td>
+<td class="answer"> {{with_errors(form.longitude)}}</td></tr>
+<tr><td class=question>Cross Street or Nearby Landmark:</td>
+<td class="answer"> {{with_errors(form.cross_street) }}</td></tr>
+<tr><td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>
+<td class="answer"> {{with_errors(form.phone1) }}{{with_errors(form.phone2)}}</td></tr>
+<tr><td class=question>Best time to call:</td>
+<td class="answer"> {{with_errors(form.time_to_call)}}</td></tr>
+<tr><td class=question>Primary help needed:<span class=required-asterisk>*</span></td>
+<td class="answer"> {{with_errors(form.derechos_work_type)}}</td></tr>
+<tr><td class=question>Rent/Own/Public</td>
+<td class="answer"> {{with_errors(form.rent_or_own)}}</td></tr>
+<tr><td class=question>Work without resident present?</td>
+<td class="answer"> {{with_errors(form.work_without_resident)}}</td></tr>
+<tr><td class=question>Member of your organization:</td>
+<td class="answer"> {{with_errors(form.member_of_assessing_organization)}}</td></tr>
+<tr><td class=question>First Responder:</td>
+<td class="answer"> {{with_errors(form.first_responder)}}</td></tr>
+<tr><td class=question>Older than 60:</td>
+<td class="answer"> {{with_errors(form.older_than_60)}}</td></tr>
+<tr><td class=question>Disabled:</td>
+<td class="answer"> {{with_errors(form.disabled)}}</td></tr>
+<tr><td class=question>Special needs:</td>
+<td class="answer"> {{with_errors(form.special_needs)}}</td></tr>
+<tr><td class=question>Priority:</td>
+<td class="answer">
+{% if readonly %}
+{{form.priority}}
+{% else %}
+<table>
+<tr><td>Low (5)</td>
+{% for f in form.priority %}
+<td>{{ f }}</td>
+{% endfor %}
+<td>(1) High</td></tr></table>
+{% endif %}
+</td></tr>
+
+</table>
+<h2 style="page-break-before:always;">Work</h2>
+
+<h3>Wind-Related Damage and Needs</h3>
+<table>
+<tr><td class=question>Roof Damage:</td>
+<td class="answer"> {{with_errors(form.roof_damage)}}</td></tr>
+<tr><td class=question>Number of 20' x 30'Tarps Needed:</td>
+<td class="answer"> {{with_errors(form.tarps_needed)}}</td></tr>
+<tr><td class="question">Debris Removal:</td>
+<td class="answer"> {{with_errors(form.debris_removal)}}</td></tr>
+<tr><td class="question">Broken Glass/Window Removal:</td>
+<td class="answer"> {{with_errors(form.broken_glass)}}</td></tr>
+<tr><td class=question>Heavy Item Removal:</td>
+<td class="answer"> {{with_errors(form.heavy_item_removal)}}</td></tr>
+<tr><td class=question>Furniture or Appliance Removal:</td>
+<td class="answer"> {{with_errors(form.appliance_removal)}}</td></tr>
+<tr><td class=question>Other Work Requested:</td>
+<td class="answer"> {{with_errors(form.work_requested)}}</td></tr>
+<tr><td class=question>Notes:</td>
+<td class="answer"> {{with_errors(form.notes)}}</td></tr>
+</table>
+
+<h3>Tree-Related Damage and Needs</h3>
+<table>
+<tr><td class=question>Number of trees down:</td>
+<td class="answer"> {{with_errors(form.num_trees_down)}}</td></tr>
+<tr><td class=question>Number of trees wider than 18 inches:</td>
+<td class="answer"> {{with_errors(form.num_wide_trees)}}</td></tr>
+</table>
+
+<h3>Rain-Related Damage and Needs</h3>
+<table>
+<tr><td class="question">Ceiling Removal:</td>
+<td class="answer"> {{with_errors(form.ceiling_removal)}}</td></tr>
+<tr><td class=question>Carpet Removal:</td>
+<td class="answer"> {{with_errors(form.carpet_removal)}}</td></tr>
+<tr><td class=question>Hardwood Floor Removal:</td>
+<td class="answer"> {{with_errors(form.hardwood_floor_removal)}}</td></tr>
+<tr><td class=question>Drywall Removal:</td>
+<td class="answer"> {{with_errors(form.drywall_removal)}}</td></tr>
+<tr><td class=question>Standing Water:</td>
+<td class="answer"> {{with_errors(form.standing_water)}}</td></tr>
+<tr><td class=question>Mold Remediation:</td>
+<td class="answer"> {{with_errors(form.mold_remediation)}}</td></tr>
+</table>
+
+
+{# <!--
+<h3>Goods and Services Requested</h3>
+<table>
+<tr><td class=question>Only Outside Debris Removal</td>
+<td class="answer"> {{with_errors(form.debris_removal_only)}}</td></tr>
+<tr><td class=question>Goods, Services, or Food Requested:</td>
+<td class="answer"> {{with_errors(form.goods_and_services)}}</td></tr>
+</table>
+--> #}
+
+<h2>Hazards</h2>
+<table>
+<tr><td class=question>Is the home habitable:</td>
+<td class="answer"> {{with_errors(form.habitable)}}</td></tr>
+<tr><td class=question>Power on:</td>
+<td class="answer"> {{with_errors(form.electricity)}}</td></tr>
+<tr><td class=question>Downed Wires on Property:</td>
+<td class="answer"> {{with_errors(form.electrical_lines)}}</td></tr>
+<tr><td class=question>Other Hazards:</td>
+<td class="answer"> {{with_errors(form.other_hazards)}}</td></tr>
+</table>
+
+{% if not readonly %}
+<h2>Claim, Status and Report</h2>
+<table>
+<tr><td class=question>Claim for {{org.name}}:</td>
+<td class="answer"><input type=checkbox id="claim_for_org" name="claim_for_org" value="y" /></td></tr>
+<tr><td class=question>Current Status:</td>
+<td class="answer"> {{with_errors(form.status)}}</td></tr>
+<tr id="assigned_to_row" class="{% if not form.assigned_to.data %}hide{% endif %}">
+  <td class="question">Assigned To:</td>
+  <td class="answer"> {{with_errors(form.assigned_to)}}</td>
+</tr>
+<tr><td class=question>Volunteers:</td>
+<td class="answer"> {{with_errors(form.total_volunteers)}}</td></tr>
+<tr><td class=question>Hours per volunteer:</td>
+<td class="answer"> {{with_errors(form.hours_worked_per_volunteer)}}</td></tr>
+<tr><td class=question>Initials of resident present during work:</td>
+<td class="answer"> {{with_errors(form.initials_of_resident_present)}}</td></tr>
+<tr><td class=question>Status notes:</td>
+<td class="answer"> {{with_errors(form.status_notes)}}</td></tr>
+</table>
+
+
+<h2>Other Information</h2>
+<table>
+<tr><td class=question>Prepared by:</td>
+<td class="answer"> {{with_errors(form.prepared_by)}}</td></tr>
+<tr><td class=question>Do not work before:</td>
+<td class="answer"> {{with_errors(form.do_not_work_before)}}</td></tr>
+</table>
+{% endif %}

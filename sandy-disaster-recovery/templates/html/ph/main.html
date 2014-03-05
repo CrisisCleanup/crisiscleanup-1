@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Crisis Cleanup</title>
+    <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
+    <link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
+    <link href="/closure/css/dialog.css?v={{version}}" rel="stylesheet">
+{% if uncompiled %}
+    <script src="/closure/goog/base.js?v={{version}}"></script>
+    <script src="/javascript/deps.js?v={{version}}"></script>
+    <script type="text/javascript">
+    goog.require("sandy.{% if demo %}demo{% else %}main{% endif %}");
+    </script>
+{% else %}
+    <script src="/javascript/compiled_{% if demo %}demo{% else %}main{% endif %}.js?v={{version}}"></script>
+{% endif %}
+<script src="/javascript/markerclusterer_packed.js?v={{version}}"></script>
+{% if in_prod %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCv5oq0DwffOWKYK_tZBbOFguIcL22eF3c&v=3.exp&sensor=false"></script>
+{% else %}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+{% endif %}
+<script type="text/javascript">
+var my_organization ="{% if org %}{{org.name}}{% endif %}";
+var STATUS_CHOICES = [
+{% for status in status_choices %}{{status}},
+{% endfor %}
+];
+var counties = [
+{% for county in counties %}
+  "{{county}}",{% endfor %}
+];
+
+var site_id = {% if site_id %}{{site_id}}{% else %}null{% endif %};
+
+var zoom_level = {% if site_id %}{{zoom_level}}{% else %}null{% endif %};
+
+</script>
+  <script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	  ga('create', 'UA-42924421-1', 'crisiscleanup.org');
+	  ga('send', 'pageview');
+	
+  </script>
+
+  </head>
+  <body onLoad="sandy.{% if demo %}demo{% else %}main{% endif %}.initialize(site_id, zoom_level)">
+  
+
+  <div id="container" style="width:100%;height:100%">
+
+    {% include "map_banner.html" %}
+
+{{ menubox }}
+
+<div id="map_canvas"></div>
+<div id="filtersbackground">
+<div id="filters">
+    Only show the following types:<br />
+{% for f in filters %}
+<input type="checkbox" onClick="sandy.map.Refilter()" name="filter" id="{{f[0]}}">
+<label for="{{f[0]}}">{{f[1]}}</label><br />
+{% endfor %}
+<br />
+<form method="POST" action="/print" target="_blank">
+<input name="id" class="id_list" type="hidden" value="" />
+<input type="submit" id="filtered_print" value="Get Printable Version"></input><br />
+</form>
+
+<p>Download Spreadsheet (CSV):</p>
+<form method="POST" action="/export" target="_blank">
+  <input name="id" class="id_list" type="hidden" value="" />
+  <button type="submit" class="export-btn" id="filtered-export-btn" name="download" value="selected">
+    Download Visible
+  </button>
+  <button type="submit" class="all-export-btn" id="all-export-btn" name="download" value="all">
+    Download All
+  </button>
+  <br>
+  <div id="export-wait-message" style="display: none; margin-top: 10px;">
+    <div id="export-spinner" style="display: inline-block; float: right;"></div>
+    This download may take<br>
+    a number of minutes.<br>
+    Please wait...
+  </div>
+</form>
+
+</div></div>
+<div id="info">
+</div>
+<div id="legend_div">
+<img id="legend_img" src="/icons/Legend.png" />
+</div>
+</div>
+
+<div id="form_background" style="display: none; z-index: 12;">
+<div id="form">
+<form id="edit_form" method="POST" action="{{page}}">
+<input type="button" value="Save changes" onClick="sandy.main.SaveEdit()" />
+<input type="button" value="Cancel" onClick="sandy.main.CloseEdit()" />
+<div id="single_site">
+</div>
+<input type="button" value="Save changes" onClick="sandy.main.SaveEdit()" />
+<input type="button" value="Cancel" onClick="sandy.main.CloseEdit()" />
+</form>
+</div>
+</div>  {# form_background #}
+
+{% include "_zendesk_scripts.html" %}
+
+{# load other scripts at the end #}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
+
+<script src="/assets/js/libs/spin.min.js"></script>
+
+<script src="/javascript/download_polling.js?v={{version}}"></script>
+<script src="/javascript/map_support.js?v={{version}}"></script>
+
+<iframe id="file-download-target" name="file-download-target" style="display: none"></iframe>
+
+</body>
+</html>

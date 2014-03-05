@@ -1,0 +1,61 @@
+{% extends "base_template.html" %}
+{% from '_form_utils.html' import render_field_row %}
+
+{% block main_title %}
+<h2>Add Contact</h2>
+{% endblock %}
+{% block main_content%}
+
+<form method="POST">
+  {% if form.errors %}
+    <section id="errors">
+      <header>The submission had errors</header>
+      <article>
+        <ul>
+        {% for k in form.errors %}
+          <li class="error">
+            {% for e in form.errors[k] %}
+              {{k}}: {{e}}
+            {% endfor %}
+          </li>
+        {% endfor %}
+        </ul>
+      <article>
+    </section>
+  {% endif %}
+
+  <p>Choose organization:</p>
+  <select name="choose_organization">
+    {% for result in organization_list %}
+      <option value="{{result.key().id()}}">{{result.name}}</option>
+    {% endfor %}
+  </select><br/><br/>
+
+  <table>
+    {% for field in form if field.name != 'is_primary' %}
+      {{ render_field_row(field) }}
+    {% endfor %}
+  </table>
+
+  <p>
+    <label for="is_primary">Applicant Is Primary Contact for Organization:</label>
+    {{ form.is_primary }}
+  </p>
+
+  <button type=submit value="Submit Edit">Create</button>
+
+</form>
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+<li><a href="/sites">Browse Cases.</a></li>
+<li><a href="/organization-settings">See My Organizations.</a></li>
+<li><a href="/organization-info">See All Organizations.</a></li>
+<li><a href="/see-all-contacts">See All Contacts.</a></li>
+<!-- <a href="/admin-create-incident">Help.</a> -->
+
+<a href="/logout">Logout. </a></li>
+</ul>
+
+{% endblock %}

@@ -84,6 +84,9 @@
                           </li>
                           #}
                           {% if logged_in %}
+                              <li {% block sites %}{% endblock %}>
+                                  <a href="/sites">Messages</a>
+                              </li>
                               <li>
                                   <a href="/map">Map</a>
                               </li>

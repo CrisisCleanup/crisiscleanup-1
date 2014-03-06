@@ -81,14 +81,15 @@
                           <li {% block sites %}{% endblock %}>
                             <a href="/sites">Messages</a>
                           </li>
+                          {#
                           <li {% block publicmap %}{% endblock %}>
                               <a href={% if logged_in %} "/map" {% else %} "/public-map" {% endif %}>Map</a>
                           </li>
-                          {% if logged_in %
+                          #}
+                          {% if logged_in %}
                               <li>
                                  <a href="/map">Map</a>
                               </li>
-}
                               <li>
                                   <a href="/">Assessment Form</a>
                               </li>

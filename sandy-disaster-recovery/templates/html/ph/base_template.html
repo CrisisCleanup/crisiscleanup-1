@@ -59,7 +59,6 @@
         <div class="row">
             <div class="col-md-12">
                 <nav class="navbar navbar-default" role="navigation">
-                  <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
                       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -79,10 +78,15 @@
                           <li {% block about %}{% endblock %}>
                               <a href="/about">About</a>
                           </li>
+                          {#
                           <li {% block publicmap %}{% endblock %}>
                               <a href={% if logged_in %} "/map" {% else %} "/public-map" {% endif %}>Map</a>
                           </li>
+                          #}
                           {% if logged_in %}
+                              <li>
+                                  <a href="/map">Map</a>
+                              </li>
                               <li>
                                   <a href="/">Assessment Form</a>
                               </li>
@@ -107,7 +111,6 @@
                           </li>
                       </ul>
                     </div>
-                  </div>
                 </nav>
             </div>
         </div>
@@ -115,13 +118,14 @@
 
 
     <section role="banner" class="row">
-        <hgroup>
-            <h1>{% block description_title %}{% endblock %}</h1>
-            <h2>{% block description_subtitle %}{% endblock %}</h2>
-        </hgroup>
-        {% block banner %}
-        {% endblock %}
-
+        <div class="col-md-12">
+            <hgroup>
+                <h1>{% block description_title %}{% endblock %}</h1>
+                <h2>{% block description_subtitle %}{% endblock %}</h2>
+            </hgroup>
+            {% block banner %}
+            {% endblock %}
+        </div>
     </section>
     <section class="row">
         <aside class="col-md-3" role="complementary">
@@ -141,7 +145,7 @@
     <footer>
         <div class="row">
             <div class="col-md-12">
-                <a href="http://www.iom.int" target="_blank"><img src="assets/images/ph/IOM-logo-blue.png" title="IOM Logo" border="0" /></a>
+                <a href="http://www.iom.int" target="_blank"><img src="assets/images/ph/IOM-Logo-blue.png" title="IOM Logo" border="0" /></a>
                 <a href="http://www.dswd.gov.ph" target="_blank"><img src="assets/images/ph/DSWD-Logo.png" title="DSWD Logo" border="0" /></a>
                 <a href="http://news.pia.gov.ph" target="_blank"><img src="assets/images/ph/PIA-logo.png" title="PIA Logo" border="0" /></a>
                 <a href="/"><img src="assets/images/crisis-cleanup-logo.png" title="Crisis Cleanup Logo" border="0" /></a>

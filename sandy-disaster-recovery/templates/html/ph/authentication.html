@@ -35,39 +35,34 @@ class="active"
 
 {% block main_content %}
 {{ authentication_main_content_pre_form_page_block|safe }}
-<h3><font color="red">{{ error_message }}</font></h3>
-<form method="POST" action="{{page}}">
-<input type="hidden" value="{{destination}}" name="destination" />
-<table>
-  <tr>
-    <td class="question">Choose Incident:</td>
-    <td class="answer">{{ form.event(autofocus=True) }}</td>
-  </tr>
-  <tr class="toggle organization-toggle" style="display: none">
-    <td class=question>Organization:</td>
-    <td class="answer">
-      <select id="organization" name="name">
-      </select>
-    </td>
-  </tr>
-  <tr class="existing-organization-toggle" style="display: none">
-    <td class="question">Existing Organization:</td>
-    <td class="answer">
-      <select id="existing-organization" name="existing-organization">
-      </select>
-    </td>
-  </tr>
-  <tr class="toggle" style="display: none">
-    <td class=question>Passcode:</td>
-    <td class="answer">{{ form.password() }}</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td>
-      <input class="toggle" style="display: none" type="submit" value="Login" />
-    </td>
-  </tr>
-</table>
+<h3><span style="color:red">{{ error_message }}</span></h3>
+<form method="POST" action="{{page}}" role="form">
+    <input type="hidden" value="{{destination}}" name="destination" />
+    <div class="form-group">
+        <label for="event" class="question">Choose Incident:</label>
+        <div class="answer">{{ form.event(autofocus=True,class_='form-control input-sm') }}</div>
+    </div>
+    <div class="form-group toggle organization-toggle" style="display: none">
+        <label for="organization" class="question">Organization:</label>
+        <div class="answer">
+            <select id="organization" name="name" class="form-control input-sm">
+            </select>
+        </div>
+    </div>
+    <div class="form-group existing-organization-toggle" style="display: none">
+        <label for="existing-organization" class="question">Organization:</label>
+        <div class="answer">
+            <select id="existing-organization" name="existing-organization" class="form-control input-sm">
+            </select>
+        </div>
+    </div>
+    <div class="form-group toggle" style="display: none">
+        <label for="password" class="question">Passcode:</label>
+        <div class="answer">
+            {{ form.password(class_="form-control input-sm") }}
+        </div>
+    </div>
+    <button style="display: none" type="submit" class="toggle btn btn-default">Login</button>
 </form>
 <br/>
 {% endblock %}

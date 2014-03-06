@@ -18,12 +18,12 @@ body {
  * link
  */
 a {
-    color: #57BAE8;
+    color: #5db1ff;
     text-decoration: none;
 }
 a:visited {
     text-decoration:none;
-    color:#57BAE8;
+    color:#5db1ff;
 }
 a:hover {
     color: #f4a777;
@@ -35,7 +35,7 @@ a:hover {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Droid Sans', sans-serif;
     font-weight: normal;
-    color: #005daa;
+    color: #eb7125;
     text-rendering: optimizeLegibility;
     line-height: 1.1;
     letter-spacing:0;
@@ -108,7 +108,7 @@ hr {
 
 .navbar-default {
 	background-color: #333333;
-	border-color: #208cd1;
+	border-color: #5db1ff;
 }
 .navbar-default .navbar-brand {
 	color: #ffffff;
@@ -127,18 +127,18 @@ hr {
 }
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus,
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-	color: #ffffff;
-	background-color: #208cd1;
+	color: #000000;
+	background-color: #5db1ff;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
-	color: #ffffff;
-	background-color: #208cd1;
+    color: #000000;
+	background-color: #5db1ff;
 }
 .navbar-default .navbar-toggle {
-	border-color: #208cd1;
+	border-color: #5db1ff;
 }
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-	background-color: #208cd1;
+	background-color: #5db1ff;
 }
 .navbar-default .navbar-toggle .icon-bar {
 	background-color: #ffffff;
@@ -163,7 +163,7 @@ hr {
 	}
 	.navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
 		color: #ffffff;
-		background-color: #208cd1;
+		background-color: #5db1ff;
 	}
 }
 
@@ -176,11 +176,12 @@ hr {
  */
 footer {
     border-top: 1px solid #4e616d;
-    padding-top: 1em;
+    margin-top: 3em;
+    padding-top: 2em;
     padding-bottom: 3em;
 }
 footer>div {
-    margin-bottom: 1em;
+    margin-bottom: 2em;
 }
 
 

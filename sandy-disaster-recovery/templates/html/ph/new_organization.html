@@ -152,186 +152,228 @@ $('input#reputable').change(function(evt) {
 {# show errors #}
 <div style="background-color:yellow;" id="javascript_form_errors">
 </div>
-</div>
 {% if errors %}
 <section id="errors">
-<div id="div_errors">
-  <header>The submission had errors</header>
-  <article>
-    <ul>
-    {% for k in errors %}
-      <li class="error">
-        {% for e in errors[k] %}
-          {{k}}: {{e}}
-        {% endfor %}
-      </li>
-    {% endfor %}
-    </ul>
-  <article>
-</div>
+    <div id="div_errors">
+        <header>The submission had errors</header>
+        <article>
+            <ul>
+                {% for k in errors %}
+                <li class="error">
+                    {% for e in errors[k] %}
+                    {{k}}: {{e}}
+                    {% endfor %}
+                </li>
+                {% endfor %}
+            </ul>
+            <article>
+    </div>
 </section>
 
 {% endif %}
+
 <div id="form_background">
-<div id="form">
+    <div id="form">
 
-{{ sign_up_form_premable_page_block|safe }}
+        {{ sign_up_form_premable_page_block|safe }}
+
+        <form id="signup_form" method="POST" action="/signup" role="form">
+            <p><a href="/contact">Contact Us</a> to request a new Incident.</p>
+            <div name="select_div" id="select_div">
+
+                {% if events_list %}
+                <h2>Choose a Disaster:</h2>
+                <div class="form-group">
+                    <select name="choose_event" id="choose_event" class="form-control input-sm">
+                        <option value="choose">--Choose One--</option>
+                        {% for result in events_list %}
+                        <option value="{{result.key().id()}}">{{result.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+
+                <a name="primary-contact"></a>
+                <h2 title="Required. At least one Primary Contact is required for each organization.  Personal information will not be shared publicly, but will be shared with other organizations to assist with coordination in the your disaster(s).">
+                    Primary Field Contacts
+                </h2>
+
+                <p><em>Personal information will not be shared publicly, but will be shared with other organizations to assist with coordination in the disaster.</em></p>
+
+                {# generate contact table-forms #}
+                {% for i in range(10) %}
+                <table id="contact-table-{{ i }}"
+                       class="contact-table"
+                       style="margin-bottom: 20px; {% if i > 0 %}display:none;{% endif %}">
+                    <tr>
+                        <td class="question" title="What shall we call you?">
+                            <label for="first_name_{{ i }}">Name</label>*:
+                        </td>
+                        <td class="answer">
+                            <input name="first_name_{{ i }}" id="first_name_{{ i }}" type="text" placeholder="First Name" size="15" /> &nbsp;
+                            <input name="last_name_{{ i }}" id="last_name_{{ i }}" type="text" placeholder="Last Name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="question" title="What is your title within your organization?">
+                            <label for="title_{{ i }}">Org Title</label>:
+                        </td>
+                        <td class="answer">
+                            <input name="title_{{ i }}" id="title_{{ i }}" type="text" size="35" />
+                            <span><em>(e.g. "Disaster Relief Coordinator")</em></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="question" title="This should be an email that someone actually uses during the Incident, so so colleagues from other organizations can contact you.">
+                            <label for="personal_email_{{ i }}">Your email</label>*:
+                        </td>
+                        <td class="answer">
+                            <input name="personal_email_{{ i }}" id="personal_email_{{ i }}" type="text" value="" size="35" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="question" title="This should be a cell phone number actually used during the Incident, so colleagues from other organizations can contact you.">
+                            <label for="personal_phone_{{ i }}">Cell phone</label>*:
+                        </td>
+                        <td class="answer">
+                            <input name="personal_phone_{{ i }}" id="personal_phone_{{ i }}" type="text" value="" size="35" />
+                            <span><em>(No office numbers please.)</em></span>
+                        </td>
+                    </tr>
+                </table>
+                {% endfor %}
+
+                <a id="add-contact-link" href="#">
+                    [+] Add Another Contact
+                </a>
+
+                <a name="0.1_organization"></a>
+                <h2 title="Organization name and contact info is required. Please be as specific as possible. For example, rather than &quot;Americorps,&quot; choose &quot;Americorps Hudson County.&quot;">
+                    Organization Information
+                </h2>
+
+                {% include "_org_info_form_table.html" %}
 
 
+                <h2>How Will You Use Crisis Cleanup?</h2>
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <strong>Click all that Apply</strong>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <strong>Typical Examples</strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 checkbox">
+                        <label>
+                            <input name="does_recovery" id="does_recovery" type="checkbox" value="1" />
+                            <strong>Recovery</strong>: Your organization <em>interacts directly with survivors</em> to assess, muck out, remove debris, rebuild, etc.
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        United Way 2-1-1, LDS Church, Team Rubicon, Samaritan's Purse, UMCOR, Habitat for Humanity, Mennonite Disaster Service, Long Term Recovery Groups.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 checkbox">
+                        <label>
+                            <input name="does_only_coordination" id="does_only_coordination" type="checkbox" value="1" />
+                            <strong>Coordination <u>ONLY</u></strong>: Your organization <em>does NOT interact directly with survivors</em> but <em>DIRECTLY oversees</em> organizations that do.
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        HQ office of a national organization with regional affiliates.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 checkbox">
+                        <label>
+                            <input name="does_only_sit_aware" id="does_only_sit_aware" type="checkbox" value="1" />
+                            <strong>Situational Awareness <u>ONLY</u></strong>: Your organization only needs general situational awareness and statistics.
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        State &amp; County Offices of Emergency Management, FEMA, American Red Cross, State VOADs or COADs
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 checkbox">
+                        <label>
+                            <input name="does_something_else" id="does_something_else" type="checkbox" value="1" />
+                            <strong>Other Activities</strong>: Your organization does other disater-related activities such as donations management, case management, logistics, grant management etc.
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 checkbox">
+                        <label>
+                            <input name="not_an_org" id="not_an_org" type="checkbox" value="1" />
+                            <strong>Not an Organization</strong>: You do not belong to a recovery organization. Crisis Cleanup is only for reputable relief organizations. Individuals must first volunteer with an organization.
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        Individuals, Unaffiliated volunteers, Meetup groups
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 checkbox">
+                        <label>
+                            <input name="physical_presence" id="physical_presence" type="checkbox" value="1" />
+                            <strong>Physical Presence</strong>: Your organization has a physical presence ("boots on the ground") in the affected area.
+                        </label>
+                    </div>
+                </div>
+                <div class="row" id="work_area_row">
+                    <div class="col-md-12 form-inline">
+                        <div class="form-group">
+                            <label for="work_area">Where?</label>
+                            <input name="work_area" type="text" value="" size="50" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-6 checkbox">
+                        <label>
+                            <input name="reputable" id="reputable" type="checkbox" value="1" />
+                            <strong>Reputable</strong>: Your organization performs reputable work (e.g. VOAD). Please provide a referral or link
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        Member of National, State or County VOAD/COAD or recommended by a VOAD or government organization. Local or grassroots organization with a disaster recovery track record.
+                    </div>
+                </div>
+                <br />
+                <div class="row" id="voad_referral_row">
+                    <div class="col-md-12 form-inline">
+                        <div class="form-group">
+                            <label for="voad_referral">Referral:</label>
+                            <input id="voad_referral" name="voad_referral" type="text" value="" size="50" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 checkbox">
+                        <label>
+                            <input type="checkbox" value="yes" name="terms_privacy" id="terms_privacy" />
+                            <strong>I agree to the <a target="_blank" id="privacy_link" href="/terms">Terms of Service</a> and <a target="_blank" id="privacy_link" href="/privacy">Privacy Policy</a></strong>*
+                        </label>
+                    </div>
+                </div>
 
-<form id="signup_form" method="POST" action="/signup">
-<p><a href="/contact">Contact Us</a> to request a new Incident.</p>
-<div name="select_div" id="select_div">
 
-{% if events_list %}
-  <h2>Choose a Disaster:</h2>
-  <select name="choose_event" id="choose_event">
-    <option value="choose">--Choose One--</option>
-    {% for result in events_list %}
-      <option value="{{result.key().id()}}">{{result.name}}</option>
-    {% endfor %}
-  </select>
-{% endif %}
+            <p>
+            <a href="#" onclick="checkEach()" class="button button-icon icon icon-envelope">Signup</a>
+            </p>
 
-<a name="primary-contact"></a>
-<h2 title="Required. At least one Primary Contact is required for each organization.  Personal information will not be shared publicly, but will be shared with other organizations to assist with coordination in the your disaster(s).">
-  Primary Field Contacts
-</h2>
+            </div>
+        </form>
 
-<p><em>Personal information will not be shared publicly, but will be shared with other organizations to assist with coordination in the disaster.</em></p>
+        <hr>
 
-{# generate contact table-forms #}
-{% for i in range(10) %}
-  <table id="contact-table-{{ i }}"
-         class="contact-table"
-         style="margin-bottom: 20px; {% if i > 0 %}display:none;{% endif %}">
-    <tr>
-      <td class="question" title="What shall we call you?">
-        <label for="first_name_{{ i }}">Name</label>*:
-      </td>
-      <td class="answer">
-        <input name="first_name_{{ i }}" id="first_name_{{ i }}" type="text" placeholder="First Name" size="15" /> &nbsp;
-        <input name="last_name_{{ i }}" id="last_name_{{ i }}" type="text" placeholder="Last Name" />
-      </td>
-    </tr>
-    <tr>
-      <td class="question" title="What is your title within your organization?">
-        <label for="title_{{ i }}">Org Title</label>:
-      </td>
-      <td class="answer">
-        <input name="title_{{ i }}" id="title_{{ i }}" type="text" size="35" />
-        <span><em>(e.g. "Disaster Relief Coordinator")</em></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="question" title="This should be an email that someone actually uses during the Incident, so so colleagues from other organizations can contact you.">
-        <label for="personal_email_{{ i }}">Your email</label>*:
-      </td>
-      <td class="answer">
-        <input name="personal_email_{{ i }}" id="personal_email_{{ i }}" type="text" value="" size="35" />
-      </td>
-    </tr>
-    <tr>
-      <td class="question" title="This should be a cell phone number actually used during the Incident, so colleagues from other organizations can contact you.">
-        <label for="personal_phone_{{ i }}">Cell phone</label>*:
-      </td>
-      <td class="answer">
-        <input name="personal_phone_{{ i }}" id="personal_phone_{{ i }}" type="text" value="" size="35" />
-        <span><em>(No office numbers please.)</em></span>
-      </td>
-    </tr>
-  </table>
-{% endfor %}
+    </div>
 
-<a id="add-contact-link" href="#">
-  [+] Add Another Contact
-</a>
-
-<a name="0.1_organization"></a>
-<h2 title="Organization name and contact info is required. Please be as specific as possible. For example, rather than &quot;Americorps,&quot; choose &quot;Americorps Hudson County.&quot;">
-  Organization Information
-</h2>
-
-{% include "_org_info_form_table.html" %}
-
-    
-<h2>How Will You Use Crisis Cleanup?</h2>
-  <table>
-  <tr>
-		<th>&nbsp;</th>
-		<th style="text-align: center">Click all that Apply</th>
-		<th style="text-align: center">Typical Examples</th>
-	</tr>
-	<tr>
-		<td><input name="does_recovery" id="does_recovery" type="checkbox" value="1" /></td>
-		<td><label for="does_recovery"><strong>Recovery</strong></label>: Your organization <em>interacts directly with survivors</em> to assess, muck out, remove debris, rebuild, etc.</td>
-		<td>United Way 2-1-1, LDS Church, Team Rubicon, Samaritan's Purse, UMCOR, Habitat for Humanity, Mennonite Disaster Service, Long Term Recovery Groups.</td>
-	</tr>
-  <tr>
-		<td><input name="does_only_coordination" id="does_only_coordination" type="checkbox" value="1" /></td>
-		<td><label for="does_only_coordination"><strong>Coordination <u>ONLY</u></strong></label>: Your organization <em>does NOT interact directly with survivors</em> but <em>DIRECTLY oversees</em> organizations that do.</td>
-		<td>HQ office of a national organization with regional affiliates.</td>
-	</tr>
- 	<tr>
-		<td><input name="does_only_sit_aware" id="does_only_sit_aware" type="checkbox" value="1" /></td>
-		<td><label for="does_only_sit_aware"><strong>Situational Awareness <u>ONLY</u></strong></label>: Your organization only needs general situational awareness and statistics.</td>
-		<td>State &amp; County Offices of Emergency Management, FEMA, American Red Cross, State VOADs or COADs</td>
-	</tr>
- 	<tr>
-		<td><input name="does_something_else" id="does_something_else" type="checkbox" value="1" /></td>
-		<td><label for="does_something_else"><strong>Other Activities</strong></label>: Your organization does other disater-related activities such as donations management, case management, logistics, grant management etc.</td>
-		<td></td>
-	</tr>
-
- 	<tr>
-		<td><input name="not_an_org" id="not_an_org" type="checkbox" value="1" /></td>
-		<td><label for="not_an_org"><strong>Not an Organization</strong></label>: You do not belong to a recovery organization. Crisis Cleanup is only for reputable relief organizations. Individuals must first volunteer with an organization.</td>
-		<td>Individuals, Unaffiliated volunteers, Meetup groups</td>
-	</tr>
-	<tr>
-		<td colspan="3">&nbsp;</td>
-	</tr>
-
- 	<tr>
-		<td><input name="physical_presence" id="physical_presence" type="checkbox" value="1" /></td>
-		<td><label for="physical_presence"><strong>Physical Presence</strong></label>: Your organization has a physical presence ("boots on the ground") in the affected area.</td>
-		<td>&nbsp;</td>
-	</tr>
-
-  <tr id="work_area_row">
-    <td></td>
-	  <td colspan="2"><label for="work_area">Where?</label> <input name="work_area" type="text" value="" size="50" /></td>
-  </tr>
-
- 	<tr>
-		<td><input name="reputable" id="reputable" type="checkbox" value="1" /></td>
-		<td><label for="reputable"><strong>Reputable</strong></label>: Your organization performs reputable work (e.g. VOAD). Please provide a referral or link</td>
-		<td>Member of National, State or County VOAD/COAD or recommended by a VOAD or government organization. Local or grassroots organization with a disaster recovery track record.</td>
-	</tr>
-
-  <tr id="voad_referral_row">
-    <td></td>
-    <td colspan="2" class="answer"><label for="voad_referral">Referral:</label> <input id="voad_referral" name="voad_referral" type="text" value="" size="50" /> </td>
-  </tr>
-
-	<tr>
-		<td class="answer"><input type="checkbox" value="yes" name="terms_privacy" id="terms_privacy" /></td>
-		<td colspan="2" class="question"><label for="terms_privacy">
-		<strong>I agree to the <a target="_blank" id="privacy_link" href="/terms">Terms of Service</a> and <a target="_blank" id="privacy_link" href="/privacy">Privacy Policy</a></strong>*
-		</label>
-		</td>
-	</tr>
-</table>
-
-<br>
-<a href="#" onclick="checkEach()" class="button button-icon icon icon-envelope">Signup</a>
-<br>
-
-</div>
-</form>
-
-<hr>
-
-</div>
-
-{% endblock %}
+    {% endblock %}

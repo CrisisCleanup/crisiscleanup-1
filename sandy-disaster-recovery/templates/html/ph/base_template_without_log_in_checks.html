@@ -2,26 +2,33 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>{% block title %}Crisis Cleanup{% endblock %}</title>
+  <title>{% block title %}Community Response Map{% endblock %}</title>
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
   <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no" name="viewport" />
   <meta name="description" content="">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="assets/css/ph/bootstrap-datetimepicker.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
-  <link  href="http://fonts.googleapis.com/css?family=Oswald:regular" rel="stylesheet" type="text/css" >
-  <link href='http://fonts.googleapis.com/css?family=Junge' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="assets/fonts/raphaelicons.css">
-  <link rel="stylesheet" href="assets/css/main.css">
+  <!--<link  href="http://fonts.googleapis.com/css?family=Oswald:regular" rel="stylesheet" type="text/css" >-->
+  <!--<link href='http://fonts.googleapis.com/css?family=Junge' rel='stylesheet' type='text/css'>-->
+  <!-- <link rel="stylesheet" href="assets/fonts/raphaelicons.css"> -->
+
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="assets/css/ph/main.css">
+  <link rel="stylesheet" href="assets/css/form_error.css">
+
   <script src="assets/js/libs/modernizr-2.5.2.min.js"></script>
   <script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-	
+
 	  ga('create', 'UA-42924421-1', 'crisiscleanup.org');
 	  ga('send', 'pageview');
-	
+
   </script>
   {% block head_content %}
   {% endblock %}
@@ -32,75 +39,133 @@
 <!--[if gt IE 8]><!--><body><!--<![endif]-->
 
 <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-  {% include "map_banner.html" %} 
-  <header class="clearfix">
-      <div class="container">
-        <a id="logo" href="/"><img src="assets/images/crisis-cleanup-logo.png" title="Crisis Cleanup Logo" border="0" /></a>
-        <ul class="social-icons">
-          <li><a href="https://www.facebook.com/pages/Crisis-Cleanup/437690172982553?fref=ts" class="icon flip">^</a></li>
-          <!--<li><a href="" class="icon">T</a></li>-->
-          <li><a href="/contact" class="icon" title="Contact Us">M</a></li>
-          <li><a href="http://www.twitter.com/crisiscleanup" class="icon" title="Crisis Cleanup on Twitter">^</a></li>
-        </ul>
-        <nav class="clearfix">
-          <ul role="navigation">
-            <li>
-              <a {% block home %}{% endblock %} href="/home"><span class="icon">S</span>Home</a>
-            </li>
-            <li>
-              <a {% block about %}{% endblock %} href="/about"><span class="icon">Û</span>About</a>
-            </li>
-            <li>
-              <a {% block publicmap %}{% endblock %} href="/public-map"><span class="icon">5</span>Map</a>
-            </li>
-            <li>
-              <a {% block blog %}{% endblock %} href="http://blog.crisiscleanup.org/"><span class="icon">?</span>Blog</a>
-            </li>
 
-	          <li>
-              <a {% block signup %}{% endblock %} href="/signup"><span class="icon">@</span>Sign Up</a>
-            </li>
-            <li>
-	    <a href="/"><span class="icon">5</span>Assessment Form</a>
-	    </li>
-            <li>
-            <a href="/logout"><span class="icon">L</span>Log Out</a>
-	    </li>
+{% include "map_banner.html" %}
 
-          </ul>
-        </nav>
-      </div>
-  </header>
-   <section role="banner">
-       <hgroup>
-           <h1>{% block description_title %}{% endblock %}</h1>
-           <h2>{% block description_subtitle %}{% endblock %}</h2>
-       </hgroup>
-       {% block banner %}
-       {% endblock %}
+<div id="container" class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 id="site-title">Community Response Map</h1>
+            <h2 id="site-slogan">Rise Together after Yolanda</h2>
+        </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <img src="assets/images/ph/U-report-logo_0.png" width="200" height="68" alt="">
+                <img src="assets/images/ph/Subscribe-logo.png" width="58" height="68" alt="">
+            </div>
+        </div>
+    </div>
+    <header>
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-default" role="navigation">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                    </div>
 
-   </section> <!-- // banner ends -->
-   <section class="container clearfix">
-        <aside role="complementary">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                      <ul class="nav navbar-nav">
+                          <li {% block home %}{% endblock %}>
+                              <a href="/home">Home</a>
+                          </li>
+                          <li {% block about %}{% endblock %}>
+                              <a href="/about">About</a>
+                          </li>
+                          <li {% block sites %}{% endblock %}>
+                            <a href="/sites">Messages</a>
+                          </li>
+                          <li {% block publicmap %}{% endblock %}>
+                              <a href={% if logged_in %} "/map" {% else %} "/public-map" {% endif %}>Map</a>
+                          </li>
+                          {% if logged_in %
+                              <li>
+                                 <a href="/map">Map</a>
+                              </li>
+}
+                              <li>
+                                  <a href="/">Assessment Form</a>
+                              </li>
+                              <li>
+                                  <a href="/logout">Log Out</a>
+                              </li>
+                          {% else %}
+                              <li {% block signup %}{% endblock %}>
+                                  <a href="/signup">Sign Up</a>
+                              </li>
+                              <li {% block login %}{% endblock %}>
+                                  <a href="/authentication">Log In</a>
+                              </li>
+                          {% endif %}
+                      </ul>
+                      <ul class="nav navbar-nav navbar-right">
+                          <li>
+                              <a href="http://philippineresponse.iom.int/" target="_blank">Philippine Response</a>
+                          </li>
+                          <li class="cccmph">
+                            <a href="http://cccmphilippines.iom.int/" target="_blank">CCCM-PH</a>
+                          </li>
+                      </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+
+    <section role="banner" class="row">
+        <hgroup>
+            <h1>{% block description_title %}{% endblock %}</h1>
+            <h2>{% block description_subtitle %}{% endblock %}</h2>
+        </hgroup>
+        {% block banner %}
+        {% endblock %}
+
+    </section>
+    <section class="row">
+        <aside class="col-md-3" role="complementary">
             <h2>{% block sidebar_title %}{% endblock %}</h2>
-                {% block sidebar_content %}
-		 {% endblock %}
+            {% block sidebar_content %}
+            {% endblock %}
         </aside>
-        <article class="post content">
+        <article class="col-md-9">
             <h2>{% block main_title %}{% endblock %}</h2>
             {% block main_content %}
             {% endblock %}
         </article>
-   </section>
-  <footer role="contentinfo">
-      <p>
-        <span class="left">Crisis Cleanup is an <a href="https://github.com/aarontitus/crisiscleanup/">open source</a> project of the <a href="http://nj211.org">NJ 2-1-1 Partnership</a>. <a href="#">Top</a> <!-- CSS/HTML Template © 2012 CSS Junction/ Shekhar Sharma (http://www.shekhardesigner.com). Licensed under the Creative Commons Attribution 3.0 License: http://creativecommons.org/licenses/by/3.0/us/--></span>
-        <a href="/home">HOME</a> | <a href="/about">ABOUT</a> | <a href="/public-map">PUBLIC MAP</a> | <a href="http://blog.crisiscleanup.org/">BLOG</a> | <a href="/contact">CONTACT US</a> | <a href="/terms">TERMS</a> | <a href="/privacy">PRIVACY</a> | <a href="/signup">SIGN UP</a> | {% if logged_in %}<a href="/">ASSESSMENT FORM</a> | <a href="/logout">LOG OUT</a> {% else %} <a href="/authentication">LOG IN</a>{% endif %}
-      </p>
-  </footer>
+    </section>
 
+
+
+    <footer>
+        <div class="row">
+            <div class="col-md-12">
+                <a href="http://www.iom.int" target="_blank"><img src="assets/images/ph/IOM-Logo-blue.png" title="IOM Logo" border="0" /></a>
+                <a href="http://www.dswd.gov.ph" target="_blank"><img src="assets/images/ph/DSWD-Logo.png" title="DSWD Logo" border="0" /></a>
+                <a href="http://news.pia.gov.ph" target="_blank"><img src="assets/images/ph/PIA-logo.png" title="PIA Logo" border="0" /></a>
+                <a href="/"><img src="assets/images/crisis-cleanup-logo.png" title="Crisis Cleanup Logo" border="0" /></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{ footer_page_block|safe }}
+            </div>
+        </div>
+    </footer>
+</div>
+
+
+  {# load scripts at the end #}
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="assets/js/ph/bootstrap-datetimepicker.min.js"></script>
 
   <script src="assets/js/script.js"></script>
   <script src="assets/js/libs/jquery.tablesorter.js" type="text/javascript"></script>

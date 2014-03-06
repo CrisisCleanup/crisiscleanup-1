@@ -122,7 +122,6 @@ var getInfoboxDetails = function(site) {
             }
         }
     }
-    console.log(details);
     return details;
 }
 

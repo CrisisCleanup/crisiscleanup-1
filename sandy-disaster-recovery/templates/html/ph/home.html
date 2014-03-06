@@ -42,11 +42,38 @@ class="active"
 
 {% block sidebar_content %}
     <div>
-
-
-        <p>
-            <a href="/export_all_download">Download All (CSV)</a>
-        </p>
+        <form id="site-filter" method="GET" role="form">
+            {{ form.page }}
+            <div class="form-group">
+                <label for="date_from">From</label>
+                <div class="datepicker input-group date form-group">
+                    {{ form.date_from(class_='form-control input-sm') }}
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+            </div>
+            <span class="add-on"><i class="icon-calendar"></i></span>
+            <div class="form-group">
+                <label for="date_to">To</label>
+                <div class="datepicker input-group date form-group">
+                    {{ form.date_to(class_='form-control input-sm') }}
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="county_and_state">County &amp; State</label>
+                {{ form.county_and_state(class_='form-control input-sm') }}
+            </div>
+            <div class="form-group">
+                <label for="order">Order</label><br />
+                {{ form.order(class_='form-control input-sm') }}<br />
+            </div>
+            <strong>Categories</strong>
+            <div class="checkbox">
+                <label>
+                {{ form.categories }}
+                </label>
+            </div>
+        </form>
     </div>
 
 {% endblock %}
@@ -82,16 +109,7 @@ class="active"
 
         {{ previous_and_next() }}
 
-        <form id="site-filter" method="GET">
-            {{ form.page }}
-            <label for="county_and_state">County &amp; State</label>
-            {{ form.county_and_state }}
-            <label for="order">Order</label>
-            {{ form.order }}
-            <label for="categories">Categories</label>
-            {{ form.categories }}
-        </form>
-
+        <p>&nbsp;</p>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -118,6 +136,11 @@ class="active"
         </table>
 
         {{ previous_and_next() }}
+
+        <p class="pull-right">
+            <a href="/export">Download (CSV)</a>
+        </p>
+
     </div>
 {% endblock %}
 
@@ -132,6 +155,14 @@ class="active"
 {% block scripts %}
 <script type="text/javascript">
     $(function() {
+
+        $('.datepicker').datetimepicker({
+            pickTime: false
+            })
+            .on('changeDate', function(ev){
+                $('form#site-filter').submit()
+            });
+
 
         $(document).ready(function() {
             // populate map
@@ -152,9 +183,14 @@ class="active"
         });
 
         $('input[type=checkbox]').change(function() {
-            console.log($(this).parent('form'));
             $('form#site-filter').submit()
         });
+
+        /*
+        $('input[type=text]').blur(function() {
+            $('form#site-filter').submit()
+        });
+        */
 
         // submit form on click of prev or next links
         $('a.change-page').click(function() {

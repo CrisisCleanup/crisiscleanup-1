@@ -632,6 +632,13 @@ indexes:
 - kind: Site
   properties:
   - name: categories
+  - name: county
+  - name: state
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: categories
   - name: event
   - name: status
 
@@ -696,6 +703,12 @@ indexes:
   properties:
   - name: county
   - name: state
+
+- kind: Site
+  properties:
+  - name: county
+  - name: state
+  - name: request_date
 
 - kind: Site
   properties:

@@ -18,11 +18,13 @@
 from google.appengine.ext import db
 
 # Local libraries.
-from wtforms import Form, IntegerField, SelectField, SelectMultipleField, widgets
+from wtforms import Form, IntegerField, SelectField, SelectMultipleField, DateField, widgets
 
 import json
 
 import base
+
+import logging
 
 
 import event_db
@@ -62,7 +64,12 @@ def create_site_filter_form(counties_and_states, categories_options):
             choices=[
                 (cat_k, str((cat_k if cat_k != '' else 'None'))+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(categories_options.iteritems())
             ],
-            default=u'-',
+            )
+        date_from = DateField(
+            format='%Y-%m-%d',
+            )
+        date_to = DateField(
+            format='%Y-%m-%d',
             )
         """
                 (u'Health', u'Health'),
@@ -123,7 +130,9 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         form = Form(self.request.GET)
         if not form.validate():
             form = Form()  # => use defaults
+            logging.info('not valid')
 
+        logging.info(form)
         # construct query
         query = Site.all()
         if form.county_and_state.data:
@@ -133,6 +142,14 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             query = query.order(form.order.data)
         if form.categories.data:
             query = query.filter('categories IN', form.categories.data)
+        if form.date_from.data:
+            query = query.filter('request_date >', form.date_from.data)
+        if form.date_to.data:
+            query = query.filter('request_date <', form.date_to.data)
+
+        logging.info('###############')
+        logging.info(form.date_to.data)
+        logging.info(query)
 
         # run query
         sites = list(query.run(
@@ -147,4 +164,6 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             sites=sites,
             sites_per_page=self.SITES_PER_PAGE,
         )
+
+
 

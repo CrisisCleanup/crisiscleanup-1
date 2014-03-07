@@ -1,29 +1,48 @@
-<p><strong>Phillipines</strong>: HERE WE CAN HAVE A DESCRIPTION OF THE FORM.</p>
-<h2>Property and Personal Information</h2>
+<p><strong>Philippines</strong></p>
+<h2>Contact Information</h2>
 <table>
 <tr>
-    <td class=question>Message type: <span class=required-asterisk>*</span></td>
+    <td class=question>Type of Contact: <span class=required-asterisk>*</span></td>
     <td class="answer">
         <div class="form_field">
             <select class="" id="message_type" name="message_type">
-                <option value="Alert"/>
-                Alert</option>
-                <option value="Letter">Letter</option>
-                <option value="Imported Messages">Imported Messages</option>
+                <option value="Call">Call</option>
+                <option value="SMS">SMS</option>
+                <option value="Visit">Visit</option>
+                <option value="Online Form">Online Form</option>
+                <option value="Other">Other</option>
             </select>
         </div>
     </td>
 </tr>
 <tr>
-    <td class=question>Resident name: <span class=required-asterisk>*</span></td>
+    <td class=question>Name: <span class=required-asterisk>*</span></td>
     <td class="answer">
         <div class="form_field">
             <input class="" id="name" name="name" type="text" value=""/>
         </div>
     </td>
 </tr>
+<!--
 <tr>
-    <td class=question>Date of Request:</td>
+    <td class=question>First name: <span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="first_name" name="first_name" type="text" value=""/>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class=question>Last name: <span class=required-asterisk>*</span></td>
+    <td class="answer">
+        <div class="form_field">
+            <input class="" id="last_name" name="last_name" type="text" value=""/>
+        </div>
+    </td>
+</tr>
+-->
+<tr>
+    <td class=question>Date of Communication:</td>
     <td class="answer">
         <div class="form_field">
             <input class="" id="request_date" name="request_date" type="text" value=""/>
@@ -34,9 +53,8 @@
     <td class=question>Street Address:<span class=required-asterisk>*</span></td>
     <td class="answer">
         <div class="form_field">
-            <input class="" id="address" name="address" type="text" value="-"/>
+            <input class="" id="address" name="address" type="text" value=""/>
         </div>
-        <!--</div>-->
     </td>
 </tr>
 <tr>
@@ -70,7 +88,7 @@
 </tr>
 -->
 <tr>
-    <td class=question>Regions:<span class=required-asterisk>*</span></td>
+    <td class=question>Region:<span class=required-asterisk>*</span></td>
     <td class="answer">
         <div class="form_field">
             <input class="" id="state" name="state" type="text" value=""/>
@@ -118,10 +136,13 @@
     <td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>
     <td class="answer">
         <div class="form_field">
-            <input class="" id="phone1" name="phone1" type="text" value=""/>
+            <input class="" id="phone1" name="phone1" type="text" value="" placeholder="Mobile"/>
         </div>
         <div class="form_field">
-            <input class="" id="phone2" name="phone2" type="text" value=""/>
+            <input class="" id="phone2" name="phone2" type="text" value="" placeholder="Home"/>
+        </div>
+        <div class="form_field">
+            <input class="" id="phone3" name="phone3" type="text" value="" placeholder="Work"/>
         </div>
     </td>
 </tr>
@@ -147,17 +168,15 @@
     <td class="answer">
         <div class="form_field">
             <select class="" id="gender" name="gender">
-                <option value=""/>
-                --Choose One--</option>
-                <option value="F"/>
-                F</option>
-                <option value="M"/>
-                M</option>
+                <option value=""></option>
+                <option value="F"/>F</option>
+                <option value="M"/>M</option>
             </select>
         </div>
     </td>
 </tr>
 
+<!--
 <tr>
     <td class=question><label for="registered_informant">Registered informant:</label></td>
     <td class="answer">
@@ -176,50 +195,65 @@
         </div>
     </td>
 </tr>
+-->
 
 <tr>
-    <td class=question>Housing Conditions:<span class=required-asterisk>*</span></td>
+    <td class=question>Housing Situation:<span class=required-asterisk>*</span></td>
     <td class="answer">
         <div class="form_field">
-            <input class="" id="family_displaced" name="housing_conditions" type="radio" value="family_displaced">
-            <label for="family_displaced">Family Displaced</label><br/>
-            <input class="" id="family_undisplaced" name="housing_conditions" type="radio" value="family_undisplaced">
-            <label for="family_undisplaced">Family Undisplaced</label><br/>
-            <input class="" id="host" name="housing_conditions" type="radio" value="host"> <label
-                for="host">Host</label><br/>
+            <select id="housing_situation" name="housing_situations">
+                <option value="not displaced, home not damaged">not displaced, home not damaged</option>
+                <option value="displaced, living with family/friends">displaced, living with family/friends</option>
+                <option value="displaced, living in evacuation centre/displacement site">displaced, living in evacuation centre/displacement site</option>
+                <option value="displaced, living in tent/spontaneous settlement">displaced, living in tent/spontaneous settlement</option>
+                <option value="displaced, other">displaced, other</option>
+            </select>
         </div>
     </td>
 </tr>
 
 <tr>
-    <td class=question>Risk Group:</td>
+    <td class=question>Member of a Vulnerable Group:</td>
     <td class="answer">
         <div class="form_field">
-            <input class="" id="children_under_5" name="risk_group" type="radio" value="children_under_5"> <label
-                for="children_under_5">Children Under 5 years old</label><br/>
-            <input class="" id="pregnant_women" name="risk_group" type="radio" value="pregnant_women"> <label
-                for="pregnant_women">Pregnant Women</label><br/>
-            <input class="" id="eldery_person" name="risk_group" type="radio" value="eldery_person"> <label
-                for="eldery_person">Eldery Person</label><br/>
-            <input class="" id="disabled_status" name="risk_group" type="radio" value="disabled_status"> <label
-                for="disabled_status">Disabled Status</label><br/>
-            <input class="" id="hiv_person" name="risk_group" type="radio" value="hiv_person"> <label for="hiv_person">HIV
-            Person</label><br/>
+            <select id="vulnerable_group" name="vulnerable_group">
+                <option value=""></option>
+                <option value="Under 5 years old">Under 5 years old</option>
+                <option value="Pregnant">Pregnant</option>
+                <option value="Eldery">Elderly</option>
+                <option value="Disabled">Disabled</option>
+                <option value="Living with HIV/AIDS">Living with HIV/AIDS</option>
+                <option value="Other">Other</option>
+            </select>
         </div>
     </td>
 </tr>
 
 <tr>
-    <td class=question>Type of Assistance:</td>
+    <td class=question>Type of Communication:</td>
     <td class="answer">
         <div class="form_field">
-            <input class="" id="information_intake" name="type_of_assistance" type="radio" value="information_intake">
-            <label for="information_intake">Information Intake</label><br/>
-            <input class="" id="request_for_assistance" name="type_of_assistance" type="radio"
+            <input class="" id="report_incident" name="type_of_communication" type="radio" value="Report Incident">
+            <label for="report_incident">Report Incident</label><br/>
+            <input class="" id="request_for_assistance" name="type_of_communication" type="radio"
                    value="request_for_assistance"> <label for="request_for_assistance">Request For
             Assistance</label><br/>
-            <input class="" id="request_for_information" name="type_of_assistance" type="radio"
+            <input class="" id="request_for_information" name="type_of_communication" type="radio"
                    value="request_for_information"> <label for="request_for_information">Request For Information</label><br/>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class=question>Response to Communications Campaign:</td>
+    <td class="answer">
+        <div class="form_field">
+            <select id="response_to_communications_compaign" name="response_to_communications_compaign">
+                <option value="Radio programme">Radio programme</option>
+                <option value="Print media">Print media</option>
+                <option value="Online media">Online media</option>
+                <option value="Other">Other</option>
+            </select>
         </div>
     </td>
 </tr>
@@ -229,25 +263,22 @@
     <td class=question>Categories:<span class=required-asterisk>*</span></td>
     <td class="answer">
         <div class="form_field">
-            <select class="" id="categories" name="categories">
-                <option value=""/>
-                --Choose One--</option>
+            <select class="" id="work_type" name="work_type">
                 <option value="Health">Health</option>
-                <option value="Hosting & Non-food products">Hosting & Non-food products</option>
+                <option value="Core relief items">Core relief items</option>
                 <option value="Food">Food</option>
                 <option value="Water & Sanitation">Water & Sanitation</option>
                 <option value="Education">Education</option>
-                <option value="Jobs & Stands socio-economic">Jobs & Stands socio-economic</option>
+                <option value="Jobs & Livelihoods">Jobs & Livelihoods</option>
                 <option value="Protection & Security">Protection & Security</option>
                 <option value="Infrastructure and logistics">Infrastructure and logistics</option>
-                <option value="Cholera epidemic">Cholera epidemic</option>
+                <option value="Shelter">Shelter</option>
                 <option value="Various">Various</option>
             </select>
         </div>
     </td>
 </tr>
 
-<input type="hidden" class="" id="work_type" name="work_type" value="Other">
 <!--
 <tr>
     <td class=question>Primary help needed:<span class=required-asterisk>*</span></td>

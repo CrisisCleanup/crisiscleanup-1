@@ -67,15 +67,15 @@
     </td>
 </tr>
 <tr>
-    <td class=question>Barangay:</td>
+    <td class=question>County:</td>
     <td class="answer">
         <div class="form_field">
             <input class="" id="county" name="county" type="text" value=""/>
-           <!-- @todo rename input as barangay ?-->
         </div>
         <div id=countySuggestion></div>
     </td>
 </tr>
+<!-- @todo add barangay ?-->
 <!--
 <tr>
     <td class=question>County:</td>
@@ -368,6 +368,18 @@
             <div class="form_field">
                 <input class="" name="already_called" type="hidden" value="n"/>
                 <input class="" id="already_called" name="allready_called" type="checkbox" value="y">
+            </div>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td class=question>Correct Response:</td>
+        <td class="answer">
+            <div class="form_field">
+                <input class="" name="correct" type="hidden" value="n"/>
+                <input type=checkbox id="correct" name="correct" value="y"/>
             </div>
         </td>
     </tr>

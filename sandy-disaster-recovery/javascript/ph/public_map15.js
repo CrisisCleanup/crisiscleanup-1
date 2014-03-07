@@ -3,7 +3,7 @@ $(function(){
 
     var mapCenter = sandy.util.MAP_CENTER[country];
     var mapOptions = {
-        zoom: 5,
+        zoom: 8,
         center: new google.maps.LatLng(mapCenter.lat, mapCenter.lon),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };

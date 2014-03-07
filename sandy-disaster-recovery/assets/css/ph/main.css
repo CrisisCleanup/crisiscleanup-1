@@ -35,7 +35,8 @@ a:hover {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Droid Sans', sans-serif;
     font-weight: normal;
-    color: #eb7125;
+    color: #484e50;
+
     text-rendering: optimizeLegibility;
     line-height: 1.1;
     letter-spacing:0;
@@ -44,6 +45,8 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
     font-size: 60%;
     color: #57bae8;
     line-height: 0;
+}
+h1 {
 }
 
 /**

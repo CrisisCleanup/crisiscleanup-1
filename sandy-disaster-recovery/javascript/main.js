@@ -487,7 +487,7 @@ sandy.main.initialize = function (siteId, zoomLevel) {
     var country = sandy.util.determineCountry();
     var mapCenter = sandy.util.MAP_CENTER[country];
     var mapOptions = {
-        zoom:6,
+        zoom:zoomLevel,
         center: new google.maps.LatLng(mapCenter.lat, mapCenter.lon),
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };

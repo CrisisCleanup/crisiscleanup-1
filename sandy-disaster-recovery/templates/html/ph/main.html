@@ -35,7 +35,7 @@ var counties = [
 
 var site_id = {% if site_id %}{{site_id}}{% else %}null{% endif %};
 
-var zoom_level = {% if site_id %}{{zoom_level}}{% else %}null{% endif %};
+var zoom_level = {% if site_id %}{{zoom_level}}{% else %}8{% endif %};
 
 </script>
   <script>
@@ -50,7 +50,7 @@ var zoom_level = {% if site_id %}{{zoom_level}}{% else %}null{% endif %};
   </script>
 
   </head>
-  <body onLoad="sandy.{% if demo %}demo{% else %}main{% endif %}.initialize(site_id, zoom_level)">
+      <body onLoad="sandy.{% if demo %}demo{% else %}main{% endif %}.initialize(site_id, zoom_level)">
   
 
   <div id="container" style="width:100%;height:100%">
@@ -94,10 +94,12 @@ var zoom_level = {% if site_id %}{{zoom_level}}{% else %}null{% endif %};
 </div></div>
 <div id="info">
 </div>
+<!--
 <div id="legend_div">
 <img id="legend_img" src="/icons/Legend.png" />
 </div>
 </div>
+-->
 
 <div id="form_background" style="display: none; z-index: 12;">
 <div id="form">

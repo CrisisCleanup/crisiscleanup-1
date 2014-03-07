@@ -24,6 +24,8 @@ import base
 import key
 import site_db
 
+import logging
+
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
 
@@ -37,12 +39,14 @@ class MapHandler(base.FrontEndAuthenticatedHandler):
               #["electricity", "Has Electricity"],
               #["no_standing_water", "No Standing Water"],
               #["not_habitable", "Home is not habitable"],
-              ["Flood", "Primary problem is flood damage"],
-              ["Trees", "Primary problem is trees"],
-              ["Goods or Services", "Primary need is goods and services"]]
+              #["Flood", "Primary problem is flood damage"],
+              #["Trees", "Primary problem is trees"],
+              #["Goods or Services", "Primary need is goods and services"]]
               #["CT", "Connecticut"],
               #["NJ", "New Jersey"],
               #["NY", "New York"]]
+              ["Health", "Health"],
+              ["Food", "Food"]]
 
     org, event = key.CheckAuthorization(self.request)
 
@@ -50,10 +54,10 @@ class MapHandler(base.FrontEndAuthenticatedHandler):
       return self.redirect("/sit_aware_redirect")
 
     if org:
-      filters = [["claimed", "Claimed by " + org.name],
-                 ["unclaimed", "Unclaimed"],
-                 ["open", "Open"],
-                 ["closed", "Closed"],
+      filters = [#["claimed", "Claimed by " + org.name],
+                 #["unclaimed", "Unclaimed"],
+                 #["open", "Open"],
+                 #["closed", "Closed"],
                  ["reported", "Reported by " + org.name],
                  ] + filters
 

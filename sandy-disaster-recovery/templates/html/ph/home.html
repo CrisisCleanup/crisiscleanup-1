@@ -115,22 +115,31 @@ class="active"
             <thead>
             <tr>
                 <th>Date</th>
-                <th>Categories</th>
+                {% if logged_in %}
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Correct response</th>
+                {% endif %}
+
+                <th>Category</th>
                 <th>Message</th>
-                <th>Barangay</th>
-                <th>State</th>
-                <th>Zip</th>
+                <th>County</th>
+                <th>Region</th>
             </tr>
             </thead>
             <tbody>
             {% for site in sites %}
             <tr>
                 <td>{{ site.request_date.strftime('%Y-%m-%d') }}</td>
+                {% if logged_in %}
+                    <td>{{ site.name }}</td>
+                    <td>{{ site.gender }}</td>
+                    <td>{{ site.correct }}</td>
+                {% endif %}
                 <td>{{ site.categories }}</td>
                 <td>{{ site.message|truncate(100) }}</td>
                 <td>{{ site.county }}</td>
                 <td>{{ site.state }}</td>
-                <td>{{ site.zip_code }}</td>
             </tr>
             {% endfor %}
             </tbody>

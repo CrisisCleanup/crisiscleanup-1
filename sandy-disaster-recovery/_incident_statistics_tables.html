@@ -1,160 +1,170 @@
-<p>Generated at {{ timestamp.strftime('%Y-%m-%d %H:%M') }} UTC. Statistics are generated every 12 hours.</p>
-
-<table id="status-table">
-  <thead>
-    <tr>
-      <th>Work Orders</th>
-      {% for status in statuses %}
-        <th>{{ status }}</th>
-      {% endfor %}
-      <th>Total Open</th>
-      <th>Total Closed</th>
-      <th>Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Claimed</td>
-      {% for status in statuses %}
-        <td>{{ claimed_status_counts[status] }}</td>
-      {% endfor %}
-      <td style="font-weight: bold">{{ claimed_open_count }}</td>
-      <td style="font-weight: bold">{{ claimed_closed_count }}</td>
-      <td style="font-weight: bold">{{ claimed_status_total }}</td>
-    </tr>
-    <tr>
-      <td>Unclaimed</td>
-      {% for status in statuses %}
-        <td>{{ unclaimed_status_counts[status] }}</td>
-      {% endfor %}
-      <td style="font-weight: bold">{{ unclaimed_open_count }}</td>
-      <td style="font-weight: bold">{{ unclaimed_closed_count }}</td>
-      <td style="font-weight: bold">{{ unclaimed_status_total }}</td>
-    </tr>
-    <tr>
-      <th>Total</th>
-      {% for status in statuses %}
-        <td style="font-weight: bold">{{ total_status_counts[status] }}</td>
-      {% endfor %}
-      <td style="font-weight: bold">{{ total_open_total }}</td>
-      <td style="font-weight: bold">{{ total_closed_total }}</td>
-      <td style="font-weight: bold">{{ total_status_total }}</td>
-    </tr>
-  </tbody>
-</table>
-
-<br><br>
-
-<table id="organization-table">
-  <thead>
-    <tr>
-      <th>Incident</th>
-      <th>Organization</th>
-      <th>Claimed Work Orders</th>
-      <th>Open</th>
-      <th>Closed</th>
-      <th>Reported</th>
-      <th>Last Login</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for org in orgs %}
-      {%- set org_id = org.key().id() -%}
+{% macro phase_tables(d) %}
+  <table id="status-table">
+    <thead>
       <tr>
-        <td>{{ event.name }}</td>
-        <td>
-          {{ org.name }}
-          {% if not org.is_active and not org.org_verified %}
-            <em>(inactive; unverified)</em>
-          {% elif not org.is_active %}
-            <em>(inactive)</em>
-          {% elif not org.org_verified %}
-            <em>(unverified)</em>
-          {% endif %}
-        </td>
-        <td>{{ org_claimed_counts[org_id] }}</td>
-        <td>{{ org_open_counts[org_id] }}</td>
-        <td>{{ org_closed_counts[org_id] }}</td>
-        <td>{{ org_reported_counts[org_id] }}</td>
-        <td>
-          {{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }}
-        </td>
+        <th>Work Orders</th>
+        {% for status in d.statuses %}
+          <th>{{ status }}</th>
+        {% endfor %}
+        <th>Total Open</th>
+        <th>Total Closed</th>
+        <th>Total</th>
       </tr>
-    {% endfor %}
-  </tbody>
-  <tfoot>
-    <tr>
-      <td></td>
-      <td style="font-weight: bold">Totals</td>
-      <td style="font-weight: bold">{{ org_claimed_total }}</td>
-      <td style="font-weight: bold">{{ org_open_total }}</td>
-      <td style="font-weight: bold">{{ org_closed_total }}</td>
-      <td style="font-weight: bold">{{ org_reported_total }}</td>
-    </tr>
-  </tfoot>
-</table>
-
-<br><br>
-
-<table id="work-type-table">
-  <thead>
-    <tr>
-      <th>Work Type</th>
-      <th>Open</th>
-      <th>Closed</th>
-      <th>Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for work_type in work_types %}
+    </thead>
+    <tbody>
       <tr>
-        <td>{{ work_type }}</td>
-        <td>{{ work_type_open_counts[work_type] }}</td>
-        <td>{{ work_type_closed_counts[work_type] }}</td>
-        <td>{{ work_type_totals[work_type] }}</td>
+        <td>Claimed</td>
+        {% for status in d.statuses %}
+          <td>{{ d.claimed_status_counts[status] }}</td>
+        {% endfor %}
+        <td style="font-weight: bold">{{ d.claimed_open_count }}</td>
+        <td style="font-weight: bold">{{ d.claimed_closed_count }}</td>
+        <td style="font-weight: bold">{{ d.claimed_status_total }}</td>
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-<br><br>
-
-<table id="county-table">
-  <thead>
-    <tr>
-      <th>County</th>
-      <th>Open</th>
-      <th>Closed</th>
-      <th>Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for county in counties %}  {# county+state #}
       <tr>
-        <td>
-          <a href="/sites?county_and_state={{ county }}">{{ county }}</td>
-        </td>
-        <td>{{ county_open_counts[county] }}</td>
-        <td>{{ county_closed_counts[county] }}</td>
-        <td>{{ county_totals[county] }}</td>
+        <td>Unclaimed</td>
+        {% for status in d.statuses %}
+          <td>{{ d.unclaimed_status_counts[status] }}</td>
+        {% endfor %}
+        <td style="font-weight: bold">{{ d.unclaimed_open_count }}</td>
+        <td style="font-weight: bold">{{ d.unclaimed_closed_count }}</td>
+        <td style="font-weight: bold">{{ d.unclaimed_status_total }}</td>
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
+      <tr>
+        <th>Total</th>
+        {% for status in d.statuses %}
+          <td style="font-weight: bold">{{ d.total_status_counts[status] }}</td>
+        {% endfor %}
+        <td style="font-weight: bold">{{ d.total_open_total }}</td>
+        <td style="font-weight: bold">{{ d.total_closed_total }}</td>
+        <td style="font-weight: bold">{{ d.total_status_total }}</td>
+      </tr>
+    </tbody>
+  </table>
 
-<br><br>
+  <br><br>
 
-<table>
-  <thead>
-    <tr>
-      <th></th>
-      <th>Since Requested</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Average Days Waiting for Open Work Orders</th>
-      <td>{{ "%0.2f" % average_days_waiting_for_open_work_orders  }}</td>
-    </tr>
-  </tbody>
-</table>
+  <table id="organization-table">
+    <thead>
+      <tr>
+        <th>Incident</th>
+        <th>Organization</th>
+        <th>Claimed Work Orders</th>
+        <th>Open</th>
+        <th>Closed</th>
+        <th>Reported</th>
+        <th>Last Login</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for org in d.orgs %}
+        {%- set org_id = org.key().id() -%}
+        <tr>
+          <td>{{ d.event.name }}</td>
+          <td>
+            {{ org.name }}
+            {% if not org.is_active and not org.org_verified %}
+              <em>(inactive; unverified)</em>
+            {% elif not org.is_active %}
+              <em>(inactive)</em>
+            {% elif not org.org_verified %}
+              <em>(unverified)</em>
+            {% endif %}
+          </td>
+          <td>{{ d.org_claimed_counts[org_id] }}</td>
+          <td>{{ d.org_open_counts[org_id] }}</td>
+          <td>{{ d.org_closed_counts[org_id] }}</td>
+          <td>{{ d.org_reported_counts[org_id] }}</td>
+          <td>
+            {{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td></td>
+        <td style="font-weight: bold">Totals</td>
+        <td style="font-weight: bold">{{ d.org_claimed_total }}</td>
+        <td style="font-weight: bold">{{ d.org_open_total }}</td>
+        <td style="font-weight: bold">{{ d.org_closed_total }}</td>
+        <td style="font-weight: bold">{{ d.org_reported_total }}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <br><br>
+
+  <table id="work-type-table">
+    <thead>
+      <tr>
+        <th>Work Type</th>
+        <th>Open</th>
+        <th>Closed</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for work_type in d.work_types %}
+        <tr>
+          <td>{{ work_type }}</td>
+          <td>{{ d.work_type_open_counts[work_type] }}</td>
+          <td>{{ d.work_type_closed_counts[work_type] }}</td>
+          <td>{{ d.work_type_totals[work_type] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br><br>
+
+  <table id="county-table">
+    <thead>
+      <tr>
+        <th>County</th>
+        <th>Open</th>
+        <th>Closed</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for county in d.counties %}  {# county+state #}
+        <tr>
+          <td>
+            <a href="/sites?county_and_state={{ county }}">{{ county }}</td>
+          </td>
+          <td>{{ d.county_open_counts[county] }}</td>
+          <td>{{ d.county_closed_counts[county] }}</td>
+          <td>{{ d.county_totals[county] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br><br>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Since Requested</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Average Days Waiting for Open Work Orders</th>
+        <td>{{ "%0.2f" % d.average_days_waiting_for_open_work_orders  }}</td>
+      </tr>
+    </tbody>
+  </table>
+{% endmacro %}
+
+
+<p>Generated at {{ stats_dicts[0].timestamp.strftime('%Y-%m-%d %H:%M') }} UTC. Statistics are generated every 12 hours.</p>
+
+{% for stats_dict in stats_dicts %}
+  {% if stats_dict.phase_short_name %}
+    <h2>Phase: {{ stats_dict.phase_short_name }}</h2>
+  {% endif %}
+  {{ phase_tables(stats_dict) }}
+{% endfor %}

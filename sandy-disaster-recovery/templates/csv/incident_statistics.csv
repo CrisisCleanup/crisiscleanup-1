@@ -1,26 +1,35 @@
-{{ event.name }} Statistics. Generated {{ timestamp.strftime('%Y-%m-%d %H:%M') }} UTC
-,"Work Orders",{% for status in statuses %}"{{ status }}",{% endfor %}"Total Open","Total Closed","Total"
-,"Claimed",{% for status in statuses %}{{ claimed_status_counts[status] }},{% endfor %}{{ claimed_open_count }},{{ claimed_closed_count }},{{ claimed_status_total }}
-,"Unclaimed",{% for status in statuses %}{{ unclaimed_status_counts[status] }},{% endfor %}{{ unclaimed_open_count }},{{ unclaimed_closed_count }},{{ unclaimed_status_total }}
-,"Total",{% for status in statuses %}{{ total_status_counts[status] }},{% endfor %}{{ total_open_total }},{{ total_closed_total }},{{total_status_total }}
+{%- macro phase_section(d) -%}
+,"Work Orders",{% for status in d.statuses %}"{{ status }}",{% endfor %}"Total Open","Total Closed","Total"
+,"Claimed",{% for status in d.statuses %}{{ d.claimed_status_counts[status] }},{% endfor %}{{ d.claimed_open_count }},{{ d.claimed_closed_count }},{{ d.claimed_status_total }}
+,"Unclaimed",{% for status in d.statuses %}{{ d.unclaimed_status_counts[status] }},{% endfor %}{{ d.unclaimed_open_count }},{{ d.unclaimed_closed_count }},{{ d.unclaimed_status_total }}
+,"Total",{% for status in d.statuses %}{{ d.total_status_counts[status] }},{% endfor %}{{ d.total_open_total }},{{ d.total_closed_total }},{{total_status_total }}
 ,,,,,,,,
 "Incident","Organization","Claimed Work Orders","Open","Closed","Reported Work Orders","Last Login","Number of Logins- last 7 days","Number of Logins- last 30 days"
-{% for org in orgs -%}
+{% for org in d.orgs -%}
 {%- set org_id = org.key().id() -%}
-{{ event.name }},"{{ org.name }}{% if not org.is_active and not org.org_verified %} (inactive; unverified){% elif not org.is_active %} (inactive){% elif not org.org_verified %} (unverified){% endif %}",{{ org_claimed_counts[org_id] }},{{ org_open_counts[org_id] }},{{ org_closed_counts[org_id] }},{{ org_reported_counts[org_id] }},{{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }},"?","?"
+{{ d.event.name }},"{{ org.name }}{% if not org.is_active and not org.org_verified %} (inactive; unverified){% elif not org.is_active %} (inactive){% elif not org.org_verified %} (unverified){% endif %}",{{ d.org_claimed_counts[org_id] }},{{ d.org_open_counts[org_id] }},{{ d.org_closed_counts[org_id] }},{{ d.org_reported_counts[org_id] }},{{ org.timestamp_login.strftime('%Y-%m-%d %H:%M') if org.timestamp_login else None }},"?","?"
 {% endfor -%}
 ,,,,,,,,
-,"Totals",{{ org_claimed_total }},{{ org_open_total }},{{ org_closed_total }},{{ org_reported_total}}
+,"Totals",{{ d.org_claimed_total }},{{ d.org_open_total }},{{ d.org_closed_total }},{{ d.org_reported_total}}
 ,,,,,,,,
 ,"Work Type","Open","Closed","Total",,,,
-{% for work_type in work_types -%}
-,{{ work_type }},{{ work_type_open_counts[work_type] if work_type_open_counts[work_type] is defined else 0 }},{{ work_type_closed_counts[work_type] if work_type_closed_counts[work_type] is defined else 0 }},{{ work_type_totals[work_type] }}
+{% for work_type in d.work_types -%}
+,{{ work_type }},{{ d.work_type_open_counts[work_type] if d.work_type_open_counts[work_type] is defined else 0 }},{{ d.work_type_closed_counts[work_type] if d.work_type_closed_counts[work_type] is defined else 0 }},{{ d.work_type_totals[work_type] }}
 {% endfor -%}
 ,,,,,,,,
 ,"County","Open","Closed","Total",,,,
-{% for county in counties -%}
-,{{ county }},{{ county_open_counts[county] if county_open_counts[county] is defined else 0 }},{{ county_closed_counts[county] if county_closed_counts[county] is defined else 0 }},{{ county_totals[county] }}
+{% for county in d.counties -%}
+,{{ county }},{{ d.county_open_counts[county] if d.county_open_counts[county] is defined else 0 }},{{ d.county_closed_counts[county] if d.county_closed_counts[county] is defined else 0 }},{{ d.county_totals[county] }}
 {% endfor %}
 ,,,,,,,,
 ,,Since Entered,
-,Average Days Waiting for Open Work Orders,{{ "%0.2f" % average_days_waiting_for_open_work_orders  }},
+,Average Days Waiting for Open Work Orders,{{ "%0.2f" % d.average_days_waiting_for_open_work_orders  }},
+{%- endmacro -%}
+{{ stats_dicts[0].event.name }} Statistics. Generated {{ stats_dicts[0].timestamp.strftime('%Y-%m-%d %H:%M') }} UTC
+{% for stats_dict in stats_dicts -%}
+{% if stats_dict.phase_short_name %}
+Phase: {{ stats_dict.phase_short_name }}
+{% endif %}
+{{ phase_section(stats_dict) }}
+
+{% endfor %}

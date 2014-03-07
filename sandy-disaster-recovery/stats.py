@@ -3,7 +3,6 @@ import os
 import datetime
 import logging
 
-from google.appengine.ext import db
 from google.appengine.ext import deferred
 from google.appengine.api import app_identity
 import cloudstorage
@@ -40,8 +39,13 @@ STATS_CSV_TEMPLATE_NAME = 'templates/csv/incident_statistics.csv'
 
 # functions
 
-def crunch_incident_statistics(event):
-    " To a dict. "
+def crunch_incident_statistics(event, phase_short_name=None):
+    """
+    To a dict.
+
+    phase_short_name is optional but can only be used for events without
+    an associated incident definiton.
+    """
 
     # setup counters
     claimed_status_counts = {status: 0 for status in STATUSES}
@@ -65,33 +69,32 @@ def crunch_incident_statistics(event):
     total_open_request_age = 0 # sec
 
     # create and batch query
-    sites_query = db.Query(
-        Site,
-        projection=[
-            'claimed_by',
-            'reported_by',
-            'request_date',
-            'status',
-            'work_type',
-            'county',
-            'state',
-        ]
-    ).filter('event', event.key())
+    sites_query = Site.all().filter('event', event.key())
     batched_sites = BatchingQuery(sites_query, SITES_BATCH_SIZE)
 
     # iterate to crunch
     for site in batched_sites:
+        # lookup fields
         claiming_org = site.claimed_by
         claimed = bool(claiming_org)
         reporting_org = site.reported_by
-        status = site.status
-        work_type = site.work_type.strip() if site.work_type else None
-        if not work_type:
+        status = (
+            getattr(site, 'phase_%s_status' % phase_short_name)
+            if phase_short_name else site.status
+        )
+        if phase_short_name:
+            work_type = getattr(site, 'phase_%s_work_type' % phase_short_name, None)
+        else:
+            work_type = site.work_type
+        if work_type is None:
             work_type = u'[Blank]'
+        else:
+            work_type = work_type.strip()
         county = site.county_and_state  # use county + state in place of county
         open = status.startswith('Open')
         closed = status.startswith('Closed')
 
+        # increment counters
         if open:
             work_type_open_counts[work_type] = \
                 work_type_open_counts.get(work_type, 0) + 1
@@ -181,6 +184,7 @@ def crunch_incident_statistics(event):
         'timestamp': now,
         'event_key': event.key(),
         'event': event,
+        'phase_short_name': phase_short_name,
         'orgs': orgs,
         'statuses': STATUSES,
         'work_types': work_types,
@@ -220,14 +224,14 @@ def crunch_incident_statistics(event):
     }
 
 
-def incident_statistics_csv(incident_statistics_dict):
+def incident_statistics_csv(incident_statistics_dicts):
     stats_csv_template = jinja_environment.get_template(STATS_CSV_TEMPLATE_NAME)
-    return stats_csv_template.render(incident_statistics_dict)
+    return stats_csv_template.render(stats_dicts=incident_statistics_dicts)
 
 
-def incident_statistics_html(incident_statistics_dict):
+def incident_statistics_html(incident_statistics_dicts):
     stats_html_template = jinja_environment.get_template('_incident_statistics_tables.html')
-    return stats_html_template.render(incident_statistics_dict)
+    return stats_html_template.render(stats_dicts=incident_statistics_dicts)
 
 
 def incident_statistics_csv_filename(event):
@@ -243,11 +247,21 @@ class CrunchAllStatisticsHandler(AbstractCronHandler):
     @classmethod
     def _crunch_and_save(cls, event_key):
         event = Event.get(event_key)
+        incident_definition = event.incident_definition
 
-        # crunch
-        stats_d = crunch_incident_statistics(event)
-        csv_content = incident_statistics_csv(stats_d)
-        html_content = incident_statistics_html(stats_d)
+        if incident_definition:
+            # crunch using phases
+            stats_dicts = [
+                crunch_incident_statistics(event, phase_short_name)
+                for phase_short_name in incident_definition.phase_short_names
+            ]
+        else:
+            # crunch without phases
+            stats_dicts = [crunch_incident_statistics(event, None)]
+
+        # render csv & html
+        csv_content = incident_statistics_csv(stats_dicts)
+        html_content = incident_statistics_html(stats_dicts)
 
         # save csv & html
         csv_gcs_fd = cloudstorage.open(

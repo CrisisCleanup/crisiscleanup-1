@@ -151,7 +151,7 @@ class ReportGenerator(webapp.RequestHandler):
 
   def get(self):
     self.version_filter = self.request.GET.get('versions', 'all')
-    self.sender = messaging.get_app_system_email_address()
+    self.sender = messaging.get_appengine_default_system_email_address()
     self.to = self.request.GET.get('to', None)
     report_date = self.request.GET.get('date', None)
     if report_date:

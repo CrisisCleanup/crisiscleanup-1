@@ -24,11 +24,12 @@ import json
 
 import base
 
-import logging
-
 
 import event_db
 from site_db import Site
+
+import logging
+
 
 class MultiCheckboxField(SelectMultipleField):
     """
@@ -40,7 +41,7 @@ class MultiCheckboxField(SelectMultipleField):
     widget = widgets.ListWidget(prefix_label=False)
     option_widget = widgets.CheckboxInput()
 
-def create_site_filter_form(counties_and_states, categories_options):
+def create_site_filter_form(counties_and_states, work_type_options):
 
     class SiteFilterForm(Form):
 
@@ -60,9 +61,9 @@ def create_site_filter_form(counties_and_states, categories_options):
                 ],
             default=u'-request_date',
             )
-        categories = MultiCheckboxField(
+        work_type = MultiCheckboxField(
             choices=[
-                (cat_k, str((cat_k if cat_k != '' else 'None'))+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(categories_options.iteritems())
+                (cat_k, str((cat_k if cat_k != '' else 'None'))+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(work_type_options.iteritems())
             ],
             )
         date_from = DateField(
@@ -113,26 +114,26 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             in site_proj
         }
 
-        #count messages in categories
-        categories_options_tmp = {}
-        for site in db.GqlQuery('SELECT categories FROM Site'):
-            if site.categories in categories_options_tmp:
-                categories_options_tmp[site.categories] += 1
+        #count messages in work_type (categories)
+        work_type_options_tmp = {}
+        for site in db.GqlQuery('SELECT work_type FROM Site'):
+            if site.work_type in work_type_options_tmp:
+                work_type_options_tmp[site.work_type] += 1
             else:
-                categories_options_tmp[site.categories] = 1
+                work_type_options_tmp[site.work_type] = 1
 
-        categories_options = {
+        work_type_options = {
             cat_k: cat_v for cat_k , cat_v
-            in categories_options_tmp.iteritems()
+            in work_type_options_tmp.iteritems()
         }
 
-        Form = create_site_filter_form(counties_and_states, categories_options)
+        Form = create_site_filter_form(counties_and_states, work_type_options)
         form = Form(self.request.GET)
         if not form.validate():
             form = Form()  # => use defaults
             logging.info('not valid')
 
-        logging.info(form)
+
         # construct query
         query = Site.all()
         if form.county_and_state.data:
@@ -140,12 +141,14 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             query = query.filter('county', county).filter('state', state)
         if form.order.data:
             query = query.order(form.order.data)
-        if form.categories.data:
-            query = query.filter('categories IN', form.categories.data)
+        if form.work_type.data:
+            query = query.filter('work_type IN', form.work_type.data)
         if form.date_from.data:
             query = query.filter('request_date >', form.date_from.data)
         if form.date_to.data:
             query = query.filter('request_date <', form.date_to.data)
+
+        query.filter('event_name', 'Yolanda/Haiyan Typhoon')
 
         logging.info('###############')
         logging.info(form.date_to.data)

@@ -293,7 +293,7 @@ class CrunchAllStatisticsHandler(AbstractCronHandler):
 
 class IncidentStatisticsHandler(base.FrontEndAuthenticatedHandler):
 
-    template_name = "incident_statistics.html"
+    template_filename = "incident_statistics.html"
 
     def AuthenticatedGet(self, org, event):
         html_filename = BUCKET_NAME + '/' + incident_statistics_html_filename(event)

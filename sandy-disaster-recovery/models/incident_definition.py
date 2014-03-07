@@ -98,6 +98,14 @@ class IncidentDefinition(db.Model):
   notify_unfinished = db.IntegerProperty(required=False, default=14)
   notify_on_new_orgs = db.BooleanProperty(required=False, default=False)
   notify_contacts = db.StringProperty(required=False, default="Primary")
+
+  @property
+  def phase_short_names(self):
+      return [
+        phase_d['phase_short_name'] for phase_d in
+        json.loads(self.phases_json)
+      ]
+
     
 class IncidentPhaseForm(Form):
   phase_name = TextField('Phase Name', [wtforms.validators.Length(min = 1, max = 100,

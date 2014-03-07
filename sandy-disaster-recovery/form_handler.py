@@ -53,7 +53,7 @@ HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 
-PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
+PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "rent_or_own", "work_without_resident", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
 
 class IncidentForm(site_db.Site):
   pass
@@ -258,6 +258,9 @@ class FormHandler(base.AuthenticatedHandler):
 	      #raise Exception(v)
 	    #raise Exception(k)
 	    k = "phase_" + phase_name.lower() + "_" + k
+	    
+	    #TODO
+	    # set *_notes properties to TextProperty
 
 	    setattr(site, k, str(v))
 	#setattr(site, "open_phases_list", phase_name)

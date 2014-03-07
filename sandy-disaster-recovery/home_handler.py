@@ -148,7 +148,7 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         if form.date_to.data:
             query = query.filter('request_date <', form.date_to.data)
 
-        query.filter('event_name', 'Yolanda/Haiyan Typhoon')
+        #query.filter('event_name', 'Yolanda/Haiyan Typhoon')
 
         logging.info('###############')
         logging.info(form.date_to.data)

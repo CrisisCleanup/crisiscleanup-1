@@ -148,7 +148,8 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         if form.date_to.data:
             query = query.filter('request_date <', form.date_to.data)
 
-        query = query.filter("incident =", 'ahVzfnNhbmR5LWhlbHBpbmctaGFuZHNyEgsSBUV2ZW50GICAgIDI15EKDA')
+        # TODO get event.key()
+        #query = query.filter("incident =", 'ahVzfnNhbmR5LWhlbHBpbmctaGFuZHNyEgsSBUV2ZW50GICAgIDI15EKDA')
 
         logging.info('###############')
         logging.info(form.date_to.data)

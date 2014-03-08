@@ -768,6 +768,12 @@ indexes:
 
 - kind: Site
   properties:
+  - name: incident
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
   - name: zip_code
   - name: status
 

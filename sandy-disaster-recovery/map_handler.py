@@ -24,8 +24,6 @@ import base
 import key
 import site_db
 
-import logging
-
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
 

@@ -206,14 +206,10 @@ footer img {
  * home-map
  */
 #home-map {
-    height: 600px;
-    margin-bottom: 20px;
 }
 
 /**
  * highcharts
  */
 #highchart_messagesday {
-    height: 200px;
-    margin-bottom: 20px;
 }

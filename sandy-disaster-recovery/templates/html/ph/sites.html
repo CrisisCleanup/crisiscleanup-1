@@ -59,7 +59,7 @@ class="active"
             <th>Date</th>
             <th>Name</th>
             <th>Gender</th>
-            <th>Correct response</th>
+            <th>Response</th>
             <th>Categories</th>
             <th>Message</th>
             <th>County</th>
@@ -73,7 +73,7 @@ class="active"
             <td>{{ site.request_date.strftime('%m/%d/%Y') }}</td>
             <td>{{ site.name }}</td>
             <td>{{ site.gender }}</td>
-            <td>{{ site.correct }}</td>
+            <td>{% if site.correct == 'y' %}correct{% endif %}</td>
             <td>{{ site.work_type }}</td>
             <td>{{ site.message|truncate(100) }}</td>
             <td>{{ site.county }}</td>

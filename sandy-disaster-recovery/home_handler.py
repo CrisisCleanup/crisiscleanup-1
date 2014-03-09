@@ -29,7 +29,6 @@ import event_db
 from site_db import Site
 
 import datetime
-import logging
 
 
 class MultiCheckboxField(SelectMultipleField):
@@ -84,9 +83,7 @@ def create_site_filter_form(counties_and_states, work_type_options):
                 (u'Infrastructure and logistics', u'Infrastructure and logistics'),
                 (u'Various', u'Various'),
         """
-        logging.info(Form)
 
-    logging.info(SiteFilterForm)
     return SiteFilterForm
 
 
@@ -134,14 +131,12 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         form = Form(self.request.GET)
         #import pdb; pdb.set_trace();
         if not form.validate():
-            logging.info(form.errors)
             form = Form()  # => use defaults
-            logging.info('not valid')
 
 
-        logging.info(form.work_type.data)
         # construct query
         query = Site.all()
+        query.filter("status IN", ["Open, unassigned", "Open, assigned", "Open, partially completed", "Open, needs follow-up"])
         if form.county_and_state.data:
             county, state = counties_and_states[form.county_and_state.data]
             query = query.filter('county', county).filter('state', state)
@@ -154,13 +149,21 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         if form.date_to.data:
             query = query.filter('request_date <', (datetime.datetime.strptime(form.date_to.data, '%m/%d/%Y')+datetime.timedelta(days=1)).date())
 
-
-
         # run query
         sites = list(query.run(
             offset=form.page.data * self.SITES_PER_PAGE,
             limit=self.SITES_PER_PAGE
         ))
+
+
+        # count messages for chart
+        chart_messages = {}
+        for site in sites:
+            tmp_request_date = site.request_date.strftime('%m/%d/%Y');
+            if tmp_request_date in chart_messages:
+                chart_messages[tmp_request_date] += 1
+            else:
+                chart_messages[tmp_request_date] = 1
 
         self.render(
             events=events,
@@ -168,6 +171,7 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             form=form,
             sites=sites,
             sites_per_page=self.SITES_PER_PAGE,
+            chart_messages=chart_messages,
         )
 
 

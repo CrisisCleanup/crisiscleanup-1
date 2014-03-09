@@ -7,34 +7,8 @@ class="active"
 
 
 {% block head_content %}
-    <script src="/closure/goog/base.js?v={{version}}"></script>
-    <script src="/javascript/deps.js?v={{version}}"></script>
-    <script type="text/javascript">
-        goog.require("sandy.{% if demo %}demo{% else %}main{% endif %}");
-    </script>
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
-
-<script type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?sensor=false">
-</script>
-
-<script type="text/javascript">
-    function initialize() {
-
-
-    }
-</script>
-
-<script type="text/javascript" src="javascript/ph/home_map.js"></script>
-
-<script type="text/javascript" src="javascript/map_clusterer.js"></script>
-<script type="text/javascript" src="javascript/messi.js"></script>
 <link rel="stylesheet" href="stylesheets/messi.css">
 <link rel="stylesheet" href="assets/css/public-map.css">
-
-
 {% endblock %}
 
 
@@ -95,6 +69,9 @@ class="active"
 
     </div>
 
+
+    <div id="highchart_messagesday"></div>
+
     <div id="home-messages">
         {%- macro previous_and_next() -%}
         <p>
@@ -110,7 +87,6 @@ class="active"
 
         {{ previous_and_next() }}
 
-        <p>&nbsp;</p>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -118,7 +94,7 @@ class="active"
                 {% if logged_in %}
                     <th>Name</th>
                     <th>Gender</th>
-                    <th>Correct response</th>
+                    <th>Response</th>
                 {% endif %}
 
                 <th>Category</th>
@@ -137,7 +113,7 @@ class="active"
                 {% if logged_in %}
                     <td>{{ site.name }}</td>
                     <td>{{ site.gender }}</td>
-                    <td>{{ site.correct }}</td>
+                    <td>{% if site.correct == 'y' %}correct{% endif %}</td>
                 {% endif %}
                 <td>{{ site.work_type }}</td>
                 <td>{{ site.message|truncate(100) }}</td>
@@ -172,9 +148,28 @@ class="active"
 
 
 {% block scripts %}
+
+<script src="/closure/goog/base.js?v={{version}}"></script>
+<script src="/javascript/deps.js?v={{version}}"></script>
+<script type="text/javascript">
+    goog.require("sandy.{% if demo %}demo{% else %}main{% endif %}");
+</script>
+
+<script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+<script src="assets/js/libs/highcharts/highcharts.js"></script>
+
+<script type="text/javascript" src="javascript/ph/home_map.js"></script>
+
+<script type="text/javascript" src="javascript/map_clusterer.js"></script>
+<script type="text/javascript" src="javascript/messi.js"></script>
+
 <script type="text/javascript">
     $(function() {
 
+        // datetimepicker
         $('.datepicker').datetimepicker({
             format: 'MM/dd/yyyy',
             pickTime: false
@@ -184,8 +179,8 @@ class="active"
             });
 
 
+        // populate map
         $(document).ready(function() {
-            // populate map
             clusterer.clearMarkers();
 
             var work_type = $('input[name=work_type]:checked').map(function() {
@@ -203,27 +198,52 @@ class="active"
             $('body').addClass('wait-cursor');
         });
 
-        // submit form on change of select
+        // submit form
         $('select').change(function() {
             $('form#site-filter').submit()
         });
-
         $('input[type=checkbox]').change(function() {
             $('form#site-filter').submit()
         });
 
-        /*
-        $('input[type=text]').blur(function() {
-            $('form#site-filter').submit()
-        });
-        */
-
         // submit form on click of prev or next links
         $('a.change-page').click(function() {
             var newPageNum = {{ form.page.data }} + parseInt($(this).attr('data-change'));
-        $('input[name=page]').val(newPageNum);
-        $('form#site-filter').submit()
-    });
+            $('input[name=page]').val(newPageNum);
+            $('form#site-filter').submit();
+        });
+
+
+
+        // highcharts
+        $(function () {
+
+
+            $('#highchart_messagesday').highcharts({
+                title: {
+                    text: 'Messages per day',
+                    x: 0
+                },
+                xAxis: {
+                    categories: [{% for chart_day in chart_messages.keys() %}'{{chart_day}}',{% endfor %}]
+                },
+                yAxis: {
+                    allowDecimals:false,
+                    title: {
+                        text: 'Messages'
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Messages',
+                    data: [{% for chart_day, chart_message in chart_messages.iteritems() %}{{chart_message}},{% endfor %}]
+                }]
+            });
+        });
+
+
 
     });
 

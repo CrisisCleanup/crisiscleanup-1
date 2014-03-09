@@ -39,14 +39,13 @@ var zoom_level = {% if site_id %}{{zoom_level}}{% else %}8{% endif %};
 
 </script>
   <script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-	
-	  ga('create', 'UA-42924421-1', 'crisiscleanup.org');
-	  ga('send', 'pageview');
-	
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-48814726-1', 'communityresponsemap.org');
+      ga('send', 'pageview');
   </script>
 
   </head>
@@ -114,7 +113,7 @@ var zoom_level = {% if site_id %}{{zoom_level}}{% else %}8{% endif %};
 </div>
 </div>  {# form_background #}
 
-{% include "_zendesk_scripts.html" %}
+      {# include "_zendesk_scripts.html" #}
 
 {# load other scripts at the end #}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>

@@ -18,7 +18,7 @@
 from google.appengine.ext import db
 
 # Local libraries.
-from wtforms import Form, IntegerField, SelectField, SelectMultipleField, DateField, widgets
+from wtforms import Form, IntegerField, SelectField, SelectMultipleField, TextField, widgets
 
 import json
 
@@ -28,6 +28,7 @@ import base
 import event_db
 from site_db import Site
 
+import datetime
 import logging
 
 
@@ -66,11 +67,11 @@ def create_site_filter_form(counties_and_states, work_type_options):
                 (cat_k, str((cat_k if cat_k != '' else 'None'))+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(work_type_options.iteritems())
             ],
             )
-        date_from = DateField(
-            format='%Y-%m-%d',
+        date_from = TextField(
+            #format='%m/%d/%Y',
             )
-        date_to = DateField(
-            format='%Y-%m-%d',
+        date_to = TextField(
+            #format='%m/%d/%Y',
             )
         """
                 (u'Health', u'Health'),
@@ -83,7 +84,9 @@ def create_site_filter_form(counties_and_states, work_type_options):
                 (u'Infrastructure and logistics', u'Infrastructure and logistics'),
                 (u'Various', u'Various'),
         """
+        logging.info(Form)
 
+    logging.info(SiteFilterForm)
     return SiteFilterForm
 
 
@@ -129,7 +132,9 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
 
         Form = create_site_filter_form(counties_and_states, work_type_options)
         form = Form(self.request.GET)
+        #import pdb; pdb.set_trace();
         if not form.validate():
+            logging.info(form.errors)
             form = Form()  # => use defaults
             logging.info('not valid')
 
@@ -144,16 +149,11 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         if form.work_type.data:
             query = query.filter('work_type IN', form.work_type.data)
         if form.date_from.data:
-            query = query.filter('request_date >', form.date_from.data)
+            query = query.filter('request_date >=', datetime.datetime.strptime(form.date_from.data, '%m/%d/%Y').date())
         if form.date_to.data:
-            query = query.filter('request_date <', form.date_to.data)
+            query = query.filter('request_date <', (datetime.datetime.strptime(form.date_to.data, '%m/%d/%Y')+datetime.timedelta(days=1)).date())
 
-        # TODO get event.key()
-        #query = query.filter("incident =", 'ahVzfnNhbmR5LWhlbHBpbmctaGFuZHNyEgsSBUV2ZW50GICAgIDI15EKDA')
 
-        logging.info('###############')
-        logging.info(form.date_to.data)
-        logging.info(query)
 
         # run query
         sites = list(query.run(
@@ -168,6 +168,5 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             sites=sites,
             sites_per_page=self.SITES_PER_PAGE,
         )
-
 
 

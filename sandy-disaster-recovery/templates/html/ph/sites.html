@@ -57,23 +57,27 @@ class="active"
         <thead>
         <tr>
             <th>Date</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Correct response</th>
             <th>Categories</th>
             <th>Message</th>
-            <th>Barangay</th>
-            <th>State</th>
-            <th>Zip</th>
+            <th>County</th>
+            <th>Region</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
         {% for site in sites %}
         <tr>
-            <td>{{ site.request_date.strftime('%Y-%m-%d') }}</td>
-            <td>{{ site.categories }}</td>
+            <td>{{ site.request_date.strftime('%m/%d/%Y') }}</td>
+            <td>{{ site.name }}</td>
+            <td>{{ site.gender }}</td>
+            <td>{{ site.correct }}</td>
+            <td>{{ site.work_type }}</td>
             <td>{{ site.message|truncate(100) }}</td>
             <td>{{ site.county }}</td>
             <td>{{ site.state }}</td>
-            <td>{{ site.zip_code }}</td>
             <td>
                 [<a href="/edit?id={{ site.key().id() }}">Edit</a>]
                 {###### [<a href="/delete?id={{ site.key().id() }}">Delete</a>] #}

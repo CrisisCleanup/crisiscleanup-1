@@ -125,21 +125,30 @@ class="active"
                 <th>Message</th>
                 <th>County</th>
                 <th>Region</th>
+                {% if logged_in %}
+                    <th></th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
             {% for site in sites %}
             <tr>
-                <td>{{ site.request_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ site.request_date.strftime('%m/%d/%Y') }}</td>
                 {% if logged_in %}
                     <td>{{ site.name }}</td>
                     <td>{{ site.gender }}</td>
                     <td>{{ site.correct }}</td>
                 {% endif %}
-                <td>{{ site.categories }}</td>
+                <td>{{ site.work_type }}</td>
                 <td>{{ site.message|truncate(100) }}</td>
                 <td>{{ site.county }}</td>
                 <td>{{ site.state }}</td>
+                {% if logged_in %}
+                    <td>
+                        [<a href="/edit?id={{ site.key().id() }}">Edit</a>]
+                        {###### [<a href="/delete?id={{ site.key().id() }}">Delete</a>] #}
+                    </td>
+                {% endif %}
             </tr>
             {% endfor %}
             </tbody>

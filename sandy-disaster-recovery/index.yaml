@@ -689,6 +689,14 @@ indexes:
   - name: event
   - name: state
   - name: status
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
+  - name: state
+  - name: status
   - name: work_type
   - name: request_date
 

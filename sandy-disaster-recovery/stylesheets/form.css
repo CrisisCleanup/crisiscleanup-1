@@ -82,7 +82,7 @@ section#errors li {
   color: #C43B1D;
 }
 
-// popup_form
+/* popup_form*/
 #overlay {
     overflow: auto;
     position: fixed;

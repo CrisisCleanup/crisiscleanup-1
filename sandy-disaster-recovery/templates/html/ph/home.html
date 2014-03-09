@@ -190,7 +190,7 @@ class="active"
 
         // submit form on change of select
         $('select').change(function() {
-            $(this).parent('form').submit();
+            $('form#site-filter').submit()
         });
 
         $('input[type=checkbox]').change(function() {

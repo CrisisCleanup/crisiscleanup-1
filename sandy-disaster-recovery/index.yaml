@@ -720,6 +720,21 @@ indexes:
 - kind: Site
   properties:
   - name: county
+  - name: state
+  - name: work_type
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: county
+  - name: state
+  - name: work_type
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: county
   - name: status
 
 - kind: Site

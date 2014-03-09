@@ -27,7 +27,7 @@ class="active"
     }
 </script>
 
-<script type="text/javascript" src="javascript/ph/public_map15.js"></script>
+<script type="text/javascript" src="javascript/ph/home_map.js"></script>
 
 <script type="text/javascript" src="javascript/map_clusterer.js"></script>
 <script type="text/javascript" src="javascript/messi.js"></script>
@@ -178,8 +178,14 @@ class="active"
         $(document).ready(function() {
             // populate map
             clusterer.clearMarkers();
-            categories = $('input[name=categories]:checked').val()
-            populateMapByIncident('yolanda', 0, categories,[]);
+
+            var work_type = $('input[name=work_type]:checked').map(function() {
+                return this.value;
+            }).get().join(',');
+            var date_from = $('#date_from').val()
+            var date_to = $('#date_to').val()
+            var county_and_state = $('#county_and_state').val()
+            populateMapByIncident('yolanda', 0, work_type, county_and_state, date_from, date_to, []);
         });
 
 

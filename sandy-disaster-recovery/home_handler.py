@@ -139,6 +139,7 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             logging.info('not valid')
 
 
+        logging.info(form.work_type.data)
         # construct query
         query = Site.all()
         if form.county_and_state.data:

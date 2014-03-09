@@ -687,6 +687,15 @@ indexes:
   properties:
   - name: county
   - name: event
+  - name: state
+  - name: status
+  - name: work_type
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
   - name: status
 
 - kind: Site
@@ -774,6 +783,19 @@ indexes:
   - name: latitude
   - name: longitude
   - name: work_type
+
+- kind: Site
+  properties:
+  - name: event
+  - name: status
+  - name: work_type
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: event
+  - name: work_type
+  - name: status
 
 - kind: Site
   properties:

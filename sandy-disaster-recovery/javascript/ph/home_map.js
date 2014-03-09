@@ -21,7 +21,7 @@ $(function(){
             $(this).css("border-color", "#3891cf");
         });
         $(this).css("border-color", "#10253d");
-        populateMapByIncident(incident_id, 0, [], []);
+        populateMapByIncident(incident_id, 0, [], '', '', '', []);
     });
 })
 
@@ -63,7 +63,7 @@ var getMarkerIcon = function (site) {
     }
     site.work_type = marker_work_type;
     var icon_type = site.work_type.replace(/ /g, "_");
-    console.log("/icons/" + icon_type + "_" + color + ".png");
+    //console.log("/icons/" + icon_type + "_" + color + ".png");
     return "/icons/" + icon_type + "_" + color + ".png";
 }
 
@@ -125,11 +125,12 @@ var getInfoboxDetails = function(site) {
     return details;
 }
 
-var populateMapByIncident = function(incident, page, categories, old_markers) {
+var populateMapByIncident = function(incident, page, work_type, county_and_state, date_from, date_to, old_markers) {
     var run_again = false;
+    jQuery.ajaxSettings.traditional = true; // to send work_type as an array
     $.getJSON(
-        "/public_map_ajax_handler",
-        {"shortname" : incident, "page": page, 'categories': categories},
+        "/home_map_ajax_handler",
+        {"shortname" : incident, "page": page, 'work_type': work_type, 'county_and_state': county_and_state, 'date_from': date_from, 'date_to': date_to},
         function(sites_list) {
             if (sites_list.length > 99) {
                 run_again = true;

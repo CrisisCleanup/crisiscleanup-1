@@ -8,6 +8,7 @@
     <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
     <link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
     <link href="/closure/css/dialog.css?v={{version}}" rel="stylesheet">
+      <link href="assets/css/ph/map.css" rel="stylesheet">
 {% if uncompiled %}
     <script src="/closure/goog/base.js?v={{version}}"></script>
     <script src="/javascript/deps.js?v={{version}}"></script>
@@ -94,12 +95,10 @@ var zoom_level = {% if site_id %}{{zoom_level}}{% else %}8{% endif %};
 </div></div>
 <div id="info">
 </div>
-<!--
 <div id="legend_div">
 <img id="legend_img" src="/icons/Legend.png" />
 </div>
 </div>
--->
 
 <div id="form_background" style="display: none; z-index: 12;">
 <div id="form">

@@ -54,7 +54,7 @@ class MapHandler(base.FrontEndAuthenticatedHandler):
     if org:
       filters = [#["claimed", "Claimed by " + org.name],
                  #["unclaimed", "Unclaimed"],
-                 #["open", "Open"],
+                 ["open", "Open"],
                  #["closed", "Closed"],
                  ["reported", "Reported by " + org.name],
                  ] + filters

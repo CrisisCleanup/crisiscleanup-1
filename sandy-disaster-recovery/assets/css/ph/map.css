@@ -1,0 +1,11 @@
+/**
+ * Style for /map and /form
+ * @author Nicolas Zanghi <nicolas.zanghi@gmail.com>
+ */
+
+/**
+ * map
+ */
+#legend_div {
+    display: none;
+}

@@ -126,6 +126,13 @@ class FormHandler(base.AuthenticatedHandler):
     site_id = self.request.get("site_id")
       
     phase_id = self.request.get("phase_id")
+    q = db.Query(incident_definition.IncidentDefinition)
+    q.filter("incident =", event.key())
+    inc_def_query = q.get()
+   
+    forms_json_obj = json.loads(inc_def_query.forms_json)
+    phase_number = get_phase_number(forms_json_obj, phase_id)
+    phase_name = get_phase_name(forms_json_obj, phase_number)
 
     data = site_db.StandardSiteForm(self.request.POST)
 
@@ -147,13 +154,8 @@ class FormHandler(base.AuthenticatedHandler):
     q.filter("incident =", event.key())
     query = q.get()
     
-    q = db.Query(incident_definition.IncidentDefinition)
-    q.filter("incident =", event.key())
-    inc_def_query = q.get()
-   
-    forms_json_obj = json.loads(inc_def_query.forms_json)
-    phase_number = get_phase_number(forms_json_obj, phase_id)
-    phase_name = get_phase_name(forms_json_obj, phase_number)
+    
+
     wt_form = build_form(json.loads(inc_def_query.forms_json), phase_number)
     wt_data = wt_form(self.request.POST)
     validations_array = []
@@ -190,6 +192,9 @@ class FormHandler(base.AuthenticatedHandler):
 	#raise Exception(0)
 	#look up site by id
 	site = site_db.Site.get_by_id(int(site_id))
+	##TODO if claim_for_org == y, define and add
+	site = claim_for_this_org(site, phase_name, org)
+	#raise Exception(site.phase_cleanup_claimed_by)
 	if not site:
 	  #handle
 	  pass
@@ -212,6 +217,10 @@ class FormHandler(base.AuthenticatedHandler):
 	site = site_db.Site(address = data.address.data,
 			      name = data.name.data)
 			      #event = event.key())
+	##TODO if claim_for_org == y, define and add
+	site = claim_for_this_org(site, phase_name, org)
+
+
 	
 	for k, v in self.request.POST.iteritems():
 	  if k in site_db.STANDARD_SITE_PROPERTIES_LIST:
@@ -385,7 +394,7 @@ def build_form(forms_json, phase_number):
   d = DynamicForm
   return d  
 
-def get_personal_information_module_by_site_id(site_id):
+def get_personal_information_module_by_site_id(site_id, phase_name):
   site = site_db.Site.get_by_id(int(site_id))
   site_dict = site_db.SiteToDict(site)
   personal_info_data = {}
@@ -405,3 +414,8 @@ def get_phase_name(form_json, phase_number):
 	  phase_name = data["phase_name"]
     i += 1
   return phase_name
+
+def claim_for_this_org(site, phase_name, org):
+  attr_name = "phase_" + phase_name + "_claimed_by"
+  site[attr_name] = org
+  return site

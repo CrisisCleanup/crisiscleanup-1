@@ -88,8 +88,8 @@ class Site(db.Expando):
   name = db.StringProperty(required = True)
   case_number = db.StringProperty()
   event = db.ReferenceProperty(event_db.Event)
-  reported_by = db.ReferenceProperty(organization.Organization,
-                                     collection_name="reported_site_set")
+  #reported_by = db.ReferenceProperty(organization.Organization,
+                                     #collection_name="reported_site_set")
   request_date = db.DateTimeProperty(auto_now_add=True)
   address = db.StringProperty(required = True)
   city = db.StringProperty()
@@ -265,6 +265,7 @@ def find_similar(site, event):
 
 
 def SiteToDict(site):
+
   site_dict = to_dict(site)
   site_dict["id"] = site.key().id()
   #claimed_by = None
@@ -275,6 +276,26 @@ def SiteToDict(site):
   #if claimed_by:
     #site_dict["claimed_by"] = {"name": claimed_by.name}
   #reported_by = None
+  #try:
+    #reported_by = site.reported_by
+  #except db.ReferencePropertyResolveError:
+    #pass
+  #if reported_by:
+    #site_dict["reported_by"] = {"name": reported_by.name}
+  return site_dict
+
+def SiteAndPhaseToDict(site, phase_name):
+  site_dict = to_dict(site)
+  site_dict["id"] = site.key().id()
+  claimed_by = None
+  raise Exception(site)
+  try:
+    claimed_by = site.claimed_by
+  except db.ReferencePropertyResolveError:
+    pass
+  if claimed_by:
+    site_dict["claimed_by"] = {"name": claimed_by.name}
+  reported_by = None
   try:
     reported_by = site.reported_by
   except db.ReferencePropertyResolveError:
@@ -282,6 +303,7 @@ def SiteToDict(site):
   if reported_by:
     site_dict["reported_by"] = {"name": reported_by.name}
   return site_dict
+
 
 # We cache each site together with the AJAX necessary to
 # serve it, since it is expensive to generate.

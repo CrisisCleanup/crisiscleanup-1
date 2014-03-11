@@ -30,6 +30,7 @@ import base
 import site_db
 import event_db
 from models import incident_definition
+from helpers import phase_helpers
 
 PAGE_OFFSET = 100
 
@@ -53,7 +54,7 @@ class PrivateMapHandler(base.AuthenticatedHandler):
     phase_id = phases_json[int(phase_number)]['phase_id']
     forms_json_obj = json.loads(inc_def_query.forms_json)
 
-    phase_name = get_phase_name(forms_json_obj, phase_number)
+    phase_name = phase_helpers.get_phase_name(forms_json_obj, phase_number)
     event_shortname = self.request.get("shortname")
     page = self.request.get("page")
     page_int = int(page)
@@ -100,14 +101,14 @@ class PrivateMapHandler(base.AuthenticatedHandler):
     self.response.out.write(output)
 
 
-def get_phase_name(form_json, phase_number):
-  phase_number = int(phase_number)
-  i = 0
-  phase_name = ""
-  for obj in form_json:
-    if phase_number == i:
-      for data in obj:
-	if 'phase_name' in data:
-	  phase_name = data["phase_name"]
-    i += 1
-  return phase_name
+#def get_phase_name(form_json, phase_number):
+  #phase_number = int(phase_number)
+  #i = 0
+  #phase_name = ""
+  #for obj in form_json:
+    #if phase_number == i:
+      #for data in obj:
+	#if 'phase_name' in data:
+	  #phase_name = data["phase_name"]
+    #i += 1
+  #return phase_name

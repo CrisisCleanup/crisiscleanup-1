@@ -31,6 +31,7 @@ import site_util
 import form_db
 from models import incident_definition
 from helpers import populate_incident_form
+from helpers import phase_helpers
 from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
 
 
@@ -58,7 +59,7 @@ class EditHandler(base.AuthenticatedHandler):
     inc_def_query = q.get()
     if inc_def_query:
       #raise Exception(id)
-      phases_links = populate_phase_links(json.loads(inc_def_query.phases_json), id)
+      phases_links = phase_helpers.populate_phase_links(json.loads(inc_def_query.phases_json), id)
 
     
     if not phase:
@@ -102,7 +103,7 @@ class EditHandler(base.AuthenticatedHandler):
       #form = site_db.DerechosSiteForm(self.request.POST, site)
     post_json2 = site_db.SiteToDict(site)
     post_json_final = {}
-    phase_name = get_phase_name(json.loads(inc_def_query.forms_json), phase_number_get).lower()
+    phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), phase_number_get).lower()
     phase_prefix = "phase_" + phase_name + "_"
     for obj in post_json2:
       if phase_prefix in obj:
@@ -156,7 +157,7 @@ class EditHandler(base.AuthenticatedHandler):
     inc_def_query = q.get()
     if inc_def_query:
       #raise Exception(id)
-      phases_links = populate_phase_links(json.loads(inc_def_query.phases_json), id)
+      phases_links = phase_helpers.populate_phase_links(json.loads(inc_def_query.phases_json), id)
 
     phase_id = None
     try:
@@ -172,7 +173,7 @@ class EditHandler(base.AuthenticatedHandler):
     }
     
     
-    inc_form, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, post_json, hidden_elements = hidden_elements)
+    inc_form, label, paragraph= phase_helpers.populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, post_json, hidden_elements = hidden_elements)
     
     #raise Exception(inc_form)
     #raise Exception(post_json)
@@ -227,7 +228,7 @@ class EditHandler(base.AuthenticatedHandler):
     required_validator = wtforms.validators.Length(min = 1, max = 100,  message = "Required Field")
     phone_validator = wtforms.validators.Regexp(r'^\d+$', flags=0, message=u'Phone number. No letters allowed or other characters allowed.')
 
-    phase_number = get_phase_number(json.loads(inc_def_query.forms_json), phase_id)
+    phase_number = phase_helpers.get_phase_number(json.loads(inc_def_query.forms_json), phase_id)
     
     
     try:
@@ -440,32 +441,32 @@ class EditHandler(base.AuthenticatedHandler):
            "page": "/edit"}))
 
 
-def get_phase_number(form_json, phase_id):
-  i = 0
-  string = ""
-  label = ""
-  paragraph = ""
-  phase_number = 0
-  i = 0
-  for obj in form_json:
-    for o in obj:
-      if "phase_id" in o and o['phase_id'] == phase_id:
-	phase_number = i
-    i+=1
+#def get_phase_number(form_json, phase_id):
+  #i = 0
+  #string = ""
+  #label = ""
+  #paragraph = ""
+  #phase_number = 0
+  #i = 0
+  #for obj in form_json:
+    #for o in obj:
+      #if "phase_id" in o and o['phase_id'] == phase_id:
+	#phase_number = i
+    #i+=1
     
-  return phase_number
+  #return phase_number
 
-def get_phase_id(form_json, phase_number):
-  phase_number = int(phase_number)
-  i = 0
-  phase_id = ""
-  for obj in form_json:
-    if phase_number == i:
-      for data in obj:
-	if 'phase_id' in data:
-	  phase_id = data["phase_id"]
-    i += 1
-  return phase_id
+#def get_phase_id(form_json, phase_number):
+  #phase_number = int(phase_number)
+  #i = 0
+  #phase_id = ""
+  #for obj in form_json:
+    #if phase_number == i:
+      #for data in obj:
+	#if 'phase_id' in data:
+	  #phase_id = data["phase_id"]
+    #i += 1
+  #return phase_id
     
 
 def build_form(forms_json, phase_number):
@@ -494,28 +495,28 @@ def build_form(forms_json, phase_number):
   d = DynamicForm
   return d  
 
-def populate_phase_links(phases_json, site_id):
-  links = "<h3>Phases</h3>"
-  i = 0
-  for phase in phases_json:
-    num = str(i).replace('"', '')
-    separator = ""
-    if i > 0:
-      separator = " | "
-    links = links + separator + '<a href="/edit?id=' + site_id + '&phase=' + str(i) + '">' + phase['phase_name'] + '</a>'
-    i+=1
+#def populate_phase_links(phases_json, site_id):
+  #links = "<h3>Phases</h3>"
+  #i = 0
+  #for phase in phases_json:
+    #num = str(i).replace('"', '')
+    #separator = ""
+    #if i > 0:
+      #separator = " | "
+    #links = links + separator + '<a href="/edit?id=' + site_id + '&phase=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    #i+=1
     
-  return links
+  #return links
 
 
-def get_phase_name(form_json, phase_number):
-  phase_number = int(phase_number)
-  i = 0
-  phase_name = ""
-  for obj in form_json:
-    if phase_number == i:
-      for data in obj:
-	if 'phase_name' in data:
-	  phase_name = data["phase_name"]
-    i += 1
-  return phase_name
+#def get_phase_name(form_json, phase_number):
+  #phase_number = int(phase_number)
+  #i = 0
+  #phase_name = ""
+  #for obj in form_json:
+    #if phase_number == i:
+      #for data in obj:
+	#if 'phase_name' in data:
+	  #phase_name = data["phase_name"]
+    #i += 1
+  #return phase_name

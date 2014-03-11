@@ -40,6 +40,7 @@ import random
 
 from models import incident_definition
 from helpers import populate_incident_form
+from helpers import phase_helpers
 import wtforms.ext.dateutil.fields
 import wtforms.fields
 from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
@@ -83,7 +84,7 @@ class FormHandler(base.AuthenticatedHandler):
     q.filter("incident =", event.key())
     inc_def_query = q.get()
     
-    phase_name = get_phase_name(json.loads(inc_def_query.forms_json), 0)
+    phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), 0)
     text_areas_list = get_text_areas(json.loads(inc_def_query.forms_json), phase_name)
     #raise Exception(text_areas_list)
 
@@ -100,7 +101,7 @@ class FormHandler(base.AuthenticatedHandler):
     if inc_def_query:
       string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
   
-      phases_links = populate_phase_links(json.loads(inc_def_query.phases_json), phase_number)
+      phases_links = phase_helpers.populate_phase_links(json.loads(inc_def_query.phases_json), phase_number)
 
       submit_button = "<button class='submit'>Submit</button>"
     inc_form = None
@@ -137,8 +138,8 @@ class FormHandler(base.AuthenticatedHandler):
     inc_def_query = q.get()
    
     forms_json_obj = json.loads(inc_def_query.forms_json)
-    phase_number = get_phase_number(forms_json_obj, phase_id)
-    phase_name = get_phase_name(forms_json_obj, phase_number)
+    phase_number = phase_helpers.get_phase_number(forms_json_obj, phase_id)
+    phase_name = phase_helpers.get_phase_name(forms_json_obj, phase_number)
 
     data = site_db.StandardSiteForm(self.request.POST)
 
@@ -350,39 +351,7 @@ class FormHandler(base.AuthenticatedHandler):
 	"post_json": post_json	,
 	"event_name": event.name}))
 
-def populate_phase_links(phases_json, this_phase = None):
-  if this_phase == None:
-    this_phase == "0"
-  links = "<h3>Phases</h3>"
-  i = 0
-  for phase in phases_json:
-    num = str(i).replace('"', '')
-    separator = ""
-    if i > 0:
-      separator = " | "
-    if str(i) == this_phase:
-      links = links + separator + '<a style="font-weight:bold; font-size:150%" href="/?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
-    else:
-      links = links + separator + '<a href="/?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
 
-    i+=1
-    
-  return links
-
-def get_phase_number(form_json, phase_id):
-  i = 0
-  string = ""
-  label = ""
-  paragraph = ""
-  phase_number = 0
-  i = 0
-  for obj in form_json:
-    for o in obj:
-      if "phase_id" in o and o['phase_id'] == phase_id:
-	phase_number = i
-    i+=1
-    
-  return phase_number
 
 def build_form(forms_json, phase_number):
   class DynamicForm(wtforms.Form): pass    
@@ -391,24 +360,15 @@ def build_form(forms_json, phase_number):
     phase_number = int(str(phase_number))
   else:
     phase_number = 0
-    
-
-  i = 0
-  string = ""
-  label = ""
-  paragraph = ""
   forms_json[phase_number]
   for obj in forms_json[phase_number]:
     if "_id" in obj:
-    #if "type" in obj and obj['type'] == 'text':
-      #raise Exception(obj)
       setattr(DynamicForm, obj['_id'], TextField(obj['label']))
-    #if "type" in obj and obj['type'] == 'textarea':
-      #setattr(DynamicForm, obj['_id'], TextAreaField(obj['label']))
-    #if "type" in obj and obj['type'] == 'checkbox':
-      #setattr(DynamicForm, obj['_id'], BooleanField(obj['label']))
   d = DynamicForm
   return d  
+
+
+#TODO into site_db
 
 def get_personal_information_module_by_site_id(site_id, phase_name):
   site = site_db.Site.get_by_id(int(site_id))
@@ -418,18 +378,6 @@ def get_personal_information_module_by_site_id(site_id, phase_name):
     if field in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
       personal_info_data[field] = str(site_dict[field])
   return personal_info_data
-
-def get_phase_name(form_json, phase_number):
-  phase_number = int(phase_number)
-  i = 0
-  phase_name = ""
-  for obj in form_json:
-    if phase_number == i:
-      for data in obj:
-	if 'phase_name' in data:
-	  phase_name = data["phase_name"]
-    i += 1
-  return phase_name
 
 def claim_for_this_org(site, phase_name, org):
   attr_name = "phase_" + phase_name + "_claimed_by"
@@ -442,7 +390,6 @@ def claim_for_this_org(site, phase_name, org):
 
 def reported_by_for_this_site(site, phase_name, org):
   attr_name = "phase_" + phase_name + "_reported_by"
-  #site[attr_name] = org
   org_key = str(org.key())
   setattr(site, attr_name, db.Key(org_key))
   return site

@@ -356,8 +356,8 @@ def GetSitesAndSetReferences(ids, events, organizations):
   sites = Site.get_by_id(ids)
   for site in sites:
     site.event = GetReference(site, Site.event, events)
-    site.claimed_by = GetReference(site, Site.claimed_by, organizations)
-    site.reported_by = GetReference(site, Site.reported_by, organizations)
+    #site.claimed_by = GetReference(site, Site.claimed_by, organizations)
+    #site.reported_by = GetReference(site, Site.reported_by, organizations)
   return sites
 
 def GetAllCached(event, ids = None):

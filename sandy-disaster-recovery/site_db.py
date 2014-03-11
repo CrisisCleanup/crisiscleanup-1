@@ -268,6 +268,20 @@ def SiteToDict(site):
 
   site_dict = to_dict(site)
   site_dict["id"] = site.key().id()
+  keys_list  = list(site_dict.keys())
+  for key in keys_list:
+    if "reported_by" in key:
+      site_dict.pop(key)
+    if "claimed_by" in key:
+      site_dict.pop(key)
+      
+    #TODO get org sent as an entity, not just a string key
+    #if "reported_by" in key:
+      #reported_by_org = site_dict[key]
+      #site_dict[key] = { name: reported_by_org.name }
+    #if "claimed_by" in key:
+      #claimed_by_org = site_dict[key]
+      #site_dict[key] = { name: claimed_by_org.name }
   #claimed_by = None
   #try:
     #claimed_by = site.claimed_by

@@ -199,9 +199,9 @@ class MapHandler(base.AuthenticatedHandler):
 
     #if str(i) == str(this_phase):
 
-      links = links + separator + '<a style="font-weight:bold; font-size:150%" href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
-    else:
-      links = links + separator + '<a href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
-    i+=1
+      #links = links + separator + '<a style="font-weight:bold; font-size:150%" href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    #else:
+      #links = links + separator + '<a href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    #i+=1
     
-  return links
+  #return links

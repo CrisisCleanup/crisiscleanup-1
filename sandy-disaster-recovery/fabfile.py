@@ -60,6 +60,7 @@ MINI_YAML = """
 
 - application: crisis-cleanup-ph
   secure: always
+  allow_unclean_deploy: true
   overwrite:
     "assets/images/crisis-cleanup-logo-default.png" : "assets/images/crisis-cleanup-logo.png"
 

@@ -215,8 +215,12 @@ class FormHandler(base.AuthenticatedHandler):
 	    if k == "work_type":
 	      #raise Exception(v)
 	    #raise Exception(k)
-	      k = "phase_" + phase_name.lower + "_" + k
-	      setattr(site, k, str(v))
+	      new_key = "phase_" + phase_name.lower + "_" + k
+	      if k in text_areas_list:
+	      #raise Exception(1)
+		setattr(site, new_key, db.Text(str(v)))
+	      else:
+		setattr(site, new_key, str(v))
 	old_phases_list = site.open_phases_list
 	old_phases_list.append(phase_name.lower())
 	setattr(site, "open_phases_list", old_phases_list)

@@ -157,7 +157,7 @@ class EditHandler(base.AuthenticatedHandler):
     inc_def_query = q.get()
     if inc_def_query:
       #raise Exception(id)
-      phases_links = phase_helpers.populate_phase_links(json.loads(inc_def_query.phases_json), id)
+      phases_links = phase_helpers.populate_phase_links_edit_html(json.loads(inc_def_query.phases_json), id)
 
     phase_id = None
     try:

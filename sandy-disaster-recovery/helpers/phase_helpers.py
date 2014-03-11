@@ -59,3 +59,16 @@ def get_phase_id(form_json, phase_number):
     i += 1
   return phase_id
     
+    
+def populate_phase_links_edit_html(phases_json, site_id):
+  links = "<h3>Phases</h3>"
+  i = 0
+  for phase in phases_json:
+    num = str(i).replace('"', '')
+    separator = ""
+    if i > 0:
+      separator = " | "
+    links = links + separator + '<a href="/edit?id=' + site_id + '&phase=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    i+=1
+    
+  return links

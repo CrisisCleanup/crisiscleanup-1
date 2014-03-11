@@ -59,7 +59,7 @@ class EditHandler(base.AuthenticatedHandler):
     inc_def_query = q.get()
     if inc_def_query:
       #raise Exception(id)
-      phases_links = phase_helpers.populate_phase_links(json.loads(inc_def_query.phases_json), id)
+      phases_links = phase_helpers.populate_phase_links_edit_html(json.loads(inc_def_query.phases_json), id)
 
     
     if not phase:
@@ -173,7 +173,7 @@ class EditHandler(base.AuthenticatedHandler):
     }
     
     
-    inc_form, label, paragraph= phase_helpers.populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, post_json, hidden_elements = hidden_elements)
+    inc_form, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, post_json, hidden_elements = hidden_elements)
     
     #raise Exception(inc_form)
     #raise Exception(post_json)

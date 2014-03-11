@@ -83,6 +83,12 @@ class FormHandler(base.AuthenticatedHandler):
     q.filter("incident =", event.key())
     inc_def_query = q.get()
     
+    phase_name = get_phase_name(json.loads(inc_def_query.forms_json), 0)
+    text_areas_list = get_text_areas(json.loads(inc_def_query.forms_json), phase_name)
+    #raise Exception(text_areas_list)
+
+    
+    
     # get site id, get PI data, fill form:
     
     ## on site_db, get_personal_information_by_id
@@ -188,12 +194,17 @@ class FormHandler(base.AuthenticatedHandler):
 	  wt_data[_id].validators = wt_data[_id].validators + validations_array
 	  validations_array = []  
     if wt_data.validate():
+      text_areas_list = get_text_areas(json.loads(inc_def_query.forms_json), phase_name)
+
+
       if site_id != "":
 	#raise Exception(0)
 	#look up site by id
 	site = site_db.Site.get_by_id(int(site_id))
 	##TODO if claim_for_org == y, define and add
-	site = claim_for_this_org(site, phase_name, org)
+	reported_by_for_this_site(site, phase_name, org)
+	if claim_for_org:
+	  site = claim_for_this_org(site, phase_name, org)
 	#raise Exception(site.phase_cleanup_claimed_by)
 	if not site:
 	  #handle
@@ -218,7 +229,9 @@ class FormHandler(base.AuthenticatedHandler):
 			      name = data.name.data)
 			      #event = event.key())
 	##TODO if claim_for_org == y, define and add
-	site = claim_for_this_org(site, phase_name, org)
+	site = reported_by_for_this_site(site, phase_name, org)
+	if claim_for_org:
+	  site = claim_for_this_org(site, phase_name, org)
 
 
 	
@@ -266,12 +279,15 @@ class FormHandler(base.AuthenticatedHandler):
 	    #if k == "work_type":
 	      #raise Exception(v)
 	    #raise Exception(k)
-	    k = "phase_" + phase_name.lower() + "_" + k
+	    new_key = "phase_" + phase_name.lower() + "_" + k
 	    
 	    #TODO
 	    # set *_notes properties to TextProperty
-
-	    setattr(site, k, str(v))
+	    if k in text_areas_list:
+	      #raise Exception(1)
+	      setattr(site, new_key, db.Text(str(v)))
+	    else:
+	      setattr(site, new_key, str(v))
 	#setattr(site, "open_phases_list", phase_name)
 	phases_list = []
 	phases_list.append(phase_name.lower())
@@ -417,5 +433,26 @@ def get_phase_name(form_json, phase_number):
 
 def claim_for_this_org(site, phase_name, org):
   attr_name = "phase_" + phase_name + "_claimed_by"
-  site[attr_name] = org
+  #site[attr_name] = org
+  #site[attr_name]=db.Text("thing")
+  #setattr(site, "thing2", db.Text("thing"))
+  org_key = str(org.key())
+  setattr(site, attr_name, db.Key(org_key))
   return site
+
+def reported_by_for_this_site(site, phase_name, org):
+  attr_name = "phase_" + phase_name + "_reported_by"
+  #site[attr_name] = org
+  org_key = str(org.key())
+  setattr(site, attr_name, db.Key(org_key))
+  return site
+
+def get_text_areas(forms_json, phase_name):
+  text_areas_list = []
+  # get correct phase
+  for obj1 in forms_json:
+    for obj in obj1:
+      if "type" in obj:
+	if obj["type"] == "textarea":
+	  text_areas_list.append(str(obj['_id'])) 
+  return text_areas_list

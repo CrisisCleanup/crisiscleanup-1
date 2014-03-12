@@ -52,88 +52,94 @@ class="active"
 
 {% block main_content %}
 
-    <div id="home-map">
+    <div class="row">
+        <div id="home-map" class="col-md-12">
 
-        {#
-        <h2>Incidents</h2>
-        {% for event in events %}
-        <p class="MapIncident" id="{{event.short_name}}">{{event.name}}</p>
-        {% endfor %}
-        #}
+            {#
+            <h2>Incidents</h2>
+            {% for event in events %}
+            <p class="MapIncident" id="{{event.short_name}}">{{event.name}}</p>
+            {% endfor %}
+            #}
 
-        <div id="display_incident" class="hidden"></div>
-        <div id="display_filter"></div>
-        <div id="map_canvas"></div>
+            <div id="display_incident" class="hidden"></div>
+            <div id="display_filter"></div>
+            <div id="map_canvas"></div>
 
+        </div>
     </div>
 
 
-    <div id="highchart_messagesday"></div>
+    <div class="row">
+        <div id="highchart_messagesday" class="col-md-12"></div>
+    </div>
 
-    <div id="home-messages">
-        {%- macro previous_and_next() -%}
-        <p>
-            {% if form.page.data %}
-            [<a href="#" class="change-page" data-change="-1">Previous Page</a>]
-            {% endif %}
-
-            {% if sites|length == sites_per_page %}
-            [<a href='#' class="change-page" data-change="+1">Next Page</a>]
-            {% endif %}
-        </p>
-        {%- endmacro -%}
-
-        {{ previous_and_next() }}
-
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Date</th>
-                {% if logged_in %}
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>Response</th>
+    <div class="row">
+        <div id="home-messages" class="col-md-12">
+            {%- macro previous_and_next() -%}
+            <p>
+                {% if form.page.data %}
+                [<a href="#" class="change-page" data-change="-1">Previous Page</a>]
                 {% endif %}
 
-                <th>Category</th>
-                <th>Message</th>
-                <th>County</th>
-                <th>Region</th>
-                {% if logged_in %}
-                    <th></th>
+                {% if sites|length == sites_per_page %}
+                [<a href='#' class="change-page" data-change="+1">Next Page</a>]
                 {% endif %}
-            </tr>
-            </thead>
-            <tbody>
-            {% for site in sites %}
-            <tr>
-                <td>{{ site.request_date.strftime('%m/%d/%Y') }}</td>
-                {% if logged_in %}
-                    <td>{{ site.name }}</td>
-                    <td>{{ site.gender }}</td>
-                    <td>{% if site.correct == 'y' %}correct{% endif %}</td>
-                {% endif %}
-                <td>{{ site.work_type }}</td>
-                <td>{{ site.message|truncate(100) }}</td>
-                <td>{{ site.county }}</td>
-                <td>{{ site.state }}</td>
-                {% if logged_in %}
-                    <td>
-                        [<a href="/edit?id={{ site.key().id() }}">Edit</a>]
-                        {###### [<a href="/delete?id={{ site.key().id() }}">Delete</a>] #}
-                    </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+            </p>
+            {%- endmacro -%}
 
-        {{ previous_and_next() }}
+            {{ previous_and_next() }}
 
-        <p class="pull-right">
-            <a href="/export">Download (CSV)</a>
-        </p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    {% if logged_in %}
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Response</th>
+                    {% endif %}
 
+                    <th>Category</th>
+                    <th>Message</th>
+                    <th>County</th>
+                    <th>Region</th>
+                    {% if logged_in %}
+                        <th></th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for site in sites %}
+                <tr>
+                    <td>{{ site.request_date.strftime('%m/%d/%Y') }}</td>
+                    {% if logged_in %}
+                        <td>{{ site.name }}</td>
+                        <td>{{ site.gender }}</td>
+                        <td>{% if site.correct == 'y' %}correct{% endif %}</td>
+                    {% endif %}
+                    <td>{{ site.work_type }}</td>
+                    <td>{{ site.message|truncate(100) }}</td>
+                    <td>{{ site.county }}</td>
+                    <td>{{ site.state }}</td>
+                    {% if logged_in %}
+                        <td>
+                            [<a href="/edit?id={{ site.key().id() }}">Edit</a>]
+                            {###### [<a href="/delete?id={{ site.key().id() }}">Delete</a>] #}
+                        </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {{ previous_and_next() }}
+
+            <p class="pull-right">
+                <a href="/export">Download (CSV)</a>
+            </p>
+
+        </div>
     </div>
 {% endblock %}
 

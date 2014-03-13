@@ -1,5 +1,5 @@
 var clusterer=null;
-$(function(){
+$(document).ready(function() {
 
     var mapCenter = sandy.util.MAP_CENTER[country];
     var mapOptions = {

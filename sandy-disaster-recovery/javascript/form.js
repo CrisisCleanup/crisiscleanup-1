@@ -72,6 +72,15 @@ sandy.form.Initialize = function() {
     };
     map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
 
+
+    // get lat lng and address on click
+    google.maps.event.addListener(map, 'click', function(event) {
+        goog.dom.getElement('latitude').value = event.latLng.lat();
+        goog.dom.getElement('longitude').value = event.latLng.lng();
+        addMarker(event.latLng);
+        getAddressFromLatLng(event.latLng);
+    });
+
     // load sites
     sandy.sites.tryBatchLoadSites("open", 0);
 
@@ -218,25 +227,8 @@ function validate() {
             
             if (marker) marker.setMap(null);
 
-            // decide what marker to use
-            if ("currentEditSite" in window && currentEditSite) {
-                // use existing map pin
-                marker = currentEditSite.marker;
-                marker.setPosition(latlon);
-            } else {
-                // create a new marker 
-                marker = new google.maps.Marker({
-                    map: map,
-                    position: latlon,
-                    draggable: true
-                });
-            }
-
-            google.maps.event.addListener(marker, 'dragend', function (event) {
-                // update the form's latlon if the pin is dragged
-                goog.dom.getElement('latitude').value = this.getPosition().lat();
-                goog.dom.getElement('longitude').value = this.getPosition().lng();
-            });
+            // add marker
+            addMarker(latlon);
 
             var mapBounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(latlon.lat() - 0.05, latlon.lng() - 0.02),
@@ -382,3 +374,67 @@ function validate() {
         
         parentDiv.insertBefore(reply_place, attach_to);
     }
+
+
+function getAddressFromLatLng(latlng) {
+    geocoder.geocode({'latLng': latlng}, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            if (results[1]) {
+                var has_street_address = false;
+                $.each(results, function (k, result) {
+                    var address = result.formatted_address.split(', ')
+                    switch (result.types[0]) {
+                        case 'street_address':
+                            goog.dom.getElement('address').value = address[0];
+                            has_street_address = true;
+                            break;
+                        case 'route':
+                            if (!has_street_address)
+                                goog.dom.getElement('address').value = address[0];
+                            break;
+                        case 'locality':
+                            goog.dom.getElement('city').value = address[0];
+                            break;
+                        case 'administrative_area_level_1':
+                            goog.dom.getElement('state').value = address[0];
+                            break;
+                        case 'administrative_area_level_2':
+                            goog.dom.getElement('county').value = address[0];
+                            break;
+                    }
+
+
+                });
+            } else {
+                alert('No results found');
+            }
+        } else {
+            alert('Geocoder failed due to: ' + status);
+        }
+    });
+}
+
+
+function addMarker(latlon) {
+    if (marker) marker.setMap(null);
+
+    // decide what marker to use
+    if ("currentEditSite" in window && currentEditSite) {
+        // use existing map pin
+        marker = currentEditSite.marker;
+        marker.setPosition(latlon);
+    } else {
+        // create a new marker
+        marker = new google.maps.Marker({
+            map: map,
+            position: latlon,
+            draggable: true
+        });
+    }
+
+    google.maps.event.addListener(marker, 'dragend', function (event) {
+        // update the form's latlon if the pin is dragged
+        goog.dom.getElement('latitude').value = this.getPosition().lat();
+        goog.dom.getElement('longitude').value = this.getPosition().lng();
+    });
+}

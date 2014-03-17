@@ -205,6 +205,12 @@ footer img {
     color: #eb7125;
     font-weight: bold;
 }
+@media (max-width: 1200px) {
+    .mister_roofer img {
+        width: 213px;
+    }
+
+}
 
 
 /**

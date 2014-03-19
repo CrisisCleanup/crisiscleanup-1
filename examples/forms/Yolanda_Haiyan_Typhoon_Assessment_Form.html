@@ -45,7 +45,7 @@
     <td class=question>Date of Communication:</td>
     <td class="answer">
         <div class="form_field">
-            <input class="" id="request_date" name="request_date" type="text" value=""/>
+            <input class="" id="request_date" name="request_date" type="text" value="" size="25"/>
         </div>
     </td>
 </tr>
@@ -53,7 +53,7 @@
     <td class=question>Street Address:<span class=required-asterisk>*</span></td>
     <td class="answer">
         <div class="form_field">
-            <input class="" id="address" name="address" type="text" value=""/>
+            <input class="" id="address" name="address" type="text" value="na"/>
         </div>
     </td>
 </tr>
@@ -164,11 +164,10 @@
     </td>
 </tr>
 <tr>
-    <td class=question>Gender:</td>
+    <td class=question>Gender:<span class=required-asterisk>*</span></td>
     <td class="answer">
         <div class="form_field">
             <select class="" id="gender" name="gender">
-                <option value=""></option>
                 <option value="F"/>F</option>
                 <option value="M"/>M</option>
             </select>
@@ -198,10 +197,11 @@
 -->
 
 <tr>
-    <td class=question>Housing Situation:<span class=required-asterisk>*</span></td>
+    <td class=question>Housing Situation:</td>
     <td class="answer">
         <div class="form_field">
             <select id="housing_situation" name="housing_situations">
+                <option value=""></option>
                 <option value="not displaced, home not damaged">not displaced, home not damaged</option>
                 <option value="displaced, living with family/friends">displaced, living with family/friends</option>
                 <option value="displaced, living in evacuation centre/displacement site">displaced, living in evacuation centre/displacement site</option>
@@ -335,7 +335,7 @@
         <td class=question>Message:</td>
         <td class="answer">
             <div class="form_field">
-                <textarea class="" id="message" name="message"></textarea>
+                <textarea class="" id="message" name="message" cols="25" rows="4"></textarea>
             </div>
         </td>
     </tr>

@@ -226,3 +226,12 @@ footer img {
 }
 
 
+
+
+
+/**
+ * content
+ */
+article img {
+    max-width: 100%;
+}

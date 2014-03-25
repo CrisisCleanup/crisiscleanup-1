@@ -115,12 +115,19 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         }
 
         #count messages in work_type (categories)
+        # count messages for chart
         work_type_options_tmp = {}
+        chart_messages = {}
         for site in db.GqlQuery('SELECT work_type FROM Site'):
             if site.work_type in work_type_options_tmp:
                 work_type_options_tmp[site.work_type] += 1
             else:
                 work_type_options_tmp[site.work_type] = 1
+            tmp_request_date = site.request_date.strftime('%m/%d/%Y');
+            if tmp_request_date in chart_messages:
+                chart_messages[tmp_request_date] += 1
+            else:
+                chart_messages[tmp_request_date] = 1
 
         work_type_options = {
             cat_k: cat_v for cat_k , cat_v
@@ -142,6 +149,8 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             query = query.filter('county', county).filter('state', state)
         if form.order.data:
             query = query.order(form.order.data)
+        else:
+            query = query.order('-request_date')
         if form.work_type.data:
             query = query.filter('work_type IN', form.work_type.data)
         if form.date_from.data:
@@ -155,15 +164,6 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             limit=self.SITES_PER_PAGE
         ))
 
-
-        # count messages for chart
-        chart_messages = {}
-        for site in sites:
-            tmp_request_date = site.request_date.strftime('%m/%d/%Y');
-            if tmp_request_date in chart_messages:
-                chart_messages[tmp_request_date] += 1
-            else:
-                chart_messages[tmp_request_date] = 1
 
         self.render(
             events=events,

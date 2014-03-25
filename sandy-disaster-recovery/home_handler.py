@@ -24,6 +24,8 @@ import json
 
 import base
 
+import logging
+import collections
 
 import event_db
 from site_db import Site
@@ -117,21 +119,24 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         #count messages in work_type (categories)
         # count messages for chart
         work_type_options_tmp = {}
-        chart_messages = {}
+        chart_messages = collections.OrderedDict()
         query = Site.all()
         query = query.order('request_date')
         sites = list(query.run())
+        logging.info('aaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         for site in sites:
             #db.GqlQuery('SELECT work_type, request_date FROM Site ORDER BY request_date'):
             if site.work_type in work_type_options_tmp:
                 work_type_options_tmp[site.work_type] += 1
             else:
                 work_type_options_tmp[site.work_type] = 1
-            tmp_request_date = site.request_date.strftime('%Y, %m, %d');
+            tmp_request_date = site.request_date.strftime('%Y, (%m-1), %d');
+            logging.info(tmp_request_date)
             if tmp_request_date in chart_messages:
                 chart_messages[tmp_request_date] += 1
             else:
                 chart_messages[tmp_request_date] = 1
+        logging.info(chart_messages)
 
         work_type_options = {
             cat_k: cat_v for cat_k , cat_v

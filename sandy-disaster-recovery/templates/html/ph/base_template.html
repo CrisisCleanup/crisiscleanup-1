@@ -107,9 +107,11 @@
                                   <a href="/logout">Log Out</a>
                               </li>
                           {% else %}
+                              {#
                               <li {% block signup %}{% endblock %}>
                                   <a href="/signup">Sign Up</a>
                               </li>
+                              #}
                               <li {% block login %}{% endblock %}>
                                   <a href="/authentication">Log In</a>
                               </li>

@@ -128,7 +128,7 @@ class MapHandler(base.AuthenticatedHandler):
                                              "event": event,
                                              "include_search": True,
                                              "admin": org.is_admin,
-                                             "phase_links": phase_helpers.populate_phase_links(event, phase_number)
+                                             #"phase_links": phase_helpers.populate_phase_links(event, phase_number)
                                              }),
           "status_choices" : [json.dumps(c) for c in
                               site_db.Site.status.choices],

@@ -42,6 +42,15 @@ STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 
 
 PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "rent_or_own", "work_without_resident", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
 
+
+def getOrganizationNameByKeys(key):
+  org = organization.Organization.get(key)
+  return org.name
+
+def getEventNameByKeys(key):
+  event = event_db.Event.get(key)
+  return event.name
+  
 def _GetOrganizationName(site, field):
   """Returns the name of the organization in the given field, if possible.
   """
@@ -265,59 +274,24 @@ def find_similar(site, event):
 
 
 def SiteToDict(site):
-
   site_dict = to_dict(site)
   site_dict["id"] = site.key().id()
   keys_list  = list(site_dict.keys())
   for key in keys_list:
+    if "event" in key:
+      this_key = str(site_dict[key])
+      site_dict.pop(key, None)
+      site_dict[key] = this_key
     if "reported_by" in key:
+      this_key = str(site_dict[key])
       site_dict.pop(key, None)
+      site_dict[key] = getOrganizationNameByKeys(this_key)
     if "claimed_by" in key:
+      this_key = str(site_dict[key])
       site_dict.pop(key, None)
+      site_dict[key] = getOrganizationNameByKeys(this_key)
       
-    #TODO get org sent as an entity, not just a string key
-    #if "reported_by" in key:
-      #reported_by_org = site_dict[key]
-      #site_dict[key] = { name: reported_by_org.name }
-    #if "claimed_by" in key:
-      #claimed_by_org = site_dict[key]
-      #site_dict[key] = { name: claimed_by_org.name }
-  #claimed_by = None
-  #try:
-    #claimed_by = site.claimed_by
-  #except db.ReferencePropertyResolveError:
-    #pass
-  #if claimed_by:
-    #site_dict["claimed_by"] = {"name": claimed_by.name}
-  #reported_by = None
-  #try:
-    #reported_by = site.reported_by
-  #except db.ReferencePropertyResolveError:
-    #pass
-  #if reported_by:
-    #site_dict["reported_by"] = {"name": reported_by.name}
   return site_dict
-
-def SiteAndPhaseToDict(site, phase_name):
-  site_dict = to_dict(site)
-  site_dict["id"] = site.key().id()
-  claimed_by = None
-  raise Exception(site)
-  try:
-    claimed_by = site.claimed_by
-  except db.ReferencePropertyResolveError:
-    pass
-  if claimed_by:
-    site_dict["claimed_by"] = {"name": claimed_by.name}
-  reported_by = None
-  try:
-    reported_by = site.reported_by
-  except db.ReferencePropertyResolveError:
-    pass
-  if reported_by:
-    site_dict["reported_by"] = {"name": reported_by.name}
-  return site_dict
-
 
 # We cache each site together with the AJAX necessary to
 # serve it, since it is expensive to generate.
@@ -402,8 +376,6 @@ def _filter_non_digits(s):
 
 class StandardSiteForm(model_form(Site)):
     pass
-
-
   
 def get_personal_information_module_by_site_id(site_id):
   site = site_db.Site.get_by_id(int(site_id))
@@ -415,13 +387,13 @@ def get_personal_information_module_by_site_id(site_id):
   return personal_info_data
 
 def claim_for_this_org(site, phase_name, org):
-  attr_name = "phase_" + phase_name + "_claimed_by"
+  attr_name = "phase_" + phase_name.lower() + "_claimed_by"
   org_key = str(org.key())
   setattr(site, attr_name, db.Key(org_key))
   return site
 
 def reported_by_for_this_site(site, phase_name, org):
-  attr_name = "phase_" + phase_name + "_reported_by"
+  attr_name = "phase_" + phase_name.lower() + "_reported_by"
   org_key = str(org.key())
   setattr(site, attr_name, db.Key(org_key))
   return site

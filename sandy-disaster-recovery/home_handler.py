@@ -118,7 +118,11 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         # count messages for chart
         work_type_options_tmp = {}
         chart_messages = {}
-        for site in db.GqlQuery('SELECT work_type, request_date FROM Site ORDER BY request_date'):
+        query = Site.all()
+        query = query.order('request_date')
+        sites = list(query.run())
+        for site in sites:
+            #db.GqlQuery('SELECT work_type, request_date FROM Site ORDER BY request_date'):
             if site.work_type in work_type_options_tmp:
                 work_type_options_tmp[site.work_type] += 1
             else:

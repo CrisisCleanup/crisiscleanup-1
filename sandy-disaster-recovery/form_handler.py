@@ -60,7 +60,6 @@ class IncidentForm(site_db.Site):
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
-    
     # Read url parameters
     phase_number = self.request.get("phase_number")
     message = cgi.escape(self.request.get("message"))
@@ -240,7 +239,7 @@ class FormHandler(base.AuthenticatedHandler):
 	
 	# set up main site attrs.
 	for k, v in self.request.POST.iteritems():
-	  if k in site_db.STANDARD_SITE_PROPERTIES_LIST:
+	  if k in site_db.PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
 	    if k == "work_type":
 	      pass
 	    elif k == "request_date":
@@ -274,11 +273,9 @@ class FormHandler(base.AuthenticatedHandler):
 	      setattr(site, k, float(v))
 	    else:
 	      setattr(site, k, str(v))
-
-	for k, v in self.request.POST.iteritems():
-	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+	  # set phase specific properties
+	  else:
 	    new_key = "phase_" + phase_name.lower() + "_" + k
-	    
 	    # set *_notes properties to TextProperty
 	    if k in text_areas_list:
 	      setattr(site, new_key, db.Text(str(v)))

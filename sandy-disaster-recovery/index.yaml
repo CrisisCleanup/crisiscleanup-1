@@ -781,6 +781,11 @@ indexes:
 
 - kind: Site
   properties:
+  - name: request_date
+  - name: work_type
+
+- kind: Site
+  properties:
   - name: zip_code
   - name: status
 

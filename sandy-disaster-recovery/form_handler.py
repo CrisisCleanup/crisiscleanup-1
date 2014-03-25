@@ -44,6 +44,7 @@ from helpers import phase_helpers
 import wtforms.ext.dateutil.fields
 import wtforms.fields
 from wtforms import Form, BooleanField, TextField, TextAreaField, validators, PasswordField, ValidationError, RadioField, SelectField
+from site_db import PERSONAL_INFORMATION_MODULE_ATTRIBUTES
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -54,79 +55,83 @@ HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 
 
-PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "rent_or_own", "work_without_resident", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
-
 class IncidentForm(site_db.Site):
   pass
 
 class FormHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
     
+    # Read url parameters
     phase_number = self.request.get("phase_number")
     message = cgi.escape(self.request.get("message"))
     site_id = self.request.get("site_id")
 
+    # if no message, set to none so Jinja knows to ignore it
+    if len(message) == 0:
+      message = None
+      
+      
+    # variables that are defined if there is a site_id
+    # Get personal information already added and prepopulate form
+    # add a hidden element to let POST know which site_id to associate with the new phase data
     defaults_json = None
     hidden_site_id = None
     if site_id:
-      defaults_json = get_personal_information_module_by_site_id(site_id)
+      defaults_json = site_db.get_personal_information_module_by_site_id(site_id)
       hidden_site_id = '<input type="hidden" id="site_id" name="site_id" value="' + site_id + '">'
-      
-    if len(message) == 0:
-      message = None
-    form = None
 
-    q = db.Query(form_db.IncidentForm)
-    q.filter("incident =", event.key())
-    query = q.get()
+    # What is this?
+    #q = db.Query(form_db.IncidentForm)
+    #q.filter("incident =", event.key())
+    #query = q.get()
     
+    
+    # get the incident definition for the event associated with this login
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
     
+    # get the current phase name
     phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), 0)
-    text_areas_list = get_text_areas(json.loads(inc_def_query.forms_json), phase_name)
-    #raise Exception(text_areas_list)
 
-    
-    
-    # get site id, get PI data, fill form:
-    
-    ## on site_db, get_personal_information_by_id
+    # set up variables that will be passed to the form. The forms label, intro paragraph, links for each phase and the submit button
     string = "<h2>No Form Added Yet</h2><p>To add a form for this incident, contact your administrator.</p>"
+    submit_button = "<button class='submit'>Submit</button>"
+
     label = ""
     paragraph = ""
     phases_links = ""
-    submit_button = ""
     if inc_def_query:
+      # set above variables from the incident definition's forms_json
       string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
   
       phases_links = phase_helpers.populate_phase_links(json.loads(inc_def_query.phases_json), phase_number)
-
-      submit_button = "<button class='submit'>Submit</button>"
-    inc_form = None
-    if query:
-      inc_form = query.form_html
+      
+      
+    # What is this?
+    #inc_form = None
+    
+    # What is this?
+    #if query:
+      #inc_form = query.form_html
     single_site = single_site_template.render(
-        { "form": form,
-          "org": org,
+        { "org": org,
           "incident_form_block": string,
           "label": label,
           "paragraph": paragraph,
           "submit_button": submit_button,
           "phases_links": phases_links,
-          #"new_form": wt_form()
 	})
     self.response.out.write(template.render(
         {"version" : os.environ['CURRENT_VERSION_ID'],
          "message" : message,
          "menubox" : menubox_template.render({"org": org, "event": event, "admin": org.is_admin}),
          "single_site" : single_site,
-         "form": form,
          "id": None,
          "page": "/",
          "event_name": event.name,
          "hidden_site_id": hidden_site_id}))
+
 
   def AuthenticatedPost(self, org, event):
     post_data = self.request.POST
@@ -203,9 +208,9 @@ class FormHandler(base.AuthenticatedHandler):
 	#look up site by id
 	site = site_db.Site.get_by_id(int(site_id))
 	##TODO if claim_for_org == y, define and add
-	reported_by_for_this_site(site, phase_name, org)
+	site = site_db.reported_by_for_this_site(site, phase_name, org)
 	if claim_for_org:
-	  site = claim_for_this_org(site, phase_name, org)
+	  site = site_db.claim_for_this_org(site, phase_name, org)
 	#raise Exception(site.phase_cleanup_claimed_by)
 	if not site:
 	  #handle
@@ -234,9 +239,9 @@ class FormHandler(base.AuthenticatedHandler):
 			      name = data.name.data)
 			      #event = event.key())
 	##TODO if claim_for_org == y, define and add
-	site = reported_by_for_this_site(site, phase_name, org)
+	site = site_db.reported_by_for_this_site(site, phase_name, org)
 	if claim_for_org:
-	  site = claim_for_this_org(site, phase_name, org)
+	  site = site_db.claim_for_this_org(site, phase_name, org)
 
 
 	
@@ -370,33 +375,6 @@ def build_form(forms_json, phase_number):
       setattr(DynamicForm, obj['_id'], TextField(obj['label']))
   d = DynamicForm
   return d  
-
-
-#TODO into site_db
-
-def get_personal_information_module_by_site_id(site_id, phase_name):
-  site = site_db.Site.get_by_id(int(site_id))
-  site_dict = site_db.SiteToDict(site)
-  personal_info_data = {}
-  for field in site_dict:
-    if field in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
-      personal_info_data[field] = str(site_dict[field])
-  return personal_info_data
-
-def claim_for_this_org(site, phase_name, org):
-  attr_name = "phase_" + phase_name + "_claimed_by"
-  #site[attr_name] = org
-  #site[attr_name]=db.Text("thing")
-  #setattr(site, "thing2", db.Text("thing"))
-  org_key = str(org.key())
-  setattr(site, attr_name, db.Key(org_key))
-  return site
-
-def reported_by_for_this_site(site, phase_name, org):
-  attr_name = "phase_" + phase_name + "_reported_by"
-  org_key = str(org.key())
-  setattr(site, attr_name, db.Key(org_key))
-  return site
 
 def get_text_areas(forms_json, phase_name):
   text_areas_list = []

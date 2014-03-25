@@ -79,12 +79,6 @@ class FormHandler(base.AuthenticatedHandler):
     if site_id:
       defaults_json = site_db.get_personal_information_module_by_site_id(site_id)
       hidden_site_id = '<input type="hidden" id="site_id" name="site_id" value="' + site_id + '">'
-
-    # What is this?
-    #q = db.Query(form_db.IncidentForm)
-    #q.filter("incident =", event.key())
-    #query = q.get()
-    
     
     # get the incident definition for the event associated with this login
     q = db.Query(incident_definition.IncidentDefinition)
@@ -106,14 +100,6 @@ class FormHandler(base.AuthenticatedHandler):
       string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
   
       phases_links = phase_helpers.populate_phase_links(json.loads(inc_def_query.phases_json), phase_number)
-      
-      
-    # What is this?
-    #inc_form = None
-    
-    # What is this?
-    #if query:
-      #inc_form = query.form_html
     single_site = single_site_template.render(
         { "org": org,
           "incident_form_block": string,
@@ -134,26 +120,35 @@ class FormHandler(base.AuthenticatedHandler):
 
 
   def AuthenticatedPost(self, org, event):
+    # get post data
     post_data = self.request.POST
-    site_id = self.request.get("site_id")
-      
     phase_id = self.request.get("phase_id")
+    claim_for_org = self.request.get("claim_for_org") == "y"
+    site_id = self.request.get("site_id")
+
+
+
+    # get the incident definition forms_json
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
-    inc_def_query = q.get()
-   
+    inc_def_query = q.get()   
     forms_json_obj = json.loads(inc_def_query.forms_json)
+
+    
+    # get phase number, and phase name
     phase_number = phase_helpers.get_phase_number(forms_json_obj, phase_id)
     phase_name = phase_helpers.get_phase_name(forms_json_obj, phase_number)
 
-    data = site_db.StandardSiteForm(self.request.POST)
 
+    # retrieve POST data into data variable via the StandardSiteForm
+    data = site_db.StandardSiteForm(self.request.POST)
+    data.name.data = site_util.unescape(data.name.data)
+
+
+    # send the post_json variable back in case of invalid form
     post_dict = dict(self.request.POST)
     post_json = json.dumps(post_dict)
           
-    claim_for_org = self.request.get("claim_for_org") == "y"
-
-    data.name.data = site_util.unescape(data.name.data)
 
     ### SET VALIDATORS HERE
     optional_validator = wtforms.validators.Optional()
@@ -162,17 +157,14 @@ class FormHandler(base.AuthenticatedHandler):
     required_validator = wtforms.validators.Length(min = 1, max = 100,  message = "Required Field")
     phone_validator = wtforms.validators.Regexp(r'[^a-zA-Z]+$', flags=0, message=u'Phone number. No letters allowed.')
 
-    q = db.Query(form_db.IncidentForm)
-    q.filter("incident =", event.key())
-    query = q.get()
     
-    
-
-    wt_form = build_form(json.loads(inc_def_query.forms_json), phase_number)
+    # from incident definition, get forms_json
+    wt_form = build_form(forms_json_obj, phase_number)
     wt_data = wt_form(self.request.POST)
     validations_array = []
+    
+    # set up validations
     for obj in forms_json_obj[phase_number]:
-      #raise Exception(forms_json_obj[phase_number])
       if "validations" in obj or "required" in obj:
 	_id = str(obj["_id"])
 	if _id == "work_type":
@@ -199,52 +191,54 @@ class FormHandler(base.AuthenticatedHandler):
 	  validations_array.append(required_validator)
 	  wt_data[_id].validators = wt_data[_id].validators + validations_array
 	  validations_array = []  
+	  
+	  
+    # test validations
     if wt_data.validate():
       text_areas_list = get_text_areas(json.loads(inc_def_query.forms_json), phase_name)
-
-
+      
+      # if site_id != "" then there is a pre-existing site that we're adding data to
       if site_id != "":
-	#raise Exception(0)
-	#look up site by id
 	site = site_db.Site.get_by_id(int(site_id))
-	##TODO if claim_for_org == y, define and add
+	
+	# set reported by, and claimed by
 	site = site_db.reported_by_for_this_site(site, phase_name, org)
 	if claim_for_org:
 	  site = site_db.claim_for_this_org(site, phase_name, org)
-	#raise Exception(site.phase_cleanup_claimed_by)
-	if not site:
-	  #handle
-	  pass
+	  
+	# set main site attrs
 	for k, v in self.request.POST.iteritems():
 	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
 	    if k == "work_type":
-	      #raise Exception(v)
-	    #raise Exception(k)
 	      new_key = "phase_" + phase_name.lower + "_" + k
 	      if k in text_areas_list:
 	      #raise Exception(1)
 		setattr(site, new_key, db.Text(str(v)))
 	      else:
 		setattr(site, new_key, str(v))
+		
+	# add this phase to open_phases_list
 	old_phases_list = site.open_phases_list
 	old_phases_list.append(phase_name.lower())
 	setattr(site, "open_phases_list", old_phases_list)
+	
+	# save and cache the site
 	site_db.PutAndCache(site)
 	
+	# redirect
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
 	
+      # if there is no site_id, create a new site
       elif site_id == "":
-	#raise Exception(1)
 	site = site_db.Site(address = data.address.data,
 			      name = data.name.data)
-			      #event = event.key())
-	##TODO if claim_for_org == y, define and add
+	
+	# handle reported_by and claimed_by
 	site = site_db.reported_by_for_this_site(site, phase_name, org)
 	if claim_for_org:
 	  site = site_db.claim_for_this_org(site, phase_name, org)
-
-
 	
+	# set up main site attrs.
 	for k, v in self.request.POST.iteritems():
 	  if k in site_db.STANDARD_SITE_PROPERTIES_LIST:
 	    if k == "work_type":
@@ -280,67 +274,48 @@ class FormHandler(base.AuthenticatedHandler):
 	      setattr(site, k, float(v))
 	    else:
 	      setattr(site, k, str(v))
-	#raise Exception(site.work_type)
-	if event_db.AddSiteToEvent(site, event.key().id()):
-	  #setattr(site, "is_legacy_and_first_phase", False)
-	  site_db.PutAndCache(site)
+
 	for k, v in self.request.POST.iteritems():
 	  if k not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
-	    #if k == "work_type":
-	      #raise Exception(v)
-	    #raise Exception(k)
 	    new_key = "phase_" + phase_name.lower() + "_" + k
 	    
-	    #TODO
 	    # set *_notes properties to TextProperty
 	    if k in text_areas_list:
-	      #raise Exception(1)
 	      setattr(site, new_key, db.Text(str(v)))
 	    else:
+	      # if not a text property, save as a string
 	      setattr(site, new_key, str(v))
-	#setattr(site, "open_phases_list", phase_name)
+	      
+	# save this phase to the new site's open_phases_list
 	phases_list = []
 	phases_list.append(phase_name.lower())
 	setattr(site, "open_phases_list", phases_list)
 	
-	site_db.PutAndCache(site)
+		
+	# add site to event, and cache
+	if event_db.AddSiteToEvent(site, event.key().id()):
+	  site_db.PutAndCache(site)
+	  
+	# redirect
 	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
-
-	# get all info.
-	# save site stuff to sie
 	
-	# save phase stuff to phase
-
-	
-
+    # validation failure
     else:
       message = "Failed to validate"
-      similar_site = None
-
-    q = db.Query(form_db.IncidentForm)
-    q.filter("incident =", event.key())
-    query = q.get()
-    inc_form = None
-    if query:
-      inc_form = query.form_html
-
-    q = db.Query(incident_definition.IncidentDefinition)
-    q.filter("incident =", event.key())
-    inc_def_query = q.get()
-    
-    phase_id = self.request.get("phase_id")
-    forms_array = json.loads(inc_def_query.forms_json)
+      similar_site = None    
+      
+      
+    # using the phase_id from the top of the AuthenticatedPost method, get the correct form, populate it via the POST object, and return a new form with the proper errors
     phase_number = 0
     i = 0
-    for form in forms_array:
+    for form in forms_json_obj:
       for obj in form:
 	if phase_id in str(obj):
 	  phase_number = i
-	#raise Exception(phase_number)
       i += 1
     submit_button = "<button class='submit'>Submit</button>"
     message = "none"
-    string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, self.request.POST)
+    string, label, paragraph= populate_incident_form.populate_incident_form(forms_json_obj, phase_number, self.request.POST)
     single_site = single_site_template.render(
 	{ "form": data,
 	  "org": org,

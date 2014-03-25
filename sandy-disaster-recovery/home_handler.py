@@ -123,7 +123,7 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
                 work_type_options_tmp[site.work_type] += 1
             else:
                 work_type_options_tmp[site.work_type] = 1
-            tmp_request_date = site.request_date.strftime('%m/%d/%Y');
+            tmp_request_date = site.request_date.strftime('%Y, %m, %d');
             if tmp_request_date in chart_messages:
                 chart_messages[tmp_request_date] += 1
             else:

@@ -237,7 +237,11 @@ class="active"
                     x: 0
                 },
                 xAxis: {
-                    categories: [{% for chart_day in chart_messages.keys() %}'{{chart_day}}',{% endfor %}]
+                    type: 'datetime',
+                    dateTimeLabelFormats: {
+                        month: '%e %b',
+                        year: '%b'
+                    }
                 },
                 yAxis: {
                     allowDecimals:false,
@@ -250,7 +254,7 @@ class="active"
                 },
                 series: [{
                     name: 'Messages',
-                    data: [{% for chart_day, chart_message in chart_messages.iteritems() %}{{chart_message}},{% endfor %}]
+                    data: [{% for chart_day, chart_message in chart_messages.iteritems() %}[Date.UTC({{chart_day}}), {{chart_message}}],{% endfor %}]
                 }]
             });
         });

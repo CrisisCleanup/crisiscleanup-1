@@ -40,7 +40,7 @@ STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 
 				'city_metaphone', 'phone_normalised', 'latitude', 'longitude',
 				'work_type', 'priority']
 
-PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_organization", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
+PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "rent_or_own", "work_without_resident", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
 
 def _GetOrganizationName(site, field):
   """Returns the name of the organization in the given field, if possible.
@@ -271,9 +271,9 @@ def SiteToDict(site):
   keys_list  = list(site_dict.keys())
   for key in keys_list:
     if "reported_by" in key:
-      site_dict.pop(key)
+      site_dict.pop(key, None)
     if "claimed_by" in key:
-      site_dict.pop(key)
+      site_dict.pop(key, None)
       
     #TODO get org sent as an entity, not just a string key
     #if "reported_by" in key:
@@ -405,3 +405,23 @@ class StandardSiteForm(model_form(Site)):
 
 
   
+def get_personal_information_module_by_site_id(site_id):
+  site = site_db.Site.get_by_id(int(site_id))
+  site_dict = site_db.SiteToDict(site)
+  personal_info_data = {}
+  for field in site_dict:
+    if field in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+      personal_info_data[field] = str(site_dict[field])
+  return personal_info_data
+
+def claim_for_this_org(site, phase_name, org):
+  attr_name = "phase_" + phase_name + "_claimed_by"
+  org_key = str(org.key())
+  setattr(site, attr_name, db.Key(org_key))
+  return site
+
+def reported_by_for_this_site(site, phase_name, org):
+  attr_name = "phase_" + phase_name + "_reported_by"
+  org_key = str(org.key())
+  setattr(site, attr_name, db.Key(org_key))
+  return site

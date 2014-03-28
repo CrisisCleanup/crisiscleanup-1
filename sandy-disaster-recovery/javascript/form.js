@@ -79,7 +79,7 @@ sandy.form.Initialize = function() {
     var am = new goog.ui.ac.ArrayMatcher(terms);
 
     // listen for keyup on primary fields
-    var AC_FIELD_NAMES = ['name', 'address', 'zip_code'];
+    var AC_FIELD_NAMES = ['name'];
     for (var i=0; i<AC_FIELD_NAMES.length; i++) {
         (function() {
             var inputElement = goog.dom.getElement(AC_FIELD_NAMES[i]);

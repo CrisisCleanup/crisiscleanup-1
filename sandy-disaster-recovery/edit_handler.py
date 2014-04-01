@@ -54,14 +54,15 @@ class EditHandler(base.AuthenticatedHandler):
     phase = self.request.get("phase")
     phase_number_get = self.request.get("phase")
     
+    # Use the incident definition get a set of links for each phase, to be passed to the form
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
     if inc_def_query:
-      #raise Exception(id)
       phases_links = phase_helpers.populate_phase_links_edit_html(json.loads(inc_def_query.phases_json), id)
 
     
+    # if not phase, that means we will just show the edit template, and allow the user to select whih phase they want to edit
     if not phase:
       single_site = single_site_template.render(
 	{ "org": org,
@@ -79,12 +80,14 @@ class EditHandler(base.AuthenticatedHandler):
 	    #"post_json": post_json	,
 	    "page": "/edit"}))
       return
+    
+    # if we have a case_number but not the site id, use the case_number to retrieve it
     if not id and case_number:
 	q = db.GqlQuery("SELECT * FROM Site WHERE case_number=:1", case_number)
 	if q.count() == 1:
 	    id = q[0].key().id()
 
-    # if no id, 404
+    # if still no id, 404
     if id is None:
       self.response.set_status(404)
       return
@@ -95,50 +98,28 @@ class EditHandler(base.AuthenticatedHandler):
       self.response.set_status(404)
       return
       
+    # don't return the site if the user isn't signed in to the corresponding event
     if not site.event.key() == event.key():
 	self.redirect("/sites?message=The site you are trying to edit doesn't belong to the event you are signed in to. If you think you are seeing this message in error, contact your administrator")
 	return
-    #form = site_db.SiteForm(self.request.POST, site)
-    #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
-      #form = site_db.DerechosSiteForm(self.request.POST, site)
+      
+    # TODO Start commenting here
     post_json2 = site_db.SiteToDict(site)
     post_json_final = {}
     phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), phase_number_get).lower()
     phase_prefix = "phase_" + phase_name + "_"
     for obj in post_json2:
       if phase_prefix in obj:
-	#raise Exception(post_json2[obj])
 	new_attr = obj.replace(phase_prefix, "")
 	post_json_final[new_attr] = post_json2[obj]
       else:
 	post_json_final[obj] = post_json2[obj]
     post_json2 = post_json_final
-    #raise Exception(post_json2)
-    #raise Exception(post_json_final)
+
     date_string = str(post_json2['request_date'])
     post_json2['request_date'] = date_string
     post_json2['event'] = site.event.name
-    
-    #remove_array = []
-    #for attr in post_json2:
-      #if attr not in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
-	#remove_array.append(attr)
-	
-    #for attr in remove_array:
-      #del post_json2[attr]
 
-
-    #phase_id = get_phase_id(json.loads(inc_def_query.forms_json), phase)
-    #q = db.Query(phase_model.Phase)
-    #q.filter("phase_id =", phase_id)
-    #phase_query = q.get()
-    #PHASE_ATTR_LIST = "incident", "phase_id", "site"
-    #if phase_query:
-      ### Add info to post_json
-      #phase_dict = phase_model.PhaseToDict(phase_query)
-      #for attr in phase_dict:
-	#if attr not in PHASE_ATTR_LIST:
-	  #post_json2[attr] = phase_dict[attr]
     ################
     # TODO
     #

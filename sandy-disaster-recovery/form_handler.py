@@ -85,7 +85,7 @@ class FormHandler(base.AuthenticatedHandler):
     inc_def_query = q.get()
     
     # get the current phase name
-    phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), 0)
+    #phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), 0)
 
     # set up variables that will be passed to the form. The forms label, intro paragraph, links for each phase and the submit button
     string = "<h2>No Form Added Yet</h2><p>To add a form for this incident, contact your administrator.</p>"
@@ -124,6 +124,9 @@ class FormHandler(base.AuthenticatedHandler):
     phase_id = self.request.get("phase_id")
     claim_for_org = self.request.get("claim_for_org") == "y"
     site_id = self.request.get("site_id")
+    similar_site = None    
+    message = None
+
 
 
 
@@ -221,11 +224,17 @@ class FormHandler(base.AuthenticatedHandler):
 	old_phases_list.append(phase_name.lower())
 	setattr(site, "open_phases_list", old_phases_list)
 	
-	# save and cache the site
-	site_db.PutAndCache(site)
-	
-	# redirect
-	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
+	# TODO
+	# Check for similar
+	if site.similar(event) and not self.request.get('ignore_similar', None):
+	  similar_site = site.similar(event)
+	  message = "Not saved. Exact match for existing event"
+	else:
+	  # save and cache the site
+	  site_db.PutAndCache(site)
+	  
+	  # redirect
+	  self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
 	
       # if there is no site_id, create a new site
       elif site_id == "":
@@ -288,19 +297,28 @@ class FormHandler(base.AuthenticatedHandler):
 	phases_list.append(phase_name.lower())
 	setattr(site, "open_phases_list", phases_list)
 	
+	# TODO
+	# Check for similar
 		
 	# add site to event, and cache
-	if event_db.AddSiteToEvent(site, event.key().id()):
+	if site.similar(event) and not self.request.get('ignore_similar', None):
+	  similar_site = site.similar(event)
+	  message = "Not saved. Exact match for existing event"
+	elif event_db.AddSiteToEvent(site, event.key().id()):
 	  site_db.PutAndCache(site)
 	  
 	# redirect
-	self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
+	  self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))
+	else:
+	  message = "Failed to add site to event: " + event.name
+	  self.redirect("/?message=" + message)
+	  
+
 	
     # validation failure
     else:
       message = "Failed to validate"
-      similar_site = None    
-      
+            
       
     # using the phase_id from the top of the AuthenticatedPost method, get the correct form, populate it via the POST object, and return a new form with the proper errors
     phase_number = 0
@@ -311,7 +329,6 @@ class FormHandler(base.AuthenticatedHandler):
 	  phase_number = i
       i += 1
     submit_button = "<button class='submit'>Submit</button>"
-    message = "none"
     string, label, paragraph= populate_incident_form.populate_incident_form(forms_json_obj, phase_number, self.request.POST)
     single_site = single_site_template.render(
 	{ "form": data,
@@ -321,7 +338,7 @@ class FormHandler(base.AuthenticatedHandler):
 	  })
     self.response.out.write(template.render(
 	{"message": message,
-	"similar_site": None,
+	"similar_site": similar_site,
 	"version" : os.environ['CURRENT_VERSION_ID'],
 	"errors": wt_data.errors,
 	"menubox" : menubox_template.render({"org": org, "event": event}),

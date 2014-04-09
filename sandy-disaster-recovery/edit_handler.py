@@ -304,6 +304,11 @@ class EditHandler(base.AuthenticatedHandler):
 	  else:
 	    # if not a text property, save as a string
 	    setattr(site, new_key, str(v))
+	  claim_for = new_key + "_claim_for_org"
+	  claimed_by = new_key + "_claimed_by"
+	  if claim_for == "n":
+	    claimed_by = None
+	    
 	      
 	    
       site_db.PutAndCache(site)

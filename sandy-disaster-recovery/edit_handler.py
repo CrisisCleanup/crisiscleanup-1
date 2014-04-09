@@ -103,50 +103,47 @@ class EditHandler(base.AuthenticatedHandler):
 	self.redirect("/sites?message=The site you are trying to edit doesn't belong to the event you are signed in to. If you think you are seeing this message in error, contact your administrator")
 	return
       
-    # TODO Start commenting here
-    post_json2 = site_db.SiteToDict(site)
+    # get the site info into a python object, get the phase name and set the phase prefix
+    site_dict = site_db.SiteToDict(site)
     post_json_final = {}
     phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), phase_number_get).lower()
     phase_prefix = "phase_" + phase_name + "_"
-    for obj in post_json2:
+    for obj in site_dict:
       if phase_prefix in obj:
 	new_attr = obj.replace(phase_prefix, "")
-	post_json_final[new_attr] = post_json2[obj]
+	post_json_final[new_attr] = site_dict[obj]
       else:
-	post_json_final[obj] = post_json2[obj]
-    post_json2 = post_json_final
+	post_json_final[obj] = site_dict[obj]
+    site_dict = post_json_final
 
-    date_string = str(post_json2['request_date'])
-    post_json2['request_date'] = date_string
-    post_json2['event'] = site.event.name
+    # add the date and te event name
+    date_string = str(site_dict['request_date'])
+    site_dict['request_date'] = date_string
+    site_dict['event'] = site.event.name
 
-    ################
-    # TODO
-    #
-    # get phase info here, and add to post_json2
-    #
-    ################
-    post_json = json.dumps(post_json2)
-    #raise Exception(post_json)
+    # convert to json
+    post_json = json.dumps(site_dict)
 
-
+    # initialize the form variables
     inc_form = None
     form=None
     
+    # get phases_links
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
     if inc_def_query:
-      #raise Exception(id)
       phases_links = phase_helpers.populate_phase_links_edit_html(json.loads(inc_def_query.phases_json), id)
 
+    # get the phase_id
     phase_id = None
     try:
-      phase_id = post_json2['phase_id']
+      phase_id = site_dict['phase_id']
     except:
       pass
     
-
+    
+    # get the phase_number and load the hidden elements that will be passed to the form
     phase_number = phase_number_get
     hidden_elements = {
       "site_id": id,
@@ -154,15 +151,17 @@ class EditHandler(base.AuthenticatedHandler):
     }
     
     
+    # get the form, label and paragraph to send to the form
     inc_form, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, post_json, hidden_elements = hidden_elements)
     
-    #raise Exception(inc_form)
-    #raise Exception(post_json)
+
     submit_button = '<input type="submit" value="Submit request">'
     
     if mode_js:
       submit_button = ""
-    #raise Exception(phase)
+      
+      
+      
     if phase:
       single_site = single_site_template.render(
 	  { "form": form,
@@ -191,10 +190,21 @@ class EditHandler(base.AuthenticatedHandler):
 
 
   def AuthenticatedPost(self, org, event):
-    #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
-      #single_site_template = jinja_environment.get_template('single_site_derechos.html')
-    mode_js = False
     phase_id = self.request.get("phase_id")
+
+    # get the incident definition forms_json
+    q = db.Query(incident_definition.IncidentDefinition)
+    q.filter("incident =", event.key())
+    inc_def_query = q.get()   
+    forms_json_obj = json.loads(inc_def_query.forms_json)
+
+    
+    # get phase number, and phase name
+    phase_number = phase_helpers.get_phase_number(forms_json_obj, phase_id)
+    phase_name = phase_helpers.get_phase_name(forms_json_obj, phase_number)
+    
+    
+    mode_js = False
     
     site_id = self.request.get("site_id")
     
@@ -250,15 +260,11 @@ class EditHandler(base.AuthenticatedHandler):
 
 
     if data.validate():
-      # TODO here
-      #q = db.Query(phase_model.Phase)
-      #q.filter("site =", site.key())
-      #q.filter("phase_id =", phase_id)
-      #phase_entity = q.get()
+      text_areas_list = get_text_areas(json.loads(inc_def_query.forms_json), phase_name)
 
-      # RETURNING WRONG SITE.
       for k, v in self.request.POST.iteritems():
 	if k in site_db.PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+	  #raise Exception(1)
 	  if k == "request_date":
 	    date_saved = False
 	    try:
@@ -290,89 +296,18 @@ class EditHandler(base.AuthenticatedHandler):
 	    setattr(site, k, float(v))
 	  else:
 	    setattr(site, k, str(v))
-	#else:
-	  ##TODO here
-	  #setattr(phase_entity, k, str(v))
-
-
-      #pass
-      
-    ### TODO
-    #
-    # Get data
-    # find out if legacy
-    # if not legacy, separate into PI and PhI
-    # save to PI to correct site and PhI to correct phase
-    #
-    ###
-    #raise Exception(data.data)
-    
-    #setattr(site, "longitude", lng_float)
-    #setattr(site, "latitude", lat_float)
-    # Save the data, and redirect to the view page
-    for f in data:
-      # In order to avoid overriding fields that didn't appear
-      # in this form, we have to only set those that were explicitly
-      # set in the post request.
-      in_post = self.request.get(f.name, default_value = None)
-      if in_post is None:
-	continue
-      
-      
-      
-      if f.name == "request_date":
-	date_saved = False
-	try:
-	  date_object = datetime.strptime(f.data, '%Y-%m-%d %H:%M:%S')
-	  setattr(site, f.name, date_object)
-	  date_saved=True
-	except:
-	  date_saved=False
-	  pass
-	if date_saved is False:
-	  try:
-	    f.data = f.data.replace("/", "-")
-	    date_object = datetime.strptime(f.data, '%Y-%m-%d')
-	    setattr(site, f.name, date_object)
-	    date_saved=True
-	  except:
-	    date_saved=False
-	    pass
-	if date_saved is False:
-	  try:
-	    f.data = f.data.replace("/", "-")
-	    date_object = datetime.strptime(f.data, '%m-%d-%Y')
-	    setattr(site, f.name, date_object)
-	    date_saved=True
-	  except:
-	    date_saved=False
-	    pass
-      elif f.name == "latitude" or f.name == "longitude":
-	setattr(site, f.name, float(f.data))
-      else:
-	setattr(site, f.name, f.data)
-    #if claim_for_org:
-        #site.claimed_by = org
-      # clear assigned_to if status is unassigned
-      #if data.status.data == 'Open, unassigned':
-        #site.assigned_to = ''
-        
-        
-      for k, v in self.request.POST.iteritems():
-	if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
-
-	  if k == "request_date":
-	    try:
-	      date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
-	      setattr(site, k, date_object)
-	    except:
-	      date_object = datetime.strptime(v, '%Y-%m-%d %H:%M:%S.%f')
-	      setattr(site, k, date_object)
+	else:
+	  new_key = "phase_" + phase_name.lower() + "_" + k
+	    # set *_notes properties to TextProperty
+	  if k in text_areas_list:
+	    setattr(site, new_key, db.Text(str(v)))
 	  else:
-            setattr(site, k, v)
+	    # if not a text property, save as a string
+	    setattr(site, new_key, str(v))
+	      
+	    
       site_db.PutAndCache(site)
       if mode_js:
-        # returning a 200 is sufficient here.
         return
       else:
         self.redirect('/map?id=%d' % id)
@@ -380,9 +315,6 @@ class EditHandler(base.AuthenticatedHandler):
       q = db.Query(form_db.IncidentForm)
       q.filter("incident =", event.key())
       query = q.get()
-
-      # set it as form_stub
-      # send to single site
 
       inc_form = None
       form=None
@@ -393,11 +325,6 @@ class EditHandler(base.AuthenticatedHandler):
       date_string = str(post_json2['request_date'])
       post_json2['request_date'] = date_string
       post_json2['event'] = site.event.name
-      #post_json = {
-	#"city": str(site.city),
-	#"name": str(site.name),
-	#"reported_by": str(site.reported_by.name),
-      #}
       post_json = json.dumps(post_json2)
       
       submit_button = "<button class='submit'>Submit</button>"
@@ -422,32 +349,6 @@ class EditHandler(base.AuthenticatedHandler):
            "page": "/edit"}))
 
 
-#def get_phase_number(form_json, phase_id):
-  #i = 0
-  #string = ""
-  #label = ""
-  #paragraph = ""
-  #phase_number = 0
-  #i = 0
-  #for obj in form_json:
-    #for o in obj:
-      #if "phase_id" in o and o['phase_id'] == phase_id:
-	#phase_number = i
-    #i+=1
-    
-  #return phase_number
-
-#def get_phase_id(form_json, phase_number):
-  #phase_number = int(phase_number)
-  #i = 0
-  #phase_id = ""
-  #for obj in form_json:
-    #if phase_number == i:
-      #for data in obj:
-	#if 'phase_id' in data:
-	  #phase_id = data["phase_id"]
-    #i += 1
-  #return phase_id
     
 
 def build_form(forms_json, phase_number):
@@ -458,7 +359,6 @@ def build_form(forms_json, phase_number):
   else:
     phase_number = 0
     
-
   i = 0
   string = ""
   label = ""
@@ -476,28 +376,12 @@ def build_form(forms_json, phase_number):
   d = DynamicForm
   return d  
 
-#def populate_phase_links(phases_json, site_id):
-  #links = "<h3>Phases</h3>"
-  #i = 0
-  #for phase in phases_json:
-    #num = str(i).replace('"', '')
-    #separator = ""
-    #if i > 0:
-      #separator = " | "
-    #links = links + separator + '<a href="/edit?id=' + site_id + '&phase=' + str(i) + '">' + phase['phase_name'] + '</a>'
-    #i+=1
-    
-  #return links
-
-
-#def get_phase_name(form_json, phase_number):
-  #phase_number = int(phase_number)
-  #i = 0
-  #phase_name = ""
-  #for obj in form_json:
-    #if phase_number == i:
-      #for data in obj:
-	#if 'phase_name' in data:
-	  #phase_name = data["phase_name"]
-    #i += 1
-  #return phase_name
+def get_text_areas(forms_json, phase_name):
+  text_areas_list = []
+  # get correct phase
+  for obj1 in forms_json:
+    for obj in obj1:
+      if "type" in obj:
+	if obj["type"] == "textarea":
+	  text_areas_list.append(str(obj['_id'])) 
+  return text_areas_list

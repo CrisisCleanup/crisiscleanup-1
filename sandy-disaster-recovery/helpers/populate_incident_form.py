@@ -1,6 +1,7 @@
 import json
 
 def populate_incident_form(form_json, phase_number, defaults=None, hidden_elements = {}):
+  #raise Exception(defaults)
   i = 0
   string = ""
   label = ""

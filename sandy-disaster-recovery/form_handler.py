@@ -215,9 +215,9 @@ class FormHandler(base.AuthenticatedHandler):
 	      new_key = "phase_" + phase_name.lower + "_" + k
 	      if k in text_areas_list:
 	      #raise Exception(1)
-		setattr(site, new_key, db.Text(str(v)))
+		setattr(site, k, db.Text(str(v)))
 	      else:
-		setattr(site, new_key, str(v))
+		setattr(site, k, str(v))
 		
 	# add this phase to open_phases_list
 	old_phases_list = site.open_phases_list
@@ -287,10 +287,10 @@ class FormHandler(base.AuthenticatedHandler):
 	    new_key = "phase_" + phase_name.lower() + "_" + k
 	    # set *_notes properties to TextProperty
 	    if k in text_areas_list:
-	      setattr(site, new_key, db.Text(str(v)))
+	      setattr(site, k, db.Text(str(v)))
 	    else:
 	      # if not a text property, save as a string
-	      setattr(site, new_key, str(v))
+	      setattr(site, k, str(v))
 	      
 	# save this phase to the new site's open_phases_list
 	phases_list = []
@@ -361,7 +361,10 @@ def build_form(forms_json, phase_number):
   forms_json[phase_number]
   for obj in forms_json[phase_number]:
     if "_id" in obj:
-      setattr(DynamicForm, obj['_id'], TextField(obj['label']))
+      try:
+	setattr(DynamicForm, obj['_id'], TextField(obj['label']))
+      except:
+	pass
   d = DynamicForm
   return d  
 

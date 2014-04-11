@@ -107,14 +107,11 @@ class EditHandler(base.AuthenticatedHandler):
     site_dict = site_db.SiteToDict(site)
     post_json_final = {}
     phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), phase_number_get).lower()
+
     phase_prefix = "phase_" + phase_name + "_"
-    for obj in site_dict:
-      if phase_prefix in obj:
-	new_attr = obj.replace(phase_prefix, "")
-	post_json_final[new_attr] = site_dict[obj]
-      else:
-	post_json_final[obj] = site_dict[obj]
-    site_dict = post_json_final
+    
+    ## TODO
+    ## Only return necessary attributes in site_dict for this particular form
 
     # add the date and te event name
     date_string = str(site_dict['request_date'])
@@ -300,10 +297,10 @@ class EditHandler(base.AuthenticatedHandler):
 	  new_key = "phase_" + phase_name.lower() + "_" + k
 	    # set *_notes properties to TextProperty
 	  if k in text_areas_list:
-	    setattr(site, new_key, db.Text(str(v)))
+	    setattr(site, k, db.Text(str(v)))
 	  else:
 	    # if not a text property, save as a string
-	    setattr(site, new_key, str(v))
+	    setattr(site, k, str(v))
 	  claim_for = new_key + "_claim_for_org"
 	  claimed_by = new_key + "_claimed_by"
 	  if claim_for == "n":
@@ -373,7 +370,10 @@ def build_form(forms_json, phase_number):
     if "_id" in obj:
     #if "type" in obj and obj['type'] == 'text':
       #raise Exception(obj)
-      setattr(DynamicForm, obj['_id'], TextField(obj['label']))
+      try:
+	setattr(DynamicForm, obj['_id'], TextField(obj['label']))
+      except:
+	pass
     #if "type" in obj and obj['type'] == 'textarea':
       #setattr(DynamicForm, obj['_id'], TextAreaField(obj['label']))
     #if "type" in obj and obj['type'] == 'checkbox':

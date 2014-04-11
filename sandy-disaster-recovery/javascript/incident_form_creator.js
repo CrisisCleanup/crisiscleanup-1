@@ -171,7 +171,7 @@ $(function() {
       label: text_label,
       required: text_required,
       sensitive: text_sensitive,
-      _id: text_id,
+      _id: create_id(text_id),
       order_number: order_number,
       validations: validations
 
@@ -210,7 +210,7 @@ $(function() {
     var header_json = {
       "type": "textarea",
       "label": textarea_label,
-      "_id": textarea_id,
+      "_id": create_id(textarea_id),
       "order_number": order_number,
       "validations": textarea_validations
     }
@@ -248,7 +248,7 @@ $(function() {
       _default: checkbox_default,
 //       required: checkbox_required,
       sensitive: checkbox_sensitive,
-      _id: checkbox_id,
+      _id: create_id(checkbox_id),
       order_number: order_number,
     }
     form_json_array.push(checkbox_json);
@@ -276,7 +276,7 @@ $(function() {
       label: "Work Type",
       required: "True",
       sensitive: "true",
-      _id: "work_type",
+      _id: create_id("work_type"),
       order_number: order_number,
     }
 
@@ -397,7 +397,7 @@ $(function() {
       select_option_1: select_option_1,
       required: select_required,
       sensitive: select_sensitive,
-      _id: select_id,
+      _id: create_id(select_id),
       order_number: order_number,
     }
     
@@ -470,7 +470,7 @@ $(function() {
       radio_option_1: radio_option_1,
       required: radio_required,
       sensitive: radio_sensitive,
-      _id: radio_id,
+      _id: create_id(radio_id),
       low_hint: radio_low_hint,
       high_hint: radio_high_hint,
       order_number: order_number,
@@ -567,7 +567,18 @@ $(function() {
   // ----------- ADD STATUS MODULE ----------------
   $("#add_status_info_module").click(function() {
     if ($("#add_status_info_module").html().indexOf("added") == -1) {
-      var status_module_object = JSON.parse(status_info_module_string);
+      var phase_name = GetUrlValue("phase_id");
+      sims_obj = JSON.parse(status_info_module_string);
+      for(var i = 0; i < sims_obj.length; i++) {
+	
+	console.log(sims_obj[i]["_id"]);
+	var new_id = "phase_" + phase_name + "_" + sims_obj[i]["_id"];
+	sims_obj[i]["_id"] = new_id;
+      }
+      console.log(sims_obj);
+      // for each in status_info_module_string
+      // prepend phase_ + phase_name to _id
+      var status_module_object = sims_obj;
       for (var i = 0; i < status_module_object.length; i++) {
 	form_json_array.push(status_module_object[i]);
       }
@@ -680,7 +691,7 @@ function add_checkbox_input(form_json_array) {
     _default: checkbox_default,
     required: checkbox_required,
     sensitive: checkbox_sensitive,
-    _id: checkbox_id,
+    _id: create_id(checkbox_id),
 //     validations: checkbox_validations,
     order_number: order_number,
   }
@@ -702,7 +713,7 @@ function add_select_input(form_json_array, select_options_array) {
     select_option_1: select_option_1,
     required: select_required,
     sensitive: select_sensitive,
-    _id: select_id,
+    _id: create_id(select_id),
     order_number: order_number,
   }
   
@@ -1136,7 +1147,30 @@ function set_modules_already_added(form_json_array) {
    }
   } 
 }
+
+function create_id(_id) {
+ // if _id is in personal_info_module_string
+ // then add "phase_" + phase_name + "_" to _id to get the correct id string
+  var phase_name = GetUrlValue("phase_id");
+  if (isInArray(standard_site_properties_list, _id)) {
+    return _id
+  } else {
+    var new_id = "phase_" + phase_name + "_" + _id;
+    return new_id;
+  }
+}
+
+function isInArray(array, search)
+{
+    return (array.indexOf(search) >= 0) ? true : false; 
+}
 var personal_info_module_string = '[{"order_number": 1, "header": "Personal and Property Information", "type": "header"}, {"sensitive": true, "type": "text", "required": true, "order_number": 2, "_id": "name", "label": "Name", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 3, "_id": "request_date", "label": "Date of Request", "validations": "date"}, {"sensitive": true, "type": "text", "required": true, "order_number": 4, "_id": "address", "label": "Street Address", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 5, "_id": "city", "label": "City", "validations": "None"}, {"sensitive": false, "type": "text", "required": false, "order_number": 6, "_id": "county", "label": "County", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 7, "_id": "state", "label": "State", "validations": "None"}, {"sensitive": false, "type": "text", "required": true, "order_number": 8, "_id": "zip_code", "label": "Zip Code", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 9, "_id": "latitude", "label": "Latitude", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 10, "_id": "longitude", "label": "Longitude", "validations": "None"}, {"sensitive": false, "type": "text", "required": false, "order_number": 11, "_id": "cross_street", "label": "Cross Street or Nearby Landmark", "validations": "None"}, {"sensitive": true, "type": "text", "required": true, "order_number": 12, "_id": "phone1", "label": "Phone 1", "validations": "phone"}, {"sensitive": true, "type": "text", "required": false, "order_number": 13, "_id": "phone2", "label": "Phone 2", "validations": "phone"}, {"sensitive": false, "type": "text", "required": false, "order_number": 14, "_id": "time_to_call", "label": "Best time to call", "validations": "None"}, {"select_option_1": "Rent", "select_option_2": "Own", "sensitive": false, "type": "select", "select_option_5": "Business", "required": false, "order_number": 16, "_id": "rent_or_own", "select_option_3": "Public Land", "label": "Rent/Own/Public", "select_option_4": "Non-Profit"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 17, "_id": "work_without_resident", "label": "Work without resident present"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 18, "_id": "member_of_organization", "label": "Member of your organization"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 19, "_id": "first_responder", "label": "First Responder"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 20, "_id": "older_than_60", "label": "Older than 60"}, {"sensitive": false, "type": "checkbox", "_default": "n", "required": false, "order_number": 21, "_id": "disabled", "label": "Disabled"}, {"order_number": 22, "_id": "special_needs", "type": "textarea", "label": "Special Needs", "validations": "None"}, {"sensitive": false, "type": "radio", "low_hint": "Low (1)", "required": false, "order_number": 23, "_id": "priority", "label": "Priority", "radio_option_4": "4", "radio_option_5": "5", "high_hint": "High (5)", "radio_option_1": "1", "radio_option_2": "2", "radio_option_3": "3"}]';
 
-var status_info_module_string = '[{"order_number": 1, "header": "Claim, Status and Report", "type": "header"}, {"order_number": 2, "_default": "n", "type": "checkbox", "required": false, "_id": "claim_for_org", "label": "Claim for my organization", "sensitive": false}, {"order_number": 3, "select_option_3": "Open, needs follow up", "type": "select", "select_option_4": "Closed, completed", "select_option_5": "Closed, incomplete", "select_option_6": "Closed, out of scope", "select_option_7": "Closed, done by others", "select_option_1": "Open, unassigned", "select_option_2": "Open, partially completed", "_id": "status", "label": "Current Status", "required": true, "select_option_8": "Closed, no help wanted", "select_option_9": "Closed, rejected", "select_option_10": "Closed, duplicate", "sensitive": false}, {"order_number": 4, "validations": "None", "type": "text", "required": false, "_id": "total_volunteers", "label": "Volunteers", "sensitive": false}, {"order_number": 5, "validations": "None", "type": "text", "required": false, "_id": "hours_worked_per_volunteer", "label": "Hours per volunteer", "sensitive": false}, {"order_number": 6, "validations": "None", "type": "text", "required": false, "_id": "initials_of_resident_present", "label": "Initials of resident present during work", "sensitive": false}, {"order_number": 7, "validations": "None", "type": "textarea", "required": false, "_id": "status_notes", "label": "Status Notes", "sensitive": false}]';
+var status_info_module_string = '[{"order_number": 1, "header": "Claim, Status and Report", "type": "header", "_id": "claim_header"}, {"order_number": 2, "_default": "n", "type": "checkbox", "required": false, "_id": "claim_for_org", "label": "Claim for my organization", "sensitive": false}, {"order_number": 3, "select_option_3": "Open, needs follow up", "type": "select", "select_option_4": "Closed, completed", "select_option_5": "Closed, incomplete", "select_option_6": "Closed, out of scope", "select_option_7": "Closed, done by others", "select_option_1": "Open, unassigned", "select_option_2": "Open, partially completed", "_id": "status", "label": "Current Status", "required": true, "select_option_8": "Closed, no help wanted", "select_option_9": "Closed, rejected", "select_option_10": "Closed, duplicate", "sensitive": false}, {"order_number": 4, "validations": "None", "type": "text", "required": false, "_id": "total_volunteers", "label": "Volunteers", "sensitive": false}, {"order_number": 5, "validations": "None", "type": "text", "required": false, "_id": "hours_worked_per_volunteer", "label": "Hours per volunteer", "sensitive": false}, {"order_number": 6, "validations": "None", "type": "text", "required": false, "_id": "initials_of_resident_present", "label": "Initials of resident present during work", "sensitive": false}, {"order_number": 7, "validations": "None", "type": "textarea", "required": false, "_id": "status_notes", "label": "Status Notes", "sensitive": false}]';
 
+
+var standard_site_properties_list = ['name', 'case_number', 'event', 'reported_by', 'claimed_by', 
+				'address', 'city', 'state', 'county', 'zip_code', 'cross_street', 'landmark', 
+				'phone1', 'phone2', 'name_metaphone', 'address_digits', 'address_metaphone',
+				'city_metaphone', 'phone_normalised', 'latitude', 'longitude',
+				'work_type', 'priority']

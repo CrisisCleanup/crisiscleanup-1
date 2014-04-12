@@ -106,31 +106,27 @@
         <div id=zipCodeSuggestion></div>
     </td>
 </tr>
-<tr>
-    <td class=question>
-        Latitude:
-        <small>(<a href="#"
-                   onclick="document.getElementById('latitude').readOnly=false; document.getElementById('latitude').focus(); return false;">edit</a>)
-        </small>
-    </td>
-    <td class="answer">
-        <div class="form_field">
-            <input class="" id="latitude" name="latitude" readonly type="text" value=""/>
-        </div>
-    </td>
+ <tr>
+  <td class=question>
+    Latitude:
+    <small>(<a href="#" onclick="document.getElementById('latitude').readOnly=false; document.getElementById('latitude').focus(); return false;">edit</a>)</small>
+  </td>
+  <td class="answer">
+  <div class="form_field">
+    <input class="" id="latitude" name="latitude" readonly type="text" value="" \" />
+  </div>
+</td>
 </tr>
 <tr>
-    <td class=question>
-        Longitude:
-        <small>(<a href="#"
-                   onclick="document.getElementById('longitude').readOnly=false; document.getElementById('longitude').focus(); return false">edit</a>)
-        </small>
-    </td>
-    <td class="answer">
-        <div class="form_field">
-            <input class="" id="longitude" name="longitude" readonly type="text" value=""/>
-        </div>
-    </td>
+  <td class=question>
+    Longitude:
+    <small>(<a href="#" onclick="document.getElementById('longitude').readOnly=false; document.getElementById('longitude').focus(); return false">edit</a>)</small>
+  </td>
+  <td class="answer">
+  <div class="form_field">
+    <input class="" id="longitude" name="longitude" readonly type="text" value="" \" />
+  </div>
+</td>
 </tr>
 <tr>
     <td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>
@@ -340,6 +336,18 @@
         </td>
     </tr>
 </table>
+<table>
+    <tr>
+        <td class=question>Correct Response:</td>
+        <td class="answer">
+            <div class="form_field">
+                <input id="correct" name="correct" type="radio" value="y">yes
+                <input id="uncorrect" name="correct" type="radio" value="n" checked="checked">no
+
+            </div>
+        </td>
+    </tr>
+</table>
 
 
 <h3>Call For Follow</h3>
@@ -373,18 +381,8 @@
     </tr>
 </table>
 
-<table>
-    <tr>
-        <td class=question>Correct Response:</td>
-        <td class="answer">
-            <div class="form_field">
-                <input class="" name="correct" type="hidden" value="n"/>
-                <input type=checkbox id="correct" name="correct" value="y"/>
-            </div>
-        </td>
-    </tr>
-</table>
 
+<div style="display:none">
 <h3>Claim, Status and Report</h3>
 <table>
     <tr>
@@ -431,6 +429,7 @@
         </td>
     </tr>
 </table>
+</div>
 
 <h3>Other Information</h3>
 <table>
@@ -443,4 +442,5 @@
         </td>
     </tr>
 </table>
+<p>&nbsp;</p>
 

@@ -149,7 +149,7 @@ class EditHandler(base.AuthenticatedHandler):
     
     
     # get the form, label and paragraph to send to the form
-    inc_form, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, post_json, hidden_elements = hidden_elements)
+    inc_form, label, paragraph= populate_incident_form.populate_incident_form(phase_name, json.loads(inc_def_query.forms_json), phase_number, post_json, hidden_elements = hidden_elements)
     
 
     submit_button = '<input type="submit" value="Submit request">'
@@ -370,10 +370,8 @@ def build_form(forms_json, phase_number):
     if "_id" in obj:
     #if "type" in obj and obj['type'] == 'text':
       #raise Exception(obj)
-      try:
-	setattr(DynamicForm, obj['_id'], TextField(obj['label']))
-      except:
-	pass
+      setattr(DynamicForm, obj['_id'], TextField(obj['label']))
+    
     #if "type" in obj and obj['type'] == 'textarea':
       #setattr(DynamicForm, obj['_id'], TextAreaField(obj['label']))
     #if "type" in obj and obj['type'] == 'checkbox':

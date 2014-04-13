@@ -1,7 +1,8 @@
 import json
 
-def populate_incident_form(form_json, phase_number, defaults=None, hidden_elements = {}):
-  #raise Exception(defaults)
+def populate_incident_form(phase_name, form_json, phase_number, defaults=None, hidden_elements = {}):
+  #raise Exception(phase_name)
+  phase_name = phase_name.lower()
   i = 0
   string = ""
   label = ""
@@ -68,7 +69,7 @@ def populate_incident_form(form_json, phase_number, defaults=None, hidden_elemen
     ### if the object is a select, send to get_select_html()
     elif "type" in obj and obj["type"] == "select":
       default_value = get_default_value(defaults_json, obj)
-      string = get_select_html(obj, string, default_value)
+      string = get_select_html(obj, string, default_value, phase_name)
       
     ### if the object is a radio, send to get_radio_html()
     elif "type" in obj and obj["type"] == "radio":
@@ -129,7 +130,7 @@ def get_checkbox_html(obj, string, default_value):
   string += new_checkbox
   return string
 
-def get_select_html(obj, string, default_value):
+def get_select_html(obj, string, default_value, phase_name):
   options_array = []
   required = ""
   for key in obj:
@@ -142,7 +143,8 @@ def get_select_html(obj, string, default_value):
   select_string = '<option value="">Choose one</option>'
 
   options_array.sort()
-  if obj["_id"] == "status":
+  status_string = "phase_" + phase_name + "_status"
+  if obj["_id"] == status_string:
     select_string = ""
   for option in options_array:
     selected = ""

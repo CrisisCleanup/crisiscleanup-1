@@ -68,7 +68,9 @@ class MapHandler(base.AuthenticatedHandler):
     phases_links = ""
     submit_button = ""
     if inc_def_query:
-      string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
+      phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), 0)
+
+      string, label, paragraph= populate_incident_form.populate_incident_form(phase_name, json.loads(inc_def_query.forms_json), phase_number, defaults_json)
       
     single_site = single_site_template.render(
     { "form": 1,

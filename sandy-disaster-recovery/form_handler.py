@@ -84,8 +84,6 @@ class FormHandler(base.AuthenticatedHandler):
     q.filter("incident =", event.key())
     inc_def_query = q.get()
     
-    # get the current phase name
-    #phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), 0)
 
     # set up variables that will be passed to the form. The forms label, intro paragraph, links for each phase and the submit button
     string = "<h2>No Form Added Yet</h2><p>To add a form for this incident, contact your administrator.</p>"
@@ -95,8 +93,11 @@ class FormHandler(base.AuthenticatedHandler):
     paragraph = ""
     phases_links = ""
     if inc_def_query:
+      #get the current phase name
+      phase_name = phase_helpers.get_phase_name(json.loads(inc_def_query.forms_json), 0)
+      
       # set above variables from the incident definition's forms_json
-      string, label, paragraph= populate_incident_form.populate_incident_form(json.loads(inc_def_query.forms_json), phase_number, defaults_json)
+      string, label, paragraph= populate_incident_form.populate_incident_form(phase_name, json.loads(inc_def_query.forms_json), phase_number, defaults_json)
   
       phases_links = phase_helpers.populate_phase_links(json.loads(inc_def_query.phases_json), phase_number)
     single_site = single_site_template.render(
@@ -329,7 +330,7 @@ class FormHandler(base.AuthenticatedHandler):
 	  phase_number = i
       i += 1
     submit_button = "<button class='submit'>Submit</button>"
-    string, label, paragraph= populate_incident_form.populate_incident_form(forms_json_obj, phase_number, self.request.POST)
+    string, label, paragraph= populate_incident_form.populate_incident_form(phase_name, forms_json_obj, phase_number, self.request.POST)
     single_site = single_site_template.render(
 	{ "form": data,
 	  "org": org,
@@ -361,10 +362,7 @@ def build_form(forms_json, phase_number):
   forms_json[phase_number]
   for obj in forms_json[phase_number]:
     if "_id" in obj:
-      try:
-	setattr(DynamicForm, obj['_id'], TextField(obj['label']))
-      except:
-	pass
+      setattr(DynamicForm, obj['_id'], TextField(obj['label']))
   d = DynamicForm
   return d  
 

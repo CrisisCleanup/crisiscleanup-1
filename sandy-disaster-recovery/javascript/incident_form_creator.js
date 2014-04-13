@@ -570,10 +570,10 @@ $(function() {
       var phase_name = GetUrlValue("phase_id");
       sims_obj = JSON.parse(status_info_module_string);
       for(var i = 0; i < sims_obj.length; i++) {
-	
-	console.log(sims_obj[i]["_id"]);
-	var new_id = "phase_" + phase_name + "_" + sims_obj[i]["_id"];
-	sims_obj[i]["_id"] = new_id;
+	if (i > 0) {
+	  var new_id = "phase_" + phase_name + "_" + sims_obj[i]["_id"];
+	  sims_obj[i]["_id"] = new_id;
+	}
       }
       console.log(sims_obj);
       // for each in status_info_module_string

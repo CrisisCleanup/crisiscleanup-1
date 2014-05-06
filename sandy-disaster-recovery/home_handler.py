@@ -108,6 +108,7 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
 
         # on the public home get iom messages only
         iom_key = Key('ahNzfmNyaXNpcy1jbGVhbnVwLXBochkLEgxPcmdhbml6YXRpb24YgICAgOCwhQoM')
+        #iom_key = Key('ahVkZXZ-Y3Jpc2lzLWNsZWFudXAtcGhyGQsSDE9yZ2FuaXphdGlvbhiAgICAgMCvCQw') # local nico
 
         site_proj = db.Query(
             Site,

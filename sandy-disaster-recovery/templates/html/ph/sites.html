@@ -38,6 +38,10 @@ class="active"
 
 {% block main_content %}
 
+    <p class="pull-right">
+        <a href="/export_all_download">Download All (CSV)</a>
+    </p>
+
 {%- macro previous_and_next() -%}
     <p>
         {% if form.page.data %}
@@ -89,9 +93,6 @@ class="active"
 
     {{ previous_and_next() }}
 
-    <p class="pull-right">
-        <a href="/export_all_download">Download All (CSV)</a>
-    </p>
 
 {% endblock %}
 
@@ -106,16 +107,16 @@ class="active"
 
             // submit form on change of select
             $('select').change(function() {
-                $(this).parent('form').submit();
+                $('form#site-filter').submit()
             });
 
             // submit form on click of prev or next links
             $('a.change-page').click(function() {
                 var newPageNum = {{ form.page.data }} + parseInt($(this).attr('data-change'));
-            $('input[name=page]').val(newPageNum);
-            $('form#site-filter').submit()
+                $('input[name=page]').val(newPageNum);
+                $('form#site-filter').submit()
+            });
         });
 
-        });
     </script>
 {% endblock %}

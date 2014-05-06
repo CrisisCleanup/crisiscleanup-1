@@ -621,6 +621,15 @@ indexes:
   - name: event
   - name: reported_by
   - name: state
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
+  - name: reported_by
+  - name: state
   - name: status
   - name: request_date
 

@@ -24,6 +24,7 @@ import base
 import key
 import site_db
 
+
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
 
@@ -82,7 +83,7 @@ class MapHandler(base.FrontEndAuthenticatedHandler):
           demo=False,
           zoom_level=zoom_level,
           site_id=site_id,
-	  event_name=event.name,
+          event_name=event.name,
       )
     else:
         self.abort(403)

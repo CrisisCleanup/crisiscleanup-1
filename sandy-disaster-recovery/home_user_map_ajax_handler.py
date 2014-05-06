@@ -20,8 +20,6 @@ import json
 from google.appengine.ext import db
 from google.appengine.ext.db import Query
 
-from google.appengine.api.datastore import Key
-
 # Local libraries
 import base
 import site_db
@@ -37,9 +35,9 @@ open_statuses = [s for s in site_db.Site.status.choices if 'Open' in s]
 closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statuses]
 
 
-class HomeMapAjaxHandler(base.RequestHandler):
+class HomeUserMapAjaxHandler(base.AuthenticatedHandler):
 
-    def get(self):
+    def AuthenticatedGet(self, org, event):
         event_shortname = self.request.get("shortname")
         page = self.request.get("page")
         page_int = int(page)
@@ -60,7 +58,6 @@ class HomeMapAjaxHandler(base.RequestHandler):
             if e.short_name == event_shortname:
                 event = e
 
-        iom_key = Key('ahNzfmNyaXNpcy1jbGVhbnVwLXBochkLEgxPcmdhbml6YXRpb24YgICAgOCwhQoM')
 
         #ids = []
         #where_string = "Open"
@@ -74,7 +71,7 @@ class HomeMapAjaxHandler(base.RequestHandler):
 
         q = Query(model_class = site_db.Site)
 
-        q.filter('reported_by', iom_key)
+        q.filter('reported_by', org.key())
         q.filter("event =", event.key())
         q.is_keys_only()
         q.filter("status IN", ["Open, unassigned", "Open, assigned", "Open, partially completed", "Open, needs follow-up"])
@@ -86,7 +83,7 @@ class HomeMapAjaxHandler(base.RequestHandler):
                 distinct=True
             )
             site_proj.filter("event =", event.key())
-            site_proj.filter("reported_by =", iom_key)
+            site_proj.filter("reported_by =", org.key())
 
             counties_and_states = {
                 site.county_and_state : (site.county, site.state) for site

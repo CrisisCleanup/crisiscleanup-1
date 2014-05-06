@@ -50,7 +50,7 @@ def create_site_filter_form(counties_and_states):
 
 class SitesHandler(base.FrontEndAuthenticatedHandler):
     
-    SITES_PER_PAGE = 200
+    SITES_PER_PAGE = 50
 
     template_filename = 'sites.html'
 
@@ -70,7 +70,7 @@ class SitesHandler(base.FrontEndAuthenticatedHandler):
             form = Form()  # => use defaults
 
         # construct query
-        query = Site.all().filter('event', event.key())
+        query = Site.all().filter('event', event.key()).filter('reported_by', org.key())
         if form.county_and_state.data:
             county, state = counties_and_states[form.county_and_state.data]
             query = query.filter('county', county).filter('state', state)

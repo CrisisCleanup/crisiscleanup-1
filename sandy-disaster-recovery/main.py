@@ -54,6 +54,7 @@ import organization_edit_info_handler
 import see_all_contacts_handler
 import js_logs_handler
 import home_handler
+import home_user_handler
 import about_handler
 import terms_handler
 import privacy_handler
@@ -61,6 +62,7 @@ import contact_us_handler
 import public_map_handler
 import public_map_ajax_handler
 import home_map_ajax_handler
+import home_user_map_ajax_handler
 import get_event_ajax_handler
 import import_co_handler
 import stats
@@ -129,8 +131,10 @@ app = webapp2.WSGIApplication([
     Route(r'/public-map', public_map_handler.PublicMapHandler, 'dev'),
     Route(r'/public_map_ajax_handler', public_map_ajax_handler.PublicMapAjaxHandler, 'dev'),
     Route(r'/home_map_ajax_handler', home_map_ajax_handler.HomeMapAjaxHandler, 'dev'),
+    Route(r'/home_user_map_ajax_handler', home_user_map_ajax_handler.HomeUserMapAjaxHandler, 'dev'),
 
     Route(r'/home', home_handler.HomeHandler, 'dev'),
+    Route(r'/home-user', home_user_handler.HomeUserHandler, 'dev'),
     Route(r'/about', about_handler.AboutHandler, 'about'),
     Route(r'/terms', terms_handler.TermsHandler, 'terms'),
     Route(r'/privacy', privacy_handler.PrivacyHandler, 'privacy'),

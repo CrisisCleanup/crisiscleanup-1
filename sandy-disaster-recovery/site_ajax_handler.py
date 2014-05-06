@@ -39,7 +39,7 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
     id_param = self.request.get('id')
     latitude_param = self.request.get("latitude")
     longitude_param = self.request.get("longitude")
-    
+
     if latitude_param and longitude_param:
       try:
         latitude = float(latitude_param)
@@ -73,7 +73,7 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
        
         ids = []
       #filter by event
-        q.filter("event =", event.key())
+        q.filter("event =", event.key()).filter('reported_by =', org.key())
         q.is_keys_only()
         if status == "open":
             logging.debug("status == open")

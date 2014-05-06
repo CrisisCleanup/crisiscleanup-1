@@ -619,6 +619,15 @@ indexes:
   properties:
   - name: county
   - name: event
+  - name: reported_by
+  - name: state
+  - name: status
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
   - name: state
   - name: name
 
@@ -672,6 +681,23 @@ indexes:
   properties:
   - name: county
   - name: name
+
+- kind: Site
+  properties:
+  - name: county
+  - name: reported_by
+  - name: state
+  - name: status
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: county
+  - name: reported_by
+  - name: state
+  - name: status
+  - name: request_date
+    direction: desc
 
 - kind: Site
   properties:
@@ -746,6 +772,33 @@ indexes:
 - kind: Site
   properties:
   - name: event
+  - name: reported_by
+  - name: county
+  - name: state
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+  - name: status
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+  - name: status
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: event
   - name: status
   - name: case_number
   - name: claimed_by
@@ -753,6 +806,13 @@ indexes:
   - name: latitude
   - name: longitude
   - name: work_type
+
+- kind: Site
+  properties:
+  - name: event
+  - name: status
+  - name: request_date
+    direction: desc
 
 - kind: Site
   properties:
@@ -776,6 +836,19 @@ indexes:
 - kind: Site
   properties:
   - name: incident
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: county
+  - name: state
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
   - name: request_date
     direction: desc
 

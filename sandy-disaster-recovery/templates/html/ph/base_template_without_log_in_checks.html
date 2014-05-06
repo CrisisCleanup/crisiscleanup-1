@@ -82,7 +82,7 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                       <ul class="nav navbar-nav">
                           <li {% block home %}{% endblock %}>
-                              <a href="/home">Home</a>
+                            <a href={% if logged_in %} "/home-user" {% else %} "/home" {% endif %}>Home</a>
                           </li>
                           <li {% block about %}{% endblock %}>
                               <a href="/about">About</a>

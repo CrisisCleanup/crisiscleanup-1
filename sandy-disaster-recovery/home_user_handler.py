@@ -17,8 +17,6 @@
 # System libraries.
 from google.appengine.ext import db
 
-from google.appengine.api.datastore import Key
-
 # Local libraries.
 from wtforms import Form, IntegerField, SelectField, SelectMultipleField, TextField, widgets
 
@@ -90,13 +88,13 @@ def create_site_filter_form(counties_and_states, work_type_options):
     return SiteFilterForm
 
 
-class HomeHandler(base.FrontEndAuthenticatedHandler):
+class HomeUserHandler(base.FrontEndAuthenticatedHandler):
 
-    template_filename = 'home.html'
+    template_filename = 'home_user.html'
 
     SITES_PER_PAGE = 20
 
-    def get(self):
+    def AuthenticatedGet(self, org, event):
         try:
             with open('version.json') as version_json_fd:
                 version_d = json.load(version_json_fd)
@@ -106,14 +104,14 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         # events for map
         events = event_db.GetAllCached()
 
-        # on the public home get iom messages only
-        iom_key = Key('ahNzfmNyaXNpcy1jbGVhbnVwLXBochkLEgxPcmdhbml6YXRpb24YgICAgOCwhQoM')
 
         site_proj = db.Query(
             Site,
             projection=('county', 'state'),
-            distinct=True
+            distinct=True,
         )
+        site_proj.filter('reported_by', org.key())
+
         counties_and_states = {
             site.county_and_state : (site.county, site.state) for site
             in site_proj
@@ -123,7 +121,7 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         # count messages for chart
         work_type_options_tmp = {}
         chart_messages = collections.OrderedDict()
-        query = Site.all().filter('reported_by', iom_key)
+        query = Site.all().filter('reported_by', org.key())
         query = query.order('request_date')
         sites = list(query.run())
         for site in sites:
@@ -151,7 +149,7 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
 
 
         # construct query
-        query = Site.all().filter('reported_by', iom_key)
+        query = Site.all().filter('reported_by', org.key())
         query.filter("status IN", ["Open, unassigned", "Open, assigned", "Open, partially completed", "Open, needs follow-up"])
 
 

@@ -105,6 +105,7 @@ class="active"
                     {% endif %}
 
                     <th>Category</th>
+                    <th>Type</th>
                     <th>Message</th>
                     <th>Town</th>
                     <th>Region</th>
@@ -123,6 +124,7 @@ class="active"
                         <td>{% if site.correct == 'y' %}correct{% endif %}</td>
                     {% endif %}
                     <td>{{ site.work_type }}</td>
+                    <td>{{ site.message_type }}</td>
                     <td>{{ site.message|truncate(100) }}</td>
                     <td>{{ site.county }}</td>
                     <td>{{ site.state }}</td>
@@ -140,7 +142,7 @@ class="active"
             {{ previous_and_next() }}
 
             <p class="pull-right">
-                <a href="/export">Download (CSV)</a>
+                <a href="/export"><i class="fa fa-file-text-o"></i> Download (CSV)</a>
             </p>
 
         </div>

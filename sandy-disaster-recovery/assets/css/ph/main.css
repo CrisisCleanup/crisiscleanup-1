@@ -212,12 +212,19 @@ footer img {
 
 }
 
+#home-messages table {
+    margin-top: 2em;
+}
+#home-messages thead {
+    border-top: 1px solid #000;
+}
+
 
 /**
  * home-map
  */
-#home-map {
-    height: 500px;
+#home-map #map_canvas {
+    height: 400px;
 }
 
 /**

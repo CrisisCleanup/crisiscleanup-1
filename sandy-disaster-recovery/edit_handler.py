@@ -99,7 +99,7 @@ class EditHandler(base.FrontEndAuthenticatedHandler):
       new_inc_form = new_inc_form.replace('<input type="checkbox" id="ignore_similar" name="ignore_similar">', "")
       new_inc_form = new_inc_form.replace('Ignore similar matches', '')
       new_inc_form = new_inc_form.replace('Skip check for duplicates', '')
-      new_inc_form = new_inc_form.replace('<input type=submit value="Submit request">', '')
+      new_inc_form = new_inc_form.replace('<input type=submit value="Submit form">', '')
   
       #raise Exception(post_json2)
 

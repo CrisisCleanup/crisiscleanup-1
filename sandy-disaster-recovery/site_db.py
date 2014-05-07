@@ -37,7 +37,7 @@ STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 
 				'address', 'city', 'state', 'county', 'zip_code', 'cross_street', 'landmark', 
 				'phone1', 'phone2', 'name_metaphone', 'address_digits', 'address_metaphone',
 				'city_metaphone', 'phone_normalised', 'latitude', 'longitude',
-				'work_type', 'priority']
+				'work_type', 'priority', 'prepared_by']
 
 def _GetOrganizationName(site, field):
   """Returns the name of the organization in the given field, if possible.
@@ -174,6 +174,7 @@ class Site(db.Expando):
   #prepared_by = db.StringProperty()
   ## Do not work before
   #do_not_work_before = db.StringProperty()
+  prepared_by = db.StringProperty()
 
   # Metadata
   status = db.StringProperty(

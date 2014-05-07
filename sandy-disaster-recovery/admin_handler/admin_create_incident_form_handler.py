@@ -258,7 +258,7 @@ class AdminCreateIncidentFormHandler(base.AuthenticatedHandler):
 
 	"""
 	
-	html_button = '<input type=submit value="Submit request">'
+	html_button = '<input type=submit value="Submit form">'
 	
 	
 	ignore_similar = """

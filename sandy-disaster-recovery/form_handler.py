@@ -32,6 +32,8 @@ import site_db
 import site_util
 import form_db
 
+import logging
+
 
 HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
@@ -148,6 +150,9 @@ class FormHandler(base.FrontEndAuthenticatedHandler):
     data.work_type.validators = data.work_type.validators + [wtforms.validators.Length(
         min = 1, max = 100,
         message = "Please set a primary work type")]
+    data.prepared_by.validators = data.prepared_by.validators + [wtforms.validators.Length(
+        min = 1, max = 100,
+        message = "Please enter your name")]
     if data.validate():
       lookup = site_db.Site.gql(
         "WHERE name = :name and address = :address LIMIT 1",
@@ -238,7 +243,7 @@ class FormHandler(base.FrontEndAuthenticatedHandler):
     inc_form = None
     if query:
       inc_form = query.form_html
-      
+
     single_site = self.get_template('single_site_incident_form.html').render({
       "form": data,
       "org": org,

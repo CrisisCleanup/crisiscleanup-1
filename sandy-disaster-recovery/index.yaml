@@ -859,6 +859,12 @@ indexes:
   - name: reported_by
   - name: status
   - name: request_date
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: request_date
     direction: desc
 
 - kind: Site

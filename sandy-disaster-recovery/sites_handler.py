@@ -39,8 +39,16 @@ def create_site_filter_form(counties_and_states):
             choices=[
                 (u'-request_date', u'Request Date (recent first)'),
                 (u'request_date', u'Request Date (oldest first)'),
-                (u'name', u'Name (asc)'),
-                (u'-name', u'Name (desc)'),
+                (u'work_type', u'Category (asc)'),
+                (u'-work_type', u'Category (desc)'),
+                (u'message_type', u'Type (asc)'),
+                (u'-message_type', u'Type (desc)'),
+                (u'county', u'Town (asc)'),
+                (u'-county', u'Town (desc)'),
+                (u'state', u'Region (asc)'),
+                (u'-state', u'Region (desc)'),
+                #(u'name', u'Name (asc)'),
+                #(u'-name', u'Name (desc)'),
             ],
             default=u'-request_date',
         )

@@ -30,7 +30,7 @@ import event_db
 from site_db import Site
 
 import datetime
-
+from dateutil.relativedelta import relativedelta
 
 class MultiCheckboxField(SelectMultipleField):
     """
@@ -57,6 +57,14 @@ def create_site_filter_form(counties_and_states, work_type_options):
             choices=[
                 (u'-request_date', u'Request Date (recent first)'),
                 (u'request_date', u'Request Date (oldest first)'),
+                (u'work_type', u'Category (asc)'),
+                (u'-work_type', u'Category (desc)'),
+                (u'message_type', u'Type (asc)'),
+                (u'-message_type', u'Type (desc)'),
+                (u'county', u'Town (asc)'),
+                (u'-county', u'Town (desc)'),
+                (u'state', u'Region (asc)'),
+                (u'-state', u'Region (desc)'),
                 #(u'name', u'Name (asc)'),
                 #(u'-name', u'Name (desc)'),
                 ],
@@ -64,13 +72,15 @@ def create_site_filter_form(counties_and_states, work_type_options):
             )
         work_type = MultiCheckboxField(
             choices=[
-                (cat_k, str((cat_k if cat_k != '' else 'None'))+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(work_type_options.iteritems())
+                (cat_k, str('<img src="/icons/'+cat_k+'_black.png">'+(cat_k if cat_k != '' else 'None'))+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(work_type_options.iteritems())
             ],
             )
         date_from = TextField(
+            default = (datetime.date.today()+relativedelta(months=-1)).strftime('%m/%d/%Y')
             #format='%m/%d/%Y',
             )
         date_to = TextField(
+            default = (datetime.date.today()).strftime('%m/%d/%Y')
             #format='%m/%d/%Y',
             )
         """
@@ -160,17 +170,23 @@ class HomeUserHandler(base.FrontEndAuthenticatedHandler):
         if form.county_and_state.data:
             county, state = counties_and_states[form.county_and_state.data]
             query = query.filter('county', county).filter('state', state)
-        if form.order.data:
-            query = query.order(form.order.data)
-        else:
-            query = query.order('-request_date')
         if form.work_type.data:
             query = query.filter('work_type IN', form.work_type.data)
-        if form.date_from.data:
-            query = query.filter('request_date >=', datetime.datetime.strptime(form.date_from.data, '%m/%d/%Y').date())
-        if form.date_to.data:
-            query = query.filter('request_date <', (datetime.datetime.strptime(form.date_to.data, '%m/%d/%Y')+datetime.timedelta(days=1)).date())
 
+
+        #Note: Because of the way the App Engine Datastore executes queries, if a query specifies inequality filters on a property and sort orders on other properties, the property used in the inequality filters must be ordered before the other properties.
+        if form.order.data:
+            query = query.order(form.order.data)
+            form.date_to.data = ''
+            form.date_from.data = ''
+        else:
+            query = query.order('-request_date')
+            if form.date_from.data:
+                query = query.filter('request_date >=', datetime.datetime.strptime(form.date_from.data, '%m/%d/%Y').date())
+            else:
+                query = query.filter('request_date >=', (datetime.date.today()+relativedelta(months=-1)))
+            if form.date_to.data:
+                query = query.filter('request_date <', (datetime.datetime.strptime(form.date_to.data, '%m/%d/%Y')+datetime.timedelta(days=1)).date())
 
         # run query
         sites = list(query.run(

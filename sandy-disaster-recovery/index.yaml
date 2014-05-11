@@ -783,7 +783,32 @@ indexes:
   - name: event
   - name: reported_by
   - name: county
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+  - name: county
   - name: state
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+  - name: message_type
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+  - name: message_type
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+  - name: request_date
 
 - kind: Site
   properties:
@@ -791,6 +816,12 @@ indexes:
   - name: reported_by
   - name: request_date
     direction: desc
+
+- kind: Site
+  properties:
+  - name: event
+  - name: reported_by
+  - name: state
 
 - kind: Site
   properties:
@@ -858,6 +889,32 @@ indexes:
   properties:
   - name: reported_by
   - name: status
+  - name: county
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: county
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: message_type
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: message_type
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
   - name: request_date
 
 - kind: Site
@@ -865,6 +922,67 @@ indexes:
   - name: reported_by
   - name: status
   - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: request_date
+    direction: desc
+  - name: message_type
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: request_date
+    direction: desc
+  - name: message_type
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: request_date
+    direction: desc
+  - name: work_type
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: request_date
+    direction: desc
+  - name: work_type
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: state
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: work_type
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: work_type
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: work_type
     direction: desc
 
 - kind: Site

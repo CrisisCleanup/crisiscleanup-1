@@ -256,11 +256,11 @@ Number.prototype.padLeft = function(base,chr){
 var d = new Date,
     dformat = [d.getFullYear(),
      (d.getMonth()+1).padLeft(),
-      d.getDate().padLeft()].join('-')+
+      d.getDate().padLeft()].join('-')/*+
               ' ' +
               [d.getHours().padLeft(),
                d.getMinutes().padLeft(),
-               d.getSeconds().padLeft()].join(':');
+               d.getSeconds().padLeft()].join(':')*/;
 document.getElementById('request_date').value = dformat;
 }
 requestDate();

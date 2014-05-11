@@ -219,6 +219,40 @@ footer img {
     border-top: 1px solid #000;
 }
 
+/** form smaller */
+#site-filter {
+    font-size: .9em;
+}
+#site-filter label {
+    margin-bottom: 0;
+}
+#site-filter .form-group {
+    margin-bottom: 5px;
+}
+#site-filter .form-control,
+#site-filter .input-group-addon {
+    font-size: .9em;
+    height: 28px;
+    padding: 3px 6px;
+}
+
+.bootstrap-datetimepicker-widget td.active:hover, .bootstrap-datetimepicker-widget td.active:hover:hover, .bootstrap-datetimepicker-widget td.active:active, .bootstrap-datetimepicker-widget td.active:hover:active, .bootstrap-datetimepicker-widget td.active.active, .bootstrap-datetimepicker-widget td.active:hover.active, .bootstrap-datetimepicker-widget td.active.disabled, .bootstrap-datetimepicker-widget td.active:hover.disabled, .bootstrap-datetimepicker-widget td.active[disabled], .bootstrap-datetimepicker-widget td.active:hover[disabled],
+.bootstrap-datetimepicker-widget td.active, .bootstrap-datetimepicker-widget td.active:hover {
+    background: #eb7125;
+
+}
+
+
+
+/** categorie img */
+#site-filter-categories img {
+    width: 15px;
+    margin-right: 5px;
+}
+
+
+
+
 
 /**
  * home-map
@@ -232,6 +266,17 @@ footer img {
  */
 #highchart_messagesday {
 }
+
+
+/** table message */
+#sites-table th,
+#home-table th {
+    white-space: nowrap;
+}
+#order-from-table a {
+    cursor: pointer;
+}
+
 
 
 

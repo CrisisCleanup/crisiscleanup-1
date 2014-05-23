@@ -120,10 +120,10 @@ class="active"
 
                     <th><a data-field="work_type">Category {% if form.order.data == 'work_type' %}<i class="fa fa-angle-up"></i>{% elif form.order.data == '-work_type' %}<i class="fa fa-angle-down"></i>{% endif %}</a></th>
                     <th><a data-field="message_type">Type {% if form.order.data == 'message_type' %}<i class="fa fa-angle-up"></i>{% elif form.order.data == '-message_type' %}<i class="fa fa-angle-down"></i>{% endif %}</a></th>
-                    <th>Message</th>
                     <th><a data-field="state">Region {% if form.order.data == 'state' %}<i class="fa fa-angle-up"></i>{% elif form.order.data == '-state' %}<i class="fa fa-angle-down"></i>{% endif %}</a></th>
                     <th><a data-field="county">Town {% if form.order.data == 'county' %}<i class="fa fa-angle-up"></i>{% elif form.order.data == '-county' %}<i class="fa fa-angle-down"></i>{% endif %}</a></th>
                     <th><a data-field="city">City {% if form.order.data == 'city' %}<i class="fa fa-angle-up"></i>{% elif form.order.data == '-city' %}<i class="fa fa-angle-down"></i>{% endif %}</a></th>
+                    <th>Message</th>
                     {% if logged_in %}
                         <th></th>
                     {% endif %}
@@ -140,9 +140,10 @@ class="active"
                     {% endif %}
                     <td>{{ site.work_type }}</td>
                     <td>{{ site.message_type }}</td>
-                    <td>{{ site.message|e|truncate(100) }}</td>
-                    <td>{{ site.county }}</td>
                     <td>{{ site.state }}</td>
+                    <td>{{ site.county }}</td>
+                    <td>{{ site.city }}</td>
+                    <td>{{ site.message|e|truncate(100) }}</td>
                     {% if logged_in %}
                         <td>
                             [<a href="/edit?id={{ site.key().id() }}">Edit</a>]

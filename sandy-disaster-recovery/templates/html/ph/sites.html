@@ -81,7 +81,7 @@ class="active"
             <td>{% if site.correct == 'y' %}correct{% endif %}</td>
             <td>{{ site.work_type }}</td>
             <td>{{ site.message_type }}</td>
-            <td>{{ site.message|truncate(100) }}</td>
+            <td class="td-message" data-message="{{ site.message|e }}">{{ site.message|truncate(50) }}</td>
             <td>{{ site.county }}</td>
             <td>{{ site.state }}</td>
             <td>
@@ -117,6 +117,10 @@ class="active"
                 var newPageNum = {{ form.page.data }} + parseInt($(this).attr('data-change'));
                 $('input[name=page]').val(newPageNum);
                 $('form#site-filter').submit()
+            });
+
+            $('.td-message').on('click', function() {
+                $(this).html($(this).data('message'));
             });
 
 

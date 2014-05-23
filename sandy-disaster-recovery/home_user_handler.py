@@ -42,17 +42,34 @@ class MultiCheckboxField(SelectMultipleField):
     widget = widgets.ListWidget(prefix_label=False)
     option_widget = widgets.CheckboxInput()
 
-def create_site_filter_form(counties_and_states, work_type_options):
 
+def create_site_filter_form(counties_and_states, states, counties, cities, work_type_options):
     class SiteFilterForm(Form):
-
         page = IntegerField(default=0, widget=widgets.HiddenInput())
         county_and_state = SelectField(
             choices=[(u'', u'(All)')] + [
                 (cas, cas) for cas in sorted(counties_and_states)
             ],
             default=u'',
-            )
+        )
+        state = SelectField(
+            choices=[(u'', u'(All)')] + [
+                (s, s) for s in sorted(states)
+            ],
+            default=u'',
+        )
+        county = SelectField(
+            choices=[(u'', u'(All)')] + [
+                (c, c) for c in sorted(counties)
+            ],
+            default=u'',
+        )
+        city = SelectField(
+            choices=[(u'', u'(All)')] + [
+                (c, c) for c in sorted(cities)
+            ],
+            default=u'',
+        )
         order = SelectField(
             choices=[
                 (u'-request_date', u'Request Date (recent first)'),
@@ -61,28 +78,32 @@ def create_site_filter_form(counties_and_states, work_type_options):
                 (u'-work_type', u'Category (desc)'),
                 (u'message_type', u'Type (asc)'),
                 (u'-message_type', u'Type (desc)'),
-                (u'county', u'Town (asc)'),
-                (u'-county', u'Town (desc)'),
                 (u'state', u'Region (asc)'),
                 (u'-state', u'Region (desc)'),
+                (u'county', u'Town (asc)'),
+                (u'-county', u'Town (desc)'),
+                (u'city', u'City (asc)'),
+                (u'-city', u'City (desc)'),
                 #(u'name', u'Name (asc)'),
                 #(u'-name', u'Name (desc)'),
-                ],
+            ],
             default=u'-request_date',
-            )
+        )
         work_type = MultiCheckboxField(
             choices=[
-                (cat_k, str('<img src="/icons/'+cat_k+'_black.png">'+(cat_k if cat_k != '' else 'None'))+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(work_type_options.iteritems())
+                (cat_k,
+                 str('<img src="/icons/' + cat_k + '_black.png">' + (cat_k if cat_k != '' else 'None')) + ' (' + str(
+                     cat_v) + ')') for cat_k, cat_v in sorted(work_type_options.iteritems())
             ],
-            )
+        )
         date_from = TextField(
-            default = (datetime.date.today()+relativedelta(months=-1)).strftime('%m/%d/%Y')
+            default=(datetime.date.today() + relativedelta(months=-1)).strftime('%m/%d/%Y')
             #format='%m/%d/%Y',
-            )
+        )
         date_to = TextField(
-            default = (datetime.date.today()).strftime('%m/%d/%Y')
+            default=(datetime.date.today()).strftime('%m/%d/%Y')
             #format='%m/%d/%Y',
-            )
+        )
         """
                 (u'Health', u'Health'),
                 (u'Hosting & Non-food products', u'Hosting & Non-food products'),
@@ -99,7 +120,6 @@ def create_site_filter_form(counties_and_states, work_type_options):
 
 
 class HomeUserHandler(base.FrontEndAuthenticatedHandler):
-
     template_filename = 'home_user.html'
 
     SITES_PER_PAGE = 20
@@ -114,17 +134,41 @@ class HomeUserHandler(base.FrontEndAuthenticatedHandler):
         # events for map
         events = event_db.GetAllCached()
 
+        site_state = db.Query(Site, projection=('county', 'state'))
+        site_state.filter('reported_by', org.key())
 
-        site_proj = db.Query(
-            Site,
-            projection=('county', 'state'),
-            distinct=True,
-        )
-        site_proj.filter('reported_by', org.key())
+        site_county = db.Query(Site, projection=('city', 'county'))
+        site_county.filter('reported_by', org.key())
 
-        counties_and_states = {
-            site.county_and_state : (site.county, site.state) for site
-            in site_proj
+        site_city = db.Query(Site, projection=('name', 'city'))
+        site_city.filter('reported_by', org.key())
+
+
+        if self.request.get('state'):
+            site_county.filter('state', self.request.get('state'))
+            site_city.filter('state', self.request.get('state'))
+
+        if self.request.get('county'):
+            site_city.filter('county', self.request.get('county'))
+
+        counties_and_states = {}
+        #counties_and_states = {
+        #    site.county_and_state: (site.county, site.state) for site
+        #    in site_proj
+        #}
+
+
+        states = {
+            site.state: site.state for site
+            in site_state
+        }
+        counties = {
+            site.county: site.county for site
+            in site_county
+        }
+        cities = {
+            site.city: site.city for site
+            in site_city
         }
 
         #count messages in work_type (categories)
@@ -147,12 +191,13 @@ class HomeUserHandler(base.FrontEndAuthenticatedHandler):
                 chart_messages[tmp_request_date] = 1
 
         work_type_options = {
-            cat_k: cat_v for cat_k , cat_v
+            cat_k: cat_v for cat_k, cat_v
             in work_type_options_tmp.iteritems()
         }
 
-        Form = create_site_filter_form(counties_and_states, work_type_options)
+        Form = create_site_filter_form(counties_and_states, states, counties, cities, work_type_options)
         form = Form(self.request.GET)
+
         #import pdb; pdb.set_trace();
         if not form.validate():
             form = Form()  # => use defaults
@@ -160,7 +205,8 @@ class HomeUserHandler(base.FrontEndAuthenticatedHandler):
 
         # construct query
         query = Site.all().filter('reported_by', org.key())
-        query.filter("status IN", ["Open, unassigned", "Open, assigned", "Open, partially completed", "Open, needs follow-up"])
+        query.filter("status IN",
+                     ["Open, unassigned", "Open, assigned", "Open, partially completed", "Open, needs follow-up"])
 
 
         #demo_event = event_db.GetEventFromParam(5838406743490560) # demo event
@@ -170,6 +216,12 @@ class HomeUserHandler(base.FrontEndAuthenticatedHandler):
         if form.county_and_state.data:
             county, state = counties_and_states[form.county_and_state.data]
             query = query.filter('county', county).filter('state', state)
+        if form.state.data:
+            query = query.filter('state', form.state.data)
+        if form.county.data:
+            query = query.filter('county', form.county.data)
+        if form.city.data:
+            query = query.filter('city', form.city.data)
         if form.work_type.data:
             query = query.filter('work_type IN', form.work_type.data)
 
@@ -182,18 +234,19 @@ class HomeUserHandler(base.FrontEndAuthenticatedHandler):
         else:
             query = query.order('-request_date')
             if form.date_from.data:
-                query = query.filter('request_date >=', datetime.datetime.strptime(form.date_from.data, '%m/%d/%Y').date())
+                query = query.filter('request_date >=',
+                                     datetime.datetime.strptime(form.date_from.data, '%m/%d/%Y').date())
             else:
-                query = query.filter('request_date >=', (datetime.date.today()+relativedelta(months=-1)))
+                query = query.filter('request_date >=', (datetime.date.today() + relativedelta(months=-1)))
             if form.date_to.data:
-                query = query.filter('request_date <', (datetime.datetime.strptime(form.date_to.data, '%m/%d/%Y')+datetime.timedelta(days=1)).date())
+                query = query.filter('request_date <', (
+                    datetime.datetime.strptime(form.date_to.data, '%m/%d/%Y') + datetime.timedelta(days=1)).date())
 
         # run query
         sites = list(query.run(
             offset=form.page.data * self.SITES_PER_PAGE,
             limit=self.SITES_PER_PAGE
         ))
-
 
         self.render(
             events=events,

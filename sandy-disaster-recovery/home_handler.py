@@ -45,7 +45,7 @@ class MultiCheckboxField(SelectMultipleField):
     widget = widgets.ListWidget(prefix_label=False)
     option_widget = widgets.CheckboxInput()
 
-def create_site_filter_form(counties_and_states, work_type_options):
+def create_site_filter_form(counties_and_states, states, counties, cities, work_type_options):
 
     class SiteFilterForm(Form):
 
@@ -53,6 +53,24 @@ def create_site_filter_form(counties_and_states, work_type_options):
         county_and_state = SelectField(
             choices=[(u'', u'(All)')] + [
                 (cas, cas) for cas in sorted(counties_and_states)
+            ],
+            default=u'',
+            )
+        state = SelectField(
+            choices=[(u'', u'(All)')] + [
+                (s, s) for s in sorted(states)
+            ],
+            default=u'',
+            )
+        county = SelectField(
+            choices=[(u'', u'(All)')] + [
+                (c, c) for c in sorted(counties)
+            ],
+            default=u'',
+            )
+        city = SelectField(
+            choices=[(u'', u'(All)')] + [
+                (c, c) for c in sorted(cities)
             ],
             default=u'',
             )
@@ -64,12 +82,12 @@ def create_site_filter_form(counties_and_states, work_type_options):
                 (u'-work_type', u'Category (desc)'),
                 (u'message_type', u'Type (asc)'),
                 (u'-message_type', u'Type (desc)'),
-                (u'county', u'Town (asc)'),
-                (u'-county', u'Town (desc)'),
                 (u'state', u'Region (asc)'),
                 (u'-state', u'Region (desc)'),
-                #(u'name', u'Name (asc)'),
-                #(u'-name', u'Name (desc)'),
+                (u'county', u'Town (asc)'),
+                (u'-county', u'Town (desc)'),
+                (u'city', u'City (asc)'),
+                (u'-city', u'City (desc)'),
                 ],
             default=u'-request_date',
             )
@@ -121,14 +139,40 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         iom_key = Key('ahNzfmNyaXNpcy1jbGVhbnVwLXBochkLEgxPcmdhbml6YXRpb24YgICAgOCwhQoM')
         #iom_key = Key('ahVkZXZ-Y3Jpc2lzLWNsZWFudXAtcGhyGQsSDE9yZ2FuaXphdGlvbhiAgICAgMCvCQw') # local nico
 
-        site_proj = db.Query(
-            Site,
-            projection=('county', 'state'),
-            distinct=True
-        )
-        counties_and_states = {
-            site.county_and_state : (site.county, site.state) for site
-            in site_proj
+        site_state = db.Query(Site, projection=('county', 'state'))
+        site_state.filter('reported_by', iom_key)
+
+        site_county = db.Query(Site, projection=('city', 'county'))
+        site_county.filter('reported_by', iom_key)
+
+        site_city = db.Query(Site, projection=('name', 'city'))
+        site_city.filter('reported_by', iom_key)
+
+        if self.request.get('state'):
+            site_county.filter('state', self.request.get('state'))
+            site_city.filter('state', self.request.get('state'))
+
+        if self.request.get('county'):
+            site_city.filter('county', self.request.get('county'))
+
+        counties_and_states = {}
+        #counties_and_states = {
+        #    site.county_and_state: (site.county, site.state) for site
+        #    in site_proj
+        #}
+
+
+        states = {
+            site.state: site.state for site
+            in site_state
+        }
+        counties = {
+            site.county: site.county for site
+            in site_county
+        }
+        cities = {
+            site.city: site.city for site
+            in site_city
         }
 
         #count messages in work_type (categories)
@@ -155,7 +199,7 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             in work_type_options_tmp.iteritems()
         }
 
-        Form = create_site_filter_form(counties_and_states, work_type_options)
+        Form = create_site_filter_form(counties_and_states, states, counties, cities, work_type_options)
         form = Form(self.request.GET)
         #import pdb; pdb.set_trace();
         if not form.validate():
@@ -174,6 +218,12 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
         if form.county_and_state.data:
             county, state = counties_and_states[form.county_and_state.data]
             query = query.filter('county', county).filter('state', state)
+        if form.state.data:
+            query = query.filter('state', form.state.data)
+        if form.county.data:
+            query = query.filter('county', form.county.data)
+        if form.city.data:
+            query = query.filter('city', form.city.data)
         if form.work_type.data:
             query = query.filter('work_type IN', form.work_type.data)
 

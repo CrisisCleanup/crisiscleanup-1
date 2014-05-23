@@ -617,6 +617,34 @@ indexes:
 
 - kind: Site
   properties:
+  - name: city
+  - name: county
+
+- kind: Site
+  properties:
+  - name: city
+  - name: county
+  - name: reported_by
+  - name: state
+  - name: status
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: city
+  - name: name
+
+- kind: Site
+  properties:
+  - name: city
+  - name: reported_by
+  - name: status
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
   - name: county
   - name: event
   - name: reported_by
@@ -689,6 +717,14 @@ indexes:
 - kind: Site
   properties:
   - name: county
+  - name: name
+
+- kind: Site
+  properties:
+  - name: county
+  - name: reported_by
+  - name: state
+  - name: city
   - name: name
 
 - kind: Site
@@ -882,12 +918,52 @@ indexes:
 - kind: Site
   properties:
   - name: reported_by
+  - name: city
+  - name: county
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: city
+  - name: name
+
+- kind: Site
+  properties:
+  - name: reported_by
   - name: county
   - name: state
 
 - kind: Site
   properties:
   - name: reported_by
+  - name: state
+  - name: city
+  - name: county
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: state
+  - name: city
+  - name: name
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: state
+  - name: status
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: reported_by
+  - name: status
+  - name: city
+
+- kind: Site
+  properties:
+  - name: reported_by
   - name: status
   - name: county
 
@@ -995,6 +1071,18 @@ indexes:
   - name: request_date
     direction: desc
   - name: work_type
+
+- kind: Site
+  properties:
+  - name: state
+  - name: city
+  - name: county
+
+- kind: Site
+  properties:
+  - name: state
+  - name: city
+  - name: name
 
 - kind: Site
   properties:

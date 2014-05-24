@@ -19,6 +19,7 @@
 import os
 import jinja2
 from google.appengine.ext.db import Key
+import event_db
 
 # Local libraries.
 import base
@@ -80,11 +81,13 @@ class AdminEditOrganizationHandler(base.AuthenticatedHandler):
         organization_form, existing_contact_forms, blank_contact_forms = \
             self._get_forms(None, org, org_by_id, None)
 
+	incidents = event_db.Event.all()
         self.response.out.write(template.render({
             "organization": org_by_id,
             "organization_form": organization_form,
             "existing_contact_forms": existing_contact_forms,
             "blank_contact_forms": blank_contact_forms,
+            "incidents": incidents
         }))
 
     def AuthenticatedPost(self, org, event):

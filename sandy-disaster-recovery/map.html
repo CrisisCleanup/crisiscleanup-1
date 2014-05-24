@@ -132,20 +132,20 @@ body { background-color: #d4d4d4; }
 	for (var i = 0; i < all_markers.length; i++) {
 	  console.log("log");
     //       alert(value);
-	  if (all_markers[i]['site_info']['name'].indexOf(value['term']) != -1) {
-	    console.log(i);
-	    console.log(all_markers[i]['site_info']['name']);
-	    sites.push({value: all_markers[i]['site_info']['address'], label: all_markers[i]['site_info']['name']});
-	   	    
-	    
-	}
-	 response($.map(sites, function( item ) {
-		/* At this point I call a function, I use to decide whether to add on the list to be selected by the user. */
-		return item;
-	    }));
-      } 
+	    if (all_markers[i]['site_info']['name'].indexOf(value['term']) != -1) {
+	      console.log(i);
+	      console.log(all_markers[i]['site_info']['name']);
+	      sites.push({value: all_markers[i]['site_info']['address'], label: all_markers[i]['site_info']['name']});
+		      
+	      
+	    }
+	  response($.map(sites, function( item ) {
+		  /* At this point I call a function, I use to decide whether to add on the list to be selected by the user. */
+		  return item;
+	      }));
+	} 
     //   }
-}
+      }
     </script>
 
 </html>

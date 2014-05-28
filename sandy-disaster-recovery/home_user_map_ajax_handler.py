@@ -27,7 +27,7 @@ import event_db
 
 import datetime
 
-PAGE_OFFSET = 100
+PAGE_OFFSET = 500
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 

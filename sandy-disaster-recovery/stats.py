@@ -2,6 +2,7 @@
 import os
 import datetime
 import logging
+from collections import defaultdict
 
 from google.appengine.ext import db
 from google.appengine.ext import deferred
@@ -55,11 +56,10 @@ def crunch_incident_statistics(event):
     county_open_counts = {}
     county_closed_counts = {}
 
-    orgs = event.organizations
-    org_claimed_counts = {org.key().id(): 0 for org in orgs}
-    org_open_counts = {org.key().id(): 0 for org in orgs}
-    org_closed_counts = {org.key().id(): 0 for org in orgs}
-    org_reported_counts = {org.key().id(): 0 for org in orgs}
+    org_claimed_counts = defaultdict(lambda: 0)
+    org_open_counts = defaultdict(lambda: 0)
+    org_closed_counts = defaultdict(lambda: 0)
+    org_reported_counts = defaultdict(lambda: 0)
 
     now = datetime.datetime.utcnow()
     total_open_request_age = 0 # sec
@@ -137,7 +137,7 @@ def crunch_incident_statistics(event):
         )
     orgs = filter(
         lambda org: (org.org_verified and org.is_active) or has_participated(org),
-        orgs
+        event.organizations
     )
 
     # compute totals

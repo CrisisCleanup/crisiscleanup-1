@@ -37,6 +37,7 @@ menubox_template = jinja_environment.get_template('_menubox.html')
 
 
 class MapHandler(base.RequestHandler):
+
   def get(self):
     filters = [
               #["debris_only", "Remove Debris Only"],
@@ -51,9 +52,15 @@ class MapHandler(base.RequestHandler):
               #["NY", "New York"]]
 
     org, event = key.CheckAuthorization(self.request)
+
+    if not (org and event):
+      self.redirect("/authentication")
+      return
+
     if org.permissions == "Situational Awareness":
       self.redirect("/sit_aware_redirect")
       return
+
     if org:
       filters = [["claimed", "Claimed by " + org.name],
                  ["unclaimed", "Unclaimed"],

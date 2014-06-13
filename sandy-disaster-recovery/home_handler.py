@@ -20,7 +20,7 @@ from google.appengine.ext import db
 from google.appengine.api.datastore import Key
 
 # Local libraries.
-from wtforms import Form, IntegerField, SelectField, SelectMultipleField, TextField, widgets
+from wtforms import Form, IntegerField, SelectField, SelectMultipleField, TextField, BooleanField, widgets
 
 import json
 
@@ -96,6 +96,7 @@ def create_site_filter_form(counties_and_states, states, counties, cities, work_
                 (cat_k, str('<img src="/icons/'+cat_k+'_black.png">'+(cat_k if cat_k != '' else 'None'))+' ('+str(cat_v)+')') for cat_k, cat_v in sorted(work_type_options.iteritems())
             ],
             )
+        cccm = BooleanField()
         date_from = TextField(
             default = (datetime.date.today()+relativedelta(months=-1)).strftime('%m/%d/%Y')
             #format='%m/%d/%Y',
@@ -226,6 +227,8 @@ class HomeHandler(base.FrontEndAuthenticatedHandler):
             query = query.filter('city', form.city.data)
         if form.work_type.data:
             query = query.filter('work_type IN', form.work_type.data)
+        if form.cccm.data:
+            query = query.filter('cccm', 'y')
 
 
         #Note: Because of the way the App Engine Datastore executes queries, if a query specifies inequality filters on a property and sort orders on other properties, the property used in the inequality filters must be ordered before the other properties.

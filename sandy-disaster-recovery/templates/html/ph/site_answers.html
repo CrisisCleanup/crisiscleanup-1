@@ -1,0 +1,53 @@
+{% extends "base_template.html" %}
+{% from '_form_utils.html' import render_field_row %}
+
+{% block main_title %}
+<h2>Message Answers</h2>
+<a href="#">send question by sms</a>
+{% endblock %}
+{% block main_content%}
+
+<form method="POST">
+  {% if form.errors %}
+    <section id="errors">
+      <header>The submission had errors</header>
+      <article>
+        <ul>
+        {% for k in form.errors %}
+          <li class="error">
+            {% for e in form.errors[k] %}
+              {{k}}: {{e}}
+            {% endfor %}
+          </li>
+        {% endfor %}
+        </ul>
+      <article>
+    </section>
+  {% endif %}
+
+
+    <div class="row">
+    {% for field in form %}
+        {% if ('correct' in field.name): %}
+            <div class="col-md-4">
+        {% else: %}
+            </div>
+            <div class="row">
+            <div class="col-md-8">
+        {% endif %}
+          <div class="form-group">
+              {{ render_field_row(field,class='form-control input-sm') }}
+          </div>
+      </div>
+    {% endfor %}
+
+  <button type=submit value="Submit Edit">Save</button>
+
+</form>
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+</ul>
+
+{% endblock %}

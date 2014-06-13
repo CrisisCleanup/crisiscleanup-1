@@ -20,14 +20,19 @@ import json
 from google.appengine.ext import db
 from google.appengine.ext.db import Query
 
+from google.appengine.api.datastore import Key
+
 # Local libraries
 import base
 import site_db
 import event_db
+import campaign_db
+
+import logging
 
 import datetime
 
-PAGE_OFFSET = 500
+PAGE_OFFSET = 100
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
@@ -35,16 +40,13 @@ open_statuses = [s for s in site_db.Site.status.choices if 'Open' in s]
 closed_statuses = [s for s in site_db.Site.status.choices if not s in open_statuses]
 
 
-class HomeUserMapAjaxHandler(base.AuthenticatedHandler):
+class CampaignViewMapAjaxHandler(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
         page = self.request.get("page")
         page_int = int(page)
 
-        county_and_state = self.request.get("county_and_state")
-        work_type = self.request.get("work_type")
-        date_from = self.request.get("date_from")
-        date_to = self.request.get("date_to")
+        campaign_id = int(self.request.get("campaign_id"))
 
         q = Query(model_class = site_db.Site)
 
@@ -53,33 +55,16 @@ class HomeUserMapAjaxHandler(base.AuthenticatedHandler):
         q.is_keys_only()
         q.filter("status IN", ["Open, unassigned", "Open, assigned", "Open, partially completed", "Open, needs follow-up"])
 
-        if county_and_state:
-            site_proj = Query(
-                model_class = site_db.Site,
-                projection=('county', 'state'),
-                distinct=True
-            )
-            site_proj.filter("event =", event.key())
-            site_proj.filter("reported_by =", org.key())
-
-            counties_and_states = {
-                site.county_and_state : (site.county, site.state) for site
-                in site_proj
-            }
-            county, state = counties_and_states[county_and_state]
-            q.filter('county', county).filter('state', state)
-        if work_type:
-            q.filter('work_type IN', work_type.split(','))
-        if date_from:
-            q.filter('request_date >=', datetime.datetime.strptime(date_from, '%m/%d/%Y').date())
-        if date_to:
-            q.filter('request_date <', (datetime.datetime.strptime(date_to, '%m/%d/%Y')+datetime.timedelta(days=1)).date())
+        if campaign_id:
+            campaign = campaign_db.Campaign.get_by_id(campaign_id)
+            q.filter("campaign =", campaign.key())
 
         this_offset = page_int * PAGE_OFFSET
 
         ids = [key.key().id() for key in q.fetch(PAGE_OFFSET, offset = this_offset)]
 
         def public_site_filter(site):
+            logging.info(site)
             # site as dict
             return {
                 'event': site['event'],
@@ -91,6 +76,16 @@ class HomeUserMapAjaxHandler(base.AuthenticatedHandler):
                 'floors_affected': site.get('floors_affected'),
                 'blurred_latitude': site.get('blurred_latitude'),
                 'blurred_longitude': site.get('blurred_longitude'),
+                'answer1': site['answer1'],
+                'answer2': site['answer2'],
+                'answer3': site['answer3'],
+                'answer4': site['answer4'],
+                'answer5': site['answer5'],
+                'answer1_correct': site['answer1_correct'],
+                'answer2_correct': site['answer2_correct'],
+                'answer3_correct': site['answer3_correct'],
+                'answer4_correct': site['answer4_correct'],
+                'answer5_correct': site['answer5_correct'],
                 }
 
         output = json.dumps(

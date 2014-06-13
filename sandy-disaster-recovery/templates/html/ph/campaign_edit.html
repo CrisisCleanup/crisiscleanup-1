@@ -1,0 +1,49 @@
+{% extends "base_template.html" %}
+{% from "_form_utils.html" import render_bootstrap_field %}
+
+{% block main_title %}
+<h2>Edit Campaign</h2>
+{% endblock %}
+
+{% block campaign_active %}class="active"{% endblock %}
+
+{% block main_content%}
+
+
+<form method="POST">
+  {% if form.errors %}
+    <section id="errors">
+      <header>The submission had errors</header>
+      <article>
+        <ul>
+        {% for k in form.errors %}
+          <li class="error">
+            {% for e in form.errors[k] %}
+              {{k}}: {{e}}
+            {% endfor %}
+          </li>
+        {% endfor %}
+        </ul>
+      <article>
+    </section>
+  {% endif %}
+
+
+    {% for field in form %}
+      {{ render_bootstrap_field(field) }}
+    {% endfor %}
+
+  {% if count_answers > 0 %}
+      <p class="text-danger">There is already {{count_answers}} messages that replied to theses questions. You cannot edit it anymore.</p>
+  {% else %}
+      <button type=submit value="Submit Edit" class="btn btn-primary">Save</button>
+  {% endif %}
+
+</form>
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+</ul>
+
+{% endblock %}

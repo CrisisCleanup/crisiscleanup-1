@@ -1,0 +1,46 @@
+{% extends "base_template.html" %}
+{% block title %}Campaigns &ndash; Crisis Cleanup{% endblock %}
+{% block main_title %}
+<h2>Campaigns</h2>
+{% endblock %}
+
+{% block campaign_active %}class="active"{% endblock %}
+
+{% block main_content%}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for campaign in campaigns %}
+    <tr>
+        <td>
+            {{ campaign.name }}
+        </td>
+        <td>
+            [<a href="/campaign-view?campaign={{campaign.key().id()}}">View</a>]
+            [<a href="/campaign-edit?campaign={{campaign.key().id()}}">Edit</a>]
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+
+{% block sidebar_content %}
+<ul>
+    <li><a href="/campaign-add">Add a new Campaign</a></li>
+</ul>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+</script>
+{% endblock %}

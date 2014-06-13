@@ -1,4 +1,5 @@
 var clusterer=null;
+var map;
 $(document).ready(function() {
 
     var mapCenter = sandy.util.MAP_CENTER[country];
@@ -7,7 +8,7 @@ $(document).ready(function() {
         center: new google.maps.LatLng(mapCenter.lat, mapCenter.lon),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-    var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+    map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
     MarkerClusterer.IMAGE_PATH = "/icons/m";
     var markerCluster = new MarkerClusterer(map);
@@ -143,7 +144,9 @@ var populateMapByIncident = function(incident, page, work_type, county_and_state
                 var details = getInfoboxDetails(sites_list[i]);
                 var latLng = new google.maps.LatLng(sites_list[i].blurred_latitude, sites_list[i].blurred_longitude);
                 var marker = new google.maps.Marker({'position': latLng,
-                    'icon': getMarkerIcon(sites_list[i]),
+                    map: map,
+                    icon: '/assets/images/ph/marker.png',
+                    //'icon': getMarkerIcon(sites_list[i]),
                     'site_id': sites_list[i].id,
                     'case_number': sites_list[i].case_number,
                     'work_type': sites_list[i].work_type,
@@ -165,16 +168,20 @@ var populateMapByIncident = function(incident, page, work_type, county_and_state
                 });
             }
 
+            /*
             var total_markers = old_markers.concat(markers)
             clusterer.addMarkers(total_markers);
             $("#display_incident").text("Incident: " + incident);
+            */
 
             if (run_again == true) {
                 populateMapByIncident(incident, page + 1, categories, total_markers);
             } else {
 
+                /*
                 var total_markers = old_markers.concat(markers);
                 clusterer.addMarkers(total_markers);
+                */
             }
 
         }

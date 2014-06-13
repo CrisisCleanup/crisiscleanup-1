@@ -70,6 +70,14 @@ import update_handler
 import sit_aware_redirect_handler
 ###import messaging
 
+#campaings
+import campaigns_index_handler
+import campaign_add_handler
+import campaign_edit_handler
+import campaign_view_handler
+import campaign_view_map_ajax_handler
+import site_answers_handler
+
 from handlers import incident_definition
 from handlers import incident_form_creator
 
@@ -238,6 +246,13 @@ app = webapp2.WSGIApplication([
     Route(r'/task/crunch-all-events-stats', stats.CrunchAllStatisticsHandler, 'crunch_all_events_stats'),
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
 
+    #campagins
+    Route(r'/campaigns-index', campaigns_index_handler.CampaignsIndexHandler, 'campaigns_index_handler'),
+    Route(r'/campaign-add', campaign_add_handler.CampaignAddHandler, 'campaign_add_handler'),
+    Route(r'/campaign-edit', campaign_edit_handler.CampaignEditHandler, 'campaign_edit_handler'),
+    Route(r'/campaign-view', campaign_view_handler.CampaignEditHandler, 'campaign_view_handler'),
+    Route(r'/campaign_view_map_ajax_handler', campaign_view_map_ajax_handler.CampaignViewMapAjaxHandler, 'dev'),
+    Route(r'/site-answers', site_answers_handler.SiteAnswersHandler, 'site_answers_handler'),
 
     # dev/testing
     ###Route(r'/test-email', messaging.EmailTestHandler, 'email_test'),

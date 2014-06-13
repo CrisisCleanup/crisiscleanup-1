@@ -6,6 +6,7 @@
     <title>{% block title %}Community Response Map{% endblock %}</title>
     <link rel="shortcut icon" href="assets/images/ph/favicon.ico">
 <link href="/stylesheets/form.css?v={{version}}" rel="stylesheet">
+    <link href="assets/css/ph/form.css" rel="stylesheet">
 <link href="/stylesheets/form.print.css?v={{version}}" rel="stylesheet" type="text/css" media="print">
 <link href="/stylesheets/default.css?v={{version}}" rel="stylesheet">
 
@@ -264,6 +265,27 @@ var d = new Date,
 document.getElementById('request_date').value = dformat;
 }
 requestDate();
+
+    // show/hide response_to_communications_compaign
+    function toggleResponseComCampaign() {
+        // show response_to_communications_campaign_container
+        if ($('#type_of_communication').val() == 'response_to_communications_campaign') {
+            $('#response_to_communications_campaign_container').show();
+        } else {
+            $('#response_to_communications_compaign option[value=""]').prop('selected', true);
+            $('#response_to_communications_campaign_container').hide();
+        }
+    }
+    $('#type_of_communication').change(function(){
+        toggleResponseComCampaign();
+    });
+    $(document).ready(function() {
+        toggleResponseComCampaign();
+    });
+
+
+
+
 </script>
 
 {# include "_zendesk_scripts.html" #}

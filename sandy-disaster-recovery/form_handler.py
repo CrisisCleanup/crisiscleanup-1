@@ -31,6 +31,7 @@ import event_db
 import site_db
 import site_util
 import form_db
+import campaign_db
 
 import logging
 
@@ -82,6 +83,12 @@ class FormHandler(base.FrontEndAuthenticatedHandler):
     inc_form = None
     if query:
       inc_form = query.form_html
+
+
+    #add campaign options
+    inc_form = campaign_db.get_options(inc_form, event, org)
+
+
     single_site = self.get_template('single_site_incident_form.html').render({
       "form": form,
       "org": org,
@@ -166,6 +173,12 @@ class FormHandler(base.FrontEndAuthenticatedHandler):
           site = l
           break
 
+      if  self.request.POST['campaign']:
+          campaign = campaign_db.Campaign.get_by_id(int(self.request.POST['campaign']))
+          data.campaign.data = campaign.key()
+      else:
+          data.campaign.data = None
+
       if not site:
         # Save the data, and redirect to the view page
         site = site_db.Site(address = data.address.data,
@@ -243,6 +256,11 @@ class FormHandler(base.FrontEndAuthenticatedHandler):
     inc_form = None
     if query:
       inc_form = query.form_html
+
+
+    #add campaign options
+    inc_form = campaign_db.get_options(inc_form, event, org)
+
 
     single_site = self.get_template('single_site_incident_form.html').render({
       "form": data,

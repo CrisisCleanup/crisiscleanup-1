@@ -30,6 +30,8 @@ ereporter.register_logger()
 from config_key_db import get_config_key
 from page_db import get_page_block_dict
 
+import logging
+
 
 # For authentication
 
@@ -194,12 +196,20 @@ class FrontEndAuthenticatedHandler(AuthenticatedHandler):
         else:
             raise Exception("Must select a template to render.")
 
+        org, event = key.CheckAuthorization(self.request)
+        if not event:
+            event_name_for_menu = '&nbsp;'
+        else:
+            event_name_for_menu = event.name
+
+        #event_name = event.name
         # get page blocks
         page_block_params = get_page_block_dict()
         return self.response.out.write(
             template.render(
                 dict(
                     page_block_params,
+                    event_name_for_menu=event_name_for_menu,
                     logged_in=self.request.logged_in,
                     **kwargs)
             )

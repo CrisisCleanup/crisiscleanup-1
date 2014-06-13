@@ -33,11 +33,13 @@ import event_db
 import organization
 import metaphone
 
-STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 'claimed_by', 
+import campaign_db
+
+STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 'claimed_by',
 				'address', 'city', 'state', 'county', 'zip_code', 'cross_street', 'landmark', 
 				'phone1', 'phone2', 'name_metaphone', 'address_digits', 'address_metaphone',
 				'city_metaphone', 'phone_normalised', 'latitude', 'longitude',
-				'work_type', 'priority', 'prepared_by']
+				'work_type', 'priority', 'prepared_by', 'campaign']
 
 def _GetOrganizationName(site, field):
   """Returns the name of the organization in the given field, if possible.
@@ -106,6 +108,18 @@ class Site(db.Expando):
   address_metaphone = db.StringProperty()
   city_metaphone = db.StringProperty()
   phone_normalised = db.StringProperty()
+
+  campaign = db.ReferenceProperty(campaign_db.Campaign, default = None)
+  answer1 = db.StringProperty()
+  answer2 = db.StringProperty()
+  answer3 = db.StringProperty()
+  answer4 = db.StringProperty()
+  answer5 = db.StringProperty()
+  answer1_correct = db.IntegerProperty(default = 0)
+  answer2_correct = db.IntegerProperty(default = 0)
+  answer3_correct = db.IntegerProperty(default = 0)
+  answer4_correct = db.IntegerProperty(default = 0)
+  answer5_correct = db.IntegerProperty(default = 0)
 
   ## more fields
   #time_to_call = db.StringProperty()

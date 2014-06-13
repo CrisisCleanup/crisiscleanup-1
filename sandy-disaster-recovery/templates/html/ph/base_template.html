@@ -101,6 +101,9 @@
                               <li>
                                   <a href="/">Communication Form</a>
                               </li>
+                              <li {% block campaign_active %}{% endblock %}>
+                                  <a href="/campaigns-index">Surveys</a>
+                              </li>
                               <li>
                                   <a href="/incident-statistics">Stats</a>
                               </li>
@@ -119,12 +122,18 @@
                           {% endif %}
                       </ul>
                       <ul class="nav navbar-nav navbar-right">
-                          <li>
-                              <a href="http://cccmphilippines.iom.int/" target="_blank">CCCM-PH</a>
-                          </li>
-                          <li class="cccmph">
-                              <a href="http://philippineresponse.iom.int/" target="_blank">Philippine Response</a>
-                          </li>
+                          {% if logged_in %}
+                              <li class="cccmph">
+                                  <a href="/home-user">{{event_name_for_menu}}</a>
+                              </li>
+                          {% else %}
+                              <li>
+                                  <a href="http://cccmphilippines.iom.int/" target="_blank">CCCM-PH</a>
+                              </li>
+                              <li class="cccmph">
+                                  <a href="http://philippineresponse.iom.int/" target="_blank">Philippine Response</a>
+                              </li>
+                          {% endif %}
                       </ul>
                     </div>
                 </nav>
@@ -160,12 +169,19 @@
 
     <footer>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-1">
                 <a href="http://www.iom.int" target="_blank"><img src="assets/images/ph/IOM-Logo-blue.png" title="IOM Logo" border="0" /></a>
                 {#<a href="http://www.dswd.gov.ph" target="_blank"><img src="assets/images/ph/DSWD-Logo.png" title="DSWD Logo" border="0" /></a>#}
                 {#<a href="http://news.pia.gov.ph" target="_blank"><img src="assets/images/ph/PIA-logo.png" title="PIA Logo" border="0" /></a>#}
+            </div>
+            <div class="col-md-2">
                 <a href="http://www.crisiscleanup.org"><img src="assets/images/crisis-cleanup-logo.png" title="Crisis Cleanup Logo" border="0" /></a>
+            </div>
+            <div class="col-md-3">
                 <a href="http://www.globalcccmcluster.org"><img src="assets/images/ph/cccm-logo.png" title="CCCM" border="0" /></a>
+            </div>
+            <div class="col-md-3">
+                <a href="http://www.sheltercluster.org"><img src="assets/images/ph/SCorg-logo.gif" title="ShelterCluster.org" alt="ShelterCluster.org logo"><br />ShelterCluster.org<br />Coordinating Humanitarian Shelter</a>
             </div>
         </div>
         <div class="row">

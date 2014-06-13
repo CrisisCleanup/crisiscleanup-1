@@ -86,6 +86,10 @@ class="active"
             <td>{{ site.state }}</td>
             <td>
                 [<a href="/edit?id={{ site.key().id() }}">Edit</a>]
+                {% if site.campaign %}
+                    [<a href="/site-answers?id={{ site.key().id() }}">Survey</a>]
+                {% endif %}
+
                 {###### [<a href="/delete?id={{ site.key().id() }}">Delete</a>] #}
             </td>
         </tr>

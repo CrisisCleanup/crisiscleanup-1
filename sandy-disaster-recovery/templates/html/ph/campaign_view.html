@@ -1,0 +1,70 @@
+{% extends "base_template.html" %}
+{% from '_form_utils.html' import render_field_row %}
+
+{% block main_title %}
+<h2>{{ campaign.name }}</h2>
+{% endblock %}
+
+{% block campaign_active %}class="active"{% endblock %}
+
+{% block main_content%}
+
+<div id="campaign-view" class="col-md-12">
+    <div id="map_canvas"></div>
+
+
+
+    <table class="table">
+        <thead>
+            <tr><th>Question</th><th>Nb answers</th><th>% correct answers</th></tr>
+        </thead>
+        <tbody>
+        {% for qid, question in questions.iteritems() %}
+            <tr>
+                <td>{{question.question}}</td>
+                <td>{{question.answer_count}}</td>
+                <td>{%if question.correct %}{{question.correct//question.answer_count}}%{% endif %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}
+
+{% block sidebar_content %}
+<ul>
+    <li><a href="/campaign-add">Add a Campaign</a></li>
+</ul>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="/closure/goog/base.js?v={{version}}"></script>
+<script src="/javascript/deps.js?v={{version}}"></script>
+<script type="text/javascript">
+    goog.require("sandy.{% if demo %}demo{% else %}main{% endif %}");
+</script>
+
+<script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+
+<script type="text/javascript" src="javascript/ph/campaign_view_map.js"></script>
+
+<script type="text/javascript" src="javascript/map_clusterer.js"></script>
+<script type="text/javascript" src="javascript/messi.js"></script>
+
+<script type="text/javascript">
+
+    // populate map
+    $(document).ready(function () {
+        clusterer.clearMarkers();
+
+        populateMapByIncidentAndCampaign('yolanda', 0, '{{ edit_campaign_id }}');
+    });
+
+</script>
+
+{% endblock %}

@@ -18,13 +18,15 @@
 from google.appengine.ext import db
 
 # Local libraries.
-from wtforms import Form, IntegerField, SelectField, SelectMultipleField, TextField, widgets
+from wtforms import Form, IntegerField, SelectField, SelectMultipleField, TextField, BooleanField, widgets
 
 import json
 
 import base
 
 import collections
+
+import logging
 
 import event_db
 from site_db import Site
@@ -96,6 +98,7 @@ def create_site_filter_form(counties_and_states, states, counties, cities, work_
                      cat_v) + ')') for cat_k, cat_v in sorted(work_type_options.iteritems())
             ],
         )
+        cccm = BooleanField()
         date_from = TextField(
             default=(datetime.date.today() + relativedelta(months=-1)).strftime('%m/%d/%Y')
             #format='%m/%d/%Y',
@@ -184,7 +187,7 @@ class HomeUserHandler(base.FrontEndAuthenticatedHandler):
                 work_type_options_tmp[site.work_type] += 1
             else:
                 work_type_options_tmp[site.work_type] = 1
-            tmp_request_date = site.request_date.strftime('%Y, (%m-1), %d');
+            tmp_request_date = site.request_date.strftime('%Y, (%m-1), %d')
             if tmp_request_date in chart_messages:
                 chart_messages[tmp_request_date] += 1
             else:
@@ -224,6 +227,8 @@ class HomeUserHandler(base.FrontEndAuthenticatedHandler):
             query = query.filter('city', form.city.data)
         if form.work_type.data:
             query = query.filter('work_type IN', form.work_type.data)
+        if form.cccm.data:
+            query = query.filter('cccm', 'y')
 
 
         #Note: Because of the way the App Engine Datastore executes queries, if a query specifies inequality filters on a property and sort orders on other properties, the property used in the inequality filters must be ordered before the other properties.

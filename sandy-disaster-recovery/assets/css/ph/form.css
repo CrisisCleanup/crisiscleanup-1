@@ -1,12 +1,9 @@
 /**
- * Style for /map
+ * Style for /form
  * @author Nicolas Zanghi <nicolas.zanghi@gmail.com>
  */
 
-/**
- * map
- */
-#legend_div {
+
+#response_to_communications_campaign_container {
     display: none;
 }
-

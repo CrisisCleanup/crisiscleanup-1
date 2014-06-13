@@ -43,29 +43,27 @@ var kCompletionStatusColors = {
 
 
 var getMarkerIcon = function (site) {
-    // TODO(Jeremy): Do we really want them invisible? Wouldn't it be better to
-    // Just remove them from the database in this case?
-    if (kCompletionStatusColors[site["status"]] == "invisible") {
-        return null;
-    }
-    var color = "red";
-    if (site["claimed_by"] !== null &&
-        site["status"] == "Open, unassigned") {
-        color = "orange";
-    } else {
-        color = kCompletionStatusColors[site["status"]] || "red";
+    var correct = 0;
+    var count = 0;
+    for (var i = 1; i <= 5; i++) {
+        if (site['answer'+i] != '') {
+            correct += site['answer'+i+'_correct'];
+            count++;
+        }
     }
 
-    var marker_work_type = "Unknown";
-    if (site.derechos_work_type && site.derechos_work_type != "None") {
-        marker_work_type = site.derechos_work_type;
-    } else if (site.work_type && site.work_type != "None") {
-        marker_work_type = site.work_type;
-    }
-    site.work_type = marker_work_type;
-    var icon_type = site.work_type.replace(/ /g, "_");
-    //console.log("/icons/" + icon_type + "_" + color + ".png");
-    return "/icons/" + icon_type + "_" + color + ".png";
+    var percentage = parseInt(correct/count);
+
+    if (percentage<10)
+        color = 'red'
+    else if (percentage<40)
+        color = 'orange'
+    else if (percentage<90)
+        color = 'yellow'
+    else if (percentage>90)
+        color = 'green'
+
+    return "/icons/"+color+"-dot.png";
 }
 
 var getInfoboxDetails = function(site) {
@@ -126,12 +124,12 @@ var getInfoboxDetails = function(site) {
     return details;
 }
 
-var populateMapByIncident = function(incident, page, work_type, county_and_state, date_from, date_to, old_markers) {
+var populateMapByIncidentAndCampaign = function(incident, page, campaign_id) {
     var run_again = false;
     jQuery.ajaxSettings.traditional = true; // to send work_type as an array
     $.getJSON(
-        "/home_user_map_ajax_handler",
-        {"page": page, 'work_type': work_type, 'county_and_state': county_and_state, 'date_from': date_from, 'date_to': date_to},
+        "/campaign_view_map_ajax_handler",
+        {"page": page, 'campaign_id': campaign_id},
         function(sites_list) {
             if (sites_list.length > 99) {
                 run_again = true;
@@ -145,8 +143,8 @@ var populateMapByIncident = function(incident, page, work_type, county_and_state
                 var latLng = new google.maps.LatLng(sites_list[i].blurred_latitude, sites_list[i].blurred_longitude);
                 var marker = new google.maps.Marker({'position': latLng,
                     map: map,
-                    icon: '/assets/images/ph/marker.png',
-                    //'icon': getMarkerIcon(sites_list[i]),
+                    //icon: '/assets/images/ph/marker.png',
+                    'icon': getMarkerIcon(sites_list[i]),
                     'site_id': sites_list[i].id,
                     'case_number': sites_list[i].case_number,
                     'work_type': sites_list[i].work_type,

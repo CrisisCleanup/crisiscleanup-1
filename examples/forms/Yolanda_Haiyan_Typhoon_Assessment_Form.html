@@ -1,5 +1,5 @@
 <p><strong>Philippines</strong></p>
-<h2>Contact Information</h2>
+<h2>Communication Form</h2>
 <table>
 <tr>
     <td class=question>Type of Contact: <span class=required-asterisk>*</span></td>
@@ -233,27 +233,46 @@
     <td class=question>Type of Communication:</td>
     <td class="answer">
         <div class="form_field">
-            <input class="" id="report_incident" name="type_of_communication" type="radio" value="Report Incident">
-            <label for="report_incident">Report Incident</label><br/>
-            <input class="" id="request_for_assistance" name="type_of_communication" type="radio"
-                   value="request_for_assistance"> <label for="request_for_assistance">Request For
-            Assistance</label><br/>
-            <input class="" id="request_for_information" name="type_of_communication" type="radio"
-                   value="request_for_information"> <label for="request_for_information">Request For Information</label><br/>
+            <select id="type_of_communication" name="type_of_communication">
+                <option value=""></option>
+                <option value="report_incident">Report Incident</option>
+                <option value="request_for_assistance">Request For Assistance</option>
+                <option value="request_for_information">Request For Information</option>
+                <option value="response_to_communications_campaign">Response To Communications Campaign</option>
+            </select>
         </div>
     </td>
 </tr>
 
-<tr>
+<tr id="response_to_communications_campaign_container">
     <td class=question>Response to Communications Campaign:</td>
     <td class="answer">
         <div class="form_field">
             <select id="response_to_communications_compaign" name="response_to_communications_compaign">
+                <option value=""></option>
                 <option value="Radio programme">Radio programme</option>
                 <option value="Print media">Print media</option>
                 <option value="Online media">Online media</option>
                 <option value="Other">Other</option>
             </select>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class=question>Evacuation Support [CCCM]:</td>
+    <td class="answer">
+        <div class="form_field">
+            <input type=checkbox id="cccm" name="cccm" value="y" />
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class=question>Campaign:</td>
+    <td class="answer">
+        <div class="form_field">
+            <select id="campaign" name="campaign"></select>
         </div>
     </td>
 </tr>
@@ -448,6 +467,22 @@
             </div>
         </td>
     </tr>
+    <tr>
+        <td class=question>Sub office:</td>
+        <td class="answer">
+            <div class="form_field">
+                <select name="prepared_by_sub_offices" id="prepared_by_sub_offices">
+                    <option value=""></option>
+                    <option value="Guiuan">Guiuan</option>
+                    <option value="Tacloban">Tacloban</option>
+                    <option value="Ormoc">Ormoc</option>
+                    <option value="Roxas">Roxas</option>
+                    <option value="Cebu">Cebu</option>
+                </select>
+            </div>
+        </td>
+    </tr>
+
 </table>
 <p>&nbsp;</p>
 

@@ -617,6 +617,19 @@ indexes:
 
 - kind: Site
   properties:
+  - name: campaign
+  - name: answer1
+
+- kind: Site
+  properties:
+  - name: cccm
+  - name: reported_by
+  - name: status
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
   - name: city
   - name: county
 

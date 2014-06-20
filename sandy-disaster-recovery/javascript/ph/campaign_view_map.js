@@ -54,13 +54,15 @@ var getMarkerIcon = function (site) {
 
     var percentage = parseInt(correct/count);
 
-    if (percentage<10)
+    if (percentage<20)
         color = 'red'
     else if (percentage<40)
         color = 'orange'
-    else if (percentage<90)
+    else if (percentage<60)
         color = 'yellow'
-    else if (percentage>90)
+    else if (percentage<80)
+        color = 'light-green'
+    else if (percentage>80)
         color = 'green'
 
     return "/icons/"+color+"-dot.png";

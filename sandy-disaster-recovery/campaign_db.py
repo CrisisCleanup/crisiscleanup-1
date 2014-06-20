@@ -51,7 +51,7 @@ class CampaignForm(model_form(Campaign, exclude=['organization'])):
 
 
 # get options and replace in inc_form for form_handler.py
-def get_options(inc_form, event, org):
+def get_options(inc_form, event, org, site=0):
     if 'id="campaign"' in inc_form:
         options_campaign = '<option value=""></option>'
         for campaign in Campaign.for_event(event, org):

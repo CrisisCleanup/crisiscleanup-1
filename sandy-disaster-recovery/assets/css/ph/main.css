@@ -270,6 +270,22 @@ footer img {
 #home-map #map_canvas {
     height: 400px;
 }
+#campaign_map_legend {
+    position: absolute;
+    z-index: 1000;
+    background: #fff;
+    float: right;
+    margin-top: 250px;
+    padding: 5px 0;
+    right: 0;
+    margin-right: 15px;
+    font-size: .8em;
+}
+#campaign_map_legend img {
+    width: 18px;
+    margin-bottom: 5px;
+}
+
 
 /**
  * highcharts

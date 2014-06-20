@@ -27,6 +27,7 @@ import base
 import site_db
 import site_util
 import form_db
+import campaign_db
 
 HATTIESBURG_SHORT_NAME = "derechos"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
@@ -150,12 +151,13 @@ class EditHandler(base.FrontEndAuthenticatedHandler):
 	    if v != None:
 	      length = len(str(v))
 	    
-	    new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
-
-	  
+	    new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:]
 
 
-	
+    #add campaign options
+    new_inc_form = campaign_db.get_options(new_inc_form, event, org, site)
+
+
 	#raise Exception(new_inc_form[:id_index + 380])
 	#except:
 	  #pass      # find 'id=" + k
@@ -240,8 +242,13 @@ class EditHandler(base.FrontEndAuthenticatedHandler):
       # clear assigned_to if status is unassigned
       if data.status.data == 'Open, unassigned':
         site.assigned_to = ''
-        
-        
+
+      try:
+          campaign = campaign_db.Campaign.get_by_id(int(self.request.POST['campaign']))
+          site.campaign = campaign.key()
+      except:
+          site.campaign = None
+
       for k, v in self.request.POST.iteritems():
 	if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
 
@@ -282,6 +289,12 @@ class EditHandler(base.FrontEndAuthenticatedHandler):
 	#"reported_by": str(site.reported_by.name),
       #}
       post_json = json.dumps(post_json2)
+
+
+      #add campaign options
+      inc_form = campaign_db.get_options(inc_form, event, org)
+
+
       single_site = self.get_template('single_site_incident_form.html').render(
           { "form": data,
             "org": org,

@@ -61,7 +61,7 @@ def get_field_names(event):
     q.filter("incident =", event.key())
     query = q.get()
     names_list = []
-    
+
     for i in query.incident_csv:
       names_list.append(str(i))
     return names_list

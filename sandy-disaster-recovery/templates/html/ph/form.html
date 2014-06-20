@@ -120,6 +120,9 @@ Object.keys(post_json).forEach(function(key) {
       if (type == "text") {
 	this_element.value = post_json[key];
       }
+    if (type == "hidden") {
+        this_element.value = post_json[key];
+    }
       if (type == "textarea") {
 	this_element.value = post_json[key];
       }

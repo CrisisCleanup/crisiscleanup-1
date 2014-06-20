@@ -350,6 +350,12 @@ def SiteToDict(site):
     pass
   if reported_by:
     site_dict["reported_by"] = {"name": reported_by.name}
+  try:
+      campaign = site.campaign
+  except db.ReferencePropertyResolveError:
+      pass
+  if campaign:
+      site_dict["campaign"] = campaign.key().id()
   return site_dict
 
 # We cache each site together with the AJAX necessary to

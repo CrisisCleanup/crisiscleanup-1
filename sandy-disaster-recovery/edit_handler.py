@@ -249,6 +249,13 @@ class EditHandler(base.FrontEndAuthenticatedHandler):
       except:
           site.campaign = None
 
+      logging.info(site.answer1_correct)
+      self.request.POST['answer1_correct'] = int(self.request.POST['answer1_correct'])
+      self.request.POST['answer2_correct'] = int(self.request.POST['answer2_correct'])
+      self.request.POST['answer3_correct'] = int(self.request.POST['answer3_correct'])
+      self.request.POST['answer4_correct'] = int(self.request.POST['answer4_correct'])
+      self.request.POST['answer5_correct'] = int(self.request.POST['answer5_correct'])
+
       for k, v in self.request.POST.iteritems():
 	if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
 

@@ -249,7 +249,6 @@ class EditHandler(base.FrontEndAuthenticatedHandler):
       except:
           site.campaign = None
 
-      logging.info(site.answer1_correct)
       self.request.POST['answer1_correct'] = int(self.request.POST['answer1_correct'])
       self.request.POST['answer2_correct'] = int(self.request.POST['answer2_correct'])
       self.request.POST['answer3_correct'] = int(self.request.POST['answer3_correct'])

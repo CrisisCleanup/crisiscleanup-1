@@ -179,6 +179,12 @@ class FormHandler(base.FrontEndAuthenticatedHandler):
       else:
           data.campaign.data = None
 
+      self.request.POST['answer1_correct'] = int(self.request.POST['answer1_correct'])
+      self.request.POST['answer2_correct'] = int(self.request.POST['answer2_correct'])
+      self.request.POST['answer3_correct'] = int(self.request.POST['answer3_correct'])
+      self.request.POST['answer4_correct'] = int(self.request.POST['answer4_correct'])
+      self.request.POST['answer5_correct'] = int(self.request.POST['answer5_correct'])
+
       if not site:
         # Save the data, and redirect to the view page
         site = site_db.Site(address = data.address.data,

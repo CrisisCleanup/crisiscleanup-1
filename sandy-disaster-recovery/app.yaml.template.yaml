@@ -21,7 +21,7 @@ handlers:
   expiration: "7d"
 - url: /javascript
   static_dir: javascript
-  expiration: "7d"
+  expiration: "0s"
 - url: /closure/goog
   static_dir: closure_lib/closure/goog
   expiration: "7d"
@@ -30,7 +30,7 @@ handlers:
   expiration: "7d"
 - url: /assets
   static_dir: assets
-  expiration: "7d"
+  expiration: "0s"
 
 - url: /_ereporter.*
   ##script: google.appengine.ext.ereporter.report_generator.application

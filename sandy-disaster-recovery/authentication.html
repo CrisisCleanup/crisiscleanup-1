@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript">
+$(function() {
+  $(document).data('initialEventName', '{{ initial_event_name }}');
+});
+</script>
 <script type="text/javascript" src="javascript/authentication_dropdown.js"></script>
 {% endblock %}
 
@@ -43,6 +48,10 @@ class="activePage"
     <td class="question">Choose Incident:</td>
     <td class="answer">{{ form.event(autofocus=True) }}</td>
   </tr>
+  <tr class="loading" style="display: none">
+    <td></td>
+    <td><i>Loading...</i></td>
+  </tr>
   <tr class="toggle organization-toggle" style="display: none">
     <td class=question>Organization:</td>
     <td class="answer">
@@ -61,10 +70,10 @@ class="activePage"
     <td class=question>Passcode:</td>
     <td class="answer">{{ form.password() }}</td>
   </tr>
-  <tr>
+  <tr class="toggle" style="display: none">
     <td></td>
     <td>
-      <input class="toggle" style="display: none" type="submit" value="Login" />
+      <input type="submit" value="Login" />
     </td>
   </tr>
 </table>

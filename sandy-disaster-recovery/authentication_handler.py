@@ -113,7 +113,8 @@ class AuthenticationHandler(base.RequestHandler):
       "form" : GetOrganizationForm(self.request.POST),
       "destination" : self.request.get('destination', default_value='/'),
       "page" : "/authentication",
-      "error_message": self.request.get("error_message")
+      "error_message": self.request.get("error_message"),
+      "initial_event_name": self.request.get("initial_event_name", ""),
     })
     self.response.out.write(template.render(template_params))
 

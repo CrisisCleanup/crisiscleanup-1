@@ -1,14 +1,15 @@
 $(function(){
 
-    prev_selected_event = '';  // global
-    active_xhr = null; // global
+    prev_selected_event = '';  /* global prev_selected_event */
+    active_xhr = null;  /* global active_xhr */
 
-    $organizationSelect = $('#organization');
-    $existingOrganizationSelect = $('#existing-organization');
+    var $eventSelect = $('#event');
+    var $organizationSelect = $('#organization');
+    var $existingOrganizationSelect = $('#existing-organization');
 
     // show existingOrganizationSelect if "Other" org is selected
     $organizationSelect.on('change keyup', function() {
-        if ($(this).val() == 'Other') {
+        if ($(this).val() === 'Other') {
             $('.existing-organization-toggle').show();
         } else {
             $('.existing-organization-toggle').hide();
@@ -16,15 +17,16 @@ $(function(){
     });
 
     // prepend non-option
-    $("#event").prepend("<option value='' selected='selected'>Choose From Below</option>").val('');
+    $eventSelect
+        .prepend("<option value='' selected='selected'>Choose From Below</option>")
+        .val('');
 
     // bind to load orgs on event change
-    $("#event").on('change keyup', function(){
-        var selected_event = $(this).val();
+    var selectEvent = function(selectedEventName) {
 
         $('.existing-organization-toggle').hide();
 
-        if (selected_event !== '' && selected_event != prev_selected_event) {
+        if (selectedEventName !== '' && selectedEventName != prev_selected_event) {
             // clear the organization selects
             $organizationSelect.children().remove();
             $existingOrganizationSelect.children().remove();
@@ -33,10 +35,12 @@ $(function(){
             if (active_xhr) active_xhr.abort();
 
             // load organizations
+            $('.loading').show();
             active_xhr = $.getJSON(
                 "/organization_ajax_handler",
                 {
-                    event_name: $(this).val(), ajax: 'true'
+                    event_name: selectedEventName,
+                    ajax: 'true'
                 },
                 function(data){
                     // attach orgs to organization select
@@ -67,14 +71,30 @@ $(function(){
                     }
 
                     $(".toggle").show();
+                    $(".loading").hide();
                 }
             );
-        } else if (selected_event === '') {
+        } else if (selectedEventName === '') {
             // hide the input rows again
             $(".toggle").hide();
         }
 
         // save choice
-        prev_selected_event = selected_event;
+        prev_selected_event = selectedEventName;
+    };
+
+
+    // bind select dropdown
+    $eventSelect.on('change keyup', function() {
+        var selectedEventName = $(this).val();
+        selectEvent(selectedEventName);
     });
+
+    
+    // load initially specified event if any
+    var initialEventName = $(document).data('initialEventName');
+    if (initialEventName) {
+        $eventSelect.val(initialEventName);
+        selectEvent(initialEventName);
+    }
 });

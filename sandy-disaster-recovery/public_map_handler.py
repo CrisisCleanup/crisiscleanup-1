@@ -15,11 +15,8 @@
 # limitations under the License.
 #
 
-from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
-
 # System libraries.
 import jinja2
-import logging
 import os
 
 # Local libraries.
@@ -28,11 +25,14 @@ import event_db
 import key
 import page_db
 
+
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 template = jinja_environment.get_template('public_map.html')
 
+
 class PublicMapHandler(base.RequestHandler):
+
     def get(self):
       events = event_db.GetAllCached()
       logged_in = False
@@ -43,7 +43,7 @@ class PublicMapHandler(base.RequestHandler):
       template_params.update({
 	  "events": events,
 	  "logged_in": logged_in,
+          "initial_incident_id": self.request.GET.get(
+            'initial_incident_id', '')
       })
       self.response.out.write(template.render(template_params))
-
-            

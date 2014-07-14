@@ -4,17 +4,15 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
 
-  <script type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?sensor=false">
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false">
   </script>
-  
-  <script type="text/javascript">
-  function initialize() {
 
-
-  }
-  </script>
-  
+    <script type="text/javascript">
+      $(function() {
+        // set initial public map
+        $(document).data('initialIncidentId', '{{ initial_incident_id }}');
+      });
+    </script>
     <script type="text/javascript" src="javascript/public_map15.js"></script>      
     
     <script type="text/javascript" src="javascript/map_clusterer.js"></script>       

@@ -1,5 +1,19 @@
+
 var clusterer=null;
+
+
+var loadIncident = function (incidentId) {
+    clusterer.clearMarkers();
+    $( ".MapIncident" ).each(function( index ) {
+        $(this).css("border-color", "#3891cf");
+    });
+    $(this).css("border-color", "#10253d");
+    populateMapByIncident(incidentId, 0, []);
+};
+
+
 $(function(){
+    // init
     
     var myLatlng = new google.maps.LatLng(38.50, -85.35);
     var mapOptions = {
@@ -13,20 +27,20 @@ $(function(){
     var markerCluster = new MarkerClusterer(map);
     clusterer = markerCluster;
 
+    // bind incident menu clicks
     $(".MapIncident").click(function(event) {
-      var incident_id = event.target.id;
-      clusterer.clearMarkers();
-//       $(.MapIncident).each(function() {
-// 	
-//       });
-      $( ".MapIncident" ).each(function( index ) {
-// 	console.log( index + ": " + $(this).text() );
-	$(this).css("border-color", "#3891cf");
-      });
-      $(this).css("border-color", "#10253d");
-      populateMapByIncident(incident_id, 0, []);
+      var incidentId = event.target.id;
+      loadIncident(incidentId);
     });
-})
+
+    // load initially specified incident if any
+    var initialIncidentId = $(document).data('initialIncidentId');
+    if (initialIncidentId) {
+        loadIncident(initialIncidentId);
+    }
+});
+
+
 
 var kCompletionStatusColors = {
     "Open, unassigned":"red",

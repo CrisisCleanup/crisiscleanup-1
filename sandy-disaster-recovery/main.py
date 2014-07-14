@@ -68,7 +68,7 @@ import import_co_handler
 import stats
 import update_handler
 import sit_aware_redirect_handler
-###import messaging
+import catch_all_handler
 
 from handlers import incident_definition
 from handlers import incident_form_creator
@@ -242,5 +242,8 @@ app = webapp2.WSGIApplication([
 
     # dev/testing
     ###Route(r'/test-email', messaging.EmailTestHandler, 'email_test'),
+
+    # catch all
+    Route(r'/<path:.*>', catch_all_handler.CatchAllHandler, 'catch_all_handler'),
     
 ], debug=True)

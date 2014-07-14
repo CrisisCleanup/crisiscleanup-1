@@ -24,6 +24,16 @@ KNOWN_CONFIG_KEY_NAMES = {
     'aws_ses_region',
     'aws_ses_access_key_id',
     'aws_ses_secret_access_key',
+    'handle_incident_short_names',
+}
+
+CONFIG_KEY_OPTIONS = {
+    # config keys can have options
+    'handle_incident_short_names': [
+        '404',
+        'authentication',
+        'public_map',
+    ],
 }
 
 

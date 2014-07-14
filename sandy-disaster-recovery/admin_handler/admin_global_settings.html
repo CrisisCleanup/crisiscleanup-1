@@ -14,7 +14,19 @@
     <div class="form-group">
       <label class="control-label col-sm-3">{{ config_key.name }}</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" name="{{ config_key.name}}" value="{{ config_key.value }}">
+        {% if config_key.name in config_key_options %}
+          {# render select for config keys with fixed options #}
+          <select name="{{ config_key.name }}">
+            {% for option in config_key_options[config_key.name] %}
+              <option value="{{ option }}" {% if config_key.value == option %}selected{% endif %}>
+                {{ option }}
+              </option>
+            {% endfor %}
+          </select>
+        {% else %}
+          {# render text input by default #}
+          <input type="text" class="form-control" name="{{ config_key.name}}" value="{{ config_key.value }}">
+        {% endif %}
       </div>
     </div>
   {% endfor %}

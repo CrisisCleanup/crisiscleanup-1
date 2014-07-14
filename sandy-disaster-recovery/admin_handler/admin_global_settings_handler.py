@@ -20,7 +20,7 @@ from time import sleep
 # Local libraries.
 from admin_base import AdminAuthenticatedHandler
 
-from config_key_db import ConfigKey
+from config_key_db import ConfigKey, CONFIG_KEY_OPTIONS
 
 
 class AdminGlobalSettingsHandler(AdminAuthenticatedHandler):
@@ -32,7 +32,8 @@ class AdminGlobalSettingsHandler(AdminAuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
         config_keys = ConfigKey.all().order('name')
         return self.render(
-            config_keys=config_keys
+            config_keys=config_keys,
+            config_key_options=CONFIG_KEY_OPTIONS,
         )
 
     def AuthenticatedPost(self, org, event):

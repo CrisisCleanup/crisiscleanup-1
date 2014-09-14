@@ -1,0 +1,281 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Refactored date examples</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+ 
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" type="text/css" media="screen">  
+    <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>  
+  <script src="incident_form_creator.js"></script>
+ 
+  <script>
+
+  test("hide_divs should hide appropriate divs",9, function() {
+    hide_divs();
+    var first_phase_form_div = $("#first_phase_form_div");
+    var add_phase_form_div = $("#add_phase_form_div");
+    var select_div = $("#select_div");
+    var radio_div = $("#radio_div");
+    var text_div = $("#text_div");
+    var checkbox_div = $("#checkbox_div");
+    var header_div = $("#header_div");
+    var label_div = $("#label_div");
+    var paragraph_div = $("#paragraph_div");
+    
+    
+    equal( false, first_phase_form_div.is( ":visible" ), "should hide first_phase_form_div" );
+    equal( false, add_phase_form_div.is( ":visible" ), "should hide add_phase_form_div" );
+    equal( false, select_div.is( ":visible" ), "should hide select_div" );
+    equal( false, radio_div.is( ":visible" ), "should hide radio_div" );
+    equal( false, text_div.is( ":visible" ), "should hide text_div" );
+    equal( false, checkbox_div.is( ":visible" ), "should hide checkbox_div" );
+    equal( false, header_div.is( ":visible" ), "should hide header_div" );
+    equal( false, label_div.is( ":visible" ), "should hide label_div" );
+    equal( false, paragraph_div.is( ":visible" ), "should hide paragraph_div" );
+  
+  });
+  
+  test("test #add_label click functionality", function() {
+    $("#add_label").on( "click", function() {
+      ok( true, "body was clicked!" );
+    });    
+    $("#add_label").trigger( "click" );
+  });
+
+
+</script>
+</head>
+<body>
+<div id="qunit"></div>
+         <div id="qunit-fixture">test markup</div>
+<div id="sidebar_form_creator">
+  <div id="form_editor">
+    <a href="#" id="save_all_changes1" class="button button-icon icon icon-envelope">Save All Changes</a>
+  </div>
+  <h2>Add Inputs to form</h2>
+  <a id="add_personal_info_module" href="#form_editor">Add personal info module</a></br>
+  <a id="add_status_info_module" href="#form_editor">Add Status and Claim info module</a></br>
+  <a id="add_label" href="#form_editor">map label + </a><br>
+  <a id="add_paragraph" href="#form_editor">intro paragraph +</a><br>
+  <a id="add_header" href="#form_editor">header +</a><br>
+  <a id="add_subheader" href="#form_editor">subheader +</a><br>
+  <a id="add_text" href="#form_editor">text input +</a><br>
+  <a id="add_textarea" href="#form_editor">textarea input +</a><br>
+  <a id="add_checkbox" href="#form_editor"">checkbox input +</a><br>
+  <a id="add_select" href="#form_editor"">select input +</a><br>
+  <a id="add_radio" href="#form_editor"">radio input +</a><br>
+
+
+  <div id="text_div">
+    <h3>Add Text Input</h3>
+    <form id="text_form">
+      Label: <input type="text" id="text_label" name="text_label"><br>
+      Form Id: <input type="text" id="text_id" name="text_id"><br>
+
+      Required: <input type="checkbox" id="text_required" name="text_required" value="y">
+      Sensitive: <input type="checkbox" id="text_sensitive" name="text_sensitive" value="y">
+      <br>
+      Extra Validations: <select id="text_validations" name="checkbox_default">
+	<option value="None" >Choose One (optional)</option>
+	<option value="email" >Email</option>
+	<option value="date" >Date</option>
+	<option value="phone" >Phone</option>
+	<option value="url" >Url</option>
+      </select><br>
+      <h3><a href="#form_editor" id="add_text_to_form">Add to form</a></h3>
+    </form>
+  </div>
+
+  <div id="checkbox_div">
+  <h3>Add Checkbox</h3>
+  <form id="checkbox_form">
+    Label: <input type="text" id="checkbox_label" name="checkbox_label"><br>
+    Form Id: <input type="text" id="checkbox_id" name="checkbox_id"><br>
+
+    Default Value:<select id="checkbox_default" name="checkbox_default">
+    <option value="n" >Unchecked</option>
+    <option value="y" >Checked</option>
+    </select><br><br>
+    Required: <input type="checkbox" id="checkbox_required" name="checkbox_required" value="y">
+    Sensitive: <input type="checkbox" id="checkbox_sensitive" name="checkbox_sensitive" value="y"><br>
+    Extra Validations: <select id="checkbox_validations" name="checkbox_default">
+      <option value="None" >Choose One (optional)</option>
+      <option value="email" >Email</option>
+      <option value="date" >Date</option>
+      <option value="phone" >Phone</option>
+      <option value="url" >Url</option>
+    </select><br>
+    <h3><a href="#form_editor" id="add_checkbox_to_form">Add to form</a></h3>
+  </form>
+  </div>
+  <div id="select_div">
+
+  <h3>Add Select</h3> 
+    <form id="select_form">
+      Label: <input type="text" id="select_label" name="select_label"><br>
+      Form Id: <input type="text" id="select_id" name="select_id"><br>
+
+      <div id="add_options_to_select">
+      Option 1:  <input type="text" id="select_option_1" name="select_option_1"><br>
+      </div>
+      <a id="add_select_option" href="#form_editor">Add another option</a>
+      <br>
+      <a id="clear_select_options">Clear options</a>
+      <br>
+      <br>
+      <br>
+      Required: <input type="checkbox" id="select_required" name="select_required" value="y">
+      Sensitive: <input type="checkbox" id="select_sensitive" name="select_sensitive" value="y"><br>
+      <h3><a href="#form_editor" id="add_select_to_form">Add to form</a></h3>
+    </form>
+  </div>
+
+  <div id="radio_div">
+    <h3>Add Radio</h3> 
+    <form id="radio_form">
+      Label: <input type="text" id="radio_label" name="radio_label"><br>
+      Form Id: <input type="text" id="radio_id" name="radio_id"><br>
+
+      <div id="add_options_to_radio">
+      Option 1:  <input type="text" id="radio_option_1" name="radio_option_1"><br>
+      </div>
+      <a id="add_radio_option" href="#form_editor">Add another option</a>
+      <br>
+      <a id="clear_radio_options">Clear options</a>
+      <br>
+      <br>Required: <input type="checkbox" id="radio_required" name="radio_required" value="y">
+      Sensitive: <input type="checkbox" id="radio_sensitive" name="radio_sensitive" value="y"><br>
+      Low Hint: <input type="text" id="radio_low_hint" name="radio_low_hint"><br>
+      High Hint: <input type="text" id="radio_high_hint" name="radio_high_hint"><br>
+      <h3><a href="#form_editor" id="add_radio_to_form">Add to form</a></h3>
+    </form>
+  </div>
+
+  <div id="header_div">
+    <h2>Add Header to form</h2>
+
+    <form id="header_form">
+      Label: <input type="text" id="header_label" name="header_label"><br>
+      <h3><a href="#form_editor" id="add_header_to_form">Add to form</a></h3>
+    </form>
+  </div>
+
+  <div id="subheader_div">
+    <h2>Add Subheader to form</h2>
+
+    <form id="subheader_form">
+      Label: <input type="text" id="subheader_label" name="subheader_label"><br>
+      <h3><a href="#form_editor" id="add_subheader_to_form">Add to form</a></h3>
+    </form>
+  </div>
+  <div id="textarea_div">
+    <h2>Add Textarea to form</h2>
+
+    <form id="textarea_form">
+      Name: <input type="text" id="textarea_label" name="textarea_label"><br>
+      Id: <input type="text" id="textarea_id" name="textarea_id"><br>
+      Extra Validations: <select id="textarea_validations" name="checkbox_default">
+	<option value="None" >Choose One (optional)</option>
+	<option value="email" >Email</option>
+	<option value="date" >Date</option>
+	<option value="phone" >Phone</option>
+	<option value="url" >Url</option>
+      </select><br>
+      <h3><a href="#form_editor" id="add_textarea_to_form">Add to form</a></h3>
+    </form>
+  </div>
+  
+  <div id="label_div">
+    <h2>Add Header to form</h2>
+
+    <form id="label_form">
+      Label: <input type="text" id="label_name" name="label_name"><br>
+      <h3><a href="#form_editor" id="add_label_to_form">Add to form</a></h3>
+    </form>
+  </div>
+
+  <div id="paragraph_div">
+    <h2>Add Header to form</h2>
+
+    <form id="paragraph_form">
+      Paragraph:<br><textarea rows="10" cols="30" id="paragraph" name="paragraph"></textarea><br>
+      <h3><a href="#form_editor" id="add_paragraph_to_form">Add to form</a></h3>
+    </form>
+  </div>
+<a href="#" id="save_all_changes" class="button button-icon icon icon-envelope">Save All Changes</a>
+
+</div>
+<h2>Incident Form Creator</h2>
+<select id="incident" name="incident">
+    <option value="None">Choose an Incident</option>
+    {% for incident in incidents %}
+    <option value="{{ incident.short_name }}">{{ incident.name }}</option>
+    {% endfor %}
+</select>
+<br>
+<br>
+
+<div id="main_form_nav">
+  <h3 class="horizontal"><a href="#" id="add_phase_button">Add Phase</a></h3>
+  <h3 class="horizontal"><a href="#" id="edit_phase_button">Edit Phases</a></h3>
+  <br>
+  <select id="phases_list">
+  <option value="None">Choose a phase</option>
+
+  </select>
+  <br>
+  <br>
+
+</div>
+
+<div id="phase_htmls">
+
+
+</div>
+
+<div id="first_phase_form_div">
+  <form id="first_phase_form" action="/incident_create_first_phase" method="POST">
+  Phase Name: <input type="text" name="phase_name"><br>
+  Description: <input type="text" name="description"><br>
+  <input type="hidden" name="phase_position" value="0">
+
+  <button class="submit">Submit</button>
+</form>
+</div>
+
+<div id="add_phase_form_div">
+    <form id="add_phase_form" action="/incident_create_first_phase" method="POST">
+    Phase Name: <input type="text" name="phase_name"><br>
+    Description: <input type="text" name="description"><br>
+
+    <input type="hidden" name="add_phase" value="true">
+    <button class="submit">Submit</button>
+  </form>
+  <a href="#" id="close_phase_button">Close Form</a>
+
+</div>
+
+<div id="phases">
+  <div id="tabs">
+    <h3 class="horizontal"><a href="#" id="show_html">HTML</a></h3>
+    <h3 class="horizontal"><a href="#" id="show_json">JSON</a></h3>
+    <div id="tabs-1">
+	<div id="form_label">
+	</div>
+	<div id="form_paragraph">
+	</div>
+	<div>
+	  <table id="form_table">
+	  </table>
+	</div>
+    </div>
+    <div id="tabs-2">
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

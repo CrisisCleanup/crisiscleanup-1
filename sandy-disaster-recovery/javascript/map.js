@@ -45,14 +45,6 @@ var moore_layers = [
 
 sandy.map.ClassifySite = function(site, my_organization) {
   var tags = [];
-  tags.push(site["debris_removal_only"] ? "debris_only" : "not_only_debris");
-  tags.push(site["electricity"] ? "electricity" : "no_electricty");
-  tags.push(site["standing_water"] ? "standing_water" : "no_standing_water");
-  tags.push(site["tree_damage"] ? "tree_damage" : "no_tree_damage");
-  tags.push(site["habitable"] ? "habitable" : "not_habitable");
-  tags.push(site["electrical_lines"] ? "electrial_lines" : "electrical_line_free");
-  tags.push(site["cable_lines"] ? "phone_or_cable_lines" : "phone_or_cable_line_free");
-  tags.push(site["cutting_cause_harm"] ? "trees_threaten_property" : "trees_dont_threaten_property");
   tags.push(site["work_type"]);
   tags.push(site["state"]);
   if (!site.claimed_by) {
@@ -208,7 +200,6 @@ sandy.map.InitializeMap = function(currentMapSites, AddMarker, map) {
 //             var status = xhr.getStatus();
 //             if (status == 200) {
 //                 var new_site = xhr.getResponseJson();
-// 		console.log(new_site['event_name']);
 // 		if (new_site['event_name'] == "sandy") {
 // 		      MarkerClusterer.IMAGE_PATH = "/icons/m";
 // 		      clusterer = new MarkerClusterer(map);

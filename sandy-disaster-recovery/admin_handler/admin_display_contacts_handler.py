@@ -28,7 +28,6 @@ import wtforms.validators
 import base
 import event_db
 import site_db
-import site_util
 import cache
 
 from datetime import datetime

@@ -32,7 +32,6 @@ from google.appengine.ext import db
 import base
 import event_db
 import site_db
-import site_util
 import event_db
 import primary_contact_db
 import organization

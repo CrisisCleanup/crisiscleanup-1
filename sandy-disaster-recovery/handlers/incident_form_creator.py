@@ -24,7 +24,7 @@ from datetime import datetime
 import base
 import key
 from models import incident_definition
-import event_db
+import json
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname( __file__ ), '..', 'templates')))
@@ -33,13 +33,30 @@ template = jinja_environment.get_template('incident_form_creator.html')
 def make_date_object(date_string):
   pass
 
-class IncidentFormCreator(base.RequestHandler):
-  def get(self):
-    incidents = event_db.Event.all()
+class IncidentFormCreator(base.AuthenticatedHandler):
+  def AuthenticatedGet(self, org, event):
+    incidents = incident_definition.IncidentDefinition.all()
+    inc_array = []
+    for inc in incidents:
+      forms_json = json.loads(inc.forms_json)
+      for form in forms_json:
+	inc_dict = {
+	  form[0]['incident_short_name']: form[0]['phase_name']
+	}
+	inc_array.append(inc_dict)
     data = {
         "incidents": incidents,
+        "inc_array": create_radio_group(inc_array)
     }
     self.response.out.write(template.render(data))
 
-  def post(self):
+  def AuthenticatedPost(self, org, event):
     pass
+
+def create_radio_group(inc_array):
+  radio_html = '<div class="clone"><input type="radio" name="clone_group" class="clone_class" id="empty" value="empty">None</div>'
+  for inc in inc_array:
+    for key in inc.keys():
+      new_html = '<div class="clone"><input type="radio" name="clone_group" class="clone_class" id="' + key + '" value="' + inc[key] + '">'  + key + ' | Phase:' + inc[key] + '</div>'
+      radio_html = radio_html + new_html
+  return radio_html

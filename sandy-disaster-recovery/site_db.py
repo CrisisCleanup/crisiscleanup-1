@@ -27,6 +27,7 @@ from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.ext.db import Query
 from google.appengine.api import search
+from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
 # Local libraries.
 import event_db
@@ -39,6 +40,17 @@ STANDARD_SITE_PROPERTIES_LIST = ['name', 'case_number', 'event', 'reported_by', 
 				'city_metaphone', 'phone_normalised', 'latitude', 'longitude',
 				'work_type', 'priority']
 
+PERSONAL_INFORMATION_MODULE_ATTRIBUTES = ["name", "request_date", "address", "city", "state", "county", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "rent_or_own", "work_without_resident", "first_responder", "older_than_60", "disabled", "special_needs", "priority"]
+
+
+def getOrganizationNameByKeys(key):
+  org = organization.Organization.get(key)
+  return org.name
+
+def getEventNameByKeys(key):
+  event = event_db.Event.get(key)
+  return event.name
+  
 def _GetOrganizationName(site, field):
   """Returns the name of the organization in the given field, if possible.
   """
@@ -85,10 +97,8 @@ class Site(db.Expando):
   name = db.StringProperty(required = True)
   case_number = db.StringProperty()
   event = db.ReferenceProperty(event_db.Event)
-  reported_by = db.ReferenceProperty(organization.Organization,
-                                     collection_name="reported_site_set")
-  claimed_by = db.ReferenceProperty(organization.Organization,
-                                    collection_name="claimed_site_set")
+  #reported_by = db.ReferenceProperty(organization.Organization,
+                                     #collection_name="reported_site_set")
   request_date = db.DateTimeProperty(auto_now_add=True)
   address = db.StringProperty(required = True)
   city = db.StringProperty()
@@ -107,79 +117,31 @@ class Site(db.Expando):
   city_metaphone = db.StringProperty()
   phone_normalised = db.StringProperty()
 
-  ## more fields
-  #time_to_call = db.StringProperty()
-  #rent_or_own = db.StringProperty(choices=["Rent", "Own", "Public Land", "Non-Profit", "Business"])
-  #work_without_resident = db.BooleanProperty()
-  #member_of_assessing_organization = db.BooleanProperty()
-  #first_responder = db.BooleanProperty()
-  #older_than_60 = db.BooleanProperty()
-  #disabled = db.BooleanProperty()
-  #special_needs = db.StringProperty(multiline=True)
-  #electricity = db.BooleanProperty()
-  #standing_water = db.BooleanProperty()
-  #tree_damage = db.BooleanProperty()
-  #tree_damage_details = db.StringProperty(multiline=True)
-  #habitable = db.BooleanProperty(default = True)
-  #work_requested = db.StringProperty(multiline=True)
-  #others_help = db.StringProperty(multiline=True)
-  #debris_removal_only = db.BooleanProperty()
-  work_type = db.StringProperty()
-  #work_type = db.StringProperty(choices=["Flood", "Trees", "Other",
-                                         #"Unknown", "Goods or Services", "Food", "None"])
-  #derechos_work_type = db.StringProperty(choices=[
-        #"Tornado", "Trees", "Flood", "Other", "Unknown", "Goods or Services", "Food", "None"
-  #])
-  #ceiling_removal= db.BooleanProperty()
-  #debris_removal = db.BooleanProperty()
-  #broken_glass = db.BooleanProperty()
-  #flood_height = db.StringProperty()
-  #floors_affected = db.StringProperty(choices=[
-      #"Basement Only",
-      #"Basement and Ground Floor",
-      #"Ground Floor Only",
-      #"None"])
-  #carpet_removal = db.BooleanProperty()
-  #hardwood_floor_removal = db.BooleanProperty()
-  #drywall_removal = db.BooleanProperty()
-  #heavy_item_removal = db.BooleanProperty()
-  #appliance_removal = db.BooleanProperty()
-  #standing_water = db.BooleanProperty()
-  #mold_remediation = db.BooleanProperty()
-  #pump_needed = db.BooleanProperty()
-  #num_trees_down = db.IntegerProperty(
-      #choices = [0, 1, 2, 3, 4, 5], default = 0)
-  #num_wide_trees = db.IntegerProperty(
-      #choices = [0, 1, 2, 3, 4, 5], default = 0)
-  #roof_damage = db.BooleanProperty()
-  #tarps_needed = db.IntegerProperty(default = 0)
 
-  #goods_and_services = db.StringProperty(multiline = True)
-  #tree_diameter = db.StringProperty()
-  #electrical_lines = db.BooleanProperty()
-  #cable_lines = db.BooleanProperty()
-  #cutting_cause_harm = db.BooleanProperty()
-  #other_hazards = db.StringProperty(multiline = True)
-  #insurance = db.StringProperty(multiline = True)
-  #notes = db.TextProperty()
+  #work_type = db.StringProperty()
   latitude = db.FloatProperty(default = 0.0)
   longitude = db.FloatProperty(default = 0.0)
-  ## Priority assigned by organization (1 is highest).
-  priority = db.IntegerProperty(choices=[1, 2, 3, 4, 5], default = 3)
-  
-  #priority = db.StringProperty()
-  ## Name of org. rep (e.g. "Jill Smith")
-  #inspected_by = db.StringProperty()
-  ## Name of org. rep (e.g. "Jill Smith")
-  #prepared_by = db.StringProperty()
-  ## Do not work before
-  #do_not_work_before = db.StringProperty()
-
-  # Metadata
   status = db.StringProperty(
     choices=STATUSES,
     default="Open, unassigned"
   )
+  
+  open_phases_list = db.StringListProperty()
+
+  def get_phase_field(self, phase_name, field_name):
+      combined_field_name = u'phase_%s_%s' %(phase_name, field_name)
+      return getattr(self, combined_field_name)
+
+  def get_primary_phase_field(self, field_name):
+      primary_phase_name = self.open_phases_list[0]
+      return self.get_phase_field(primary_phase_name, field_name)
+
+  @property
+  def county_and_state(self):
+      return (
+          (self.county if self.county else u'[Unknown]') +
+          ((u', %s' % self.state) if self.state else u'')
+      )
 
   @property
   def full_address(self):
@@ -190,19 +152,18 @@ class Site(db.Expando):
       )
     )
 
-  @property
-  def county_and_state(self):
-      return (
-          (self.county if self.county else u'[Unknown]') +
-          ((u', %s' % self.state) if self.state else u'')
-      )
-
   def put(self, **kwargs):
       " On-save "
       # set blurred co-ordinates
       self.blurred_latitude = self.latitude + random.uniform(-0.001798, 0.001798)
       self.blurred_longitude = self.longitude + random.uniform(-0.001798, 0.001798)
       super(Site, self).put(**kwargs)
+
+
+  _CSV_ACCESSORS = {
+    'reported_by': _GetOrganizationName,
+    'claimed_by': _GetOrganizationName,
+    }
 
   def compute_similarity_matching_fields(self):
     """Use double metaphone values and store as 'X-Y'."""
@@ -217,15 +178,10 @@ class Site(db.Expando):
     self.compute_similarity_matching_fields()
     return find_similar(self, event)
 
-  _CSV_ACCESSORS = {
-    'reported_by': _GetOrganizationName,
-    'claimed_by': _GetOrganizationName,
-  }
-
   def ToCsvLine(self, extra_csv_list):
     """
     Returns the site as a list of string values, one per field in
-    CSV_FIELDS, removing linebreaks.
+    CSV_FIELDS.
     """
     csv_row = []
     fields_list = extra_csv_list
@@ -243,8 +199,7 @@ class Site(db.Expando):
         csv_row.append('')
       else:
         try:
-          unicode_no_linebreaks = u' '.join(unicode(value).splitlines())
-          csv_row.append(unicode_no_linebreaks.encode('utf-8'))
+          csv_row.append(unicode(value).encode("utf-8"))
         except:
           logging.critical("Failed to parse: " + value + " " + str(self.key().id()))
     return csv_row
@@ -321,20 +276,21 @@ def find_similar(site, event):
 def SiteToDict(site):
   site_dict = to_dict(site)
   site_dict["id"] = site.key().id()
-  claimed_by = None
-  try:
-    claimed_by = site.claimed_by
-  except db.ReferencePropertyResolveError:
-    pass
-  if claimed_by:
-    site_dict["claimed_by"] = {"name": claimed_by.name}
-  reported_by = None
-  try:
-    reported_by = site.reported_by
-  except db.ReferencePropertyResolveError:
-    pass
-  if reported_by:
-    site_dict["reported_by"] = {"name": reported_by.name}
+  keys_list  = list(site_dict.keys())
+  for key in keys_list:
+    if "event" in key:
+      this_key = str(site_dict[key])
+      site_dict.pop(key, None)
+      site_dict[key] = this_key
+    if "reported_by" in key:
+      this_key = str(site_dict[key])
+      site_dict.pop(key, None)
+      site_dict[key] = getOrganizationNameByKeys(this_key)
+    if "claimed_by" in key:
+      this_key = str(site_dict[key])
+      site_dict.pop(key, None)
+      site_dict[key] = getOrganizationNameByKeys(this_key)
+      
   return site_dict
 
 # We cache each site together with the AJAX necessary to
@@ -388,8 +344,8 @@ def GetSitesAndSetReferences(ids, events, organizations):
   sites = Site.get_by_id(ids)
   for site in sites:
     site.event = GetReference(site, Site.event, events)
-    site.claimed_by = GetReference(site, Site.claimed_by, organizations)
-    site.reported_by = GetReference(site, Site.reported_by, organizations)
+    #site.claimed_by = GetReference(site, Site.claimed_by, organizations)
+    #site.reported_by = GetReference(site, Site.reported_by, organizations)
   return sites
 
 def GetAllCached(event, ids = None):
@@ -417,5 +373,27 @@ def GetAllCached(event, ids = None):
 def _filter_non_digits(s):
     return ''.join(filter(lambda x: x.isdigit(), s))
 
+
 class StandardSiteForm(model_form(Site)):
     pass
+  
+def get_personal_information_module_by_site_id(site_id):
+  site = site_db.Site.get_by_id(int(site_id))
+  site_dict = site_db.SiteToDict(site)
+  personal_info_data = {}
+  for field in site_dict:
+    if field in PERSONAL_INFORMATION_MODULE_ATTRIBUTES:
+      personal_info_data[field] = str(site_dict[field])
+  return personal_info_data
+
+def claim_for_this_org(site, phase_name, org):
+  attr_name = "phase_" + phase_name.lower() + "_claimed_by"
+  org_key = str(org.key())
+  setattr(site, attr_name, db.Key(org_key))
+  return site
+
+def reported_by_for_this_site(site, phase_name, org):
+  attr_name = "phase_" + phase_name.lower() + "_reported_by"
+  org_key = str(org.key())
+  setattr(site, attr_name, db.Key(org_key))
+  return site

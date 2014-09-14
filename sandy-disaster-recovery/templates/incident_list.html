@@ -1,0 +1,40 @@
+
+{% extends "base_template.html" %}
+
+{% block head_content %}
+<link href="/stylesheets/default.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block login %}
+{% endblock %}
+
+
+{% block description_title %}
+{% endblock %}
+
+{% block description_subtitle %}
+{% endblock %}
+
+{% block sidebar_title %}
+{% endblock %}
+
+{% block sidebar_content %}
+{% endblock %}
+
+{% block main_title %}
+{% endblock %}
+
+{% block main_content %}
+<form action="/incident_definition" method="POST">
+<h2>Incidents</h2>
+<p><a href="/incident_definition">Create a new incident</a> or click on an incident below to see more information.</p>
+
+{% for incident in incidents %}
+<h3><a href="/incident_definition?id={{ incident.key().id() }}"> {{ incident.name }}</a></h3>
+{% endfor %}
+
+{% endblock %}
+

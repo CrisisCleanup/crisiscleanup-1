@@ -6,6 +6,34 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+$(function() {
+  if (GetUrlValue("show_advanced") == "yes") {
+    console.log(GetUrlValue("show_advanced_tab"));
+    document.getElementById("advanced_tab").scrollIntoView();
+  } else {
+    
+    $("#advanced_tab").hide();
+  }
+  
+  $("#show_advanced_tab").click(function() {
+    $("#advanced_tab").show();
+  });
+
+
+});
+
+function GetUrlValue(VarSearch){
+    var SearchString = window.location.search.substring(1);
+    var VariableArray = SearchString.split('&');
+    for(var i = 0; i < VariableArray.length; i++){
+        var KeyValuePair = VariableArray[i].split('=');
+        if(KeyValuePair[0] == VarSearch){
+            return KeyValuePair[1];
+        }
+    }
+}
+</script>
 {% endblock %}
 
 {% block login %}
@@ -28,38 +56,148 @@
 {% endblock %}
 
 {% block main_content %}
-<h2>Incident Definition</h2>
-  <p>Version: {{ incident_definition_object.version }}</p>
-  <p>Incident Name: {{ incident_definition_object.full_name }}</p>
-  <p>Short Name: {{ incident_definition_object.short_name }}</p>
-  <p>Time Zone: {{ incident_definition_object.timezone }}</p>
-  <p>Incident Date: {{ incident_definition_object.incident_date }}</p>
-  <p>Start Date: {{ incident_definition_object.start_date }}</p>
-  <p>End Date: {{ incident_definition_object.end_date }}</p>
-  <p>Work Order Prefix: {{ incident_definition_object.work_order_prefix }}</p>
-  <p>Centroid Latitude: {{ incident_definition_object.centroid_lat }}</p>
-  <p>Centroid Longitude: {{ incident_definition_object.centroid_lng }}</p>
-  <p>Camera Latitude: {{ incident_definition_object.camera_lat }}</p>
-  <p>Camera Longitude: {{ incident_definition_object.camera_lng }}</p>
-  <p>Ignore Validation: {{ incident_definition_object.ignore_validation }}</p>
-  <p>Developer Mode: {{ incident_definition_object.developer_mode }}</p>
-  
-  <p>Local Admin Name: {{ incident_definition_object.local_admin_name }}</p>
-  <p>Local Admin Title: {{ incident_definition_object.local_admin_title }}</p>
-  <p>Local Admin Organization: {{ incident_definition_object.local_admin_organization }}</p>
-  <p>Local Admin Email: {{ incident_definition_object.local_admin_email }}</p>
-  <p>Local Admin Cell Phone: {{ incident_definition_object.local_admin_cell_phone }}</p>
-  <p>Local Admin Password: {{ incident_definition_object.local_admin_password }}</p>
+<h2>Incident: {{ incident_definition_object.name }}</h2>
+  <h3>Phases</h3>
+  {% if phases %}
+    {% for phase in phases %}
+      {{ phase.phase_name }} |
+    {% endfor %}
+  {% else %}
+  <u>No Phases: Click to the right to add</u> |
+  {% endif %}
+    <a href="/incident_add_phase?id={{ incident_definition_object.key().id() }}">Add Phase</a> |
+    <a href="/incident_edit_phases?id={{ incident_definition_object.key().id() }}">Edit Phases</a>
 
-  <p>Public Map Title: {{ incident_definition_object.public_map_title }}</p>
-  <p>Public Map URL: {{ incident_definition_object.public_map_url }}</p>
-  <p>Public Map Clusterer: {{ incident_definition_object.public_map_cluster }}</p>
-  <p>Public Map Zoom : {{ incident_definition_object.public_map_zoom }}</p>
-  
-  <p>Internal Map Title: {{ incident_definition_object.internal_map_title }}</p>
-  <p>Internal Map URL: {{ incident_definition_object.internal_map_url }}</p>
-  <p>Internal Map Clusterer: {{ incident_definition_object.internal_map_cluster }}</p>
-  <p>Internal Map Zoom: {{ incident_definition_object.internal_map_zoom }}</p>
-  
+<h3>Forms</h3>
+{% if phases %}
+  {% for phase in phases %}
+    <a href="/incident_form_creator?incident_short_name={{phase.incident_short_name}}&phase_id={{phase.phase_short_name}}">{{ phase.phase_name }}</a> |
+  {% endfor %}
+  <small>Click to edit/view</small>
+{% else %}
+<u>No Forms: Add a phase to initialize a form</u>
+
+{% endif %}
+<br>
+
+<br>
+<h3>Incident Information | <a href="/incident_edit?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
+<table>
+<tr>
+  <td>Incident Name:</td>
+  <td>{{ incident_definition_object.name }}</td>
+  <td>Short Name:</td>
+  <td>{{ incident_definition_object.short_name }}</td>
+</tr>
+<tr>
+  <td>Work Order Prefix:</td>
+  <td>{{ incident_definition_object.work_order_prefix }}</td>
+  <td>Time Zone:</td>
+  <td>{{ incident_definition_object.timezone }}</td>
+</tr>
+<tr>
+  <td>Incident Date:</td>
+  <td>{{ incident_definition_object.incident_date }}</td>
+  <td>Cleanup Start Date:</td>
+  <td>{{ incident_definition_object.cleanup_start_date }}</td>
+</tr>
+<tr>
+  <td>Incident Latitude:</td>
+  <td>{{ incident_definition_object.incident_lat }}</td>
+  <td>Incident Longitude:</td>
+  <td>{{ incident_definition_object.incident_lng }}</td>
+</tr>
+  <td>Location:</td>
+  <td>{{ incident_definition_object.location }}</td>
+  <td></td>
+  <td></td>
+</table>
+<table>
+<h3>Local Admin Information</h2>
+<tr>
+  <td>Name:</td>
+  <td>{{ incident_definition_object.local_admin_name }}</td>
+  <td>Title:</td>
+  <td>{{ incident_definition_object.local_admin_title }}</td>
+</tr>
+<tr>
+  <td>Cell Phone:</td>
+  <td>{{ incident_definition_object.local_admin_cell_phone }}</td>
+  <td>Email:</td>
+  <td>{{ incident_definition_object.local_admin_email }}</td>
+</tr>
+<tr>
+
+  <td>Password:</td>
+  <td>{{ incident_definition_object.local_admin_password }}</td>
+</tr>
+</table>
+
+<h3><a href="#show_advanced_tab" id="show_advanced_tab">Click here for advanced options</a></h3>
+<div id="advanced_tab">
+<p><strong><u>These options are set by default. Changing them can greatly affect the performance of your app.</u></strong></p>
+
+<h3>Maps | <a href="/incident_edit_map_definition?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
+<h4>Organization Map</h4>	
+<table>
+<tr>
+  <td>Title</td>
+  <td>{{ incident_definition_object.organization_map_title }}</td>
+  <td>URL:</td>
+  <td>{{ incident_definition_object.organization_map_url }}</td>
+</tr>
+<tr>
+  <td>Clustering</td>
+  <td>{{ incident_definition_object.organization_map_cluster }}</td>
+  <td>Zoom:</td>
+  <td>{{ incident_definition_object.organization_map_zoom }}</td>
+</tr>
+<tr>
+  <td>Latitude</td>
+  <td>{{ incident_definition_object.organization_map_latitude }}</td>
+  <td>Longitude:</td>
+  <td>{{ incident_definition_object.organization_map_longitude }}</td>
+</tr>
+</table>
+<h4>Public Map</h4>	
+<table>
+<tr>
+  <td>Title</td>
+  <td>{{ incident_definition_object.public_map_title }}</td>
+  <td>URL:</td>
+  <td>{{ incident_definition_object.public_map_url }}</td>
+</tr>
+<tr>
+  <td>Clustering</td>
+  <td>{{ incident_definition_object.public_map_cluster }}</td>
+  <td>Zoom:</td>
+  <td>{{ incident_definition_object.public_map_zoom }}</td>
+</tr>
+<tr>
+  <td>Latitude</td>
+  <td>{{ incident_definition_object.public_map_latitude }}</td>
+  <td>Longitude:</td>
+  <td>{{ incident_definition_object.public_map_longitude }}</td>
+</tr>
+</table>
+<br>
+<h3>Communications | <a href="/incident_edit_communications_definition?id={{ incident_definition_object.key().id() }}">Edit</a></h3>
+<table>
+<tr>
+  <td>Notify when claimed site is unfinished for this long:</td>
+  <td>{{ incident_definition_object.notify_unfinished }} days</td>
+</tr>
+<tr>
+  <td>Notify organizations when new organizations join?</td>
+  <td>{{ incident_definition_object.notify_on_new_orgs }}</td>
+</tr>
+<tr>
+  <td>Notify All Contacts in Organization?</td>
+  <td>{{ incident_definition_object.notify_contacts }}</td>
+</tr>
+
+</table>
+</div>
 {% endblock %}
+
 

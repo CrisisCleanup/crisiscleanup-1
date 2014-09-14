@@ -108,7 +108,7 @@ sandy.sites.loadSitesBatch = function (sites_status, page, url, callBack) {
                 sites.push(newSites[i]);
             }
             
-            if (sites.length == 100) {
+            if (sites.length != 0) {
                 empty = false;
             }
 

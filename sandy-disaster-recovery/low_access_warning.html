@@ -1,0 +1,13 @@
+{% extends "base_template.html" %}
+
+{% block main_title %}
+You are signed in, but you don't have access to this page
+{% endblock %}
+
+{% block main_content %}
+{% if csv_permission %}
+You only have permission to download the csv file, please go here. (LINK)
+{% endif %}
+{% endblock %}
+
+{% endblock %}

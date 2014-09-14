@@ -27,7 +27,6 @@ from datetime import datetime
 # Local libraries.
 import base
 import site_db
-import site_util
 import form_db
 from models import incident_definition
 from helpers import populate_incident_form

@@ -72,6 +72,22 @@ import sit_aware_redirect_handler
 
 from handlers import incident_definition
 from handlers import incident_form_creator
+from handlers import incident_definition
+from handlers import incident_form_creator
+from handlers import incident_definition_ajax
+from handlers import incident_create_first_phase
+from handlers import incident_save_form
+from handlers import incident_list
+from handlers import incident_edit_phase
+from handlers import incident_edit
+from handlers import incident_create_definition_version
+from handlers import incident_add_phase
+from handlers import incident_edit_phases
+from handlers import incident_edit_map_definition
+from handlers import incident_edit_communications_definition
+from handlers import incident_definition_legacy
+from handlers import incident_definition_home
+from handlers import clone_form
 
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
@@ -228,6 +244,20 @@ app = webapp2.WSGIApplication([
 
     Route(r'/incident_definition', incident_definition.IncidentDefinition, 'incident_definition'),
     Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
+    Route(r'/incident_definition_home', incident_definition_home.IncidentDefinitionHome, 'incident_definition_home'),
+    Route(r'/incident_definition_legacy', incident_definition_legacy.IncidentDefinitionLegacy, 'incident_definition_legacy'),
+    Route(r'/incident_definition_ajax', incident_definition_ajax.IncidentDefinitionAjax, 'incident_definition_ajax'),
+    Route(r'/incident_create_first_phase', incident_create_first_phase.IncidentCreateFirstPhase, 'incident_create_first_phase'),
+    Route(r'/incident_save_form', incident_save_form.IncidentSaveForm, 'incident_save_form'),
+    Route(r'/incident_form_creator', incident_form_creator.IncidentFormCreator, 'incident_form_creator'),
+    Route(r'/incident_list', incident_list.IncidentList, 'incident_list'),
+    Route(r'/incident_edit_phase', incident_edit_phase.IncidentEditPhase, 'incident_edit_phase'),
+    Route(r'/incident_add_phase', incident_add_phase.IncidentAddPhase, 'incident_add_phase'),
+    Route(r'/incident_edit', incident_edit.IncidentEdit, 'incident_edit'),
+    Route(r'/incident_edit_phases', incident_edit_phases.IncidentEditPhases, 'incident_edit_phases'),
+    Route(r'/incident_edit_map_definition', incident_edit_map_definition.IncidentEditMapDefinition, 'incident_edit_map_definition'),
+    Route(r'/incident_edit_communications_definition', incident_edit_communications_definition.IncidentEditCommunicationsDefinition, 'incident_edit_communications_definition'),
+    
 
     Route(r'/admin-create-incident-form', admin_create_incident_form_handler.AdminCreateIncidentFormHandler, 'admin_create_incident_form_handler'),
     Route(r'/admin-global-settings', admin_global_settings_handler.AdminGlobalSettingsHandler, 'admin_global_settings'),

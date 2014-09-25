@@ -397,3 +397,7 @@ def reported_by_for_this_site(site, phase_name, org):
   org_key = str(org.key())
   setattr(site, attr_name, db.Key(org_key))
   return site
+
+
+# lines 187 to 257, and properties much be changed to match what is present in indexing2 branch's site_db.py.
+# Then we will have to match form_handler, to make sure it works with new site_db

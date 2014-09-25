@@ -30,6 +30,9 @@ from google.appengine.api import search
 from wtforms import Form, BooleanField, TextField, validators, PasswordField, ValidationError, RadioField, SelectField
 
 # Local libraries.
+from indexed import SearchIndexedExpandoModel
+from memcache_utils import memcached
+from appengine_utils import deserialize_entity, generate_from_search, search_doc_to_dict
 import event_db
 import organization
 import metaphone
@@ -86,6 +89,10 @@ STATUSES = [
   "Closed, duplicate",
 ]
 
+
+SHORT_STATUS_OPEN = u'Open'
+SHORT_STATUS_CLOSED = u'Closed'
+
 STATUSES_UNICODE = map(unicode, STATUSES)
 
 
@@ -127,6 +134,79 @@ class Site(db.Expando):
   )
   
   open_phases_list = db.StringListProperty()
+  
+  
+  status = db.StringProperty(
+    choices=STATUSES,
+    default="Open, unassigned"
+  )
+  short_status = db.StringProperty()
+
+  @property
+  def full_address(self):
+    return ", ".join(
+      map(
+        lambda field: field if field else '',
+        [self.address, self.city, self.county, self.state, self.zip_code]
+      )
+    )
+
+  @property
+  def county_and_state(self):
+      return (
+          (self.county if self.county else u'[Unknown]') +
+          ((u', %s' % self.state) if self.state else u'')
+      )
+
+  def to_dict(self):
+      " No datastore lookups allowed here - slows bulk lookups. "
+      return dict(
+          to_dict(self),
+          id=self.key().id(),
+          claimed_by={
+              "name": self.claimed_by_name
+          } if self.claimed_by_name else None,
+          reported_by={
+              "name": self.reported_by_name
+          } if self.reported_by_name else None,
+      )
+
+  @property
+  def as_dict(self):
+      " Property synonym "
+      return self.to_dict()
+
+  def before_put(self):
+      self.compute_similarity_matching_fields()
+
+      # set short status
+      self.short_status = (
+          SHORT_STATUS_OPEN
+          if self.status.startswith('Open')
+          else SHORT_STATUS_CLOSED
+      )
+
+      # denorm name fields from referenced orgs
+      if self.reported_by:
+          self.reported_by_name = self.reported_by.name
+      if self.claimed_by:
+          self.claimed_by_name = self.claimed_by.name
+
+      # set blurred co-ordinates
+      self.blurred_latitude = self.latitude + random.uniform(-0.001798, 0.001798)
+      self.blurred_longitude = self.longitude + random.uniform(-0.001798, 0.001798)
+
+  def after_put(self):
+      super(Site, self).after_put()
+      # geospatial index ## NOTE: THIS DOES NOT WORK ON DEV_APPENGINE 
+      # (as per https://code.google.com/p/googleappengine/issues/detail?id=7769 )
+      search_doc = search.Document(
+        doc_id=str(self.key()),
+        fields=[
+          search.GeoField(name='loc', value=search.GeoPoint(self.latitude, self.longitude))
+      ])
+      search.Index(name='GEOSEARCH_INDEX').put(search_doc)
+
 
   def get_phase_field(self, phase_name, field_name):
       combined_field_name = u'phase_%s_%s' %(phase_name, field_name)
@@ -203,7 +283,103 @@ class Site(db.Expando):
         except:
           logging.critical("Failed to parse: " + value + " " + str(self.key().id()))
     return csv_row
+  def indexes_and_fields(self):
+      return [
+          (search.Index('SiteCompleteIndex'), [
+              search.TextField('s', self.serialized),
+              search.AtomField('id', unicode(self.key().id())),
+              search.AtomField('event_key', unicode(self.event.key())),
+              search.AtomField('case_number', self.case_number),
+              search.AtomField('short_status', self.short_status),
+          ]),
+          (search.Index('SitePinIndex'), [
+              search.AtomField('id', unicode(self.key().id())),
+              search.AtomField('event_key', unicode(self.event.key())),
+              search.AtomField('case_number', self.case_number),
+              search.AtomField('status', self.status),
+              search.AtomField('short_status', self.short_status),
+              search.AtomField('work_type', self.work_type),
+              search.NumberField('latitude', self.latitude),
+              search.NumberField('longitude', self.longitude),
+              search.TextField('name', self.name),
+              search.TextField('address', self.address),
+              search.TextField('city', self.city),
+              search.TextField('county', self.county),
+              search.TextField('state', self.state),
+              search.TextField('zip_code', self.zip_code),
+              search.TextField('reported_by_name', self.reported_by_name),
+              search.TextField('claimed_by_name', self.claimed_by_name),
+          ]),
+          (search.Index('SitePublicPinIndex'), [
+              search.AtomField('event_key', unicode(self.event.key())),
+              search.AtomField('case_number', self.case_number),
+              search.AtomField('status', self.status),
+              search.AtomField('short_status', self.short_status),
+              search.AtomField('work_type', self.work_type),
+              search.NumberField('blurred_latitude', self.blurred_latitude),
+              search.NumberField('blurred_longitude', self.blurred_longitude),
+          ]),
+      ]
 
+  @classmethod
+  @memcached(cache_tag='SiteCaches')
+  def in_event(cls, event_key, n, page, short_status=None):
+      search_index = search.Index('SiteCompleteIndex')
+      query_str = (
+          u'event_key:%s' % unicode(event_key) +
+          (u' short_status:%s' % short_status) if short_status else u''
+      )
+      results = generate_from_search(search_index, query_str, n, n*page)
+      return [deserialize_entity(hit['s'][0].value) for hit in results]
+
+  @classmethod
+  @memcached(cache_tag='SiteCaches')
+  def pins_in_event(cls, event_key, n, page, short_status=None):
+      search_index = search.Index('SitePinIndex')
+      query_str = (
+          u'event_key:%s' % unicode(event_key) +
+          (u' short_status:%s' % short_status) if short_status else u''
+      )
+      results = generate_from_search(search_index, query_str, n, n*page)
+
+      def augment_connected_orgs(d):
+          " Meets expectation of existing interface. "
+          del(d['event_key'])
+          d['reported_by'] = (
+              {'name': d['reported_by_name']}
+              if d['reported_by_name'] else None
+          )
+          d['claimed_by'] = (
+              {'name': d['claimed_by_name']}
+              if d['claimed_by_name'] else None
+          )
+          return d
+
+      return map(augment_connected_orgs, map(search_doc_to_dict, results))
+
+  @classmethod
+  @memcached(cache_tag='SiteCaches')
+  def public_pins_in_event(cls, event_key, n, page, short_status=None):
+      search_index = search.Index('SitePublicPinIndex')
+      query_str = (
+          u'event_key:%s' % unicode(event_key) +
+          (u' short_status:%s' % short_status) if short_status else u''
+      )
+      results = generate_from_search(search_index, query_str, n, n*page)
+
+      def filter_fields(d):
+          del(d['event_key'])
+          del(d['short_status'])
+          return d
+
+      return map(filter_fields, map(search_doc_to_dict, results))
+
+  @classmethod
+  def by_ids(cls, event, ids):
+      ids = set(ids)
+      for site in cls.all_in_event(event.key()):
+          if site.key().id() in ids:
+              yield site
 
 APARTMENT_SIGNIFIERS = ["#", "Suite", "Ste", "Apartment", "Apt", "Unit", "Department", "Dept", "Room", "Rm", "Floor", "Fl", "Bldg", "Building", "Basement", "Bsmt", "Front", "Frnt", "Lobby", "Lbby", "Lot", "Lower", "Lowr", "Office", "Ofc", "Penthouse", "Pent", "PH", "Rear", "Side", "Slip", "Space", "Trailer", "Trlr", "Upper", "Uppr"]
 
@@ -397,7 +573,3 @@ def reported_by_for_this_site(site, phase_name, org):
   org_key = str(org.key())
   setattr(site, attr_name, db.Key(org_key))
   return site
-
-
-# lines 187 to 257, and properties much be changed to match what is present in indexing2 branch's site_db.py.
-# Then we will have to match form_handler, to make sure it works with new site_db

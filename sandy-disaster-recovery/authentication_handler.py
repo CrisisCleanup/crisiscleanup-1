@@ -73,7 +73,9 @@ def GetOrganizationForm(post_data):
         org_verified=True,
         is_active=True,
         is_admin=True,
-        incidents=[event_key]
+        incidents=[event_key],
+        permissions="Full",
+        does_recovery=True,
     )
     admin_org.put()
     admin_contact = primary_contact_db.Contact(

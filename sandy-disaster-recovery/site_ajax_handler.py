@@ -81,6 +81,7 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
             site_pins,
             default=dthandler
         )
+        raise Exception(json_output)
         self.response.out.write(json_output)
         return
       

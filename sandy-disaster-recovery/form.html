@@ -168,6 +168,8 @@ Object.keys(post_json).forEach(function(key) {
 
 <div id="form_background">
 <div id="form">
+{{ phases_links|safe }}
+
 {% if delete %}
 <div class=delete_form>
   <form method=POST action="{{delete_post_url}}">
@@ -219,8 +221,8 @@ Object.keys(post_json).forEach(function(key) {
 
 
 <div id="similars"></div>
-
 {{ single_site|safe }}  {# main form #}
+{{submit_button}}
 
 {% if id %}
 <input type="hidden" name="_id" value="{{id}}">

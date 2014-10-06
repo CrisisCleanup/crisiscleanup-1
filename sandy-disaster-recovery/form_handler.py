@@ -116,7 +116,10 @@ class FormHandler(base.AuthenticatedHandler):
          "id": None,
          "page": "/",
          "event_name": event.name,
-         "hidden_site_id": hidden_site_id}))
+         "hidden_site_id": hidden_site_id,
+         "phases_links": phases_links,
+          "submit_button": submit_button,
+          }))
 
 
   def AuthenticatedPost(self, org, event):

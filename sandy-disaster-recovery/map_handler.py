@@ -19,12 +19,9 @@ import datetime
 import jinja2
 import json
 import os
-from google.appengine.ext import db
-from google.appengine.api import memcache
 
 # Local libraries.
 import base
-import event_db
 import key
 import site_db
 import page_db
@@ -37,83 +34,49 @@ menubox_template = jinja_environment.get_template('_menubox.html')
 
 
 class MapHandler(base.RequestHandler):
+
+  DEFAULT_ZOOM_LEVEL = 15
+
   def get(self):
     filters = [
-              #["debris_only", "Remove Debris Only"],
-              #["electricity", "Has Electricity"],
-              #["no_standing_water", "No Standing Water"],
-              #["not_habitable", "Home is not habitable"],
-              ["Flood", "Primary problem is flood damage"],
-              ["Trees", "Primary problem is trees"],
-              ["Goods or Services", "Primary need is goods and services"]]
-              #["CT", "Connecticut"],
-              #["NJ", "New Jersey"],
-              #["NY", "New York"]]
+          ["Flood", "Primary problem is flood damage"],
+          ["Trees", "Primary problem is trees"],
+          ["Goods or Services", "Primary need is goods and services"]
+    ]
 
+    # check org authed
     org, event = key.CheckAuthorization(self.request)
-    if org.permissions == "Situational Awareness":
-      self.redirect("/sit_aware_redirect")
-      return
-    if org:
-      filters = [["claimed", "Claimed by " + org.name],
-                 ["unclaimed", "Unclaimed"],
-                 ["open", "Open"],
-                 ["closed", "Closed"],
-                 ["reported", "Reported by " + org.name],
-                 ] + filters
-
-      site_id = self.request.get("id")
-      # default to 15
-      zoom_level = self.request.get("z", default_value = "15")
-
-      template_values = page_db.get_page_block_dict()
-      template_values.update({
-          "version" : os.environ['CURRENT_VERSION_ID'],
-          #"uncompiled" : True,
-          "counties" : event.counties,
-          "org" : org,
-          "menubox" : menubox_template.render({"org": org,
-                                             "event": event,
-                                             "include_search": True,
-                                             "admin": org.is_admin,
-                                             }),
-          "status_choices" : [json.dumps(c) for c in
-                              site_db.Site.status.choices],
-          "filters" : filters,
-          "demo" : False,
-          "zoom_level" : zoom_level,
-          "site_id" :  site_id,
-	  "event_name": event.name,
-
-        })
-    else:
-      # TODO(Jeremy): Temporary code until this handler scales.
+    if not org:
+      # bail out
       self.redirect("/authentication?destination=/map")
       return
-      # Allow people to bookmark an unauthenticated event map,
-      # by setting the event ID.
-      event = event_db.GetEventFromParam(self.request.get("event_id"))
-      if not event:
-        self.response.set_status(404)
-        return
-      template_values = page_db.get_page_block_dict()
-      template_values.update({
-          "sites" :
-             [json.dumps({
-                 "latitude": round(s.latitude, 2),
-                 "longitude": round(s.longitude, 2),
-                 "debris_removal_only": s.debris_removal_only,
-                 "electricity": s.electricity,
-                 "standing_water": s.standing_water,
-                 "tree_damage": s.tree_damage,
-                 "habitable": s.habitable,
-                 "electrical_lines": s.electrical_lines,
-                 "cable_lines": s.cable_lines,
-                 "cutting_cause_harm": s.cutting_cause_harm,
-                 "work_type": s.work_type,
-                 "state": s.state,
-                 }) for s in [p[0] for p in site_db.GetAllCached(event)]],
-          "filters" : filters,
-          "demo" : True,
-        })
+
+    # render template
+    filters = [["claimed", "Claimed by " + org.name],
+               ["unclaimed", "Unclaimed"],
+               ["open", "Open"],
+               ["closed", "Closed"],
+               ["reported", "Reported by " + org.name],
+               ] + filters
+    site_id = self.request.get("id")
+    zoom_level = self.request.get("z", default_value=str(self.DEFAULT_ZOOM_LEVEL))
+    template_values = page_db.get_page_block_dict()
+    template_values.update({
+        "version" : os.environ['CURRENT_VERSION_ID'],
+        #"uncompiled" : True,
+        "counties" : event.counties,
+        "org" : org,
+        "menubox" : menubox_template.render({"org": org,
+                                           "event": event,
+                                           "include_search": True,
+                                           "admin": org.is_admin,
+                                           }),
+        "status_choices" : [json.dumps(c) for c in
+                            site_db.Site.status.choices],
+        "filters" : filters,
+        "demo" : False,
+        "zoom_level" : zoom_level,
+        "site_id" :  site_id,
+        "event_name": event.name,
+    })
     self.response.out.write(template.render(template_values))

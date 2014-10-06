@@ -199,7 +199,18 @@ class PrivateSiteHandler(base.RequestHandler):
 	#default=dthandler
     #)
     #output_array = []
-    #json_output = json.loads(output)
+    output_dict = {
+      "name": this_site.name,
+      "request_date": this_site.request_date.strftime("%B %d, %Y"),
+      "address": this_site.address,
+      "city": this_site.city,
+      "state": this_site.state,
+      "zip_code": this_site.zip_code,
+      "key": this_site.key,
+      "work_type": this_site.work_type,
+      "status": this_site.status
+    }
+    #json_output = json.loads(str(output_dict))
     
     ##output_copy = deepcopy(json_output)
     #remove_from_output_list = ["event_name", "city_metaphone", 'address_metaphone', 'name_metaphone', 'event', 'latitude', 'longitude', 'blurred_latitude', 'blurred_longitude', 'phase_id', 'phone_normalised', 'is_legacy_and_first_phase', 'address_digits', 'id']
@@ -216,7 +227,10 @@ class PrivateSiteHandler(base.RequestHandler):
 	#final_output[key] = json_output[0][key]
 	
     #raise Exception(final_output)
-    html_string = format_output(final_output, case_number, phase_number, phase_id, ids[0], inc_def_query)
+    #sss = this_site.to_dict
+    #raise Exception(this_site["name"])
+    #raise Exception(this_site.key().id())
+    html_string = format_output(output_dict, case_number, phase_number, phase_id, this_site.key().id(), inc_def_query)
     #raise Exception(html_string)
 
     #raise Exception(final_output)

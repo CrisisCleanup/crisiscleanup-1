@@ -98,6 +98,7 @@ class PrivateMapHandler(base.AuthenticatedHandler):
 	[s[1] for s in site_db.GetAllCached(event, ids)],
 	default=dthandler
     )
+    #raise Exception(output)
     self.response.out.write(output)
 
 

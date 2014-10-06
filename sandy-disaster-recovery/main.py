@@ -117,6 +117,9 @@ from admin_handler import admin_create_incident_form_handler
 from admin_handler import admin_global_settings_handler
 from admin_handler import admin_define_permissions
 
+from api import get_incident_definition
+from api import private_map_handler
+
 import form_ajax_handler
 import update_csv_handler
 from admin_handler import admin_create_incident_csv_handler
@@ -159,6 +162,8 @@ app = webapp2.WSGIApplication([
     Route(r'/old', redirect_to=SPREADSHEET_URL, name='spreadsheet_redirect'),
     Route(r'/api/site', site_api_handler.SiteApiHandler, 'site_api'),
     Route(r'/api/site_ajax', site_ajax_handler.SiteAjaxHandler, 'site_ajax'),
+    Route(r'/api/private_map_handler', private_map_handler.PrivateMapHandler, 'private_map_handler'),
+    Route(r'/api/get_incident_definition', get_incident_definition.GetIncidentDefinition, 'get_incident_definition'),
     Route(r'/authentication', authentication_handler.AuthenticationHandler,
           'auth'),
     Route(r'/export', export_handler.ExportHandler, 'export'),

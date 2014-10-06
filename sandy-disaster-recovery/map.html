@@ -43,13 +43,13 @@ body { background-color: #d4d4d4; }
         };
         var map = new google.maps.Map(document.getElementById("map-canvas"),
             mapOptions);
-	var ctaLayer = new google.maps.KmlLayer({
-	  url: "{{kml_layer}}"
-	});
-	ctaLayer.setMap(map);
-	MarkerClusterer.IMAGE_PATH = "/icons/m";
-	var markerCluster = new MarkerClusterer(map);
-	clusterer = markerCluster;
+        var ctaLayer = new google.maps.KmlLayer({
+          url: "{{kml_layer}}"
+        });
+        ctaLayer.setMap(map);
+        MarkerClusterer.IMAGE_PATH = "/icons/m";
+        var markerCluster = new MarkerClusterer(map);
+        clusterer = markerCluster;
       }
       
       google.maps.event.addDomListener(window, 'load', initialize);
@@ -65,46 +65,46 @@ body { background-color: #d4d4d4; }
       <div class="row">
 
         <div class="col-md-2">
-	  <br>
+          <br>
 
-	  {{ menubox }}
-	  <br />Search: <input id="search_box" style="width:200px" />
+          {{ menubox }}
+          <br />Search: <input id="search_box" style="width:200px" />
 
-	  <div id="legend_div">
-	    <h2>Legend</h2>
-	  </div>
-	  <div id="filters_div">
-	    <h2>Filters</h2>
-	  </div>
-	  <br>
-	  <p>Download Spreadsheet (CSV):</p>
-	  <form method="POST" action="/export" target="_blank" id="csv_form">
-	  <input name="id" class="id_list" type="hidden" value="" />
-	  <button type="submit" class="export-btn" id="filtered-export-btn" name="download" value="selected">
-	  Download Visible
-	  </button>
-	  <button type="submit" class="all-export-btn" id="all-export-btn" name="download" value="all">
-	    Download All
-	  </button>
-	  <br>
-	  <div id="export-wait-message" style="display: none; margin-top: 10px;">
-	    <div id="export-spinner" style="display: inline-block; float: right;"></div>
-	    This download may take<br>
-	    a number of minutes.<br>
-	    Please wait...
-	  </div>
-	</form>
+          <div id="legend_div">
+            <h2>Legend</h2>
+          </div>
+          <div id="filters_div">
+            <h2>Filters</h2>
+          </div>
+          <br>
+          <p>Download Spreadsheet (CSV):</p>
+          <form method="POST" action="/export" target="_blank" id="csv_form">
+          <input name="id" class="id_list" type="hidden" value="" />
+          <button type="submit" class="export-btn" id="filtered-export-btn" name="download" value="selected">
+          Download Visible
+          </button>
+          <button type="submit" class="all-export-btn" id="all-export-btn" name="download" value="all">
+            Download All
+          </button>
+          <br>
+          <div id="export-wait-message" style="display: none; margin-top: 10px;">
+            <div id="export-spinner" style="display: inline-block; float: right;"></div>
+            This download may take<br>
+            a number of minutes.<br>
+            Please wait...
+          </div>
+        </form>
 
         </div>
         <div class="col-md-10" id="id_map">
-	  <div id="map-canvas"></div>
+          <div id="map-canvas"></div>
        </div>
        
-	<div class="col-md-0" id="collapsible">
-	 <table id="form_table">
-	  {{ single_site }}
-	  </table>
-	  
+        <div class="col-md-0" id="collapsible">
+         <table id="form_table">
+          {{ single_site }}
+          </table>
+          
        </div>
        <br>
 
@@ -120,33 +120,32 @@ body { background-color: #d4d4d4; }
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
     <script>
       $( "#search_box" ).autocomplete({
-	source: get_searches
+        source: get_searches
       });
       function get_searches(value, response) {
         var sites = []
         console.log(response);
-	console.log("Search");
-	console.log(value['term']);
+        console.log("Search");
+        console.log(value['term']);
 
     //   if (value.length > 2){
-	for (var i = 0; i < all_markers.length; i++) {
-	  console.log("log");
+        for (var i = 0; i < all_markers.length; i++) {
+          console.log("log");
     //       alert(value);
-	    if (all_markers[i]['site_info']['name'].indexOf(value['term']) != -1) {
-	      console.log(i);
-	      console.log(all_markers[i]['site_info']['name']);
-	      sites.push({value: all_markers[i]['site_info']['address'], label: all_markers[i]['site_info']['name']});
-		      
-	      
-	    }
-	  response($.map(sites, function( item ) {
-		  /* At this point I call a function, I use to decide whether to add on the list to be selected by the user. */
-		  return item;
-	      }));
-	} 
+            if (all_markers[i]['site_info']['name'].indexOf(value['term']) != -1) {
+              console.log(i);
+              console.log(all_markers[i]['site_info']['name']);
+              sites.push({value: all_markers[i]['site_info']['address'], label: all_markers[i]['site_info']['name']});
+                      
+              
+            }
+          response($.map(sites, function( item ) {
+                  /* At this point I call a function, I use to decide whether to add on the list to be selected by the user. */
+                  return item;
+              }));
+        } 
     //   }
       }
     </script>
 
 </html>
-

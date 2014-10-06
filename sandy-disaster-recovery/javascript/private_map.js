@@ -222,6 +222,7 @@ var populateMapByIncident = function(incident, page, old_markers) {
     "/api/private_map_handler",
     {"shortname" : incident, "page": page, "phase_number": phase_number},
     function(sites_list) {
+//       console.log(sites_list);
     if (sites_list.length > 99) {
       run_again = true;
     }
@@ -236,7 +237,9 @@ var populateMapByIncident = function(incident, page, old_markers) {
        
        for (var i = 0; i < sites_list.length; i++) {
 	 var details = getInfoboxDetails(sites_list[i]);
+//          console.log(sites_list[i].longitude);
 	 var latLng = new google.maps.LatLng(sites_list[i].latitude, sites_list[i].longitude);
+//          console.log(latLng);
 	 var marker = new google.maps.Marker({'position': latLng, 
 					     'icon': getMarkerIcon(sites_list[i]), 
 					     'site_id': sites_list[i].id, 

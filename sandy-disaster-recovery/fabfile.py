@@ -13,7 +13,7 @@ import yaml
 
 # constants
 
-ALLOWED_SDK_VERSIONS = {'1.8.8', '1.8.9', '2.3'}
+ALLOWED_SDK_VERSIONS = {'1.8.8', '1.8.9'}
 APP_YAML_FILENAME = 'app.yaml'
 APP_YAML_TEMPLATE_FILENAME = 'app.yaml.template.yaml'
 BUILD_DIR_PREFIX = 'ccbuild'
@@ -25,7 +25,6 @@ POSSIBLE_SDK_DIRECTORIES = [
     '../google_appengine/',
     '../../google_appengine/',
     '../../../google_appengine/',
-    '../../../../google_appengine'
 ]
 
 try:
@@ -43,8 +42,8 @@ except StopIteration:
 
 env.master_branch = "master"
 env.default_gae_app_version = "live"
-env.sdk_path = '/home/andy/google_appengine'
-env.appcfg = os.path.realpath(os.path.join('/home/andy/google_appengine', 'appcfg.py'))
+env.sdk_path = os.path.realpath(_sdk_path)
+env.appcfg = os.path.realpath(os.path.join(_sdk_path, 'appcfg.py'))
 env.sdk_path = os.path.realpath(_sdk_path)
 
 
@@ -126,7 +125,6 @@ def sdk_version_ok():
         current_sdk_version = sdk_version_d['release']
     except:
         current_sdk_version = None
-    current_sdk_version = '2.3'
     if current_sdk_version not in ALLOWED_SDK_VERSIONS:
         abort("Local SDK version is %s - one of %s is required" % (
             current_sdk_version, ALLOWED_SDK_VERSIONS))

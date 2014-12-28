@@ -29,6 +29,8 @@ MOORE_CSV_FIELDS_LIST = ["claimed_by", "reported_by", "modified_by", "case_numbe
 
 PULASKI_CSV_FIELDS_LIST = ["claimed_by", "reported_by", "modified_by", "case_number", "Days Waiting From %(today)s", "name", "request_date", "address", "city", "county", "state", "zip_code", "latitude", "longitude", "cross_street", "phone1", "phone2", "time_to_call", "work_type", "rent_or_own", "work_without_resident", "member_of_assessing_organization", "first_responder", "older_than_60", "special_needs", "priority", "flood_height", "floors_affected", "carpet_removal", "hardwood_floor_removal", "drywall_removal", "appliance_removal", "heavy_item_removal", "standing_water", "mold_remediation", "pump_needed", "work_requested", "notes", "nonvegitative_debris_removal", "vegitative_debris_removal", "house_roof_damage", "outbuilding_roof_damage", "tarps_needed", "help_install_tarp", "num_trees_down", "num_wide_trees", "habitable", "electricity", "electrical_lines", "unsafe_roof", "flammables", "other_hazards", "rebuild", "num_stories", "num_rooms", "occupied", "dwelling_type", "residency", "air_conditioning_type", "heat_type", "gas_source", "gas_status", "gas_shutoff_location", "water_source", "water_status", "water_shutoff_location", "septic_type", "septic_location", "damage_overall", "damage_electrical", "damage_gas", "damage_septic", "damage_wells", "damage_fencing", "damage_concrete", "damage_yard", "damage_shingles", "damage_roof_metal", "damage_roof_tile", "damage_foundation", "damage_brick_wall", "damage_siding", "damage_cmu", "damage_windows", "damage_doors", "exterior_notes", "damage_drywall", "damage_plaster_walls", "damage_paneling", "damage_hardwood_floor", "damage_carpet", "damage_ceiling", "damage_kitchen", "damage_bathroom", "damage_refrigerator", "damage_stove", "interior_notes", "damage_furnace", "damage_ac", "damage_ducts", "hvac_notes", "status", "claim_for_org", "status", "assigned_to", "total_volunteers", "hours_worked_per_volunteer", "initials_of_resident_present", "status_notes", "prepared_by", "do_not_work_before", "cost_estimate_total", "cost_estimate_notes"]
 
+COLUMBIA_CSV_FIELDS_LIST = ['name', 'request_date', 'address', 'city', 'county', 'state', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'work_type', 'rent_or_own', 'older_than_60', 'insured', 'release_form', 'arc_referral', 'special_needs', 'heavy_equipment', 'chainsaws', 'physical_labor', 'needs_food', 'needs_clothing', 'needs_shelter', 'needs_tarp', 'tree_debris', 'minor_home_repair', 'total_loss', 'needs_visual', 'other_needs', 'notes', 'other_hazards', 'claim_for_org', 'status', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'status_notes', 'prepared_by', 'do_not_work_before']
+
 APP_ID = app_identity.get_application_id()
 BUCKET_NAME = '/' + APP_ID
 
@@ -42,6 +44,8 @@ def get_csv_fields_list(event_short_name):
         csv_fields_list = MOORE_CSV_FIELDS_LIST
     elif event_short_name == 'pulaski':
         csv_fields_list = PULASKI_CSV_FIELDS_LIST
+    elif event_short_name == "columbia_tornado":
+        csv_fields_list = COLUMBIA_CSV_FIELDS_LIST
     else:
         csv_fields_list = DEFAULT_CSV_FIELDS_LIST
 

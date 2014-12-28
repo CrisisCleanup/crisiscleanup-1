@@ -129,7 +129,7 @@ Case #{{site.case_number}}</h3>
   <td rowspan="2" colspan=16 class="allBorders">
     <p class="data">{{site.address}}<br>
     {{site.city}}, {{site.state}} {{site.zip_code}}
-    {% if site.county %} ({{site.county}} County) {% endif %}
+    {% if site.county %} ({{site.county}}) {% endif %}
   </td>
   <td>
     <p>&nbsp;</p>
@@ -150,7 +150,7 @@ Case #{{site.case_number}}</h3>
     <p>Property Insured</p>
   </td>
   <td colspan=3 class="allBorders">
-    <p class="data">{yesno(site.insured)}}</p>
+    <p class="data">{{yesno(site.insured)}}</p>
   </td>
  </tr>
 

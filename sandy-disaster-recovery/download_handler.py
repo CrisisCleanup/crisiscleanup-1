@@ -80,5 +80,5 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
         self.response.headers['Content-Disposition'] = (
             str('attachment; filename="%s"' % filename_to_serve)
         )
-
+        raise Exception(gcs_fd.read())
 	self.response.write(gcs_fd.read())

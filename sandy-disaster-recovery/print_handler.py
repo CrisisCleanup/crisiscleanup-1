@@ -55,7 +55,7 @@ class PrintHandler(base.AuthenticatedHandler):
     if event.short_name == MOORE_OKLAHOMA_SHORT_NAME:
       print_single_template = jinja_environment.get_template('print_single_moore.html')
     if event.short_name == COLUMBIA_TORNADO_SHORT_NAME:
-      print_single_template = jinja_environment.get_template('print_single_columbia_tornado.html')
+      print_single_template = jinja_environment.get_template("print_single_columbia.html")
 
 
         

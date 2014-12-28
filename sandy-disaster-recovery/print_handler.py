@@ -31,6 +31,7 @@ LOCAL_TIME_OFFSET = datetime.timedelta(seconds=-5 * 3600)
 HATTIESBURG_SHORT_NAME = "hattiesburg"
 GEORGIA_SHORT_NAME = "gordon-barto-tornado"
 MOORE_OKLAHOMA_SHORT_NAME = "moore"
+COLUMBIA_TORNADO_SHORT_NAME = "columbia_tornado"
 
 def silent_none(value):
   if value is None:
@@ -53,6 +54,9 @@ class PrintHandler(base.AuthenticatedHandler):
       print_single_template = jinja_environment.get_template('print_single_derechos.html')
     if event.short_name == MOORE_OKLAHOMA_SHORT_NAME:
       print_single_template = jinja_environment.get_template('print_single_moore.html')
+    if event.short_name == COLUMBIA_TORNADO_SHORT_NAME:
+      print_single_template = jinja_environment.get_template('print_single_columbia_tornado.html')
+
 
         
     sites = site_util.SitesFromIds(self.request.get('id'), event)

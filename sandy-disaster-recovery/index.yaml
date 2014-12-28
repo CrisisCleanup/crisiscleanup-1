@@ -558,16 +558,24 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-- kind: Site
-  properties:
-  - name: zip_code
-  - name: status
-
 - kind: CSVRow
   properties:
   - name: csv_file
   - name: num
 
+- kind: Contact
+  properties:
+  - name: organization
+  - name: is_primary
+    direction: desc
+
+- kind: ExceptionRecord
+  properties:
+  - name: date
+  - name: major_version
+  - name: minor_version
+    direction: desc
+
 - kind: Organization
   properties:
   - name: incident
@@ -611,6 +619,36 @@ indexes:
   properties:
   - name: county
   - name: event
+  - name: state
+  - name: name
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
+  - name: state
+  - name: name
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
+  - name: state
+  - name: request_date
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
+  - name: state
+  - name: request_date
+    direction: desc
+
+- kind: Site
+  properties:
+  - name: county
+  - name: event
   - name: status
 
 - kind: Site
@@ -622,6 +660,11 @@ indexes:
   properties:
   - name: county
   - name: request_date
+
+- kind: Site
+  properties:
+  - name: county
+  - name: state
 
 - kind: Site
   properties:
@@ -637,70 +680,6 @@ indexes:
   - name: latitude
   - name: longitude
   - name: work_type
-
-- kind: Site
-  properties:
-  - name: event
-  - name: status
-
-- kind: Site
-  properties:
-  - name: event
-  - name: status
-  - name: case_number
-  - name: claimed_by
-  - name: floors_affected
-  - name: latitude
-  - name: longitude
-  - name: work_type
-
-- kind: Site
-  properties:
-  - name: event
-  - name: work_type
-
-- kind: Site
-  properties:
-  - name: county
-  - name: state
-
-- kind: Site
-  properties:
-  - name: event
-  - name: county
-  - name: state
-
-- kind: Site
-  properties:
-  - name: county
-  - name: event
-  - name: state
-  - name: request_date
-    direction: asc
-
-- kind: Site
-  properties:
-  - name: county
-  - name: event
-  - name: state
-  - name: request_date
-    direction: desc
-
-- kind: Site
-  properties:
-  - name: county
-  - name: event
-  - name: state
-  - name: name
-    direction: asc
-
-- kind: Site
-  properties:
-  - name: county
-  - name: event
-  - name: state
-  - name: name
-    direction: desc
 
 - kind: Site
   properties:
@@ -713,23 +692,30 @@ indexes:
   - name: status
   - name: work_type
 
+- kind: Site
+  properties:
+  - name: event
+  - name: county
+  - name: state
+
+- kind: Site
+  properties:
+  - name: event
+  - name: status
+  - name: case_number
+  - name: claimed_by
+  - name: floors_affected
+  - name: latitude
+  - name: longitude
+  - name: work_type
+
+- kind: Site
+  properties:
+  - name: zip_code
+  - name: status
+
 - kind: __BlobInfo__
   properties:
   - name: filename
   - name: creation
-    direction: desc
-
-- kind: Contact
-  properties:
-  - name: organization
-  - name: is_primary
-    direction: desc
-
-# for ereporter
-
-- kind: ExceptionRecord
-  properties:
-  - name: date
-  - name: major_version
-  - name: minor_version
     direction: desc

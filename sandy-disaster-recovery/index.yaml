@@ -617,6 +617,14 @@ indexes:
 
 - kind: Site
   properties:
+  - name: case_number
+  - name: latitude
+  - name: longitude
+  - name: status
+  - name: work_type
+
+- kind: Site
+  properties:
   - name: county
   - name: event
   - name: status
@@ -649,6 +657,15 @@ indexes:
 - kind: Site
   properties:
   - name: event
+  - name: case_number
+  - name: latitude
+  - name: longitude
+  - name: status
+  - name: work_type
+
+- kind: Site
+  properties:
+  - name: event
   - name: claimed_by
   - name: county
   - name: state
@@ -672,12 +689,37 @@ indexes:
 - kind: Site
   properties:
   - name: event
+  - name: open_phases_list
+  - name: case_number
+  - name: latitude
+  - name: longitude
+  - name: status
+  - name: work_type
+
+- kind: Site
+  properties:
+  - name: event
   - name: status
   - name: case_number
   - name: claimed_by
   - name: floors_affected
   - name: latitude
   - name: longitude
+  - name: work_type
+
+- kind: Site
+  properties:
+  - name: id
+  - name: latitude
+  - name: longitude
+  - name: status
+  - name: work_type
+
+- kind: Site
+  properties:
+  - name: latitude
+  - name: longitude
+  - name: status
   - name: work_type
 
 - kind: Site

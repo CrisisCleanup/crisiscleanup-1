@@ -99,7 +99,27 @@ class PrivateMapHandler(base.AuthenticatedHandler):
 	default=dthandler
     )
     #raise Exception(output)
-    self.response.out.write(output)
+  
+    json_output = []
+    ek = event.key()
+    eks = str(ek)
+    nam = phase_name.lower()
+    #for proj in db.Query(site_db.Site, projection=('latitude', 'longitude','work_type', "status", "case_number")):
+    for proj in db.GqlQuery("SELECT latitude, longitude, work_type, status, case_number " +
+                            "from Site " +
+                            "where event = :1 and open_phases_list = :2", event.key(), phase_name.lower()):
+      info = {
+        "latitude": proj.latitude,
+        "longitude": proj.longitude,
+        "work_type": proj.work_type,
+        "status": proj.status,
+        "id": proj.key().id(),
+        "case_number": proj.case_number
+      }
+      json_output.append(info)
+      
+    #raise Exception(json_output)
+    self.response.out.write(json.dumps(json_output))
 
 
 #def get_phase_name(form_json, phase_number):

@@ -46,6 +46,24 @@ def populate_phase_links(phases_json, this_phase = None):
     
   return links
 
+def populate_map_phase_links(phases_json, this_phase = None):
+  if this_phase == None:
+    this_phase == "0"
+  links = "<h3>Phases</h3>"
+  i = 0
+  for phase in phases_json:
+    num = str(i).replace('"', '')
+    separator = ""
+    if i > 0:
+      separator = " | "
+    if str(i) == this_phase:
+      links = links + separator + '<a style="font-weight:bold; font-size:150%" href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+    else:
+      links = links + separator + '<a href="/map?phase_number=' + str(i) + '">' + phase['phase_name'] + '</a>'
+
+    i+=1
+    
+  return links
 
 def get_phase_id(form_json, phase_number):
   phase_number = int(phase_number)

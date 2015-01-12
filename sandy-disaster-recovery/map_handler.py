@@ -46,13 +46,16 @@ single_site_template = jinja_environment.get_template('single_site_incident_form
 class MapHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
 
+    url_phase_number = self.request.get("phase_number")
+    #for p in proj
+      #a = p
     q = db.Query(incident_definition.IncidentDefinition)
     q.filter("incident =", event.key())
     inc_def_query = q.get()
-    #if inc_def_query:
-      ##raise Exception(id)
-      #phases_links = populate_phase_links(json.loads(inc_def_query.phases_json), id)
-
+    phase_links = None
+    if inc_def_query:
+      phase_links = phase_helpers.populate_map_phase_links(json.loads(inc_def_query.phases_json), url_phase_number)
+      
     #phase_id = None
     
     phase_number = 0
@@ -130,7 +133,7 @@ class MapHandler(base.AuthenticatedHandler):
                                              "event": event,
                                              "include_search": True,
                                              "admin": org.is_admin,
-                                             #"phase_links": phase_helpers.populate_phase_links(event, phase_number)
+                                             "phase_links": phase_links
                                              }),
           "status_choices" : [json.dumps(c) for c in
                               site_db.Site.status.choices],

@@ -218,60 +218,71 @@ var set_new_markers = function() {
 var populateMapByIncident = function(incident, page, old_markers) {
   var run_again = false;
   var phase_number = GetUrlValue("phase_number")
-  $.getJSON(
-    "/api/private_map_handler",
-    {"shortname" : incident, "page": page, "phase_number": phase_number},
-    function(sites_list) {
-//       console.log(sites_list);
-    if (sites_list.length > 99) {
-      run_again = true;
-    }
-          var mapOptions = {
-    zoom: 8,
-    center: new google.maps.LatLng(40.6501038, -73.8495823),
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-//     var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-       var markers = [];
-       var i = 0;
-       
-       for (var i = 0; i < sites_list.length; i++) {
-	 var details = getInfoboxDetails(sites_list[i]);
-//          console.log(sites_list[i].longitude);
-	 var latLng = new google.maps.LatLng(sites_list[i].latitude, sites_list[i].longitude);
-//          console.log(latLng);
-	 var marker = new google.maps.Marker({'position': latLng, 
-					     'icon': getMarkerIcon(sites_list[i]), 
-					     'site_id': sites_list[i].id, 
-					     'site_info': sites_list[i],
-	});
-	 markers.push(marker);
-	 var site_id = sites_list[i].id;
-	
-	google.maps.event.addListener(marker, "click", function() {
-	  var this_phase_id = this.site_info.phase_id;
+  console.log("phase_number: " + phase_number);
+  // if no phase_number, create a pop up asking the user to pick a phase.
+  // use another version of phase links to return to a messi pop up
+//   new Messi('This is a message with Messi.', {title: 'Title'});
 
-	  new Messi.load('/api/private_site_handler?case_number=' + this.site_info.case_number +'&phase_number=' + phase_number,
-	  {title: 'Case Number: ' + this.site_info.case_number + '<br>Work Type: ' + this.site_info.work_type, titleClass: 'info'});
+  if (typeof phase_number == "undefined") {
+//     new Messi.load('/', {title: 'To view the map, choose a phase'});
 
-	});
-       }
-       
-       	  var total_markers = old_markers.concat(markers)
-	         clusterer.addMarkers(total_markers);
-	  all_markers = old_markers.concat(markers);
-       $("#display_incident").text("Incident: " + incident);
+    // load phase links here
+  } else {
+    $.getJSON(
+      "/api/private_map_handler",
+      {"shortname" : incident, "page": page, "phase_number": phase_number},
+      function(sites_list) {
+  //       console.log(sites_list);
+      if (sites_list.length > 99) {
+        run_again = true;
+      }
+            var mapOptions = {
+      zoom: 8,
+      center: new google.maps.LatLng(40.6501038, -73.8495823),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+  //     var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+        var markers = [];
+        var i = 0;
+        
+        for (var i = 0; i < sites_list.length; i++) {
+          var details = getInfoboxDetails(sites_list[i]);
+  //          console.log(sites_list[i].longitude);
+          var latLng = new google.maps.LatLng(sites_list[i].latitude, sites_list[i].longitude);
+  //          console.log(latLng);
+          var marker = new google.maps.Marker({'position': latLng, 
+                                              'icon': getMarkerIcon(sites_list[i]), 
+                                              'site_id': sites_list[i].id, 
+                                              'site_info': sites_list[i],
+          });
+          markers.push(marker);
+          var site_id = sites_list[i].id;
+          
+          google.maps.event.addListener(marker, "click", function() {
+            var this_phase_id = this.site_info.phase_id;
 
-         if (run_again == true) {
-	    populateMapByIncident(incident, page + 1, total_markers);
-	} else {
+            new Messi.load('/api/private_site_handler?case_number=' + this.site_info.case_number +'&phase_number=' + phase_number,
+            {title: 'Case Number: ' + this.site_info.case_number + '<br>Work Type: ' + this.site_info.work_type, titleClass: 'info'});
 
-	  var total_markers = old_markers.concat(markers);
-	         clusterer.addMarkers(total_markers);
-	}
-       
-    }
-  );
+          });
+        }
+        
+            var total_markers = old_markers.concat(markers)
+                  clusterer.addMarkers(total_markers);
+            all_markers = old_markers.concat(markers);
+        $("#display_incident").text("Incident: " + incident);
+
+          if (run_again == true) {
+              populateMapByIncident(incident, page + 1, total_markers);
+          } else {
+
+            var total_markers = old_markers.concat(markers);
+                  clusterer.addMarkers(total_markers);
+          }
+        
+      }
+    );
+  }
 
 }
 

@@ -136,7 +136,14 @@ class EditHandler(base.AuthenticatedHandler):
 	    
 	elif k=="priority" or k=="destruction_level":
 	  #try:
-	  id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
+	  if event.short_name = "columbia_tornado":
+            pass
+          else:
+            logging.debug(event.short_name)
+            logging.debug(k + " is the key")
+            logging.debug(v + " is the value")
+            id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
+          
 	  #new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
 
 	  new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 

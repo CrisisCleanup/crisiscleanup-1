@@ -136,7 +136,7 @@ class EditHandler(base.AuthenticatedHandler):
 	    
 	elif k=="priority" or k=="destruction_level":
 	  #try:
-	  if event.short_name = "columbia_tornado":
+	  if event.short_name == "columbia_tornado":
             pass
           else:
             logging.debug(event.short_name)

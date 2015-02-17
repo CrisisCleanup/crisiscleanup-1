@@ -31,6 +31,8 @@ PULASKI_CSV_FIELDS_LIST = ["claimed_by", "reported_by", "modified_by", "case_num
 
 COLUMBIA_CSV_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'case_number', 'Days Waiting From %(today)s', 'name', 'request_date', 'address', 'city', 'county', 'state', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'work_type', 'current_phase', 'rent_or_own', 'older_than_60', 'insured', 'release_form', 'arc_referral', 'special_needs', 'heavy_equipment', 'chainsaws', 'physical_labor', 'needs_food', 'needs_clothing', 'needs_shelter', 'needs_tarp', 'tree_debris', 'minor_home_repair', 'total_loss', 'needs_visual', 'other_needs', 'notes', 'other_hazards', 'claim_for_org', 'status', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'status_notes', 'prepared_by', 'do_not_work_before']
 
+EASTCOAST_SNOW_CSV_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'case_number', 'Days Waiting From %(today)s', 'name', 'request_date', 'address', 'city', 'county', 'state', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'work_type', 'older_than_60', 'special_needs', 'roof_clearing', 'dig_out_car', 'ice_removal', 'driveway_clearing', 'walkway_clearing', 'stair_clearing', 'ramp_clearing', 'deck_clearing', 'leaking', 'structural_problems', 'roof_collapse', 'needs_food', 'needs_clothing', 'needs_shelter', 'needs_fuel', 'needs_tarp', 'tree_debris', 'needs_visual', 'other_needs', 'notes', 'other_hazards', 'claim_for_org', 'status', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'status_notes', 'prepared_by', 'do_not_work_before']
+
 APP_ID = app_identity.get_application_id()
 BUCKET_NAME = '/' + APP_ID
 
@@ -46,6 +48,8 @@ def get_csv_fields_list(event_short_name):
         csv_fields_list = PULASKI_CSV_FIELDS_LIST
     elif event_short_name == "columbia_tornado":
         csv_fields_list = COLUMBIA_CSV_FIELDS_LIST
+    elif event_short_name == "eastcoast_snow":
+        csv_fields_list = EASTCOAST_SNOW_CSV_FIELDS_LIST
     else:
         csv_fields_list = DEFAULT_CSV_FIELDS_LIST
 

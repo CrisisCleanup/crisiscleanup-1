@@ -1,0 +1,467 @@
+<!-- 2015-02-17 4:31pm -->
+<p><strong>Snow Removal Waiting List</strong>: This waiting list will alert volunteer organizations in your area that you need assistance and allow them to contact you directly. Due to overwhelming need, we cannot guarantee you will receive help, and we expect the average wait time to be several weeks. Thanks for your patience. Everyone is working as hard as they can.</p>
+	<h2>Property and Personal Information</h2>
+	<table>
+		<tr>
+			<td class=question>Resident name: <span class=required-asterisk>*</span></td>
+			<td class="answer">
+				<div class="form_field">
+					<input class="" id="name" name="name" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Date of Request:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="request_date" name="request_date" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Street Address:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="address" name="address" type="text" value="" />
+				</div>
+<!--</div>-->
+			</td>
+		</tr>
+		<tr>
+			<td class=question>City:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="city" name="city" type="text" value="" />
+				</div>
+				<div id=citySuggestion></div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>County:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="county" name="county" type="text" value="" />
+				</div>
+				<div id=countySuggestion></div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>State:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="state" name="state" type="text" value="" />
+				</div>
+				<div id=stateSuggestion></div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Zip Code:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="zip_code" name="zip_code" type="text" value="" />
+				</div>
+				<div id=zipCodeSuggestion>
+			</td>
+		</tr>
+	<tr>
+	  <td class=question>
+	    Latitude:
+	    <small>(<a href="#" onclick="document.getElementById('latitude').readOnly=false; document.getElementById('latitude').focus(); return false;">edit</a>)</small>
+	  </td>
+	  <td class="answer">
+	  <div class="form_field">
+	    <input class="" id="latitude" name="latitude" readonly type="text" value="" #" />
+	  </div>
+	</td>
+	</tr>
+	<tr>
+	  <td class=question>
+	    Longitude:
+	    <small>(<a href="#" onclick="document.getElementById('longitude').readOnly=false; document.getElementById('longitude').focus(); return false">edit</a>)</small>
+	  </td>
+	  <td class="answer">
+	  <div class="form_field">
+	    <input class="" id="longitude" name="longitude" readonly type="text" value="" #" />
+	  </div>
+	</td>
+	</tr>
+		<tr>
+			<td class=question>Cross Street or Nearby Landmark:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="cross_street" name="cross_street" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="phone1" name="phone1" type="text" value="" />
+				</div>
+				<div class="form_field">
+					<input class="" id="phone2" name="phone2" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Primary help needed:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<select class="" id="work_type" name="work_type">
+						<option value="" />--Choose One--</option>
+						<option value="Ash">Ground Clearing</option>
+						<option value="Shelter">Roof Clearing</option>
+						<option value="Water_Sanitation">Leaking</option>
+						<option value="Jobs_Livelihoods">Structural</option>
+						<option value="Other">Other</option>
+					</select>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Rent/Own/Public</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<select class="" id="rent_or_own" name="rent_or_own">
+						<option value="" />--Choose One--</option>
+						<option value="Rent">Rent</option>
+						<option value="Own">Own</option>
+						<option value="Public Land">Public Land</option>
+						<option value="Non-Profit">Non-Profit</option>
+						<option value="Business">Business</option>
+						<option value="Automobile">Automobile</option>
+					</select>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Elderly, or Older than 60</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<select class="" id="older_than_60" name="older_than_60">
+						<option value="" />--Choose One--</option>
+						<option value="n" />No</option>
+						<option value="y">Yes</option>
+					</select>
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question>Special needs:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<textarea class="" id="special_needs" name="special_needs"></textarea>
+				</div>
+			</td>
+		</tr>
+	</table>
+<br/>
+<h2 style="page-break-before:always;">Work</h2>
+
+<h3>Snow Removal Needs</h3>
+	<table>
+
+		<tr>
+			<td class=question><label for="roof_clearing">Roof Clearing</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="roof_clearing" type="hidden" value="n" />
+					<input class="" id="roof_clearing" name="roof_clearing" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="dig_out_car">Dig Out Car</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="dig_out_car" type="hidden" value="n" />
+					<input class="" id="dig_out_car" name="dig_out_car" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="ice_removal">Ice Removal</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="ice_removal" type="hidden" value="n" />
+					<input class="" id="ice_removal" name="ice_removal" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="driveway_clearing">Driveway Clearing</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="driveway_clearing" type="hidden" value="n" />
+					<input class="" id="driveway_clearing" name="driveway_clearing" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="walkway_clearing">Walkway Clearing</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="walkway_clearing" type="hidden" value="n" />
+					<input class="" id="walkway_clearing" name="walkway_clearing" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="stair_clearing">Stair Clearing</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="stair_clearing" type="hidden" value="n" />
+					<input class="" id="stair_clearing" name="stair_clearing" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="ramp_clearing">Ramp Clearing</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="ramp_clearing" type="hidden" value="n" />
+					<input class="" id="ramp_clearing" name="ramp_clearing" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="deck_clearing">Deck Clearing</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="deck_clearing" type="hidden" value="n" />
+					<input class="" id="deck_clearing" name="deck_clearing" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+	</table>
+
+<h3>Structural Issues</h3>
+	<table>
+
+		<tr>
+			<td class=question><label for="leaking">Leaking</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="leaking" type="hidden" value="n" />
+					<input class="" id="leaking" name="leaking" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="structural_problems">Structural Problems</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="structural_problems" type="hidden" value="n" />
+					<input class="" id="structural_problems" name="structural_problems" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="roof_collapse">Roof Collapse</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="roof_collapse" type="hidden" value="n" />
+					<input class="" id="roof_collapse" name="roof_collapse" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+
+	</table>
+
+<h3>Personal Needs/ Requests</h3>
+	<table>
+		<tr>
+			<td class=question><label for="needs_food">Food</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="needs_food" type="hidden" value="n" />
+					<input class="" id="needs_food" name="needs_food" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="needs_clothing">Clothing</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="needs_clothing" type="hidden" value="n" />
+					<input class="" id="needs_clothing" name="needs_clothing" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="needs_shelter">Shelter</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="needs_shelter" type="hidden" value="n" />
+					<input class="" id="needs_shelter" name="needs_shelter" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="needs_fuel">Fuel</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="needs_fuel" type="hidden" value="n" />
+					<input class="" id="needs_fuel" name="needs_fuel" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="needs_tarp">Tarps</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="needs_tarp" type="hidden" value="n" />
+					<input class="" id="needs_tarp" name="needs_tarp" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="tree_debris">Tree/Debris Removal</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="tree_debris" type="hidden" value="n" />
+					<input class="" id="tree_debris" name="tree_debris" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="needs_visual">Needs Visual Assessment</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="needs_visual" type="hidden" value="n" />
+					<input class="" id="needs_visual" name="needs_visual" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Other needs:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<textarea class="" id="other_needs" name="other_needs"></textarea>
+				</div>
+			</td>
+		</tr>
+	</table>
+<h3>Notes &amp; Hazards</h3>
+	<table>
+		<tr>
+			<td class=question>Notes:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<textarea class="" id="notes" name="notes"></textarea>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Other Hazards:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<textarea class="" id="other_hazards" name="other_hazards"></textarea>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+<h2>Claim, Status and Report</h2>
+	<table>
+		<tr>
+			<td class=question>Claim for Your Organization:</td>
+			<td class="answer">
+				<input class="" name="claim_for_org" type="hidden" value="n" />
+				<input type=checkbox id="claim_for_org" name="claim_for_org" value="y" />
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Current Status:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<select class="" id="status" name="status">
+						<option selected value="Open, unassigned">Open, unassigned</option>
+						<option value="Open, assigned">Open, assigned</option>
+						<option value="Open, partially completed">Open, partially completed</option>
+						<option value="Open, needs follow-up">Open, needs follow-up</option>
+						<option value="Closed, completed">Closed, completed</option>
+						<option value="Closed, incomplete">Closed, incomplete</option>
+						<option value="Closed, out of scope">Closed, out of scope</option>
+						<option value="Closed, done by others">Closed, done by others</option>
+						<option value="Closed, no help wanted">Closed, no help wanted</option>
+						<option value="Closed, rejected">Closed, rejected</option>
+						<option value="Closed, duplicate">Closed, duplicate</option>
+					</select>
+				</div>
+			</td>
+		</tr>
+		<tr id="assigned_to_row" class="hide">
+			<td class="question">Assigned To:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="assigned_to" name="assigned_to" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Volunteers:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="total_volunteers" name="total_volunteers" type="text" value="">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Hours per volunteer:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="hours_worked_per_volunteer" name="hours_worked_per_volunteer" type="text" value="">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Initials of resident present during work:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="initials_of_resident_present" name="initials_of_resident_present" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Status notes:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<textarea class="" id="status_notes" name="status_notes"></textarea>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+<h2>Other Information</h2>
+	<table>
+		<tr>
+			<td class=question>Prepared by:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="prepared_by" name="prepared_by" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Do not work before:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="do_not_work_before" name="do_not_work_before" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+	</table>

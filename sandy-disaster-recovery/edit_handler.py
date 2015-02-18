@@ -66,7 +66,7 @@ class EditHandler(base.AuthenticatedHandler):
     if not site:
       self.response.set_status(404)
       return
-      
+
     if not site.event.key() == event.key():
         self.redirect("/sites?message=The site you are trying to edit doesn't belong to the event you are signed in to. If you think you are seeing this message in error, contact your administrator")
         return
@@ -84,8 +84,8 @@ class EditHandler(base.AuthenticatedHandler):
     #}
     post_json = json.dumps(post_json2)
     #raise Exception(post_json)
-    
-    
+
+
     q = db.Query(form_db.IncidentForm)
     q.filter("incident =", event.key())
     query = q.get()
@@ -103,7 +103,7 @@ class EditHandler(base.AuthenticatedHandler):
       new_inc_form = new_inc_form.replace('Ignore similar matches', '')
       new_inc_form = new_inc_form.replace('Skip check for duplicates', '')
       new_inc_form = new_inc_form.replace('<input type=submit value="Submit request">', '')
-  
+
       #raise Exception(post_json2)
 
       for k, v in post_json2.iteritems():
@@ -112,16 +112,16 @@ class EditHandler(base.AuthenticatedHandler):
 	    id_index = new_inc_form.index('id="' + k)
 	    value_index = new_inc_form[id_index:].index("value")
 	    if k in ["latitude", "longitude"] and event.short_name != "moore":
-	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+10:] 
+	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+10:]
 	    else:
-	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:] 
+	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:]
 	  except:
 	    pass
 	elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes" or k== 'goods_and_services' or k=="work_requested":
 	  try:
 	    id_index = new_inc_form.index('id="' + k)
 	    value_index = new_inc_form[id_index:].index(">")
-	    new_inc_form = new_inc_form[:id_index + value_index+1] + str(v) + new_inc_form[id_index + value_index+1:] 
+	    new_inc_form = new_inc_form[:id_index + value_index+1] + str(v) + new_inc_form[id_index + value_index+1:]
 	  except:
 	    pass
 
@@ -130,10 +130,10 @@ class EditHandler(base.AuthenticatedHandler):
 	    if v == "y":
 	      id_index = new_inc_form.index('id="' + k)
 	      value_index = new_inc_form[id_index:].index(">")
-	      new_inc_form = new_inc_form[:id_index + value_index] + "checked" + new_inc_form[id_index + value_index:] 
+	      new_inc_form = new_inc_form[:id_index + value_index] + "checked" + new_inc_form[id_index + value_index:]
 	  except:
 	    pass
-	    
+
 	elif k=="priority" or k=="destruction_level":
 	  #try:
 	  if event.short_name == "columbia_tornado":
@@ -141,12 +141,12 @@ class EditHandler(base.AuthenticatedHandler):
           else:
             logging.debug(event.short_name)
             logging.debug(k + " is the key")
-            logging.debug(v + " is the value")
+            logging.debug(str(v) + " is the value")
             id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
-          
+
 	  #new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
 
-	  new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:] 
+	  new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:]
 	elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
 	  if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME] and k == "floors_affected":
 	    pass
@@ -159,13 +159,13 @@ class EditHandler(base.AuthenticatedHandler):
 	    length = 0
 	    if v != None:
 	      length = len(str(v))
-	    
-	    new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:] 
 
-	  
+	    new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:]
 
 
-	
+
+
+
 	#raise Exception(new_inc_form[:id_index + 380])
 	#except:
 	  #pass      # find 'id=" + k
@@ -181,7 +181,7 @@ class EditHandler(base.AuthenticatedHandler):
 	  "incident_form_block": new_inc_form,
 	  "post_json": post_json,
           })
-    
+
     #raise Exception(query.form_html)
     self.response.out.write(template.render(
           {"mode_js": self.request.get("mode") == "js",
@@ -250,8 +250,8 @@ class EditHandler(base.AuthenticatedHandler):
       # clear assigned_to if status is unassigned
       if data.status.data == 'Open, unassigned':
         site.assigned_to = ''
-        
-        
+
+
       for k, v in self.request.POST.iteritems():
 	if k not in site_db.STANDARD_SITE_PROPERTIES_LIST:
 
@@ -282,7 +282,7 @@ class EditHandler(base.AuthenticatedHandler):
       form=None
       if query:
 	inc_form = query.form_html
-	
+
       post_json2 = site_db.SiteToDict(site)
       date_string = str(post_json2['request_date'])
       post_json2['request_date'] = date_string

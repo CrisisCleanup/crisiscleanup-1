@@ -19,6 +19,7 @@ import csv
 import json
 import logging
 from google.appengine.api.urlfetch import fetch
+from google.appengine.ext import blobstore
 
 # Local libraries.
 import base

@@ -34,7 +34,7 @@ import form_handler
 import import_handler
 import key
 import map_handler
-import print_handler 
+import print_handler
 import problem_handler
 import refresh_handler
 import old_file_delete_handler
@@ -69,6 +69,7 @@ import stats
 import update_handler
 import sit_aware_redirect_handler
 import catch_all_handler
+import upload_handler
 
 from handlers import incident_definition
 from handlers import incident_form_creator
@@ -169,6 +170,7 @@ app = webapp2.WSGIApplication([
     Route(r'/print', print_handler.PrintHandler, 'print'),
     Route(r'/problems', problem_handler.ProblemHandler, 'problems'),
     Route(r'/sites', sites_handler.SitesHandler, 'sites'),
+    Route(r'/upload', upload_handler.UploadHandler, 'sites'),
     Route(r'/signup', new_organization_handler.NewOrganizationHandler, 'new_organization'),
     Route(r'/activate', activation_handler.ActivationHandler, 'activate'),
     Route(r'/admin', admin_handler.AdminHandler, 'admin_handler'),
@@ -215,8 +217,8 @@ app = webapp2.WSGIApplication([
     Route(r'/organization-settings', organization_settings_handler.OrganizationSettingsHandler, 'organization_settings_handler'),
     Route(r'/incident-statistics', stats.IncidentStatisticsHandler, 'incident_statistics_handler'),
     Route(r'/export_contacts', export_contacts_handler.ExportContactsHandler, 'export_contacts'),
-    Route(r'/organization-add-contact', organization_add_contacts_handler.OrganizationAddContactsHandler, 'organization_add_contacts_handler'),   
-    Route(r'/organization-edit-contact', organization_edit_contacts_handler.OrganizationEditContactsHandler, 'organization_edit_contacts_handler'),   
+    Route(r'/organization-add-contact', organization_add_contacts_handler.OrganizationAddContactsHandler, 'organization_add_contacts_handler'),
+    Route(r'/organization-edit-contact', organization_edit_contacts_handler.OrganizationEditContactsHandler, 'organization_edit_contacts_handler'),
     Route(r'/welcome', welcome_handler.WelcomeHandler, 'welcome_handler'),
     Route(r'/organization_ajax_handler', organization_ajax_handler.OrganizationAjaxHandler, 'organization_ajax_handler'),
     Route(r'/organization-edit-info', organization_edit_info_handler.OrganizationEditInfoHandler, 'new_organization'),
@@ -245,5 +247,5 @@ app = webapp2.WSGIApplication([
 
     # catch all
     Route(r'/<path:.*>', catch_all_handler.CatchAllHandler, 'catch_all_handler'),
-    
+
 ], debug=True)

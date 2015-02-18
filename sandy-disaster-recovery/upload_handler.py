@@ -76,7 +76,7 @@ def process_csv(blob_info):
                               )
 
                 q = db.Query(event_db.Event)
-                q.filter("name =", "North Central Victorian Floods")
+                q.filter("name =", "Eastcoast Snowstorms")
                 event = q.get()
                 event_db.AddSiteToEvent(site, event.key().id())
 class BlobIterator:

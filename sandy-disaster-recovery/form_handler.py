@@ -53,14 +53,14 @@ class FormHandler(base.AuthenticatedHandler):
       self.redirect("/sit_aware_redirect")
       return
     #single_site_template = jinja_environment.get_template('single_site.html')
-      
+
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #single_site_template = jinja_environment.get_template('single_site_derechos.html')
-      
+
     #if not event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME, "sandy"]:
       #single_site_template = jinja_environment.get_template('single_site_incident_form.html')
 
-      
+
     message = cgi.escape(self.request.get("message"))
     if len(message) == 0:
       message = None
@@ -69,7 +69,7 @@ class FormHandler(base.AuthenticatedHandler):
       #form = site_db.DerechosSiteForm()
     #else:
       #form = site_db.SiteForm()
-      
+
     # get event.key()
     # search for form with that event
     q = db.Query(form_db.IncidentForm)
@@ -111,24 +111,24 @@ class FormHandler(base.AuthenticatedHandler):
       if v == "":
         v = "stub"
       my_string += k + " = '" + v + "', "
-    
-    
+
+
     data = site_db.StandardSiteForm(self.request.POST)
     post_dict = dict(self.request.POST)
     post_json = json.dumps(post_dict)
-    
+
     #single_site_template = jinja_environment.get_template('single_site.html')
-      
+
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
       #single_site_template = jinja_environment.get_template('single_site_derechos.html')
-      
+
     claim_for_org = self.request.get("claim_for_org") == "y"
     #data = None
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
         #data = site_db.DerechosSiteForm(self.request.POST)
     #else:
         #data = site_db.SiteForm(self.request.POST)
-        
+
 
     # un-escaping data caused by base.py = self.request.POST[i] = cgi.escape(self.request.POST[i])
     data.name.data = site_util.unescape(data.name.data)
@@ -195,7 +195,7 @@ class FormHandler(base.AuthenticatedHandler):
 	      except:
 		date_saved=False
 		pass
-	      
+
 
 
 	  else:
@@ -207,7 +207,7 @@ class FormHandler(base.AuthenticatedHandler):
       site.reported_by = org
       if claim_for_org:
         site.claimed_by = org
-        
+
       # clear assigned_to if status is unassigned
       if data.status.data == 'Open, unassigned':
         site.assigned_to = ''
@@ -238,7 +238,7 @@ class FormHandler(base.AuthenticatedHandler):
     inc_form = None
     if query:
       inc_form = query.form_html
-      
+
     single_site = single_site_template.render(
         { "form": data,
           "org": org,

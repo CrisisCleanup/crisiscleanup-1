@@ -29,6 +29,8 @@ import site_db
 
 class ImportHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
+    if not org.is_global_admin:
+      self.redirect("/")
     upload_url = blobstore.create_upload_url('/upload')
 
     html_string = """

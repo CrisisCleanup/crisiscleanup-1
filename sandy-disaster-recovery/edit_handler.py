@@ -145,7 +145,7 @@ class EditHandler(base.AuthenticatedHandler):
             logging.debug("skipping 'priority'")
             if event.short_name == "eastcoast_snow" and k == "priority":
               pass
-            else if event.short_name == "hattiesburg" and k == "num_trees_down":
+            elif event.short_name == "hattiesburg" and k == "num_trees_down":
               pass
             else:
               id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))

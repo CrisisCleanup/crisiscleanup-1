@@ -143,7 +143,7 @@ class EditHandler(base.AuthenticatedHandler):
             logging.debug(k + " is the key")
             logging.debug(str(v) + " is the value")
             logging.debug("skipping 'priority'")
-            if k == "priority":
+            if event.short_name == "eastcoast_snow" and k == "priority":
               pass
             else:
               id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))

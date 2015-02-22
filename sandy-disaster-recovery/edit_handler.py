@@ -143,7 +143,8 @@ class EditHandler(base.AuthenticatedHandler):
             logging.debug(k + " is the key")
             logging.debug(str(v) + " is the value")
             logging.debug(new_inc_form)
-            id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
+            if k != "priority" :
+              id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
 
 	  #new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
 

@@ -27,6 +27,7 @@ def process_csv(blob_info):
         if count != 1:
             claimed_by, reported_by, modified_by, case_number, name, request_date, address, city, county, state, zip_code, lat, lon, lat_blur, lon_blur, cross_street, phone1, phone2, work_type, older_than_60, special_eeds, roof_clearing, dig_out_car, ice_removal, driveway_clearing, walkway_clearing, stair_clearing, ramp_clearing, deck_clearing, leaking, structural_problems, roof_collapse, needs_food, needs_clothing, needs_shelter, needs_fuel, needs_tarp, tree_debris, needs_visual, other_needs, notes, other_hazards, status, assigned_to, total_volunteers, hours_worked_per_volunteer, initials_of_resident_present, status_notes, prepared_by, do_not_work_before = row
             if address:
+                org = site_db.Site.find_by_id(3419001)
                 site = site_db.Site(name=name,
                               request_date= datetime.strptime(request_date, '%Y-%m-%d %H:%M:%S'),
                               total_volunteers = total_volunteers,
@@ -72,7 +73,9 @@ def process_csv(blob_info):
                               notes = notes,
                               other_hazards = other_hazards,
                               status = 'Open, unassigned',
-                              assigned_to = assigned_to
+                              assigned_to = assigned_to,
+                              reported_by = org,
+                              claimed_by = org
                               )
 
                 q = db.Query(event_db.Event)

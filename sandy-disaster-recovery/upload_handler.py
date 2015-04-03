@@ -32,7 +32,7 @@ def process_csv(blob_info):
             logging.info(len(row))
             claimed_by, reported_by, modified_by, case_number, days, name, request_date, address, city, county, state, zip_code, latitude, longitude, latitude_blur, longitude_blur, cross_street, phone1, phone2, work_type, older_than_60, special_needs, roof_clearing, dig_out_car, ice_removal, driveway_clearing, walkway_clearing, stair_clearing, ramp_clearing, deck_clearing, leaking, structural_problems, roof_collapse, needs_food, needs_clothing, needs_shelter, needs_fuel, needs_tarp, tree_debris, needs_visual, other_needs, notes, other_hazards, claim_for_org, status, assigned_to, total_volunteers, hours_worked_per_volunteer, initials_of_resident_present, status_notes, prepared_by, do_not_work_before = row
             if address:
-                org = site_db.Site.find_by_id(3419001)
+                org = site_db.Site.get_by_id(3419001)
                 site = site_db.Site(name=name,
                               request_date= datetime.strptime(request_date, '%Y-%m-%d %H:%M:%S'),
                               total_volunteers = total_volunteers,
@@ -55,7 +55,7 @@ def process_csv(blob_info):
                               phone2 = phone2,
                               work_type = work_type,
                               older_than_60 = older_than_60,
-                              special_needs = special_eeds,
+                              special_needs = special_needs,
                               roof_clearing = roof_clearing,
                               dig_out_car = dig_out_car,
                               ice_removal = ice_removal,

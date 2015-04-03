@@ -6,6 +6,9 @@ from google.appengine.ext import db
 import site_db
 import event_db
 from datetime import datetime
+import logging
+
+fields = ["claimed_by", "reported_by", "modified_by", "case_number", "days", "name", "request_date", "address", "city", "county", "state", "zip_code", "latitude", "longitude", "latitude_blur", "longitude_blur", "cross_street", "phone1", "phone2", "work_type", "older_than_60", "special_needs", "roof_clearing", "dig_out_car", "ice_removal", "driveway_clearing", "walkway_clearing", "stair_clearing", "ramp_clearing", "deck_clearing", "leaking", "structural_problems", "roof_collapse", "needs_food", "needs_clothing", "needs_shelter", "needs_fuel", "needs_tarp", "tree_debris", "needs_visual", "other_needs", "notes", "other_hazards", "claim_for_org", "status", "assigned_to", "total_volunteers", "hours_worked_per_volunteer", "initials_of_resident_present", "status_notes", "prepared_by", "do_not_work_before"]
 
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
@@ -25,6 +28,8 @@ def process_csv(blob_info):
     for row in reader:
         count += 1
         if count != 1:
+            logging.info(len(fields))
+            logging.info(len(row))
             claimed_by, reported_by, modified_by, case_number, days, name, request_date, address, city, county, state, zip_code, latitude, longitude, latitude_blur, longitude_blur, cross_street, phone1, phone2, work_type, older_than_60, special_needs, roof_clearing, dig_out_car, ice_removal, driveway_clearing, walkway_clearing, stair_clearing, ramp_clearing, deck_clearing, leaking, structural_problems, roof_collapse, needs_food, needs_clothing, needs_shelter, needs_fuel, needs_tarp, tree_debris, needs_visual, other_needs, notes, other_hazards, claim_for_org, status, assigned_to, total_volunteers, hours_worked_per_volunteer, initials_of_resident_present, status_notes, prepared_by, do_not_work_before = row
             if address:
                 org = site_db.Site.find_by_id(3419001)

@@ -110,7 +110,7 @@ def process_csv(blob_info):
                                 hours_worked_per_volunteer = hours_worked_per_volunteer,
                                 initials_of_resident_present = initials_of_resident_present,
                                 status_notes = status_notes,
-                                prepared_by = prepared_by
+                                prepared_by = prepared_by)
 
 
             #if address:

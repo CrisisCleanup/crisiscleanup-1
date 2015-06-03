@@ -108,7 +108,7 @@ sandy.sites.loadSitesBatch = function (sites_status, page, url, callBack) {
                 sites.push(newSites[i]);
             }
 
-            if (sites.length > 50) {
+            if (sites.length > 0) {
                 empty = false;
             }
 
@@ -134,7 +134,6 @@ sandy.sites.loadSitesBatch = function (sites_status, page, url, callBack) {
                 callBack();
             }
         }
-        console.log("empty = " + empty);
         if (!empty) {
             var new_page = page + 1;
             var new_url = '/api/site_ajax?status=' + sites_status + '&id=all&page=' + new_page;

@@ -34,6 +34,12 @@ def process_csv(blob_info):
             claiming_org = None
             reporing_org = None
 
+            if name == None:
+              name = "Unknown"
+
+            if phone1 = None:
+              phone1 = "000-000-0000"
+
             NECHAMA = site_db.Site.get_by_id(3419001)
             TEXAS = site_db.Site.get_by_id(5664902681198592)
             if "NECHAMA" in claimed_by:

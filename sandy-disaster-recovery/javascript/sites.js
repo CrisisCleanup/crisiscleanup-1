@@ -107,7 +107,7 @@ sandy.sites.loadSitesBatch = function (sites_status, page, url, callBack) {
                         loadedCases[newSites[i].case_number] = true;
                 sites.push(newSites[i]);
             }
-            
+
             if (sites.length == 100) {
                 empty = false;
             }
@@ -124,16 +124,17 @@ sandy.sites.loadSitesBatch = function (sites_status, page, url, callBack) {
                         if (status != 200) {
                             return;
                         }
-                                            
+
                     });
                 }
-                
+
             }
-            
+
             if (callBack) {
                 callBack();
             }
         }
+        console.log("empty = " + empty);
         if (!empty) {
             var new_page = page + 1;
             var new_url = '/api/site_ajax?status=' + sites_status + '&id=all&page=' + new_page;
@@ -152,7 +153,7 @@ sandy.sites.batchLoadSites = function (status, page, callBack) {
 };
 
 sandy.sites.tryBatchLoadSites = function (status, page, callBack) {
-    try {      
+    try {
         sandy.sites.batchLoadSites(status, 0, callBack);
     } catch (err) {
         txt="Error description: " + err.message + "\n\n";

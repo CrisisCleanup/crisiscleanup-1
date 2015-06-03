@@ -112,63 +112,10 @@ def process_csv(blob_info):
                                 status_notes = status_notes,
                                 prepared_by = prepared_by)
 
-
-            #if address:
-                #org = site_db.Site.get_by_id(3419001)
-                #site = site_db.Site(name=name,
-                              #request_date= datetime.strptime(request_date, '%Y-%m-%d %H:%M:%S'),
-                              #total_volunteers = total_volunteers,
-                              #hours_worked_per_volunteer = hours_worked_per_volunteer,
-                              #initials_of_resident_present = initials_of_resident_present,
-                              #status_notes = status_notes,
-                              #prepared_by = prepared_by,
-                              #do_not_work_before = do_not_work_before,
-                              #address = address,
-                              #city = city,
-                              #county = county,
-                              #state = state,
-                              #zip_code = zip_code,
-                              #latitude = float(latitude),
-                              #longitude = float(longitude),
-                              #blurred_latitude = float(latitude_blur),
-                              #blurred_longitude = float(longitude_blur),
-                              #cross_street = cross_street,
-                              #phone1 = phone1,
-                              #phone2 = phone2,
-                              #work_type = work_type,
-                              #older_than_60 = older_than_60,
-                              #special_needs = special_needs,
-                              #roof_clearing = roof_clearing,
-                              #dig_out_car = dig_out_car,
-                              #ice_removal = ice_removal,
-                              #driveway_clearing = driveway_clearing,
-                              #walkway_clearing = walkway_clearing,
-                              #stair_clearing = stair_clearing,
-                              #ramp_clearing = ramp_clearing,
-                              #deck_clearing = deck_clearing,
-                              #leaking = leaking,
-                              #structural_problems = structural_problems,
-                              #roof_collapse = roof_collapse,
-                              #needs_food = needs_food,
-                              #needs_clothing = needs_clothing,
-                              #needs_shelter = needs_shelter,
-                              #needs_fuel = needs_fuel,
-                              #needs_tarp = needs_tarp,
-                              #tree_debris = tree_debris,
-                              #needs_visual = needs_visual,
-                              #other_needs = other_needs,
-                              #notes = notes,
-                              #other_hazards = other_hazards,
-                              #status = 'Open, unassigned',
-                              #assigned_to = assigned_to,
-                              #reported_by = org,
-                              #claimed_by = org
-                              #)
-
-                q = db.Query(event_db.Event)
-                q.filter("name =", "Texas-Oklahoma floods")
-                event = q.get()
-                event_db.AddSiteToEvent(site, event.key().id())
+            q = db.Query(event_db.Event)
+            q.filter("name =", "Texas-Oklahoma floods")
+            event = q.get()
+            event_db.AddSiteToEvent(site, event.key().id())
 class BlobIterator:
     """Because the python csv module doesn't like strange newline chars and
     the google blob reader cannot be told to open in universal mode, then

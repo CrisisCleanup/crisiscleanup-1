@@ -110,7 +110,8 @@ def process_csv(blob_info):
                                 total_volunteers = total_volunteers,
                                 hours_worked_per_volunteer = hours_worked_per_volunteer,
                                 initials_of_resident_present = initials_of_resident_present,
-                                status_notes = status_notes)
+                                status_notes = status_notes
+                                )
 
             q = db.Query(event_db.Event)
             q.filter("name =", "Texas-Oklahoma floods")

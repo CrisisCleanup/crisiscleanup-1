@@ -34,10 +34,10 @@ def process_csv(blob_info):
             claiming_org = None
             reporing_org = None
 
-            if name == None:
+            if name == None or name == "":
               name = "Unknown"
 
-            if phone1 == None:
+            if phone1 == None or phone1 == "":
               phone1 = "000-000-0000"
 
             NECHAMA = site_db.Site.get_by_id(3419001)

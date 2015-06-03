@@ -46,7 +46,7 @@ def process_csv(blob_info):
             if "Texas" in reported_by:
               reporing_org = 5664902681198592
 
-
+            logging.info(prepared_by)
             site = site_db.Site(name=name,
                                 claimed_by = claiming_org,
                                 reported_by = reporing_org,

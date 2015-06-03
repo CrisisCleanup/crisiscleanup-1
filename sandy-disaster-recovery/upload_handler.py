@@ -36,9 +36,6 @@ def process_csv(blob_info):
 
             if name == None or name == "":
               name = "Unknown"
-            else:
-              l = len(name)
-              name = name[:l]
 
             if phone1 == None or phone1 == "":
               phone1 = "000-000-0000"

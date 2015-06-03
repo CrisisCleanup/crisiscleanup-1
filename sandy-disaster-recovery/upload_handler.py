@@ -37,7 +37,7 @@ def process_csv(blob_info):
             if name == None:
               name = "Unknown"
 
-            if phone1 = None:
+            if phone1 == None:
               phone1 = "000-000-0000"
 
             NECHAMA = site_db.Site.get_by_id(3419001)

@@ -34,17 +34,19 @@ def process_csv(blob_info):
             claiming_org = None
             reporing_org = None
 
+            NECHAMA = site_db.Site.get_by_id(3419001)
+            TEXAS = site_db.Site.get_by_id(5664902681198592)
             if "NECHAMA" in claimed_by:
-              claiming_org = 3419001
+              claiming_org = NECHAMA
 
             if "Texas" in claimed_by:
-              claiming_org = 5664902681198592
+              claiming_org = TEXAS
 
             if "NECHAMA" in reported_by:
-              reporing_org = 3419001
+              reporing_org = NECHAMA
 
             if "Texas" in reported_by:
-              reporing_org = 5664902681198592
+              reporing_org = TEXAS
 
             logging.info(type(prepared_by))
             site = site_db.Site(name=name,

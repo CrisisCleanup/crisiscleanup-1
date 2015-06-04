@@ -148,6 +148,7 @@ class EditHandler(base.AuthenticatedHandler):
             elif event.short_name == "hattiesburg" and k == "num_trees_down":
               pass
             else:
+              logging.info(k, v)
               id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
 
 	  #new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")

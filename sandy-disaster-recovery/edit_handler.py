@@ -148,6 +148,7 @@ class EditHandler(base.AuthenticatedHandler):
             elif event.short_name == "hattiesburg" and k == "num_trees_down":
               pass
             elif event.short_name == "tx_ok_floods" and k == "priority":
+              pass
             else:
               logging.info(k, v)
               id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))

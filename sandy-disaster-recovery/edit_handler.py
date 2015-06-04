@@ -143,6 +143,7 @@ class EditHandler(base.AuthenticatedHandler):
             logging.debug(k + " is the key")
             logging.debug(str(v) + " is the value")
             logging.debug("skipping 'priority'")
+            logging.debug(k, v)
             if event.short_name == "eastcoast_snow" and k == "priority":
               pass
             elif event.short_name == "hattiesburg" and k == "num_trees_down":

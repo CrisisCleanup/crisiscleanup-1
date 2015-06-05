@@ -62,6 +62,9 @@ def process_csv(blob_info):
 
             logging.info(latitude)
             if address:
+              q = db.Query(event_db.Event)
+              q.filter("name =", "North Central Victorian Floods")
+              event = q.get()
               q = db.Query(site_db.Site)
               q.filter("event =", event.key())
               q.filter("name =", name)
@@ -219,6 +222,9 @@ def process_csv(blob_info):
                   #check_line_breaks(site)
                   #check_unicode(site)
                   #check_and_handle_duplicates(site, policy)
+                  q = db.Query(event_db.Event)
+                  q.filter("name =", "North Central Victorian Floods")
+                  event = q.get()
                   event_db.AddSiteToEvent(site, event.key().id())
               except Exception, err:
                 errors[count] = err

@@ -67,7 +67,7 @@ def process_csv(blob_info):
               event = q.get()
               q = db.Query(site_db.Site)
               q.filter("event =", event.key())
-              q.filter("name =", name)
+              #q.filter("name =", name)
               q.filter("latitude =", float(latitude))
               q.filter("longitude =", float(longitude))
               site = q.get()

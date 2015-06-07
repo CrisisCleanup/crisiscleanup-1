@@ -27,7 +27,7 @@ def process_csv(blob_info):
     count = 0
     errors = {}
     q = db.Query(event_db.Event)
-    q.filter("name =", "Texas-Oklahoma Floods")
+    q.filter("name =", "Lusk, WY Flood")
     event = q.get()
     for row in reader:
         count += 1
@@ -63,7 +63,7 @@ def process_csv(blob_info):
             logging.info(latitude)
             if address:
               q = db.Query(event_db.Event)
-              q.filter("name =", "Texas-Oklahoma Floods")
+              q.filter("name =", "Lusk, WY Flood")
               event = q.get()
               q = db.Query(site_db.Site)
               q.filter("event =", event.key())
@@ -223,7 +223,7 @@ def process_csv(blob_info):
                   #check_unicode(site)
                   #check_and_handle_duplicates(site, policy)
                   q = db.Query(event_db.Event)
-                  q.filter("name =", "Texas-Oklahoma Floods")
+                  q.filter("name =", "Lusk, WY Flood")
                   event = q.get()
                   event_db.AddSiteToEvent(site, event.key().id())
               except Exception, err:

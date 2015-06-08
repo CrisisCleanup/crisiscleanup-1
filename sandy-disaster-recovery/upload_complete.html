@@ -1,0 +1,53 @@
+{% extends "base_template.html" %}
+
+
+{% block body_title_block %}
+CSV Upload Complete
+{% endblock %}
+
+{% block main_content %}
+<h2>CSV Upload Information for {{ event_name }}</h2>
+<table>
+  <tr>
+    <td>Rows</td>
+    <td>New Sites Added</td>
+    <td>Duplicates Detected</td>
+    <td>Saved Duplicates</td>
+    <td>Errors</td>
+  </tr>
+  <tr>
+    <td>{{ count }}</td>
+    <td>{{ saved_new }}</td>
+    <td>{{ duplicates }}</td>
+    <td>{{ saved_duplicates }}</td>
+    <td>{{ error_count }}</td>
+  </tr>
+</table>
+
+<h3>Error logs</h3>
+<table>
+  <tr>
+    <td>Row Number</td>
+    <td>Error Message</td>
+  </tr>
+{% for key in errors %}
+  <tr>
+    <td>{{ key }}</td>
+    <td>{{ errors[key] }}</td>
+  </tr>
+{% endfor %}
+</table>
+
+{% endblock %}
+
+{% block sidebar_title %}
+How to use this information
+{% endblock %}
+
+
+{% block sidebar_content %}
+<ul>
+  <li>Check for errors</li>
+  <li>...</li>
+</ul>
+{% endblock %}

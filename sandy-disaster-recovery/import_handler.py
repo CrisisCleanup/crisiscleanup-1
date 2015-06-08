@@ -26,21 +26,34 @@ import base
 import event_db
 import organization
 import site_db
+import jinja2
+import os
+import urllib
+from google.appengine.ext import db
+
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+template = jinja_environment.get_template('import.html')
+
 
 class ImportHandler(base.AuthenticatedHandler):
   def AuthenticatedGet(self, org, event):
     if not org.is_global_admin:
       self.redirect("/")
     upload_url = blobstore.create_upload_url('/upload')
+    events = db.GqlQuery("SELECT * From Event ORDER BY created_date DESC")
+    #sites = db.GqlQuery("SELECT * From Site")
+    #for site in sites:
+      #db.delete(site)
 
-    html_string = """
-      <form action="%s" method="POST" enctype="multipart/form-data">
-    Upload File:
-    <input type="file" name="file"> <br>
-    <input type="submit" name="submit" value="Submit">
-    </form>""" % upload_url
 
-    self.response.write(html_string)
+    template_params = {
+      "form": None,
+      "events": events,
+      "upload_url": upload_url
+    }
+    self.response.out.write(template.render(template_params))
+
 
 
     #f = open('sheet1.csv');

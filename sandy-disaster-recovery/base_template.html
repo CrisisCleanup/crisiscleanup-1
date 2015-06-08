@@ -14,12 +14,12 @@
   <meta name="MobileOptimized" content="320" />
   <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no" name="viewport" />
   <meta name="description" content="">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
   <link href="//fonts.googleapis.com/css?family=Oswald:regular" rel="stylesheet" type="text/css">
   <link href='//fonts.googleapis.com/css?family=Junge' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="assets/fonts/raphaelicons.css">
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/form_error.css">
+  <link rel="stylesheet" href="/assets/fonts/raphaelicons.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/form_error.css">
 
   <script src="assets/js/libs/modernizr-2.5.2.min.js"></script>
   <script>
@@ -27,10 +27,10 @@
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-	
+
 	  ga('create', 'UA-42924421-1', 'crisiscleanup.org');
 	  ga('send', 'pageview');
-	
+
   </script>
   {% block head_content %}
   {% endblock %}
@@ -41,7 +41,7 @@
 <!--[if gt IE 8]><!--><body><!--<![endif]-->
 
 <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-  {% include "map_banner.html" %} 
+  {% include "map_banner.html" %}
   <header class="clearfix">
       <div class="container">
 		<a id="logo" href="/"><img src="assets/images/crisis-cleanup-logo.png" title="Crisis Cleanup Logo" border="0" /></a>
@@ -59,7 +59,7 @@
             <li>
               <a {% block about %}{% endblock %} href="/about"><span class="icon">Û</span>About</a>
             </li>
-            <li> 
+            <li>
               <a {% block publicmap %}{% endblock %} href={% if logged_in %} "/map" {% else %} "/public-map" {% endif %}><span class="icon">5</span>Map</a>
             </li>
             <li>

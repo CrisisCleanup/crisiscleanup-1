@@ -42,9 +42,7 @@ class ImportHandler(base.AuthenticatedHandler):
       self.redirect("/")
     upload_url = blobstore.create_upload_url('/upload')
     events = db.GqlQuery("SELECT * From Event ORDER BY created_date DESC")
-    #sites = db.GqlQuery("SELECT * From Site")
-    #for site in sites:
-      #db.delete(site)
+
 
 
     template_params = {

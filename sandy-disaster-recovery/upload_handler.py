@@ -72,31 +72,31 @@ def process_csv(blob_info, event, duplicate_detection, duplicate_method):
           data[headers[row_count]] = value
           row_count += 1
 
-        # try:
-        if duplicate_detection:
-          site = duplicate_detector(event, data, duplicate_detection)
-          if site:
-            duplicates += 1
-            if duplicate_method == "all":
-              success = edit_site(site, data)
-              saved_duplicates += 1
-            elif duplicate_method == "references":
-              success = edit_references(site, data)
-              saved_duplicates += 1
-            elif duplicate_method == "ignore":
-              ignored += 1
-              pass
-            elif duplicate_method == "references_work_type":
-              success = edit_references(site, data, True)
-              saved_duplicates += 1
+        try:
+          if duplicate_detection:
+            site = duplicate_detector(event, data, duplicate_detection)
+            if site:
+              duplicates += 1
+              if duplicate_method == "all":
+                success = edit_site(site, data)
+                saved_duplicates += 1
+              elif duplicate_method == "references":
+                success = edit_references(site, data)
+                saved_duplicates += 1
+              elif duplicate_method == "ignore":
+                ignored += 1
+                pass
+              elif duplicate_method == "references_work_type":
+                success = edit_references(site, data, True)
+                saved_duplicates += 1
+            else:
+              success = add_site(data, event)
+              saved_new += 1
           else:
-            success = add_site(data, event)
+            add_site(data, event)
             saved_new += 1
-        else:
-          add_site(data, event)
-          saved_new += 1
-        # except Exception, err:
-        #   errors[count] = err
+        except Exception, err:
+          errors[count] = err
     return errors, count, duplicates, saved_duplicates, saved_new, has_references_count
 
 def add_site(data, event):

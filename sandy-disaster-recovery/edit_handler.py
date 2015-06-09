@@ -153,7 +153,10 @@ class EditHandler(base.AuthenticatedHandler):
               pass
             else:
               logging.info(k, v)
-              id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
+              try: 
+                id_index = new_inc_form.index('name="' + k + '" type="radio" value="' + str(v))
+              except:
+                pass
 
 	  #new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
 
@@ -219,7 +222,14 @@ class EditHandler(base.AuthenticatedHandler):
     except:
       return
     site = site_db.Site.get_by_id(id)
+    old_status = site.status
     data = site_db.StandardSiteForm(self.request.POST, site)
+    new_status = data.status
+    if old_status != new_status:
+      if not site.claimed_by: 
+        site.claimed_by = org
+        site.claim_for_org = "y"
+    # raise Exception(old_status, new_status.data)
     #if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME]:
         #form = site_db.DerechosSiteForm(self.request.POST, site)
 

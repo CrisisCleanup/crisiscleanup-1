@@ -22,9 +22,12 @@ BUILD_DIR_PREFIX = 'ccbuild'
 # find GAE SDK
 
 POSSIBLE_SDK_DIRECTORIES = [
+    '../legacy_google_app_engine/',
+    '../../legacy_google_app_engine/',
+    '../../../legacy_google_app_engine/',   
     '../google_appengine/',
     '../../google_appengine/',
-    '../../../google_appengine/',
+    '../../../google_appengine/' 
 ]
 
 try:
@@ -125,6 +128,7 @@ def sdk_version_ok():
         current_sdk_version = sdk_version_d['release']
     except:
         current_sdk_version = None
+
     if current_sdk_version not in ALLOWED_SDK_VERSIONS:
         abort("Local SDK version is %s - one of %s is required" % (
             current_sdk_version, ALLOWED_SDK_VERSIONS))

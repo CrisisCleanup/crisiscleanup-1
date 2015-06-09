@@ -117,6 +117,8 @@ class EditHandler(base.AuthenticatedHandler):
 	      new_inc_form = new_inc_form[:id_index + value_index+7] + str(v) + new_inc_form[id_index + value_index+7:]
 	  except:
 	    pass
+        elif k=="num_trees_down" and v=="0" and event.short_name=="tx_ok_floods":
+          pass
 	elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes" or k== 'goods_and_services' or k=="work_requested":
 	  try:
 	    id_index = new_inc_form.index('id="' + k)
@@ -159,18 +161,22 @@ class EditHandler(base.AuthenticatedHandler):
 	elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
 	  if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME] and k == "floors_affected":
 	    pass
+          elif event.short_name=="tx_ok_floods" and k=="num_trees_down" and v=="0":
+            pass
 	  else:
 	    logging.debug(event.short_name)
 	    logging.debug(k + " is the key")
             logging.debug(v + " is the value")
 	    id_index = new_inc_form.index('id="' + k)
-	    value_index = new_inc_form[id_index:].index('value="' + str(v))
-	    length = 0
-	    if v != None:
-	      length = len(str(v))
+	    try:
+              value_index = new_inc_form[id_index:].index('value="' + str(v))
+              length = 0
+              if v != None:
+                length = len(str(v))
 
-	    new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:]
-
+              new_inc_form = new_inc_form[:id_index + value_index+8 + length] + "selected" + new_inc_form[id_index + value_index+8 + length:]
+            except ValueError, err:
+              logging.error(err)
 
 
 

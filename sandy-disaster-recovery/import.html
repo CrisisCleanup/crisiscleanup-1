@@ -104,8 +104,17 @@ How to use the importer
 
 
 {% block sidebar_content %}
-<ul>
-  <li>Choose an Event</li>
-  <li>...</li>
-</ul>
+Prerequisites
+  <ul>
+    <li>Well-formed comma-delimited CSV</li>
+    <li>First row of CSV must match field names</li>
+    <li>Manually include ALL lat/lon and blurred lat/lon</li>
+    <li>Manually include the reported_by and claimed_by organization IDs</li>
+  </ul>
+Operation
+  <ul>
+    <li>Choose an Event</li>
+    <li>Choose duplicate test</li>
+  </ul>
+
 {% endblock %}

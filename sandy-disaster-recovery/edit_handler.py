@@ -161,6 +161,8 @@ class EditHandler(base.AuthenticatedHandler):
 	elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
 	  if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME] and k == "floors_affected":
 	    pass
+          elif event.short_name=="tx_ok_floods" and k=="num_trees_down" and v=="0":
+            pass
 	  else:
 	    logging.debug(event.short_name)
 	    logging.debug(k + " is the key")

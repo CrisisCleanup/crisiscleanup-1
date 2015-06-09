@@ -32,18 +32,21 @@ template = jinja_environment.get_template('public_map.html')
 
 
 class PublicMapHandler(base.RequestHandler):
+  def get(self):
+    pass
+    events = event_db.GetAllCached()
+    logged_in = False
+    org, event = key.CheckAuthorization(self.request)
 
-    def get(self):
-      events = event_db.GetAllCached()
-      logged_in = False
-      org, event = key.CheckAuthorization(self.request)
-      if org and key:
-	logged_in = True
-      template_params = page_db.get_page_block_dict()
-      template_params.update({
-	  "events": events,
-	  "logged_in": logged_in,
-          "initial_incident_id": self.request.GET.get(
-            'initial_incident_id', '')
+    if org and key:
+      logged_in = True
+
+    template_params = page_db.get_page_block_dict()
+    template_params.update({
+      "events": events,
+      "logged_in": logged_in,
+      "initial_incident_id": self.request.GET.get("initial_incident_id", ""),
+      "incident": self.request.get("incident")
       })
-      self.response.out.write(template.render(template_params))
+    self.response.out.write(template.render(template_params))
+  

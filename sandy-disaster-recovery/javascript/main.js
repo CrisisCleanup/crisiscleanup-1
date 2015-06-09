@@ -97,6 +97,7 @@ var createStatusSelect = function (site) {
             function (status, response_text, xhr) {
                 if (status == 200) {
                     setMessageHtml('Successfully changed status.');
+                    updateSite(site);
                     site["status"] = select.value;
                     site["tags"] = sandy.map.ClassifySite(site, my_organization);
                     var marker = site["marker"];
@@ -395,7 +396,7 @@ var updateDialogForSite = function (dialog, site) {
             setMessageHtml('working...');
             claimSite(site['id'], function (status, response_text, xhr) {
                 if (status == 200) {
-                    setMessageHtml('Succesfully claimed.');
+                    setMessageHtml('Successfully claimed.');
                     updateSite(site);
                 } else {
                     if (response_text) {

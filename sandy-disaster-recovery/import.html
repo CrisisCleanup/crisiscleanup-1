@@ -38,6 +38,8 @@ CSV Imports
       <input type="radio" name="duplicate_method_select" value="">None
       <input type="radio" name="duplicate_method_select" value="all">Replace entire site from CSV
       <input type="radio" name="duplicate_method_select" value="references">Replace reported_by and claimed_by only
+      <input type="radio" name="duplicate_method_select" value="references_work_type">Replace reported_by and claimed_by and work_type if not report
+      <input type="radio" name="duplicate_method_select" value="ignore">Ignore duplicates entirely
     </div>
     <br>
     <div id="file_div">
@@ -51,48 +53,49 @@ CSV Imports
 <script>
 $(function() {
   $( "#import_form" ).submit(function(e) {
-    var state = "ok";
-    var duplicate = $('input[name=duplicate]:checked', '#import_form').val()
-    var duplicate_method_select = $('input[name=duplicate_method_select]:checked', '#import_form').val()
-    var event = $('#event_select').val();
-    var file_upload = $('#file_upload').val();
-    if (file_upload == "") {
-       $("#errors").append("Choose a CSV to upload<br>");
-       state = "error";
-    }
-    if (event == "") {
-      $("#errors").append("Choose an event<br>");
-      state = "error";
-    }
-    if (typeof duplicate == "undefined") {
-       $("#errors").append("Please click on a type of duplication test<br>");
-       state = "error";
-    }
-    if (duplicate == "name_lat_lng" || duplicate == "lat_lng") {
-      if (duplicate_method_select == "all" || duplicate_method_select == "references") {
-        console.log("pass");
-      } else {
-         $("#errors").append("If you choose a duplication detection test, you must choose a method to apply to duplicates<br>");
-         state = "error";
-      }
-    }
+  });
+//     var state = "ok";
+//     var duplicate = $('input[name=duplicate]:checked', '#import_form').val()
+//     var duplicate_method_select = $('input[name=duplicate_method_select]:checked', '#import_form').val()
+//     var event = $('#event_select').val();
+//     var file_upload = $('#file_upload').val();
+//     if (file_upload == "") {
+//        $("#errors").append("Choose a CSV to upload<br>");
+//        state = "error";
+//     }
+//     if (event == "") {
+//       $("#errors").append("Choose an event<br>");
+//       state = "error";
+//     }
+//     if (typeof duplicate == "undefined") {
+//        $("#errors").append("Please click on a type of duplication test<br>");
+//        state = "error";
+//     }
+//     if (duplicate == "name_lat_lng" || duplicate == "lat_lng") {
+//       if (duplicate_method_select == "all" || duplicate_method_select == "references") {
+//         console.log("pass");
+//       } else {
+//          $("#errors").append("If you choose a duplication detection test, you must choose a method to apply to duplicates<br>");
+//          state = "error";
+//       }
+//     }
 
-    if (duplicate_method_select == "all" || duplicate_method_select == "references") {
-       if (duplicate == "name_lat_lng" || duplicate == "lat_lng") {
-        console.log("pass");
-       } else {
-           $("#errors").append("You chose a method to apply to duplicates, but you didn't select how to look for duplicates<br>");
-           state = "error";
-       }
-    }
+//     if (duplicate_method_select == "all" || duplicate_method_select == "references" || duplicate_method_select == "ignore") {
+//        if (duplicate == "name_lat_lng" || duplicate == "lat_lng") {
+//         console.log("pass");
+//        } else {
+//            $("#errors").append("You chose a method to apply to duplicates, but you didn't select how to look for duplicates<br>");
+//            state = "error";
+//        }
+//     }
 
-    if(state == 'ok'){
-        $("#import_form")[0].submit();// this line will not trigger the same submit event
-//         $("#form_div").text("<h3>The CSV has been submitted</h3><b>Please do not close the tab or hit refresh.</b><br><p>The upload could take several minutes. When it's done, you will be presented with a new screen detailing any stats or errors associated with the upload.");
-    } else {
-      e.preventDefault();
+//     if(state == 'ok'){
+//         $("#import_form")[0].submit();// this line will not trigger the same submit event
+// //         $("#form_div").text("<h3>The CSV has been submitted</h3><b>Please do not close the tab or hit refresh.</b><br><p>The upload could take several minutes. When it's done, you will be presented with a new screen detailing any stats or errors associated with the upload.");
+//     } else {
+//       e.preventDefault();
 
-    }
+//     }
   });
 });
 </script>

@@ -25,7 +25,7 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         event_short_name = self.request.get("event")
         duplicate_detection = self.request.get("duplicate")
-        duplicate_method = self.request.get("duplicate_method")
+        duplicate_method = self.request.get("duplicate_method_select")
         upload_files = self.get_uploads('file')  # 'file' is file upload field in the form
         blob_info = upload_files[0]
         q = db.Query(event_db.Event)
@@ -62,6 +62,7 @@ def process_csv(blob_info, event, duplicate_detection, duplicate_method):
     saved_duplicates = 0
     saved_new = 0
     has_references_count = 0
+    ignored=0
     errors = {}
     for row in reader:
         data = {}
@@ -71,24 +72,31 @@ def process_csv(blob_info, event, duplicate_detection, duplicate_method):
           data[headers[row_count]] = value
           row_count += 1
 
-        try:
-          if duplicate_detection:
-            site = duplicate_detector(event, data, duplicate_detection)
-            if site:
-              duplicates += 1
-              if duplicate_method == "all":
-                success = edit_site(site, data)
-              else:
-                success = edit_references(site, data)
+        # try:
+        if duplicate_detection:
+          site = duplicate_detector(event, data, duplicate_detection)
+          if site:
+            duplicates += 1
+            if duplicate_method == "all":
+              success = edit_site(site, data)
               saved_duplicates += 1
-            else:
-              success = add_site(data, event)
-              saved_new += 1
+            elif duplicate_method == "references":
+              success = edit_references(site, data)
+              saved_duplicates += 1
+            elif duplicate_method == "ignore":
+              ignored += 1
+              pass
+            elif duplicate_method == "references_work_type":
+              success = edit_references(site, data, True)
+              saved_duplicates += 1
           else:
-            add_site(data, event)
+            success = add_site(data, event)
             saved_new += 1
-        except Exception, err:
-          errors[count] = err
+        else:
+          add_site(data, event)
+          saved_new += 1
+        # except Exception, err:
+        #   errors[count] = err
     return errors, count, duplicates, saved_duplicates, saved_new, has_references_count
 
 def add_site(data, event):
@@ -137,7 +145,7 @@ def edit_site(site, data):
   success = site.put()
   return success
 
-def edit_references(site, data):
+def edit_references(site, data, work_type=False):
   for key in data:
     if key in ["reported_by", "claimed_by"]:
       d = str(data[key])
@@ -145,6 +153,9 @@ def edit_references(site, data):
         c = float(str(d))
         b = int(c)
         setattr(site, key, organization.Organization.get_by_id(b))
+    if work_type == True:
+      if key == "work_type" and data[key] != "Report":
+        setattr(site, key, data[key])
   success = site.put()
   return success
 

@@ -39,7 +39,7 @@ class SiteApiHandler(base.AuthenticatedHandler):
       return
 
     if json_request['action'] == 'update':
-      self.HandleUpdate(json_request)
+      self.HandleUpdate(json_request, org)
     elif json_request['action'] == 'claim':
       self.HandleClaim(json_request, org)
     elif json_request['action'] == 'release':
@@ -47,7 +47,7 @@ class SiteApiHandler(base.AuthenticatedHandler):
     else:
       self.HandleBadRequest('invalid action: %s' % json_request['action'])
 
-  def HandleUpdate(self, json_request):
+  def HandleUpdate(self, json_request, org):
     if not self.CheckRequiredKeys(json_request, ['update']):
       return
 
@@ -79,6 +79,10 @@ class SiteApiHandler(base.AuthenticatedHandler):
 
     for field, value in json_request['update'].iteritems():
       setattr(site, field, value)
+    if "status" in json_request['update']:
+      if not site.claimed_by:
+        setattr(site, "claimed_by", org)
+        setattr(site, "claim_for_org", "y")
     site_db.PutAndCache(site)
     logging.debug('updated site')
 

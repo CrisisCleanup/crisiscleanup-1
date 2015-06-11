@@ -108,7 +108,7 @@ def ses_send_email(
     msg['Subject'] = subject
     msg['From'] = source
     msg['To'] = u', '.join(to_addresses)
-
+    logging.error(body)
     text_part = MIMEText(body, 'plain')
     msg.attach(text_part)
     if html_body:

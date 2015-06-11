@@ -60,7 +60,12 @@
               <a {% block about %}{% endblock %} href="/about"><span class="icon">Û</span>About</a>
             </li>
             <li>
-              <a {% block publicmap %}{% endblock %} href={% if logged_in %} "/map" {% else %} "/public-map" {% endif %}><span class="icon">5</span>Map</a>
+              {% if logged_in %}
+              <a href="/map"><span class="icon">5</span>Map</a>
+              {% else %}
+              <a {% block publicmap %}{% endblock %} href="/public-map"><span class="icon">5</span>Map</a>
+              {% endif %}
+              
             </li>
             <li>
               <a {% block blog %}{% endblock %} href="http://blog.crisiscleanup.org/"><span class="icon">?</span>Blog</a>

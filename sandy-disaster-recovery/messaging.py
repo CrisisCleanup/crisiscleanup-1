@@ -153,6 +153,7 @@ def send_email_by_service(to, subject, body, cc=None, bcc=None, html_body=None):
     # catch & log all exceptions to prevent blowing up requests due to email
     try:
         if can_send_by_aws_ses(aws_ses_region, aws_ses_access_key_id, aws_ses_secret_access_key, aws_sender_address):
+            logging.error(aws_ses_secret_access_key)
             return send_email_via_aws_ses(
                 aws_sender_address,
                 to, subject, body, cc=cc, bcc=bcc, html_body=html_body,

@@ -11,7 +11,7 @@ The current contacts for {{ org.name }} are:
 * {{ contact.full_name }}
 {% endfor %}
 
-Crisis Cleanup is like “Craigslist” for disaster recovery. Organizations that know of a need enter work orders into the system. Organizations with capacity help as soon as they can. Access is by invitation, subject to the Terms and Privacy Policy (on the website), and may be revoked at any time if there is evidence of abuse, improper use of client information, or if your organization is no longer active in recovery efforts.  The tool is provided "AS IS" without any warranty of fitness for any particular purpose.
+Crisis Cleanup is like "Craigslist" for disaster recovery. Organizations that know of a need enter work orders into the system. Organizations with capacity help as soon as they can. Access is by invitation, subject to the Terms and Privacy Policy (on the website), and may be revoked at any time if there is evidence of abuse, improper use of client information, or if your organization is no longer active in recovery efforts.  The tool is provided "AS IS" without any warranty of fitness for any particular purpose.
 
 Instructions & Common Questions
 1.  Help and FAQ: https://crisiscleanup.zendesk.com/hc/en-us

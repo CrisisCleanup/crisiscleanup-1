@@ -44,7 +44,6 @@ class ImportHandler(base.AuthenticatedHandler):
     events = db.GqlQuery("SELECT * From Event ORDER BY created_date DESC")
 
 
-
     template_params = {
       "form": None,
       "events": events,

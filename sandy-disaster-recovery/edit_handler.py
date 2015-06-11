@@ -224,7 +224,8 @@ class EditHandler(base.AuthenticatedHandler):
     site = site_db.Site.get_by_id(id)
     old_status = site.status
     data = site_db.StandardSiteForm(self.request.POST, site)
-    new_status = data.status
+    new_status = data.status.data
+    raise Exception(old_status, new_status)
     if old_status != new_status:
       if not site.claimed_by: 
         site.claimed_by = org
@@ -270,7 +271,7 @@ class EditHandler(base.AuthenticatedHandler):
         if in_post is None:
           continue
         setattr(site, f.name, f.data)
-      if claim_for_org:
+      if claim_for_org == "y":
         site.claimed_by = org
       # clear assigned_to if status is unassigned
       if data.status.data == 'Open, unassigned':

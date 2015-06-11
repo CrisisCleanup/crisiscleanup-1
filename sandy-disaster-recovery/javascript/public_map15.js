@@ -45,6 +45,7 @@ $(function(){
     var incident_id = getURLParameter("event");
     if ( !!incident_id ) {
         loadIncident(incident_id);
+        Messi.alert("<h2>Welcome to our public map for " + incident_id + ".</h2><p><b>All locations have personal identification removed</b>, and have their locations moved by a few hundred meters.</p><p>This map is meant to give a general overview of what information is stored in our database.</p>")
     }
 });
 

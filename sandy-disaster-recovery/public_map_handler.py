@@ -46,7 +46,8 @@ class PublicMapHandler(base.RequestHandler):
       "events": events,
       "logged_in": logged_in,
       "initial_incident_id": self.request.GET.get("initial_incident_id", ""),
-      "incident": self.request.get("incident")
+      "incident": self.request.get("incident"),
+      "event": self.request.get("event")
       })
     self.response.out.write(template.render(template_params))
   

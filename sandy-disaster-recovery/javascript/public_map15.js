@@ -11,10 +11,12 @@ var loadIncident = function (incidentId) {
     populateMapByIncident(incidentId, 0, []);
 };
 
+function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+}
 
 $(function(){
-    // init
-    
+    // init    
     var myLatlng = new google.maps.LatLng(38.50, -85.35);
     var mapOptions = {
         zoom: 5,
@@ -28,15 +30,21 @@ $(function(){
     clusterer = markerCluster;
 
     // bind incident menu clicks
-    $(".MapIncident").click(function(event) {
-      var incidentId = event.target.id;
-      loadIncident(incidentId);
-    });
+    // $(".MapIncident").click(function(event) {
+    //   var incidentId = event.target.id;
+    //   loadIncident(incidentId);
+    // });
 
     // load initially specified incident if any
     var initialIncidentId = $(document).data('initialIncidentId');
     if (initialIncidentId) {
+        alert(33);
         loadIncident(initialIncidentId);
+    }
+
+    var incident_id = getURLParameter("event");
+    if ( !!incident_id ) {
+        loadIncident(incident_id);
     }
 });
 

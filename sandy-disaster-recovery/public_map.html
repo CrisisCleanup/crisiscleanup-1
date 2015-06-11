@@ -43,7 +43,7 @@ class="activePage"
 {% block sidebar_content %}
 <h2>Incidents</h2>
 {% for event in events %}
-<p class="MapIncident" id="{{event.short_name}}">{{event.name}}</p>
+<p class="MapIncident" id="{{event.short_name}}"><a href="/public-map?event={{ event.short_name }}">{{event.name}}</a></p>
 {% endfor %}
 <!--<h2>Filters</h2>
 

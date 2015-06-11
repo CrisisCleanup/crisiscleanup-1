@@ -45,7 +45,7 @@ class PublicMapAjaxHandler(base.RequestHandler):
     event = None
     events = event_db.GetAllCached()
     for e in events:
-      if e.short_name == event_shortname:
+      if e.name == event_shortname:
 	event = e
 
       

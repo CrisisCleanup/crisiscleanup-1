@@ -24,6 +24,7 @@ import base
 import event_db
 import key
 import page_db
+from google.appengine.ext import db
 
 
 jinja_environment = jinja2.Environment(
@@ -37,7 +38,10 @@ class PublicMapHandler(base.RequestHandler):
     events = event_db.GetAllCached()
     logged_in = False
     org, event = key.CheckAuthorization(self.request)
-
+    query_string = "SELECT * FROM Event WHERE short_name = '{0}'".format(self.request.get("event"))
+    query = db.GqlQuery(query_string)
+    event = query.get()
+    # raise Exception(event)
     if org and key:
       logged_in = True
 
@@ -47,7 +51,8 @@ class PublicMapHandler(base.RequestHandler):
       "logged_in": logged_in,
       "initial_incident_id": self.request.GET.get("initial_incident_id", ""),
       "incident": self.request.get("incident"),
-      "event": self.request.get("event")
+      "event": self.request.get("event"),
+      "event_name": self.request.get("event_name")
       })
     self.response.out.write(template.render(template_params))
   

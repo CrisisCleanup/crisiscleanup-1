@@ -78,9 +78,7 @@ class PublicMapAjaxHandler(base.RequestHandler):
             'id': site['id'],
             'case_number': site['case_number'],
             'work_type': site['work_type'],
-            'claimed_by': site['claimed_by'],
             'status': site['status'],
-            'floors_affected': site.get('floors_affected'),
             'blurred_latitude': site.get('blurred_latitude'),
             'blurred_longitude': site.get('blurred_longitude'),
         }

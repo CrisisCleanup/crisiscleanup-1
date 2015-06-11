@@ -89,7 +89,7 @@ var getMarkerIcon = function (site) {
     }
     site.work_type = marker_work_type;
     var icon_type = site.work_type.replace(/ /g, "_");
-    console.log("/icons/" + icon_type + "_" + color + ".png");
+    // console.log("/icons/" + icon_type + "_" + color + ".png");
     return "/icons/" + icon_type + "_" + color + ".png";
 }
 
@@ -97,7 +97,9 @@ var getInfoboxDetails = function(site) {
  details = "";
  for (var i in site) {
         if (details.length > 100000) break;
+        console.log("i: " + i)
         if (i == "initials of resident present" ||
+            i == "work_type" ||
             i == "address" ||
             i == "city" ||
             i == "status" ||
@@ -148,7 +150,7 @@ var getInfoboxDetails = function(site) {
 	    }
         }
     }
-    console.log(details);
+    console.log("D: " + details);
     return details;
 }
 
@@ -172,6 +174,7 @@ var populateMapByIncident = function(incident, page, old_markers) {
        
        for (var i = 0; i < sites_list.length; i++) {
 	 var details = getInfoboxDetails(sites_list[i]);
+     // console.log(details);
 	 var latLng = new google.maps.LatLng(sites_list[i].blurred_latitude, sites_list[i].blurred_longitude);
 	 var marker = new google.maps.Marker({'position': latLng, 
 					     'icon': getMarkerIcon(sites_list[i]), 
@@ -183,8 +186,8 @@ var populateMapByIncident = function(incident, page, old_markers) {
 	 markers.push(marker);
 	 var site_id = sites_list[i].id;
 	google.maps.event.addListener(marker, "click", function() {
-	  new Messi('<p>Name, Address, Phone Number are removed from the public map</p><p>Details: work type: '
-	  + this.work_type+ ', Details: ' + details + '</p>' + '<p>Status: ' + this.status + '</p>',
+	  new Messi('<p>Name, Address, Phone Number are removed from the public map</p><p>Work type: '
+	  + this.work_type+ '</p>' + '<p>Status: ' + this.status + '</p>',
 	  {title: 'Case Number: ' + this.case_number, titleClass: 'info', 
 	  buttons: [
 	  {id: 0, label: 'Printer Friendly', val: "On the live version, this would send all of this site's data to a printer friendly page." }, 

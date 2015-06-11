@@ -225,7 +225,6 @@ class EditHandler(base.AuthenticatedHandler):
     old_status = site.status
     data = site_db.StandardSiteForm(self.request.POST, site)
     new_status = data.status.data
-    raise Exception(old_status, new_status)
     if old_status != new_status:
       if not site.claimed_by: 
         site.claimed_by = org

@@ -45,7 +45,14 @@ $(function(){
     var incident_id = getURLParameter("event");
     if ( !!incident_id ) {
         loadIncident(incident_id);
-        Messi.alert("<h2>Welcome to our public map for " + incident_id + ".</h2><p><b>All locations have personal identification removed</b>, and their locations have been moved by a few hundred meters.</p><p>This map is meant to give a general overview of what information is stored in our database.</p>")
+        Messi.alert("""
+            <h2>Welcome to our public map for [Incident Full Name] Recovery.</h2>
+            <br>
+            <p>This map gives the public an idea of the location and types of damage in their communities, and lets them track the status of recovery efforts.</p>
+            <br>
+            <p>Locations are accurate to 1/4 mile, and personal information has been removed to protect the privacy of the individuals who have requested assistance.</p>
+            <br>
+            """)
     }
 });
 

@@ -66,7 +66,10 @@ def IncidentFormToDict(incident_form):
 def CheckDuplicatesAndPut(form_html, cache_time, event):
     q = db.Query(IncidentForm)
     q.filter("incident =", event.key())
-    query = q.get()
-    if query:
-      db.delete(query)
+    # query = q.get()
+    # if query:
+    #   db.delete(query)
+    forms = q.fetch(100)
+    for form in forms:
+      db.delete(form)
     PutAndCache(form_html, cache_time)

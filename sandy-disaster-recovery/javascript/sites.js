@@ -61,6 +61,15 @@ sandy.sites.addSearchTerm = function (site) {
         if (site.claimed_by) {
             term += " (" + site.claimed_by.name + ") ";
         }
+        if (site.notes) {
+            term += " " + site.notes;
+        }
+        if (site.status_notes) {
+            term += " " + site.status_notes;
+        }
+        if (site.damage_notes) {
+            term += " " + site.damage_notes;
+        }
         terms.push(term);
         siteMap[term] = site;
     }

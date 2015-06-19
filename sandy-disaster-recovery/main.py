@@ -16,11 +16,9 @@
 #
 # System libraries.
 import os
-
 import jinja2
 import webapp2
 from webapp2_extras import routes
-
 
 # Local libraries.
 import authentication_handler

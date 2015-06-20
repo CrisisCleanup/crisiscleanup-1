@@ -15,3 +15,4 @@ Find out more
  - Demo app: http://demo.crisiscleanup.org/
  - Blog: http://blog.crisiscleanup.org/
  - Twitter: https://twitter.com/CrisisCleanup
+ - Current Crisis Cleanup Github Repository: https://github.com/aarontitus/crisiscleanup

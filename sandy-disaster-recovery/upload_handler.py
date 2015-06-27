@@ -177,8 +177,8 @@ def edit_references_if_none_exists(site, data):
         logging.info(key)
         setattr(site, key, organization.Organization.get_by_id(b))
   success = site.put()
-  logging.info("c:" + site.claimed_by)
-  logging.info("r" + site.reported_by)
+  logging.info(site.claimed_by)
+  logging.info(site.reported_by)
   return success
 
 def duplicate_detector(event, data, duplicate_detection):

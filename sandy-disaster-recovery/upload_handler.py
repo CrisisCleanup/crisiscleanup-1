@@ -173,6 +173,7 @@ def edit_references_if_none_exists(site, data):
         c = float(str(d))
         b = int(c)
         org = organization.Organization.get_by_id(b)
+        logging.info(org)
         if site.case_number == "R1057":
           logging.info(site.name)
           logging.info(site.claimed_by)

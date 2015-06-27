@@ -159,6 +159,24 @@ def edit_references(site, data, work_type=False):
   success = site.put()
   return success
 
+def edit_references_if_none_exists(site, data):
+  for key in data:
+    if key in ["reported_by", "claimed_by"]:
+      d = str(data[key])
+      if d:
+        if d == "5851736711364600":
+          d = "5851736711364608"
+        if d == "5321360863657980":
+          d = "5321360863657984"
+        if d == "5088174472691710":
+          d = "5088174472691712"
+
+        c = float(str(d))
+        b = int(c)
+        setattr(site, key, organization.Organization.get_by_id(b))
+  success = site.put()
+  return success
+
 def duplicate_detector(event, data, duplicate_detection):
     # determine filters by duplicate_detection
     q = db.Query(site_db.Site)

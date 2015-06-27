@@ -174,6 +174,7 @@ def edit_references_if_none_exists(site, data):
         b = int(c)
         org = organization.Organization.get_by_id(b)
         logging.info(org)
+        logging.info(key)
         setattr(site, key, organization.Organization.get_by_id(b))
   success = site.put()
   logging.info("c:" + site.claimed_by)

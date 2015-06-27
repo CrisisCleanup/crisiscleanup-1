@@ -170,15 +170,14 @@ def edit_references_if_none_exists(site, data):
           d = "5321360863657984"
         if d == "5088174472691710":
           d = "5088174472691712"
-        logging.info(d)
         c = float(str(d))
         b = int(c)
         org = organization.Organization.get_by_id(b)
         logging.info(org)
         setattr(site, key, organization.Organization.get_by_id(b))
   success = site.put()
-  logging.info(site.claimed_by)
-  logging.info(site.reported_by)
+  logging.info("c:" + site.claimed_by)
+  logging.info("r" + site.reported_by)
   return success
 
 def duplicate_detector(event, data, duplicate_detection):

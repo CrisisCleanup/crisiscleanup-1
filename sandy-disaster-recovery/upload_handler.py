@@ -87,7 +87,6 @@ def process_csv(blob_info, event, duplicate_detection, duplicate_method):
                 ignored += 1
                 pass
               elif duplicate_method == "references_work_type":
-                raise Exception(1)
                 success = edit_references_if_none_exists(site, data)
                 saved_duplicates += 1
             else:

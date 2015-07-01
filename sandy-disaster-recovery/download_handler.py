@@ -59,6 +59,7 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
         filename = all_event_timeless_filename(event)
         bucket_path = BUCKET_NAME + '/' + filename
+        logging.info(bucket_path)
 
         try:
             file_stat = cloudstorage.stat(bucket_path)

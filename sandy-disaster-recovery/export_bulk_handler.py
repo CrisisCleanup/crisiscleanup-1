@@ -13,6 +13,7 @@ import cloudstorage
 import webapp2
 
 import base
+import messaging
 from site_db import Site
 from event_db import Event
 from time_utils import timestamp_now
@@ -159,10 +160,35 @@ class ExportBulkHandler(base.AuthenticatedHandler, AbstractExportBulkHandler):
 def all_event_timeless_filename(event):
     return "%s-ALL.csv" % event.filename_friendly_name
 
-
 class ExportAllEventsHandler(AbstractCronHandler, AbstractExportBulkHandler):
 
     def get(self):
+        logging.error("export started")
+        bucket_path = "/sandy-disaster-recovery/texas-oklahoma-floods-ALL.csv"
+
+        try:
+            file_stat = cloudstorage.stat(bucket_path)
+        except cloudstorage.NotFoundError:
+            self.abort(404)
+
+        # rewrite filename to include timestamp
+        custom_timestamp = timestamp(
+            datetime.datetime.utcfromtimestamp(file_stat.st_ctime))
+        filename_to_serve = file_stat.filename.replace(
+            '.csv',
+            '-%s.csv' % custom_timestamp 
+        )
+
+        # serve the file as an attachment, forcing download
+        gcs_fd = cloudstorage.open(bucket_path)
+        if file_stat.content_type:
+            self.response.headers['Content-Type'] = file_stat.content_type
+        self.response.headers['Content-Disposition'] = (
+            str('attachment; filename="%s"' % filename_to_serve)
+        )
+
+        messaging.email_administrators(None, "hourly download all csv", gcs_fd.read(), html=None, include_local=False)
+        logging.error("export worked")
         # start export Task chain for each event
         for event in Event.all():
             if event.logged_in_to_recently:
@@ -177,7 +203,6 @@ class ExportAllEventsHandler(AbstractCronHandler, AbstractExportBulkHandler):
                 )
             else:
                 logging.info(u"Export all sites: skipping %s" % event.short_name)
-
 
 class AbstractExportBulkWorker(webapp2.RequestHandler):
 

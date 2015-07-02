@@ -51,6 +51,8 @@ class DownloadBulkExportHandler(base.AuthenticatedHandler):
         self.response.headers['Content-Disposition'] = (
             str('attachment; filename="%s"' % filename)
         )
+
+        
         self.response.write(gcs_fd.read())
 
 
@@ -82,4 +84,4 @@ class DownloadEventAllWorkOrdersHandler(base.AuthenticatedHandler):
             str('attachment; filename="%s"' % filename_to_serve)
         )
 
-	self.response.write(gcs_fd.read())
+        self.response.write(gcs_fd.read())

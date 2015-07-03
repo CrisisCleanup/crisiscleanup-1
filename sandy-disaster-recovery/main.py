@@ -105,6 +105,8 @@ import update_csv_handler
 from admin_handler import admin_create_incident_csv_handler
 from admin_handler import admin_stats_handler
 
+import migration_handler
+
 
 
 jinja_environment = jinja2.Environment(
@@ -238,6 +240,7 @@ app = webapp2.WSGIApplication([
     Route(r'/task/export-all-events', export_bulk_handler.ExportAllEventsHandler, 'export_all_events'),
     Route(r'/task/crunch-all-events-stats', stats.CrunchAllStatisticsHandler, 'crunch_all_events_stats'),
     Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),
+    Route(r'/api/migration', migration_handler.MigrationHandler, 'migration_handler'),
 
 
     # dev/testing

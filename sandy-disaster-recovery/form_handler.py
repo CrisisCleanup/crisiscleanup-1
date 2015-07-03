@@ -23,6 +23,7 @@ import wtforms.validators
 from google.appengine.ext import db
 import json
 from datetime import datetime
+import logging
 
 
 
@@ -33,6 +34,7 @@ import site_db
 import site_util
 import form_db
 import page_db
+import audit_db
 
 
 
@@ -219,6 +221,10 @@ class FormHandler(base.AuthenticatedHandler):
         message = None
       elif site.event or event_db.AddSiteToEvent(site, event.key().id()):
         site_db.PutAndCache(site)
+        try:
+          audit_db.create(site, "create", org)
+        except:
+          logging.error("Audit exception")
 	#dict_dict_site = site_db.SiteToDict(site)
 	#raise Exception(dict_dict_site)
         self.redirect("/?message=" + "Successfully added " + urllib2.quote(site.name))

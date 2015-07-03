@@ -29,6 +29,7 @@ import base
 import site_db
 import site_util
 import form_db
+import audit_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -290,6 +291,11 @@ class EditHandler(base.AuthenticatedHandler):
 	  else:
             setattr(site, k, v)
       site_db.PutAndCache(site)
+      # try:
+      audit_db.create(site, "edit", org)
+      # except:
+      #   logging.error("Audit exception")
+
       if mode_js:
         # returning a 200 is sufficient here.
         return

@@ -48,6 +48,7 @@ class MigrationHandler(base.RequestHandler):
 	    if self.request.get("action") == "site_keys":
 	    	keys = []
 	    	sites = site_db.Site.all(keys_only=True)
+	    	#filter by event
 	    	for site in sites:
 	    		keys.append(str(site))
 	    	self.response.out.write(json.dumps(keys))

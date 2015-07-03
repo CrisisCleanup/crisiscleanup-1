@@ -223,6 +223,10 @@ class EditHandler(base.AuthenticatedHandler):
     except:
       return
     site = site_db.Site.get_by_id(id)
+    try:
+      audit_db.create(site, "edit", org)
+    except:
+      logging.error("Audit exception")
     old_status = site.status
     data = site_db.StandardSiteForm(self.request.POST, site)
     new_status = data.status.data
@@ -291,10 +295,6 @@ class EditHandler(base.AuthenticatedHandler):
 	  else:
             setattr(site, k, v)
       site_db.PutAndCache(site)
-      try:
-        audit_db.create(site, "edit", org)
-      except:
-        logging.error("Audit exception")
 
       if mode_js:
         # returning a 200 is sufficient here.

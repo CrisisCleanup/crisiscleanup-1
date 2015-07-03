@@ -116,7 +116,6 @@ class AuthenticationHandler(base.RequestHandler):
       "error_message": self.request.get("error_message"),
       "initial_event_name": self.request.get("initial_event_name", ""),
     })
-    logging.info(self.request)
     self.response.out.write(template.render(template_params))
 
   def post(self):

@@ -12,6 +12,7 @@ import jinja2
 import os
 import urllib
 from google.appengine.ext import db
+import audit_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -123,6 +124,7 @@ def add_site(data, event):
       else:
         setattr(site, key, data[key])
   success = event_db.AddSiteToEvent(site, event.key().id())
+
   return success
 
 def edit_site(site, data):

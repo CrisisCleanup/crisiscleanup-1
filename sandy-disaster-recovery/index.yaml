@@ -134,16 +134,16 @@ indexes:
     direction: desc
 
 - kind: Site
- properties:
- - name: case_number
- - name: created_at
-   direction: desc 
+  properties:
+  - name: case_number
+  - name: created_at
+    direction: desc 
 
 - kind: Audit
- properties:
- - name: case_number
- - name: created_at
-   direction: desc 
+  properties:
+  - name: case_number
+  - name: created_at
+    direction: desc 
 
 #- kind: Site
 #  properties:

@@ -28,7 +28,6 @@ class MigrationHandler(base.RequestHandler):
 	    		keys.append(str(event))
 	    	for key in keys:
 	    		k = db.Key(key)
-	    		raise Exception(k)
 	    	self.response.out.write(json.dumps(keys))
 	    	return
 

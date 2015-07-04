@@ -54,26 +54,38 @@ class MigrationHandler(base.RequestHandler):
 	    	self.response.out.write(json.dumps(keys))
 	    	return
 
-	    # if self.request.get("action") == "get_entity_by_key":
-	    # 	table = json_request["table"]
-	    # 	key = json_request["key"]
-	    # 	if table == "site":
-	    # 		site = site_db.Site.all()
-	    # 		site.filter('event', json_request["event_key"])
-	    # 		site.filter('key', json_request["object_key"])
-	    # 		self.response.out.write(json.dumps(site.get(), default = dthandler))
+	    if self.request.get("action") == "get_entity_by_key":
+	    	table = self.request.get("table")
+	    	key = self.request.get("key")
 
-	    # 	if table == "event":
-	    # 		event = event_db.Event.all()
-	    # 		event.filter('key', json_request["object_key"])
-	    # 		self.response.out.write(json.dumps(event.get(), default = dthandler))	    		
+	    	if table == "event":
+	    		_id = int(self.request.get("id"))
+	    		event = event_db.Event.get_by_id(_id)
+	    		event_dict = to_dict(event)
+	    		event_dict["id"] = event.key().id()
+	    		event_dict["key"] = str(event.key())
+	    		self.response.out.write(json.dumps(event_dict, default = dthandler))
 
-	    # 	if table == "org":
-	    # 		organization = organization.Organization.all()
-	    # 		organization.filter('key', json_request["object_key"])
-	    # 		self.response.out.write(json.dumps(organization.get(), default = dthandler))
+	    	if table == "site":
+	    		_id = int(self.request.get("id"))
+	    		site = site_db.Site.get_by_id(_id)
+	    		site_dict = to_dict(site)
+	    		site_dict["id"] = site.key().id()
+	    		site_dict["key"] = str(site.key())
+	    		self.response.out.write(json.dumps(site_dict, default = dthandler))
 
-	    # 	if table == "contact":
-	    # 		contact = primary_contact_db.Contact.all()
-	    # 		contact.filter('key', json_request["object_key"])
-	    # 		self.response.out.write(json.dumps(contact.get(), default = dthandler))	    		
+	    	if table == "organization":
+	    		_id = int(self.request.get("id"))
+	    		org = organization.Organization.get_by_id(_id)
+	    		org_dict = to_dict(org)
+	    		org_dict["id"] = org.key().id()
+	    		org_dict["key"] = str(org.key())
+	    		self.response.out.write(json.dumps(org_dict, default = dthandler))
+
+	    	if table == "contact":
+	    		_id = int(self.request.get("id"))
+	    		contact = primary_contact_db.Contact.get_by_id(_id)
+	    		contact_dict = to_dict(contact)
+	    		contact_dict["id"] = contact.key().id()
+	    		contact_dict["key"] = str(contact.key())
+	    		self.response.out.write(json.dumps(contact_dict, default = dthandler))

@@ -60,7 +60,7 @@ var zoom_level = {% if site_id %}{{zoom_level}}{% else %}null{% endif %};
 {{ menubox }}
 
 <div id="map_canvas"></div>
-<div id="filtersbackground">
+<div id="filtersbackground" {% if not desktop %} style="opacity: 0;" {% endif %}>
 <div id="filters">
     Only show the following types:<br />
 {% for f in filters %}
@@ -119,9 +119,12 @@ var zoom_level = {% if site_id %}{{zoom_level}}{% else %}null{% endif %};
 <script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
 <script>
 {% if not desktop %}
-$("#filters").hide();
-$("#menubox_div").hide();
-$("#legend_div").hide();
+
+$(function() {
+  $("#filters").hide();
+  $("#legend_div").hide();
+});
+
 {% endif %}
 </script>
 

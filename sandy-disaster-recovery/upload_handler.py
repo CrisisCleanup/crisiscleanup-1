@@ -124,7 +124,7 @@ def add_site(data, event):
       else:
         setattr(site, key, data[key])
   success = event_db.AddSiteToEvent(site, event.key().id())
-
+  add_audit(site, "create")
   return success
 
 def edit_site(site, data):
@@ -145,6 +145,7 @@ def edit_site(site, data):
     else:
       setattr(site, key, data[key])
   success = site.put()
+  add_audit(site, "edit")
   return success
 
 def edit_references(site, data, work_type=False):
@@ -159,6 +160,7 @@ def edit_references(site, data, work_type=False):
       if key == "work_type" and data[key] != "Report":
         setattr(site, key, data[key])
   success = site.put()
+  add_audit(site, "edit")
   return success
 
 def edit_references_if_none_exists(site, data):
@@ -183,11 +185,7 @@ def edit_references_if_none_exists(site, data):
           logging.info(org)
         setattr(site, key, organization.Organization.get_by_id(b))
   success = site.put()
-  if site.case_number == "R1057":
-    logging.info(site.name)
-    logging.info(site.claimed_by)
-    logging.info(site.reported_by)
-    logging.info(org)
+  add_audit(site, "edit")
   return success
 
 def duplicate_detector(event, data, duplicate_detection):
@@ -242,3 +240,9 @@ class BlobIterator:
         self.line_num += 1
 
         return result
+
+def add_audit(site, action):
+  try:
+    audit_db.create(action, site, site.reported_by)
+  except:
+    logging.error("Audit error")

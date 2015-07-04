@@ -39,6 +39,10 @@ menubox_template = jinja_environment.get_template('_menubox.html')
 class MapHandler(base.RequestHandler):
 
   def get(self):
+    user_agent = self.request.headers["User-Agent"]
+    desktop = True
+    if "iPad" in user_agent or "iPhone" in user_agent or "Android" in user_agent:
+      desktop = False
     filters = [
               #["debris_only", "Remove Debris Only"],
               #["electricity", "Has Electricity"],
@@ -76,6 +80,7 @@ class MapHandler(base.RequestHandler):
       template_values = page_db.get_page_block_dict()
       template_values.update({
           "version" : os.environ['CURRENT_VERSION_ID'],
+          "desktop": desktop,
           #"uncompiled" : True,
           "counties" : event.counties,
           "org" : org,

@@ -33,6 +33,7 @@ class MigrationHandler(base.RequestHandler):
 
 	    if self.request.get("action") == "org_keys":
 	    	keys = []
+	    	import organization
 	    	organizations = organization.Organization.all(keys_only=True)
 	    	for org in organizations:
 	    		keys.append(str(org))
@@ -79,12 +80,13 @@ class MigrationHandler(base.RequestHandler):
 	    		self.response.out.write(json.dumps(site_dict, default = dthandler))
 
 	    	if table == "organization":
+	    		import organization
 	    		organizations = organization.Organization.all()
 	    		organizations.filter("__key__ =", db.Key(self.request.get("key")))
 	    		organization = organizations.get()
-	    		org_dict = to_dict(org)
-	    		org_dict["id"] = org.key().id()
-	    		org_dict["key"] = str(org.key())
+	    		org_dict = to_dict(organization)
+	    		org_dict["id"] = organization.key().id()
+	    		org_dict["key"] = str(organization.key())
 	    		self.response.out.write(json.dumps(org_dict, default = dthandler))
 
 	    	if table == "contact":

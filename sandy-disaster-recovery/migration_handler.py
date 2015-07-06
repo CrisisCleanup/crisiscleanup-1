@@ -66,8 +66,7 @@ class MigrationHandler(base.RequestHandler):
 	    		events.filter("__key__ =", db.Key(self.request.get("key")))
 	    		event = events.get()
 	    		event_dict = to_dict(event)
-	    		event_dict["id"] = event.key().id()
-	    		event_dict["key"] = str(event.key())
+	    		event_dict["appengine_key"] = str(event.key())
 	    		self.response.out.write(json.dumps(event_dict, default = dthandler))
 
 	    	if table == "site":
@@ -75,8 +74,11 @@ class MigrationHandler(base.RequestHandler):
 	    		sites.filter("__key__ =", db.Key(self.request.get("key")))
 	    		site = sites.get()
 	    		site_dict = to_dict(site)
-	    		site_dict["id"] = site.key().id()
-	    		site_dict["key"] = str(site.key())
+	    		site_dict["appengine_key"] = str(site.key())
+	    		#TODO
+	    		#event_id
+	    		#org_id for reported by and claimed by
+	    		#data object for all nonstandard fields
 	    		self.response.out.write(json.dumps(site_dict, default = dthandler))
 
 	    	if table == "organization":
@@ -85,8 +87,12 @@ class MigrationHandler(base.RequestHandler):
 	    		organizations.filter("__key__ =", db.Key(self.request.get("key")))
 	    		organization = organizations.get()
 	    		org_dict = to_dict(organization)
-	    		org_dict["id"] = organization.key().id()
-	    		org_dict["key"] = str(organization.key())
+	    		org_dict["appengine_key"] = str(organization.key())
+	    		incidents = organization.incidents
+	    		a = []
+	    		for i in incidents:
+	    			a.append(str(i.key()))
+	    		org_dict["incidents"] = a
 	    		self.response.out.write(json.dumps(org_dict, default = dthandler))
 
 	    	if table == "contact":
@@ -94,6 +100,6 @@ class MigrationHandler(base.RequestHandler):
 	    		contacts.filter("__key__ =", db.Key(self.request.get("key")))
 	    		contact = contacts.get()
 	    		contact_dict = to_dict(contact)
-	    		contact_dict["id"] = contact.key().id()
-	    		contact_dict["key"] = str(contact.key())
+	    		contact_dict["appengine_key"] = str(contact.key())
+	    		contact_dict["organization"] = str(contact.organization.key())
 	    		self.response.out.write(json.dumps(contact_dict, default = dthandler))

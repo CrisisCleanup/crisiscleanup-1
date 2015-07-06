@@ -85,10 +85,10 @@ class MigrationHandler(base.RequestHandler):
 	    		import organization
 	    		organizations = organization.Organization.all()
 	    		organizations.filter("__key__ =", db.Key(self.request.get("key")))
-	    		organization = organizations.get()
+	    		org = organizations.get()
 	    		org_dict = to_dict(organization)
-	    		org_dict["appengine_key"] = str(organization.key())
-	    		incidents = organization.incidents
+	    		org_dict["appengine_key"] = str(org.key())
+	    		incidents = org.incidents
 	    		a = []
 	    		for i in incidents:
 	    			a.append(str(i.key()))

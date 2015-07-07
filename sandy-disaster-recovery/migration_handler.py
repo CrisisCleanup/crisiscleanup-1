@@ -89,6 +89,10 @@ class MigrationHandler(base.RequestHandler):
 	    		org_dict = to_dict(org)
 	    		org_dict["appengine_key"] = str(org.key())
 	    		incidents = org.incidents
+	    		try:
+	    			incidents = org.incidents
+	    		except:
+	    			logging.error(org.name)
 	    		a = []
 	    		for i in incidents:
 	    			a.append(str(i.key()))

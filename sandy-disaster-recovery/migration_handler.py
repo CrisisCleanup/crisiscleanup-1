@@ -103,7 +103,7 @@ class MigrationHandler(base.RequestHandler):
 	    		if contact.organization:
 		    		logging.error(contact.organization.name)
 		    		contact_dict["organization"] = str(contact.organization.key())
-		    	else
+		    	else:
 		    		logging.error("contact organization is null")
 
 	    		contact_dict["appengine_key"] = str(contact.key())

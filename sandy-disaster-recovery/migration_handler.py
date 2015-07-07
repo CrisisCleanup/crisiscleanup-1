@@ -100,6 +100,11 @@ class MigrationHandler(base.RequestHandler):
 	    		contacts.filter("__key__ =", db.Key(self.request.get("key")))
 	    		contact = contacts.get()
 	    		contact_dict = to_dict(contact)
+	    		if contact.organization:
+		    		logging.error(contact.organization.name)
+		    		contact_dict["organization"] = str(contact.organization.key())
+		    	else
+		    		logging.error("contact organization is null")
+
 	    		contact_dict["appengine_key"] = str(contact.key())
-	    		contact_dict["organization"] = str(contact.organization.key())
 	    		self.response.out.write(json.dumps(contact_dict, default = dthandler))

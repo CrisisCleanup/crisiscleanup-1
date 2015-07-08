@@ -76,7 +76,8 @@ class MigrationHandler(base.RequestHandler):
 	    		site_dict = to_dict(site)
 	    		site_dict["appengine_key"] = str(site.key())
 	    		site_dict["legacy_event_id"] = str(site.event.key())
-	    		site_dict["reported_by"] = str(site.reported_by.key())
+	    		if site.reported_by:
+		    		site_dict["reported_by"] = str(site.reported_by.key())
 	    		if site.claimed_by:
 	    			site_dict["claimed_by"] = str(site.claimed_by.key())
 	    		self.response.out.write(json.dumps(site_dict, default = dthandler))

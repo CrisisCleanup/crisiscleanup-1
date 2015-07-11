@@ -1,0 +1,654 @@
+<!-- 2015-07-09 10:46am -->
+<p><strong>Southeast Michigan Floods</strong>: Enter property damage and needs assessments here. Inform the client this information will be shared with other voluntary organizations in an effort to provide service as fast as possible, which may be several weeks.</p>
+	<h2>Property and Personal Information</h2>
+	<table>
+		<tr>
+			<td class=question>Resident name: <span class=required-asterisk>*</span></td>
+			<td class="answer">
+				<div class="form_field">
+					<input class="" id="name" name="name" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Date of Request:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="request_date" name="request_date" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Street Address:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="address" name="address" type="text" value="" />
+				</div>
+<!--</div>-->
+			</td>
+		</tr>
+		<tr>
+			<td class=question>City:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="city" name="city" type="text" value="" />
+				</div>
+				<div id=citySuggestion></div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>County:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="county" name="county" type="text" value="" />
+				</div>
+				<div id=countySuggestion></div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>State:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="state" name="state" type="text" value="" />
+				</div>
+				<div id=stateSuggestion></div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Zip Code:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="zip_code" name="zip_code" type="text" value="" />
+				</div>
+				<div id=zipCodeSuggestion>
+			</td>
+		</tr>
+	<tr>
+	  <td class=question>
+	    Latitude:
+	    <small>(<a href="#" onclick="document.getElementById('latitude').readOnly=false; document.getElementById('latitude').focus(); return false;">edit</a>)</small>
+	  </td>
+	  <td class="answer">
+	  <div class="form_field">
+	    <input class="" id="latitude" name="latitude" readonly type="text" value="" #" />
+	  </div>
+	</td>
+	</tr>
+	<tr>
+	  <td class=question>
+	    Longitude:
+	    <small>(<a href="#" onclick="document.getElementById('longitude').readOnly=false; document.getElementById('longitude').focus(); return false">edit</a>)</small>
+	  </td>
+	  <td class="answer">
+	  <div class="form_field">
+	    <input class="" id="longitude" name="longitude" readonly type="text" value="" #" />
+	  </div>
+	</td>
+	</tr>
+		<tr>
+			<td class=question>Cross Street or Nearby Landmark:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="cross_street" name="cross_street" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="phone1" name="phone1" type="text" value="" />
+				</div>
+				<div class="form_field">
+					<input class="" id="phone2" name="phone2" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Primary help needed:<span class=required-asterisk>*</span></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<select class="" id="work_type" name="work_type">
+						<option value="" />--Choose One--</option>
+						<option value="Muck_Out">Muck Out</option>
+						<option value="Mold_Remediation">Mold Remediation</option>
+						<option value="Debris">Debris</option>
+						<option value="Deferred_Maintenance">Deferred Maintenance</option>
+						<option value="Rebuild">Reconstruction</option>
+						<option value="Other">Other</option>
+					</select>
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question>Rent/Own/Public</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<select class="" id="rent_or_own" name="rent_or_own">
+						<option value="" />--Choose One--</option>
+						<option value="Rent">Rent</option>
+						<option value="Own">Own</option>
+						<option value="Unknown">Unknown</option>
+						<option value="Public Land">Public Land</option>
+						<option value="Non-Profit">Non-Profit</option>
+						<option value="Business">Business</option>
+					</select>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="older_than_60">Older than 60:</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="older_than_60" type="hidden" value="n" />
+					<input class="" id="older_than_60" name="older_than_60" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="children_in_home">Children in Home:</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="children_in_home" type="hidden" value="n" />
+					<input class="" id="children_in_home" name="children_in_home" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="insured">Is Property Insured?</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="insured" type="hidden" value="n" />
+					<input class="" id="insured" name="insured" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="release_org_sign">Resident Sign Org Release?</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="release_org_sign" type="hidden" value="n" />
+					<input class="" id="release_org_sign" name="release_org_sign" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="release_can_sign">Resident Sign CAN Release?</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="release_can_sign" type="hidden" value="n" />
+					<input class="" id="release_can_sign" name="release_can_sign" type="checkbox" value="y">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Special needs:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<textarea class="" id="special_needs" name="special_needs"></textarea>
+				</div>
+			</td>
+		</tr>
+	</table>
+<br/>
+<h2 style="page-break-before:always;">Work</h2>
+<table>
+	<tr>
+		<td class=question><label for="work_requested">Work Requested:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<textarea class="" id="work_requested" name="work_requested"></textarea>
+			</div>
+		</td>
+	</tr>
+</table>
+<h3>Muck Out</h3>
+<table>
+	<tr>
+		<td class=question><label for="dump_trailer_needed">Dump Trailer Needed:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="dump_trailer_needed" type="hidden" value="n" />
+				<input class="" id="dump_trailer_needed" name="dump_trailer_needed" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<td class=question>Floors affected:</td>
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="floors_affected" name="floors_affected">
+					<option value="" />--Choose One--</option>
+					<option value="Basement Only">Basement Only</option>
+					<option value="Basement and Ground Floor">Basement and Ground Floor</option>
+					<option value="Ground Floor Only">Ground Floor Only</option>
+					<option value="None">None</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question>Height of Flood (feet):</td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="flood_height" name="flood_height" type="text" value="" /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="carpet_removal">Carpet Removal:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="carpet_removal" type="hidden" value="n" />
+				<input class="" id="carpet_removal" name="carpet_removal" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="hardwood_floor_removal">Hardwood Floor Removal:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="hardwood_floor_removal" type="hidden" value="n" />
+				<input class="" id="hardwood_floor_removal" name="hardwood_floor_removal" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="drywall_removal">Drywall Removal:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="drywall_removal" type="hidden" value="n" />
+				<input class="" id="drywall_removal" name="drywall_removal" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="appliance_removal">Appliance Removal:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="appliance_removal" type="hidden" value="n" />
+				<input class="" id="appliance_removal" name="appliance_removal" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="heavy_item_removal">Heavy Item Removal:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="heavy_item_removal" type="hidden" value="n" />
+				<input class="" id="heavy_item_removal" name="heavy_item_removal" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+</table>
+<h3>Mold Remediation</h3>
+<table>
+		<tr>
+			<td class=question>Amount of Mold:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<select class="" id="mold_amount" name="mold_amount">
+						<option value="" />--Choose One--</option>
+						<option value="Small Isolated Area">Small, Isolated Area</option>
+						<option value="Medium Isolated Area">Medium, Isolated Area</option>
+						<option value="Large Area">Large Area</option>
+						<option value="Extensive Mold Throughout">Extensive Mold Throughout</option>
+						<option value="Other">Other</option>
+					</select>
+				</div>
+			</td>
+		</tr>
+	<tr>
+		<td class=question><label for="mold_drying">Drying Required:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="mold_drying" type="hidden" value="n" />
+				<input class="" id="mold_drying" name="mold_drying" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="mold_scraping">Scraping Required:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="mold_scraping" type="hidden" value="n" />
+				<input class="" id="mold_scraping" name="mold_scraping" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="mold_spraying">Spraying Required:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="mold_spraying" type="hidden" value="n" />
+				<input class="" id="mold_spraying" name="mold_spraying" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>	<tr>
+		<td class=question><label for="mold_replace_studs">Replace Studs:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="mold_replace_studs" type="hidden" value="n" />
+				<input class="" id="mold_replace_studs" name="mold_replace_studs" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="mold_hvac">HVAC Remediation:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="mold_hvac" type="hidden" value="n" />
+				<input class="" id="mold_hvac" name="mold_hvac" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<td class=question>Notes:</td>
+		<td class="answer">
+			<div class="form_field">
+				<textarea class="" id="notes" name="notes"></textarea>
+			</div>
+		</td>
+	</tr>
+</table>
+
+<h3>Debris</h3>
+<table>
+	<tr>
+		<td class=question><label for="nonvegitative_debris_removal">Non-Vegitative Debris</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="nonvegitative_debris_removal" type="hidden" value="n" />
+				<input class="" id="nonvegitative_debris_removal" name="nonvegitative_debris_removal" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="vegitative_debris_removal">Vegitative Debris</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="vegitative_debris_removal" type="hidden" value="n" />
+				<input class="" id="vegitative_debris_removal" name="vegitative_debris_removal" type="checkbox" value="y" /> 
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question>Debris Description:</td>
+		<td class="answer">
+			<div class="form_field">
+				<textarea class="" id="debris_description" name="debris_description"></textarea>
+			</div>
+		</td>
+	</tr>
+</table>
+
+<h3>Deferred Maintenance</h3>
+	<table>
+		<tr>
+			<td class=question><label for="maintenance_plumbing">Interior Plumbing</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_plumbing" type="hidden" value="n" />
+					<input class="" id="maintenance_plumbing" name="maintenance_plumbing" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="maintenance_drainage">Exterior Drainage</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_drainage" type="hidden" value="n" />
+					<input class="" id="maintenance_drainage" name="maintenance_drainage" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="maintenance_sewer_septic">Sewer/Septic</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_sewer_septic" type="hidden" value="n" />
+					<input class="" id="maintenance_sewer_septic" name="maintenance_sewer_septic" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="maintenance_caulking">Caulking</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_caulking" type="hidden" value="n" />
+					<input class="" id="maintenance_caulking" name="maintenance_caulking" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Appliances:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<textarea class="" id="maintenance_appliances" name="maintenance_appliances"></textarea>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="maintenance_hvac">HVAC</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_hvac" type="hidden" value="n" />
+					<input class="" id="maintenance_hvac" name="maintenance_hvac" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="maintenance_electrical">Electrical</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_electrical" type="hidden" value="n" />
+					<input class="" id="maintenance_electrical" name="maintenance_electrical" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="maintenance_roof">Roof &amp; Gutters</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_roof" type="hidden" value="n" />
+					<input class="" id="maintenance_roof" name="maintenance_roof" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="maintenance_siding">Siding</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_siding" type="hidden" value="n" />
+					<input class="" id="maintenance_siding" name="maintenance_siding" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="maintenance_doors">Doors</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_doors" type="hidden" value="n" />
+					<input class="" id="maintenance_doors" name="maintenance_doors" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="maintenance_windows">Windows</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_windows" type="hidden" value="n" />
+					<input class="" id="maintenance_windows" name="maintenance_windows" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Other needs:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<textarea class="" id="other_needs" name="other_needs"></textarea>
+				</div>
+			</td>
+		</tr>
+	</table>
+<h3>Reconstruction</h3>
+<table>
+		<tr>
+			<td class=question><label for="needs_visual">Needs Visual Assessment</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="needs_visual" type="hidden" value="n" />
+					<input class="" id="needs_visual" name="needs_visual" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><strong>ADD MORE QUESTIONS HERE</strong></td>
+			<td class="answer"> 
+				<div class="form_field">
+					&nbsp;
+				</div>
+			</td>
+		</tr>
+</table>
+
+<h2>Hazards</h2>
+<table>
+	<tr>
+		<td class=question><label for="habitable">Is the home habitable:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="habitable" type="hidden" value="n" />
+				<input checked class="" id="habitable" name="habitable" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="hoarder">Hoarder:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="hoarder" type="hidden" value="n" />
+				<input class="" id="hoarder" name="hoarder" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="known_asbestos">Known Asbestos:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="known_asbestos" type="hidden" value="n" />
+				<input class="" id="known_asbestos" name="known_asbestos" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question><label for="known_asbestos">Known Lead-based paint:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="known_asbestos" type="hidden" value="n" />
+				<input class="" id="known_asbestos" name="known_asbestos" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class=question>Other Unsafe Conditions:</td>
+		<td class="answer">
+			<div class="form_field">
+				<textarea class="" id="other_hazards" name="other_hazards"></textarea>
+			</div>
+		</td>
+	</tr>
+</table>
+
+<h2>Claim, Status and Report</h2>
+	<table>
+		<tr>
+			<td class=question>Claim for Your Organization:</td>
+			<td class="answer">
+				<input class="" name="claim_for_org" type="hidden" value="n" />
+				<input type=checkbox id="claim_for_org" name="claim_for_org" value="y" />
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Current Status:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<select class="" id="status" name="status">
+						<option selected value="Open, unassigned">Open, unassigned</option>
+						<option value="Open, assigned">Open, assigned</option>
+						<option value="Open, partially completed">Open, partially completed</option>
+						<option value="Open, needs follow-up">Open, needs follow-up</option>
+						<option value="Closed, completed">Closed, completed</option>
+						<option value="Closed, incomplete">Closed, incomplete</option>
+						<option value="Closed, out of scope">Closed, out of scope</option>
+						<option value="Closed, done by others">Closed, done by others</option>
+						<option value="Closed, no help wanted">Closed, no help wanted</option>
+						<option value="Closed, rejected">Closed, rejected</option>
+						<option value="Closed, duplicate">Closed, duplicate</option>
+					</select>
+				</div>
+			</td>
+		</tr>
+		<tr id="assigned_to_row" class="hide">
+			<td class="question">Assigned To:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="assigned_to" name="assigned_to" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Volunteers:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="total_volunteers" name="total_volunteers" type="text" value="">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Hours per volunteer:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="hours_worked_per_volunteer" name="hours_worked_per_volunteer" type="text" value="">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Initials of resident present during work:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="initials_of_resident_present" name="initials_of_resident_present" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Status notes:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<textarea class="" id="status_notes" name="status_notes"></textarea>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+<h2>Other Information</h2>
+	<table>
+		<tr>
+			<td class=question>Prepared by:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="prepared_by" name="prepared_by" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question>Do not work before:</td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" id="do_not_work_before" name="do_not_work_before" type="text" value="" />
+				</div>
+			</td>
+		</tr>
+	</table>

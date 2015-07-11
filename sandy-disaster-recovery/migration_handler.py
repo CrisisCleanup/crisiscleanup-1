@@ -31,7 +31,7 @@ class MigrationHandler(base.RequestHandler):
 	    	self.response.out.write(json.dumps(keys))
 	    	return
 
-	    if self.request.get("action") == "org_keys":
+	    if self.request.get("action") == "organization_keys":
 	    	keys = []
 	    	import organization
 	    	organizations = organization.Organization.all(keys_only=True)

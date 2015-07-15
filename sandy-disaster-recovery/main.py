@@ -129,29 +129,6 @@ class Route(routes.RedirectRoute):
       kwargs['strict_slash'] = True
     routes.RedirectRoute.__init__(self, *args, **kwargs)
 
-from google.appengine.ext import db
-q1 = "SELECT * FROM Site WHERE work_type=''"
-
-q2 = "SELECT * FROM Site WHERE work_type=NULL"
-
-q3 = "SELECT * FROM Site WHERE work_type='None'"
-
-sites1 = db.GqlQuery(q1)
-sites2 = db.GqlQuery(q2)
-sites3 = db.GqlQuery(q3)
-
-logging.info(sites1.count())
-logging.info(sites2.count())
-logging.info(sites3.count())
-
-for e in sites3:
-    logging.info(e.work_type)
-    e.work_type = "Other"
-    e.event.case_label
-    e.put()
-    logging.info(e.work_type)
-
-
 app = webapp2.WSGIApplication([
     Route(r'/contact', contact_us_handler.ContactUsHandler, 'dev'),
     Route(r'/update_csv_handler', update_csv_handler.UpdateCSVHandler, 'dev'),

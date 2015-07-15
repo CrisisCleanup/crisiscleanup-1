@@ -144,10 +144,10 @@ logging.info(sites1.count())
 logging.info(sites2.count())
 logging.info(sites3.count())
 
-for e in sites1:
+for e in sites3:
     logging.info(e.work_type)
     e.work_type = "Other"
-    e.event.name
+    e.event.case_label
     e.put()
     logging.info(e.work_type)
 

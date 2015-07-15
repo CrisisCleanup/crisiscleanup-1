@@ -144,6 +144,13 @@ logging.info(sites1.count())
 logging.info(sites2.count())
 logging.info(sites3.count())
 
+for e in sites2:
+    logging.info(e.work_type)
+    e.work_type = "Other"
+    e.put()
+    logging.info(e.work_type)
+    
+
 app = webapp2.WSGIApplication([
     Route(r'/contact', contact_us_handler.ContactUsHandler, 'dev'),
     Route(r'/update_csv_handler', update_csv_handler.UpdateCSVHandler, 'dev'),

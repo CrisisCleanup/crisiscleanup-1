@@ -1,7 +1,7 @@
 <div id='menubox_div'>
   <div>
     <b>{{event.name}}</b> ({{event.num_sites}} work orders)<br />
-    Organization: <b>{{ org.name }}</b>&nbsp;&nbsp; {% if admin %}(<a href="/admin">Admin Panel</a>)&nbsp;{% endif %}(<a class="menubox_link" href="/logout">Log out</a>)<br />
+    Organization: <b><span id="orgName">{{ org.name }}</span></b>&nbsp;&nbsp; {% if admin %}(<a href="/admin">Admin Panel</a>)&nbsp;{% endif %}(<a class="menubox_link" href="/logout">Log out</a>)<br />
     <a href="/home">Home</a> | <a href="/">Form</a> | <a href="/map">Map</a> | <a href="/sites">Browse Cases</a> | <a href="https://crisiscleanup.zendesk.com/">Help</a>
     <br/>
     <a href="/organization-settings">My Org</a> | <a href="/organization-info">All Orgs</a> | <a href="/incident-statistics">Stats</a> | <a href=see-all-contacts>All Contacts</a>

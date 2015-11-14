@@ -5,5 +5,5 @@ def generate_password():
     first_random = random.choice(word_list)
     second_random = random.choice(word_list)
     string = first_random + second_random + str(random.randint(100,999))
-    return string 
+    return string
     

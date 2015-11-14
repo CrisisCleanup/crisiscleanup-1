@@ -161,6 +161,7 @@ class AuthenticationHandler(base.RequestHandler):
             "WHERE name = :name LIMIT 1", name=existing_org_name):
             org = x
 
+    # hash here, test if event and org and password_hash(form.password.data) in org.password_hash_list
     if event and org and org.password == form.password.data:
       # login was successful
 

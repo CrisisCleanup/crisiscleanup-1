@@ -73,6 +73,7 @@ import upload_handler
 from handlers import incident_definition
 from handlers import incident_form_creator
 
+from admin_handler import admin_generate_new_password
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
@@ -169,6 +170,7 @@ app = webapp2.WSGIApplication([
     Route(r'/signup', new_organization_handler.NewOrganizationHandler, 'new_organization'), # accounted for
     Route(r'/activate', activation_handler.ActivationHandler, 'activate'),
     Route(r'/admin', admin_handler.AdminHandler, 'admin_handler'),              # accounted for
+    Route(r'/admin-generate-new-password', admin_generate_new_password.AdminGenerateNewPassword, 'admin-generate-new-password'), # accounted for
     Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'), # accounted for
     Route(r'/admin-view-incidents', admin_view_incidents_handler.AdminViewIncidentsHandler, 'admin-view-incidents'), # accounted for
     Route(r'/admin-approve-incidents', admin_approve_incidents_handler.AdminApproveIncidentsHandler, 'admin-approve-incidents'), # accounted for            # not needed

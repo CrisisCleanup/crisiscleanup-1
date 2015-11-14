@@ -40,6 +40,8 @@ class Organization(db.Expando):
   # set the passwords ourselves, and may need to be able
   # to retrieve them for an organization.
   password = db.StringProperty()
+  _password_hash_list = db.ListProperty(db.Key, name='_password_hash_list')
+
 
   # If set, then only session cookies are sent to the
   # user's browser. Otherwise, they'll receive cookies that

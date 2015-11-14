@@ -278,7 +278,16 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
             sio.seek(0)
             deduplicated_lines = set(line for line in sio)
 
+            # try deleting before uploading
+            try: 
+            	logging.info("try to delete bucket")
+            	cloudstorage.delete(BUCKET_NAME + '/' + self.filename)
+            except Exception, e:
+            	logging.error("Deleting bucket failed: %s" % e)
+
+
             # write csv header and deduplicated lines to new file
+
             csv_complete_gcs_fd = cloudstorage.open(
                 BUCKET_NAME + '/' + self.filename,
                 'w',

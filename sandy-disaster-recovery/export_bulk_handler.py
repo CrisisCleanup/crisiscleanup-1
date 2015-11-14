@@ -246,6 +246,12 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
         fetched_sites = query.fetch(limit=self.sites_per_task)
         sites = self.filter_sites(fetched_sites)
 
+        # try deleting before uploading
+        try: 
+        	logging.info("try to delete bucket")
+        	cloudstorage.delete(BUCKET_NAME + '/' + self.filename)
+        except Exception, e:
+        	logging.error("Deleting bucket failed: %s" % e)
         # write part of csv file to GCS
         csv_part_gcs_fd = cloudstorage.open(
             BUCKET_NAME + '/' + self.filename + '.part.' + self.start_cursor,
@@ -278,12 +284,7 @@ class AbstractExportBulkWorker(webapp2.RequestHandler):
             sio.seek(0)
             deduplicated_lines = set(line for line in sio)
 
-            # try deleting before uploading
-            try: 
-            	logging.info("try to delete bucket")
-            	cloudstorage.delete(BUCKET_NAME + '/' + self.filename)
-            except Exception, e:
-            	logging.error("Deleting bucket failed: %s" % e)
+
 
 
             # write csv header and deduplicated lines to new file

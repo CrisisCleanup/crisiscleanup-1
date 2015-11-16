@@ -8,6 +8,9 @@ class UpdateHandler(webapp2.RequestHandler):
     def get(self):
         # deferred.defer(add_permissions_schema_update.AddPermissionsSchemaUpdate)
         # self.response.out.write('Schema migration successfully initiated.')
+        login_success = 0
+        login_failures = 0
+
         orgs = organization.Organization.all()
         for org in orgs:
         	org._password_hash_list.append(generate_hash.recursive_hash(org.password))
@@ -15,4 +18,12 @@ class UpdateHandler(webapp2.RequestHandler):
             org._password_hash_list = org._password_hash_list(list(set(org._password_hash_list)))
         	organization.PutAndCache(org)
         # log. Save old?
+        for org in orgs:
+            if generate_hash.recursive_hash(org.password) in org._password_hash_list:
+                login_success += 1
+            else:
+                login_failures += 1
+
         self.response.out.write('Passwords updated')
+        self.response.out.write("Login successes: %s" % login_success)
+        self.response.out.write("Login failures: %s" % login_failures)

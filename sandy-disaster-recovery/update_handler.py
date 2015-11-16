@@ -23,6 +23,6 @@ class UpdateHandler(webapp2.RequestHandler):
             else:
                 login_failures += 1
 
-        self.response.out.write('Passwords updated')
-        self.response.out.write("Login successes: %s" % login_success)
-        self.response.out.write("Login failures: %s" % login_failures)
+        self.response.out.write('Passwords updated<br>')
+        self.response.out.write("Login successes: %s<br>" % login_success)
+        self.response.out.write("Login failures: %s<br>" % login_failures)

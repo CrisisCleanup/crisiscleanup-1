@@ -26,6 +26,7 @@ import event_db
 from google.appengine.ext import db
 from organization import Organization, CreateOrganizationForm, GlobalAdminCreateOrganizationForm
 import random_password
+import organization
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -105,6 +106,7 @@ class AdminHandler(base.AuthenticatedHandler):
             del(form.incidents)
             form.populate_obj(new_org)
             new_org.save()
+            organization.PutAndCache(new_org)
 
             # redirect to the add contact page
             self.redirect('/admin-create-contact?selected_org=%d' % new_org.key().id())

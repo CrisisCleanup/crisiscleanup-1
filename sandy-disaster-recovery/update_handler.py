@@ -12,6 +12,7 @@ class UpdateHandler(webapp2.RequestHandler):
         for org in orgs:
         	org._password_hash_list.append(generate_hash.recursive_hash(org.password))
         	# org.password = ""
+            org._password_hash_list = org._password_hash_list(list(set(org._password_hash_list)))
         	organization.PutAndCache(org)
         # log. Save old?
         self.response.out.write('Passwords updated')

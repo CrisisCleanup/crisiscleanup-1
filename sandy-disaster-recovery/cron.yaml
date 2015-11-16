@@ -27,3 +27,7 @@ cron:
   url: /task/crunch-all-events-stats
   schedule: every 720 minutes  # update _incident_statistics_tables.html if changed
   target: stats
+
+- description: Removed passwords that haven't been used in a given amount of time
+  url: /task/remove-unused-passwords
+  schedule: every 24 hours

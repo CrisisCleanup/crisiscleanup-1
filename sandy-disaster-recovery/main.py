@@ -69,10 +69,13 @@ import update_handler
 import sit_aware_redirect_handler
 import catch_all_handler
 import upload_handler
+import remove_unused_passwords
 
 from handlers import incident_definition
 from handlers import incident_form_creator
 
+from admin_handler import admin_delete_password_handler
+from admin_handler import admin_generate_new_password
 from admin_handler import admin_create_organization_handler
 from admin_handler import admin_new_organization_handler
 from admin_handler import admin_organization_requests_handler
@@ -169,7 +172,9 @@ app = webapp2.WSGIApplication([
     Route(r'/signup', new_organization_handler.NewOrganizationHandler, 'new_organization'), # accounted for
     Route(r'/activate', activation_handler.ActivationHandler, 'activate'),
     Route(r'/admin', admin_handler.AdminHandler, 'admin_handler'),              # accounted for
+    Route(r'/admin-generate-new-password', admin_generate_new_password.AdminGenerateNewPassword, 'admin-generate-new-password'), # accounted for
     Route(r'/admin-create-incident', admin_create_incident_handler.AdminCreateIncidentHandler, 'admin-create-incident'), # accounted for
+    Route(r'/admin-delete-password', admin_delete_password_handler.AdminDeletePassword, 'admin-generate-new-password'), # accounted for
     Route(r'/admin-view-incidents', admin_view_incidents_handler.AdminViewIncidentsHandler, 'admin-view-incidents'), # accounted for
     Route(r'/admin-approve-incidents', admin_approve_incidents_handler.AdminApproveIncidentsHandler, 'admin-approve-incidents'), # accounted for            # not needed
     Route(r'/admin-printer-templates', admin_printer_templates_handler.AdminPrinterTemplatesHandler, 'admin-printer-templates'), # unknown
@@ -228,7 +233,8 @@ app = webapp2.WSGIApplication([
     Route(r'/task/delete-old-files', old_file_delete_handler.OldFileDeleteHandler, 'old_file_delete'),                                          # not needed
     Route(r'/task/export-all-events', export_bulk_handler.ExportAllEventsHandler, 'export_all_events'),                                           
     Route(r'/task/crunch-all-events-stats', stats.CrunchAllStatisticsHandler, 'crunch_all_events_stats'),                                       # not needed 
-    Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),                                                                  # not needed, import
+    Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),            
+    Route(r'/task/remove_unused_passwords', remove_unused_passwords.RemoveUnusedPasswords, 'remove_unused_passwords'),                                                                  # not needed, import                                                      # not needed, import
     # Route(r'/api/migration', migration_handler.MigrationHandler, 'migration_handler'),                                                          # not needed
     Route(r'/<path:.*>', catch_all_handler.CatchAllHandler, 'catch_all_handler'),                                                               # not needed
 

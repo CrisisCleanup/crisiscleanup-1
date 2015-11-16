@@ -731,3 +731,9 @@ indexes:
   - name: filename
   - name: creation
     direction: desc
+
+- kind: Audit
+  properties:
+  - name: password_hash
+  - name: created_at
+    direction: desc

@@ -37,7 +37,8 @@ import primary_contact_db
 import site_db
 import page_db
 from messaging import email_administrators_using_templates
-
+import generate_hash
+import audit_db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -161,9 +162,11 @@ class AuthenticationHandler(base.RequestHandler):
             "WHERE name = :name LIMIT 1", name=existing_org_name):
             org = x
 
-    if event and org and org.password == form.password.data:
+    # hash here, test if event and org and password_hash(form.password.data) in org.password_hash_list
+    if event and org and generate_hash.recursive_hash(form.password.data) in org._password_hash_list:
+    # if event and org and org.password == form.password.data:
       # login was successful
-
+      audit_db.login(ip=self.request.remote_addr, org = org, password_hash = generate_hash.recursive_hash(form.password.data))
       # (temp) force migration of org.incident -> org.incidents
       unicode(org.incidents)
 

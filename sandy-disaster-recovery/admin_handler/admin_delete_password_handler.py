@@ -111,6 +111,7 @@ class AdminDeletePassword(base.AuthenticatedHandler):
           "page" : "/admin-delete-password",
           "error_message": self.request.get("error_message"),
           "initial_event_name": self.request.get("initial_event_name", ""),
+          "error_message": self.request.get("message")
         })
         self.response.out.write(template.render(template_params))
 
@@ -129,4 +130,4 @@ class AdminDeletePassword(base.AuthenticatedHandler):
             organization.PutAndCache(org)
             self.redirect("/admin?message=Password deleted.")
         else:
-            self.redirect("/admin-delete-password?message=That password doesn't exist for this org.")
+            self.redirect("/admin-delete-password?message=That password doesn't exist for this org. Select an incident to try again.")

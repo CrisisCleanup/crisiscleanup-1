@@ -32,12 +32,11 @@ import event_db
 import random_password
 import generate_hash
 import organization
-import audit_db
 
 
 jinja_environment = jinja2.Environment(
 loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-template = jinja_environment.get_template('admin_generate_new_password.html')
+template = jinja_environment.get_template('admin_delete_password.html')
 post_template = jinja_environment.get_template('admin_view_new_password.html')
 
 GLOBAL_ADMIN_NAME = "Admin"
@@ -98,7 +97,7 @@ def GetOrganizationForm(post_data):
   return form
 
 
-class AdminGenerateNewPassword(base.AuthenticatedHandler):
+class AdminDeletePassword(base.AuthenticatedHandler):
 
     def AuthenticatedGet(self, org, event):
         global_admin = (org.name == GLOBAL_ADMIN_NAME)
@@ -109,7 +108,7 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
         template_params.update({
           "form" : GetOrganizationForm(self.request.POST),
           "destination" : self.request.get('destination', default_value='/'),
-          "page" : "/admin-generate-new-password",
+          "page" : "/admin-delete-password",
           "error_message": self.request.get("error_message"),
           "initial_event_name": self.request.get("initial_event_name", ""),
         })
@@ -120,26 +119,14 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
         name = self.request.get("name")
         event_name = self.request.get("event")
         password = self.request.get("password")
-        if self.request.get("accept") == "true":
-          event = event_db.Event.all().filter("name =", event_name).get()
-          org = organization.Organization.all().filter("name =", name).filter("incidents =", event.key()).get()
-          password_hash = generate_hash.recursive_hash(password)
-          if password_hash in org._password_hash_list:
-            self.rediect("/admin?message=That password already exists for that organization")
-            return
-          org._password_hash_list.append(password_hash)
-          org._password_hash_list = list(set(org._password_hash_list))
-          organization.PutAndCache(org)
-          audit = audit_db.new_password(org, password_hash)
-          url = "/admin?message=New password added to " + name + " working on " + event_name
-          self.redirect(url)
-          return
 
-        password = random_password.generate_password()
-        template_params = page_db.get_page_block_dict()
-        template_params.update({
-          "password": password,
-          "name": name,
-          "event": event
-        })
-        self.response.out.write(post_template.render(template_params))
+        event = event_db.Event.all().filter("name =", event_name).get()
+        org = organization.Organization.all().filter("name =", name).filter("incidents =", event.key()).get()
+        password_hash = generate_hash.recursive_hash(password)
+        if password_hash in org._password_hash_list:
+            org._password_hash_list.remove(password_hash)
+            org._password_hash_list = list(set(org._password_hash_list))
+            organization.PutAndCache(org)
+            self.redirect("/admin?message=Password deleted.")
+        else:
+            self.redirect("/admin-delete-password?message=That password doesn't exist for this org.")

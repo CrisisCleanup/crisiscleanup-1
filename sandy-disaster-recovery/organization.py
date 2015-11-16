@@ -40,7 +40,7 @@ class Organization(db.Expando):
   # set the passwords ourselves, and may need to be able
   # to retrieve them for an organization.
   password = db.StringProperty()
-  _password_hash_list = db.ListProperty(db.Key, name='_password_hash_list')
+  _password_hash_list = db.ListProperty(str, name='_password_hash_list')
 
 
   # If set, then only session cookies are sent to the
@@ -94,6 +94,8 @@ class Organization(db.Expando):
   timestamp_signup = db.DateTimeProperty(required=False, auto_now=True)#|Signed Up (Not Displayed)
   timestamp_login = db.DateTimeProperty(required=False)
   permissions = db.StringProperty(required=False, default="Full Access")
+
+  
 
   def __repr__(self):
       return u"<Organization: %s>" % self.name
@@ -232,7 +234,7 @@ def OrgToDict(organization):
     return org_dict
 
 
-def PutAndCache(organization, cache_time):
+def PutAndCache(organization, cache_time=600):
     organization.put()
     return memcache.set(cache_prefix + str(organization.key().id()),
     (organization, OrgToDict(organization)),

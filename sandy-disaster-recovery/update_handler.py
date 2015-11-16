@@ -2,6 +2,7 @@ import webapp2
 import add_permissions_schema_update
 from google.appengine.ext import deferred
 import organization
+import generate_hash
 
 class UpdateHandler(webapp2.RequestHandler):
     def get(self):
@@ -9,8 +10,7 @@ class UpdateHandler(webapp2.RequestHandler):
         # self.response.out.write('Schema migration successfully initiated.')
         orgs = organization.Organization.all()
         for org in orgs:
-        	password_hash = org.password
-        	org._password_hash_list.append(password_hash)
+        	org._password_hash_list.append(generate_hash.recursive_hash(org.password))
         	org.password = ""
         	organization.PutAndCache(org)
         # log. Save old?

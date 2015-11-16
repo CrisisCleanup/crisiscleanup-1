@@ -76,7 +76,8 @@ def GetOrganizationForm(post_data):
         is_admin=True,
         incidents=[event_key]
     )
-    admin_org.put()
+    organization.PutAndCache(admin_org)
+    
     admin_contact = primary_contact_db.Contact(
         first_name="Admin",
         last_name="Admin",

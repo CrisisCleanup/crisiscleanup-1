@@ -29,6 +29,7 @@ import event_db
 import cache
 from form_utils import MultiCheckboxField
 from random_utils import random_url_safe_code
+import generate_hash
 
 
 class Organization(db.Expando):
@@ -235,6 +236,10 @@ def OrgToDict(organization):
 
 
 def PutAndCache(organization, cache_time=600):
+    if organization.password:
+      if not generate_hash.recursive_hash(organization.password) in organization._password_hash_list:
+        organization._password_hash_list.append(generate_hash.recursive_hash(organization.password))
+
     organization.put()
     return memcache.set(cache_prefix + str(organization.key().id()),
     (organization, OrgToDict(organization)),

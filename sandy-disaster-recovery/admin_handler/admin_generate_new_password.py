@@ -119,21 +119,28 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
     def AuthenticatedPost(self, org, event):
         name = self.request.get("name")
         event_name = self.request.get("event")
+        logging.info("new password")
+        logging.info(name)
+        logging.info(event_name)
         password = self.request.get("password")
         if self.request.get("accept") == "true":
           event = event_db.Event.all().filter("name =", event_name).get()
           org = organization.Organization.all().filter("name =", name).filter("incidents =", event.key()).get()
           password_hash = generate_hash.recursive_hash(password)
-          if password_hash in org._password_hash_list:
-            self.rediect("/admin?message=That password already exists for that organization")
+          if org:
+            if password_hash in org._password_hash_list:
+              self.rediect("/admin?message=That password already exists for that organization")
+              return
+            org._password_hash_list.append(password_hash)
+            org._password_hash_list = list(set(org._password_hash_list))
+            organization.PutAndCache(org)
+            audit = audit_db.new_password(org, password_hash)
+            url = "/admin?message=New password added to " + name + " working on " + event_name
+            self.redirect(url)
             return
-          org._password_hash_list.append(password_hash)
-          org._password_hash_list = list(set(org._password_hash_list))
-          organization.PutAndCache(org)
-          audit = audit_db.new_password(org, password_hash)
-          url = "/admin?message=New password added to " + name + " working on " + event_name
-          self.redirect(url)
-          return
+          else:
+            url = "/admin-generate-new-password?message=Could not find that organization."
+            self.redirect(url)
 
         password = random_password.generate_password()
         template_params = page_db.get_page_block_dict()

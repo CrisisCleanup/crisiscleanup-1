@@ -119,12 +119,18 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
         
     def AuthenticatedPost(self, org, event):
         name = self.request.get("name")
-        event_name = self.request.get("event")
+        form = GetOrganizationForm(self.request.POST)
+        event_name = None
+        if form.event.data:
+          event_name = form.event.data
+        else:
+          event_name = self.request.get("event_name")
         logging.info("new password")
         logging.info(name)
         logging.info(event_name)
         password = self.request.get("password")
         if self.request.get("accept") == "true":
+          event_name = self.request.get("event_name")
           this_event = event_db.Event.all().filter("name =", event_name).get()
           org = organization.Organization.all().filter("name =", name).filter("incidents =", this_event.key()).get()
           password_hash = generate_hash.recursive_hash(password)
@@ -148,6 +154,6 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
         template_params.update({
           "password": password,
           "name": name,
-          "event": event_name
+          "event_name": event_name
         })
         self.response.out.write(post_template.render(template_params))

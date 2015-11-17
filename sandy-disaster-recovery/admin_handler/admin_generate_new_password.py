@@ -125,8 +125,8 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
         logging.info(event_name)
         password = self.request.get("password")
         if self.request.get("accept") == "true":
-          event = event_db.Event.all().filter("name =", event_name).get()
-          org = organization.Organization.all().filter("name =", name).filter("incidents =", event.key()).get()
+          this_event = event_db.Event.all().filter("name =", event_name).get()
+          org = organization.Organization.all().filter("name =", name).filter("incidents =", this_event.key()).get()
           password_hash = generate_hash.recursive_hash(password)
           if org:
             if password_hash in org._password_hash_list:

@@ -33,6 +33,7 @@ import random_password
 import generate_hash
 import organization
 import audit_db
+import logging
 
 
 jinja_environment = jinja2.Environment(

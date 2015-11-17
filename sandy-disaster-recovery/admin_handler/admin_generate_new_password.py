@@ -148,6 +148,6 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
         template_params.update({
           "password": password,
           "name": name,
-          "event": event
+          "event": event_name
         })
         self.response.out.write(post_template.render(template_params))

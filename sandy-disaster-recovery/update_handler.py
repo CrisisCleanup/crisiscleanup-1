@@ -13,6 +13,7 @@ class UpdateHandler(webapp2.RequestHandler):
 
         orgs = organization.Organization.all()
         for org in orgs:
+            del org._password_hash_list[:]
             if generate_hash.recursive_hash(org.password) not in org._password_hash_list:
             	org._password_hash_list.append(generate_hash.recursive_hash(org.password))
         	organization.PutAndCache(org)

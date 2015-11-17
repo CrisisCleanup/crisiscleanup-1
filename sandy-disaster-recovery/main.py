@@ -233,7 +233,7 @@ app = webapp2.WSGIApplication([
     Route(r'/task/delete-old-files', old_file_delete_handler.OldFileDeleteHandler, 'old_file_delete'),                                          # not needed
     Route(r'/task/export-all-events', export_bulk_handler.ExportAllEventsHandler, 'export_all_events'),                                           
     Route(r'/task/crunch-all-events-stats', stats.CrunchAllStatisticsHandler, 'crunch_all_events_stats'),                                       # not needed 
-    # Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),            
+    Route(r'/update_handler', update_handler.UpdateHandler, 'update_handler'),            
     Route(r'/task/remove_unused_passwords', remove_unused_passwords.RemoveUnusedPasswords, 'remove_unused_passwords'),                                                                  # not needed, import                                                      # not needed, import
     # Route(r'/api/migration', migration_handler.MigrationHandler, 'migration_handler'),                                                          # not needed
     Route(r'/<path:.*>', catch_all_handler.CatchAllHandler, 'catch_all_handler'),                                                               # not needed

@@ -123,12 +123,14 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
         event_name = None
         if form.event.data:
           event_name = form.event.data
-        else:
+        if event_name == "None" or event_name == None:
           event_name = self.request.get("event_name")
         logging.info("new password")
         logging.info(name)
         logging.info(event_name)
         password = self.request.get("password")
+        # raise Exception(event_name)
+
         if self.request.get("accept") == "true":
           event_name = self.request.get("event_name")
           this_event = event_db.Event.all().filter("name =", event_name).get()
@@ -148,6 +150,7 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
           else:
             url = "/admin-generate-new-password?error_message=Could not find " + name + "for: " + event_name
             self.redirect(url)
+            return
 
         password = random_password.generate_password()
         template_params = page_db.get_page_block_dict()

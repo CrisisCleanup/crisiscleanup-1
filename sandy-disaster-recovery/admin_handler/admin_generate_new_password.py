@@ -140,7 +140,7 @@ class AdminGenerateNewPassword(base.AuthenticatedHandler):
             self.redirect(url)
             return
           else:
-            url = "/admin-generate-new-password?error_message=Could not find that organization."
+            url = "/admin-generate-new-password?error_message=Could not find " + name + "for: " event_name
             self.redirect(url)
 
         password = random_password.generate_password()

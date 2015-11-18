@@ -76,7 +76,7 @@ def get_csv_fields_list(event_short_name):
         csv_fields_list = CENTRAL_TX_CSV_FIELDS_LIST
     elif event_short_name == "2015_10_tx_floods":
         csv_fields_list = OCTOBER_2015_TX_CSV_FIELDS_LIST
-    elif event_short_name == "sc_fast_track":
+    elif event_short_name == "sc_fast_track_repairs":
         csv_fields_list = SC_FAST_TRACK_FIELDS_LIST
     else:
         csv_fields_list = DEFAULT_CSV_FIELDS_LIST

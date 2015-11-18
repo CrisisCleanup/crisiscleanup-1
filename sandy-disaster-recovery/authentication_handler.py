@@ -121,6 +121,7 @@ class AuthenticationHandler(base.RequestHandler):
     self.response.out.write(template.render(template_params))
 
   def post(self):
+    # raise Exception(self.request)
     now = datetime.datetime.now()
     form = GetOrganizationForm(self.request.POST)
     if not form.validate():
@@ -133,6 +134,8 @@ class AuthenticationHandler(base.RequestHandler):
     # check org and incident match
     org = None
     selected_org_name = self.request.get("name")
+    if selected_org_name == "Other":
+      selected_org_name = self.request.get("existing-organization")
     if selected_org_name == "Admin":
       # admin user
       for x in organization.Organization.gql(

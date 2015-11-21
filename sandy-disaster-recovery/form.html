@@ -14,9 +14,24 @@
 <script>
 $(function() {
   $.get( "/api/site_ajax?id={{site_id}}", function( data ) {
-      console.log("start ajax data");
     console.log(data);
     console.log("end ajax data");
+    selectArray = ["status", "floors_affected"];
+    textArray = ["claimed_by"];
+    textAreaArray = ["notes", "damage_description"];
+
+    var jsonData = jQuery.parseJSON(data)
+    for (attr in jsonData) {
+      if (attr.indexOf("status") > -1 || attr.indexOf("floors_affected") || > -1);) {
+        $("#" + attr).val(jsonData[attr]);
+      } else if (attr.indexOf("claimed_by") > -1) {
+        $("#" + attr).val() = jsonData(attr);
+      } else if (attr.indexOf("notes") > -1 || attr.indexOf("damage_description") > -1) {
+         $("#" + attr).val() = jsonData(attr);
+      } else {
+        $('#' + attr).prop('checked', true);
+      }
+    }
   });
 });
 </script>

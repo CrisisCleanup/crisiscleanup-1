@@ -1,0 +1,135 @@
+
+CrisisCleanup
+
+      
+
+    Dashboard
+    Incidents
+    Organizations
+    Work Orders
+    Communications
+    Settings
+    Maintenance
+
+Create Incident Form
+Create Incident Form
+
+To create the form, follow the format below. Soon, we will implement a form creator to automate this process
+
+First, add a header to your section. A "Personal Information" section will be included for you.
+
+Then, within a table, you can enter either "text" or "checkbox" elements as shown.
+
+<h2>Personal Information</h2>
+<table>
+<tr><td class=question>Resident name: <span class=required-asterisk>*</span></td>
+<td class="answer">
+
+
+
+
+<div class="form_field">
+<input class="" id="name" name="name" type="text" value="">
+</div>
+</td></tr>
+<tr><td class=question>Date of Request:</td>
+
+<td class="answer">
+
+
+<div class="form_field">
+<input class="" id="work_without_resident" name="work_without_resident" type="checkbox" value="y">
+</div>
+</td></tr>
+<tr><td class=question>Member of your organization:</td>
+<td class="answer">
+
+These fields, and the Personal Information header are included at the top of each form
+
+    name
+    request_date
+    address
+    city
+    county
+    state
+    zip_code
+    latitude
+    longitude
+    cross_street
+    phone1
+    phone2
+    time_to_call
+    work_without_resident
+    member_of_assessing_organization
+    first_responder
+    disabled
+    special_needs
+    priority
+
+An example of how to add below, is shown here.
+<h3>Rain-Related Damage and Needs</h3>
+<table>
+<tr><td class="question">Ceiling Removal:</td>
+<td class="answer">
+<div class="form_field">
+<input class="" id="ceiling_removal" name="ceiling_removal" type="checkbox" value="y">
+</div>
+</td></tr>
+<tr><td class=question>Carpet Removal:</td>
+<td class="answer">
+<div class="form_field">
+<input class="" id="carpet_removal" name="carpet_removal" type="checkbox" value="y">
+</div>
+</td></tr>
+<tr><td class=question>Hardwood Floor Removal:</td>
+<td class="answer">
+<div class="form_field">
+<input class="" id="hardwood_floor_removal" name="hardwood_floor_removal" type="checkbox" value="y">
+</div>
+</td></tr>
+<tr><td class=question>Drywall Removal:</td>
+<td class="answer">
+<div class="form_field">
+<input class="" id="drywall_removal" name="drywall_removal" type="checkbox" value="y">
+</div>
+</td></tr>
+<tr><td class=question>Standing Water:</td>
+<td class="answer">
+<div class="form_field">
+<input class="" id="standing_water" name="standing_water" type="checkbox" value="y">
+</div>
+</td></tr>
+<tr><td class=question>Mold Remediation:</td>
+<td class="answer">
+<div class="form_field">
+<input class="" id="mold_remediation" name="mold_remediation" type="checkbox" value="y">
+</div>
+</td></tr>
+<tr><td class=question>Notes:</td>
+<td class="answer">
+<div class="form_field">
+<input class="" id="notes" name="notes" type="text" value="">
+</div>
+</td></tr>
+</table>
+
+The above would look like this
+
+Rain-Related Damage and Needs
+Ceiling Removal: 	
+Carpet Removal: 	
+Hardwood Floor Removal: 	
+Drywall Removal: 	
+Standing Water: 	
+Mold Remediation: 	
+Notes: 	
+
+Please email your administrator with any questions
+
+Extra properties will be added by taking the 'id' of each <input> element.
+
+Choose incident
+
+
+Enter an HTML form here. All validation needs to be done on the client side. Here are some hints on how to make a good one. Delete all of this before beginning.
+

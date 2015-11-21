@@ -100,18 +100,20 @@ var zoom_level = {% if site_id %}{{zoom_level}}{% else %}null{% endif %};
 </div>
 </div>
 
-<div id="form_background" style="display: none; z-index: 12;">
-<div id="form">
-<form id="edit_form" method="POST" action="{{page}}">
-<input type="button" value="Save changes" onClick="sandy.main.SaveEdit()" />
-<input type="button" value="Cancel" onClick="sandy.main.CloseEdit()" />
-<div id="single_site">
+<div id="form_mouseover">
+  <div id="form_background" style="display: none; z-index: 12;">
+  <div id="form">
+  <form id="edit_form" method="POST" action="{{page}}">
+  <input type="button" value="Save changes" onClick="sandy.main.SaveEdit()" />
+  <input type="button" value="Cancel" onClick="sandy.main.CloseEdit()" />
+  <div id="single_site">
+  </div>
+  <input type="button" value="Save changes" onClick="sandy.main.SaveEdit()" />
+  <input type="button" value="Cancel" onClick="sandy.main.CloseEdit()" />
+  </form>
+  </div>
+  </div>  {# form_background #}
 </div>
-<input type="button" value="Save changes" onClick="sandy.main.SaveEdit()" />
-<input type="button" value="Cancel" onClick="sandy.main.CloseEdit()" />
-</form>
-</div>
-</div>  {# form_background #}
 
 {% include "_zendesk_scripts.html" %}
 

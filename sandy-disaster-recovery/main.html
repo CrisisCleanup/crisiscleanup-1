@@ -69,6 +69,7 @@ var zoom_level = {% if site_id %}{{zoom_level}}{% else %}null{% endif %};
 {% endfor %}
 <br />
 <form method="POST" action="/print" target="_blank">
+{{ script }}
 <input name="id" class="id_list" type="hidden" value="" />
 <input type="submit" id="filtered_print" value="Get Printable Version"></input><br />
 </form>
@@ -129,25 +130,9 @@ $(function() {
 </script>
 <script>
 $(function() {
-  $.get( "/api/site_ajax?id={{site_id}}", function( data ) {
     console.log("form");
-    console.log(data);
-    console.log("end ajax data");
-    var jsonData = jQuery.parseJSON(data)
-    for (attr in jsonData) {
-      if (attr.indexOf("status") > -1 || attr.indexOf("floors_affected") > -1) {
-        $("#" + attr).val() = jsonData(attr);
-      } else if (attr.indexOf("claimed_by") > -1) {
-        $("#" + attr).val() = jsonData(attr);
-      } else if (attr.indexOf("notes") > -1 || attr.indexOf("damage_description") > -1) {
-         $("#" + attr).val() = jsonData(attr);
-      } else {
-        $('#' + attr).prop('checked', true);
-      }
-    }
-  });
-});
 </script>
+
 
 <script src="/assets/js/libs/spin.min.js"></script>
 

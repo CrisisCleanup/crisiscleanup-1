@@ -35,7 +35,29 @@ jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.di
 template = jinja_environment.get_template('main.html')
 menubox_template = jinja_environment.get_template('_menubox.html')
 
-
+script = """
+<script>
+$(function() {
+  $.get( "/api/site_ajax?id={{site_id}}", function( data ) {
+    console.log("script")
+    console.log(data);
+    console.log("end ajax data");
+    var jsonData = jQuery.parseJSON(data)
+    for (attr in jsonData) {
+      if (attr.indexOf("status") > -1 || attr.indexOf("floors_affected") > -1) {
+        $("#" + attr).val() = jsonData(attr);
+      } else if (attr.indexOf("claimed_by") > -1) {
+        $("#" + attr).val() = jsonData(attr);
+      } else if (attr.indexOf("notes") > -1 || attr.indexOf("damage_description") > -1) {
+         $("#" + attr).val() = jsonData(attr);
+      } else {
+        $('#' + attr).prop('checked', true);
+      }
+    }
+  });
+});
+</script>
+"""
 class MapHandler(base.RequestHandler):
 
   def get(self):
@@ -127,6 +149,7 @@ class MapHandler(base.RequestHandler):
                  "state": s.state,
                  }) for s in [p[0] for p in site_db.GetAllCached(event)]],
           "filters" : filters,
+          "script": script,
           "demo" : True,
         })
     self.response.out.write(template.render(template_values))

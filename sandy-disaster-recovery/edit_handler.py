@@ -50,7 +50,7 @@ class EditHandler(base.AuthenticatedHandler):
 
     # lookup by id or case_number
     id = self.request.get('id', None)
-    site_id = int(id)
+    site_id = id
     mode_js = self.request.get("mode") == "js"
     case_number = self.request.get('case', None)
     if not id and case_number:

@@ -123,6 +123,7 @@ class MapHandler(base.RequestHandler):
                  "cable_lines": s.cable_lines,
                  "cutting_cause_harm": s.cutting_cause_harm,
                  "work_type": s.work_type,
+                 "site_id": site_id,
                  "state": s.state,
                  }) for s in [p[0] for p in site_db.GetAllCached(event)]],
           "filters" : filters,

@@ -130,6 +130,7 @@ $(function() {
 <script>
 $(function() {
   $.get( "/api/site_ajax?id={{site_id}}", function( data ) {
+    console.log("form");
     console.log(data);
     console.log("end ajax data");
     var jsonData = jQuery.parseJSON(data)

@@ -139,10 +139,19 @@ $(function() {
 <script src="/javascript/download_polling.js?v={{version}}"></script>
 <script src="/javascript/map_support.js?v={{version}}"></script>
 <script>
-var getSiteInfo = function (site_id) {
+
+$( "#form_background" ).mouseover(function() {
+  alert("1");
+  var latitude = $("#latitude").val();
+  var longitude = ($"#longitude").val();
+  var url = "/api/site_ajax?latitude="+latitude+"&longitude="+longitude;
+  getSiteInfo(url)
+});
+
+var getSiteInfo = function (url) {
   console.log("CALLED getSiteInfo")
-  console.log("site_id:" + site_id);
-  $.get( "/api/site_ajax?id=side_id", function( data ) {
+  console.log("url:" + url);
+  $.get( url, function( data ) {
     console.log(data);
     console.log("end ajax data");
     var jsonData = jQuery.parseJSON(data)

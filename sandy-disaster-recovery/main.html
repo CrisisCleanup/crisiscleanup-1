@@ -136,7 +136,7 @@ $(function() {
 <script src="/javascript/map_support.js?v={{version}}"></script>
 <script>
 
-$( "#form_background" ).mouseover(function() {
+$( "#form_background" ).on( "mouseover", function() {  
   alert("1");
   var latitude = $("#latitude").val();
   var longitude = ($"#longitude").val();

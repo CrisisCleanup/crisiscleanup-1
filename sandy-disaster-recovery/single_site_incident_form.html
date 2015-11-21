@@ -6,7 +6,7 @@
     {% set error_class = '' %}
   {% endif %}
 
-  <div class="form_field{{error_class}}">
+  <div onload="getSiteInfo('{{site_id}}');" class="form_field{{error_class}}">
     {{ field(class=css_class, **kwargs) }}
   </div>
 {% endmacro %}
@@ -19,13 +19,33 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="assets/js/libs/jquery-1.11.0.min.js"><\/script>')</script>
 
+<script>
+var getSiteInfo = function (site_id) {
+  console.log("CALLED getSiteInfo")
+  console.log("site_id:" + site_id);
+  $.get( "/api/site_ajax?id=side_id", function( data ) {
+    console.log(data);
+    console.log("end ajax data");
+    var jsonData = jQuery.parseJSON(data)
+    for (attr in jsonData) {
+      if (attr.indexOf("status") > -1 || attr.indexOf("floors_affected") > -1) {
+        $("#" + attr).val() = jsonData(attr);
+      } else if (attr.indexOf("claimed_by") > -1) {
+        $("#" + attr).val() = jsonData(attr);
+      } else if (attr.indexOf("notes") > -1 || attr.indexOf("damage_description") > -1) {
+         $("#" + attr).val() = jsonData(attr);
+      } else {
+        $('#' + attr).prop('checked', true);
+      }
+    }
+  });  
+}
+</script>
 <script type="text/javascript">
-alert(1);
-
 // Avoid `console` errors in browsers that lack a console.
 (function() {
     var method;
-   <script var noop = function () {};
+    var noop = function () {};
     var methods = [
         'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
         'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
@@ -51,7 +71,7 @@ alert(1);
         $(function(){
 var post_json = {{post_json}};
 var oFormObject = document.forms['form'];
-alert(2);
+
 Object.keys(post_json).forEach(function(key) {
     var this_element = document.getElementById(key);
     if (key == "priority") {

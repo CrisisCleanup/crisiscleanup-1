@@ -50,6 +50,7 @@ class EditHandler(base.AuthenticatedHandler):
 
     # lookup by id or case_number
     id = self.request.get('id', None)
+    site_id = id
     mode_js = self.request.get("mode") == "js"
     case_number = self.request.get('case', None)
     if not id and case_number:
@@ -207,6 +208,7 @@ class EditHandler(base.AuthenticatedHandler):
            "menubox" : menubox_template.render({"org": org, "event": event}),
            "single_site": single_site,
            "event_name": event.name,
+           "site_id": site_id,
            "form": form,
            "id": id,
 	   "post_json": post_json	,

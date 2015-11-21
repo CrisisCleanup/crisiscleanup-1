@@ -114,8 +114,7 @@ Object.keys(post_json).forEach(function(key) {
 {% endif %}
 
     </script>
-    <!-- The contents of myscript.js will be loaded inside the script tag -->
-
-<div class="inc_form_block"  onload="getSiteInfo('{{site_id}}');">    
-  {{ incident_form_block }}
-</div>
+    console.log("RUN");
+    </script>
+    <!-- The contents of myscript.js will be loaded inside the script tag -->    
+{{ incident_form_block }}

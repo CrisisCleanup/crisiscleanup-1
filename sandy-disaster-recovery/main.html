@@ -138,7 +138,28 @@ $(function() {
 
 <script src="/javascript/download_polling.js?v={{version}}"></script>
 <script src="/javascript/map_support.js?v={{version}}"></script>
-
+<script>
+var getSiteInfo = function (site_id) {
+  console.log("CALLED getSiteInfo")
+  console.log("site_id:" + site_id);
+  $.get( "/api/site_ajax?id=side_id", function( data ) {
+    console.log(data);
+    console.log("end ajax data");
+    var jsonData = jQuery.parseJSON(data)
+    for (attr in jsonData) {
+      if (attr.indexOf("status") > -1 || attr.indexOf("floors_affected") > -1) {
+        $("#" + attr).val() = jsonData(attr);
+      } else if (attr.indexOf("claimed_by") > -1) {
+        $("#" + attr).val() = jsonData(attr);
+      } else if (attr.indexOf("notes") > -1 || attr.indexOf("damage_description") > -1) {
+         $("#" + attr).val() = jsonData(attr);
+      } else {
+        $('#' + attr).prop('checked', true);
+      }
+    }
+  });  
+}
+</script>
 <iframe id="file-download-target" name="file-download-target" style="display: none"></iframe>
 
 </body>

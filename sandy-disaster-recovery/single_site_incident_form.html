@@ -6,7 +6,7 @@
     {% set error_class = '' %}
   {% endif %}
 
-  <div onload="getSiteInfo('{{site_id}}');" class="form_field{{error_class}}">
+  <div class="form_field{{error_class}}">
     {{ field(class=css_class, **kwargs) }}
   </div>
 {% endmacro %}
@@ -115,4 +115,7 @@ Object.keys(post_json).forEach(function(key) {
 
     </script>
     <!-- The contents of myscript.js will be loaded inside the script tag -->
-{{ incident_form_block }}
+
+<div class="inc_form_block"  onload="getSiteInfo('{{site_id}}');">    
+  {{ incident_form_block }}
+</div>

@@ -109,7 +109,7 @@ class EditHandler(base.AuthenticatedHandler):
       #raise Exception(post_json2)
 
       for k, v in post_json2.iteritems():
-	if k in ["request_date", "name", "city", 'county', 'country', 'state', 'address', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'time_to_call', 'tarps_needed', 'damaged_fence_length', 'fence_type', 'fence_notes', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'prepared_by', 'do_not_work_before', 'flood_height']:
+	if "claimed_by" in k or k in ["request_date", "name", "city", 'county', 'country', 'state', 'address', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'time_to_call', 'tarps_needed', 'damaged_fence_length', 'fence_type', 'fence_notes', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'prepared_by', 'do_not_work_before', 'flood_height']:
 	  try:
 	    id_index = new_inc_form.index('id="' + k)
 	    value_index = new_inc_form[id_index:].index("value")
@@ -121,7 +121,7 @@ class EditHandler(base.AuthenticatedHandler):
 	    pass
         elif k=="num_trees_down" and v=="0" and event.short_name=="tx_ok_floods":
           pass
-	elif k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes" or k== 'goods_and_services' or k=="work_requested":
+	elif "notes" in k or "damage_description" in k or k=="special_needs" or k == "notes" or k == "other_hazards" or k =="status_notes" or k== 'goods_and_services' or k=="work_requested":
 	  try:
 	    id_index = new_inc_form.index('id="' + k)
 	    value_index = new_inc_form[id_index:].index(">")
@@ -129,7 +129,7 @@ class EditHandler(base.AuthenticatedHandler):
 	  except:
 	    pass
 
-	elif k in ['house_affected', 'outbuilding_affected', 'exterior_property_affected', 'work_without_resident', 'member_of_assessing_organization', 'first_responder', 'older_than_60', 'house_roof_damage', 'outbuilding_roof_damage', 'help_install_tarp', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinery_required', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'claim_for_org', 'disabled', 'hardwood_floor_removal', 'drywall_removal', 'heavy_item_removal', 'appliance_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'roof_damage', "debris_removal_only", "broken_glass", "carpet_removal"]:
+	elif "_gutters_tarping" in k or "_gutters_shingles" in k or "_inspected" in k or "_waste_removal_required" in k or "_waiver_signed" in k or "_permits_acquired" in k or k in ['house_affected', 'outbuilding_affected', 'exterior_property_affected', 'work_without_resident', 'member_of_assessing_organization', 'first_responder', 'older_than_60', 'house_roof_damage', 'outbuilding_roof_damage', 'help_install_tarp', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinery_required', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'claim_for_org', 'disabled', 'hardwood_floor_removal', 'drywall_removal', 'heavy_item_removal', 'appliance_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'roof_damage', "debris_removal_only", "broken_glass", "carpet_removal"]:
 	  try:
 	    if v == "y":
 	      id_index = new_inc_form.index('id="' + k)
@@ -163,7 +163,7 @@ class EditHandler(base.AuthenticatedHandler):
 	  #new_inc_form = new_inc_form[id_index-350:id_index+350].replace("checked ", "")
 
 	  new_inc_form = new_inc_form[:id_index] + " checked " + new_inc_form[id_index:]
-	elif k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
+	elif "_status" in k or "floors_affected" in k or k in ["work_type", "rent_or_own", "num_trees_down", "num_wide_trees", "status", 'floors_affected']:
 	  if event.short_name in [HATTIESBURG_SHORT_NAME, GEORGIA_SHORT_NAME] and k == "floors_affected":
 	    pass
           elif event.short_name=="tx_ok_floods" and k=="num_trees_down" and v=="0":

@@ -109,7 +109,7 @@ class EditHandler(base.AuthenticatedHandler):
       #raise Exception(post_json2)
 
       for k, v in post_json2.iteritems():
-	if "claimed_by" in k or k in ["request_date", "name", "city", 'county', 'country', 'state', 'address', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'time_to_call', 'tarps_needed', 'damaged_fence_length', 'fence_type', 'fence_notes', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'prepared_by', 'do_not_work_before', 'flood_height']:
+	if k == "fema_housing_award" or k == "walls_flood_height" or "claimed_by" in k or k in ["request_date", "name", "city", 'county', 'country', 'state', 'address', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'time_to_call', 'tarps_needed', 'damaged_fence_length', 'fence_type', 'fence_notes', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'prepared_by', 'do_not_work_before', 'flood_height']:
 	  try:
 	    id_index = new_inc_form.index('id="' + k)
 	    value_index = new_inc_form[id_index:].index("value")
@@ -129,7 +129,7 @@ class EditHandler(base.AuthenticatedHandler):
 	  except:
 	    pass
 
-	elif "_gutters_tarping" in k or "_gutters_shingles" in k or "_inspected" in k or "_waste_removal_required" in k or "_waiver_signed" in k or "_permits_acquired" in k or k in ['house_affected', 'outbuilding_affected', 'exterior_property_affected', 'work_without_resident', 'member_of_assessing_organization', 'first_responder', 'older_than_60', 'house_roof_damage', 'outbuilding_roof_damage', 'help_install_tarp', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinery_required', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'claim_for_org', 'disabled', 'hardwood_floor_removal', 'drywall_removal', 'heavy_item_removal', 'appliance_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'roof_damage', "debris_removal_only", "broken_glass", "carpet_removal"]:
+	elif k == "plumbing_sceptic" or k == "floors_hardwood_floor" or k == "floors_carpet" or k == "walls_insulation" or k == "walls_drywall" or k == "walls_framing" or k == "walls_mold_remediation" or k == "walls_gutting" or k == "gutting_done" or k == "mold_supression_done" or "_gutters_tarping" in k or "_gutters_shingles" in k or "_inspected" in k or "_waste_removal_required" in k or "_waiver_signed" in k or "_permits_acquired" in k or k in ['house_affected', 'outbuilding_affected', 'exterior_property_affected', 'work_without_resident', 'member_of_assessing_organization', 'first_responder', 'older_than_60', 'house_roof_damage', 'outbuilding_roof_damage', 'help_install_tarp', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinery_required', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'claim_for_org', 'disabled', 'hardwood_floor_removal', 'drywall_removal', 'heavy_item_removal', 'appliance_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'roof_damage', "debris_removal_only", "broken_glass", "carpet_removal"]:
 	  try:
 	    if v == "y":
 	      id_index = new_inc_form.index('id="' + k)

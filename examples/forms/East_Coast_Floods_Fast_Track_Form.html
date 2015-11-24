@@ -1,0 +1,1755 @@
+<!-- 2015-11-23 7:09pm -->
+<style>
+.hide {
+  display: none;
+}
+.unhide {
+  display: block;
+}
+</style>
+<script>
+function claimWorkOrderPart(sectionName) {
+	claimedBySuffix = '_claimed_by';
+	statusSuffix = '_status';
+	document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML;
+	document.getElementById(sectionName + statusSuffix).value='Open, assigned';
+	document.getElementById('status').value='Open, assigned';
+	document.getElementById('claim_for_org').checked = true;
+	document.getElementById(sectionName + claimedBySuffix).focus();
+	return false;
+}
+function unclaimWorkOrderPart(sectionName) {
+	claimedBySuffix = '_claimed_by';
+	statusSuffix = '_status';
+	if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) 
+		{
+			document.getElementById(sectionName + claimedBySuffix).value='';
+			document.getElementById(sectionName + statusSuffix).value='Open, unassigned';
+			document.getElementById(sectionName + claimedBySuffix).focus(); return false;
+			document.getElementById('claim_for_org').checked = false;
+		} 
+	else {
+		return false;
+		}
+}
+function editReadOnlyField(readOnlyField) {
+	document.getElementById(readOnlyField).readOnly=false;
+	document.getElementById(readOnlyField).focus();
+	return false;
+}
+function unhideElementById(elementId) {
+	document.getElementById(elementId).className = 'unhide';
+}
+function hideElementById(elementId) {
+	document.getElementById(elementId).className = 'hide';
+}
+
+</script>
+
+
+<p><strong>South Carolina FastTrack Waiting List</strong>: Information on this incident has been initially vetted by FEMA. Individuals on this list are elderly, live below the poverty line, would be able to move into their homes with minor repairs, and have requested assistance from voluntary agencies.</p>
+
+<h2>Property and Personal Information</h2>
+<table>
+	<tr>
+		<td class="question">Date of Request: <button type="button" onclick="document.getElementById('request_date').readOnly=false; document.getElementById('request_date').focus(); return false; editReadOnlyField('request_date');">edit</button></td>
+		<td class="answer"> 
+	  		<div class="form_field">
+				<input class="" id="request_date" name="request_date" type="text" value="" readonly />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><span class=required-asterisk>Resident name:*</span></td>
+		<td class="answer">
+	  		<div class="form_field">
+	   			<input class="" id="name" name="name" type="text" value="" autofocus/>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><span class=required-asterisk>Street Address:*</span></td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="address" name="address" type="text" value="" />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><span class=required-asterisk>City:*</span></td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="city" name="city" type="text" value="" />
+	  		</div>
+			<div id="citySuggestion"></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">County: <button type="button" onclick="document.getElementById('county').readOnly=false; document.getElementById('county').focus(); return false;">edit</button></td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="county" name="county" type="text" readonly value="" />
+	  		</div>
+			<div id="countySuggestion"></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><span class=required-asterisk>State:*</span></td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="state" name="state" type="text" value="" />
+	  		</div>
+			<div id="stateSuggestion"></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Zip Code:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="zip_code" name="zip_code" type="text" value="" />
+	  		</div>
+			<div id="zipCodeSuggestion"></div>
+		</td>
+	</tr>
+	<tr>
+	  <td class="question">
+	    Latitude: <button type="button" onclick="document.getElementById('latitude').readOnly=false; document.getElementById('latitude').focus(); return false;">edit</button>
+	  </td>
+	  <td class="answer">
+	  	<div class="form_field">
+	    <input class="" id="latitude" name="latitude" readonly type="text" value="" #" />
+	  	</div>
+		</td>
+	</tr>
+	<tr>
+	  <td class="question">
+	    Longitude: <button type="button" onclick="document.getElementById('longitude').readOnly=false; document.getElementById('longitude').focus(); return false;">edit</button>
+	  </td>
+	  <td class="answer">
+	  	<div class="form_field">
+	    	<input class="" id="longitude" name="longitude" readonly type="text" value="" #" />
+	  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Cross Street or Nearby Landmark:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="cross_street" name="cross_street" type="text" value="" />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><span class=required-asterisk>Phone Numbers:*</span></td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="phone1" name="phone1" type="text" value="" />
+	  		</div>
+	  		<div class="form_field">
+	    		<input class="" id="phone2" name="phone2" type="text" value="" />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Email:</td>
+		<td class="answer"> 
+			<div class="form_field">
+				<input class="" id="email" name="email" type="text" value="" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Secondary Contact: </td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="secondary_contact_name" name="secondary_contact_name" type="text" value="" />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question" id="secondary_contact_phone_label">Secondary Contact Phone:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="secondary_contact_phone" name="secondary_contact_phone" type="text" value="" />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Best time to call:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="time_to_call" name="time_to_call" type="text" value="" />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Do not work before:</td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" id="do_not_work_before" name="do_not_work_before" type="text" value="" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="work_requested">Summary of Needs:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<textarea class="" id="work_requested" name="work_requested"></textarea>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><span class=required-asterisk>Primary damage:*</span></td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="work_type" name="work_type">
+					<option value="" />--Choose One--</option>
+					<option value="Flood">Flood</option>
+					<option value="Debris">Debris Removal</option>
+					<option value="Trees">Trees</option>
+					<option value="Tarp">Tarp</option>
+					<option value="Other">Other</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Dwelling Type:</td>
+		<td class="answer"> 
+			<div class="form_field">
+				<select class="" id="dwelling_type" name="dwelling_type">
+					<option value="" />--Choose One--</option>
+					<option value="House">House</option>
+					<option value="Duplex">Duplex</option>
+					<option value="Mobile Home">Mobile Home</option>
+					<option value="Apartment">Apartment</option>
+					<option value="Condo">Condo</option>
+					<option value="Townhouse">Townhouse</option>
+					<option value="RV">RV</option>
+					<option value="Other">Other</option>
+				</select>
+			</div>
+	</td></tr>
+
+	<tr>
+		<td class="question">Rent/Own/Public</td>
+		<td class="answer"> 
+		  <div class="form_field">
+		    <select class="" id="rent_or_own" name="rent_or_own">
+				<option value="" />--Choose One--</option>
+				<option value="Rent">Rent</option>
+				<option value="Own">Own</option>
+				<option value="Public Land">Public Land</option>
+				<option value="Non-Profit">Non-Profit</option>
+				<option value="Business">Business</option>
+			</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">FEMA Housing Award:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+	    		<input class="" id="fema_housing_award" name="fema_housing_award" type="text" value="$" />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="work_without_resident">Work without resident present?</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="work_without_resident" type="hidden" value="n" />
+				<input class="" id="work_without_resident" name="work_without_resident" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="older_than_60">Older than 60:</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="older_than_60" type="hidden" value="n" />
+				<input class="" id="older_than_60" name="older_than_60" type="checkbox" value="y" />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Special needs:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="special_needs" name="special_needs"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+
+<h2 style="page-break-before:always;">Rebuilding Work</h2>
+<table>
+	<tr>
+		<td class="question"><label for="gutting_done">Muck and Gut Done:</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="gutting_done" type="hidden" value="n" />
+				<input class="" id="gutting_done" name="gutting_done" type="checkbox" value="y" />
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="mold_supression_done">Mold Supression Done:</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="mold_supression_done" type="hidden" value="n" />
+				<input class="" id="mold_supression_done" name="mold_supression_done" type="checkbox" value="y" />
+	  		</div>
+		</td>
+	</tr>
+</table>
+<h3>Walls <button type="button" onclick="document.getElementById('walls').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('walls').className = 'hide';">-</button></h3>
+<div class="hide" id="walls">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='walls'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='walls'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('walls_claimed_by').readOnly=false; document.getElementById('walls_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="walls_claimed_by" name="walls_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="walls_status" name="walls_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Height of Flood (feet):</td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="walls_flood_height" name="walls_flood_height" type="text" value="" /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="walls_gutting">Gutting:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="walls_gutting" type="hidden" value="n" />
+				<input class="" id="walls_gutting" name="walls_gutting" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="walls_mold_remediation">Mold Remediation:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="walls_mold_remediation" type="hidden" value="n" />
+				<input class="" id="walls_mold_remediation" name="walls_mold_remediation" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="walls_framing">Framing:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="walls_framing" type="hidden" value="n" />
+				<input class="" id="walls_framing" name="walls_framing" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="walls_drywall">Drywall:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="walls_drywall" type="hidden" value="n" />
+				<input class="" id="walls_drywall" name="walls_drywall" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="walls_insulation">Insulation:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="walls_insulation" type="hidden" value="n" />
+				<input class="" id="walls_insulation" name="walls_insulation" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="walls_damage_description" name="walls_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="walls_floor_affected" name="walls_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="walls_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="walls_inspected" type="hidden" value="n" />
+				<input class="" id="walls_inspected" name="walls_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="walls_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="walls_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="walls_waste_removal_required" name="walls_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="walls_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="walls_waiver_signed" type="hidden" value="n" />
+				<input class="" id="walls_waiver_signed" name="walls_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="walls_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="walls_permits_acquired" type="hidden" value="n" />
+				<input class="" id="walls_permits_acquired" name="walls_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="walls_notes" name="walls_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>Electrical <button type="button" onclick="document.getElementById('electrical').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('electrical').className = 'hide';">-</button></h3>
+<div class="hide" id="electrical">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='electrical'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='electrical'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('electrical_claimed_by').readOnly=false; document.getElementById('electrical_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="electrical_claimed_by" name="electrical_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="electrical_status" name="electrical_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="electrical_damage_description" name="electrical_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="electrical_floor_affected" name="electrical_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="electrical_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="electrical_inspected" type="hidden" value="n" />
+				<input class="" id="electrical_inspected" name="electrical_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="electrical_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="electrical_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="electrical_waste_removal_required" name="electrical_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="electrical_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="electrical_waiver_signed" type="hidden" value="n" />
+				<input class="" id="electrical_waiver_signed" name="electrical_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="electrical_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="electrical_permits_acquired" type="hidden" value="n" />
+				<input class="" id="electrical_permits_acquired" name="electrical_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="electrical_notes" name="electrical_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>Floors <button type="button" onclick="document.getElementById('floors').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('floors').className = 'hide';">-</button></h3>
+<div class="hide" id="floors">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='floors'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='floors'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('floors_claimed_by').readOnly=false; document.getElementById('floors_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="floors_claimed_by" name="floors_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="floors_status" name="floors_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question"><label for="floors_carpet">Carpet</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="floors_carpet" type="hidden" value="n" />
+				<input class="" id="floors_carpet" name="floors_carpet" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="floors_hardwood_floor">Hardwood Floor</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="floors_hardwood_floor" type="hidden" value="n" />
+				<input class="" id="floors_hardwood_floor" name="floors_hardwood_floor" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="floors_subfloor">Subfloor</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="floors_subfloor" type="hidden" value="n" />
+				<input class="" id="floors_subfloor" name="floors_subfloor" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="floors_damage_description" name="floors_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="floors_floor_affected" name="floors_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="floors_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="floors_inspected" type="hidden" value="n" />
+				<input class="" id="floors_inspected" name="floors_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="floors_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="floors_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="floors_waste_removal_required" name="floors_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="floors_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="floors_waiver_signed" type="hidden" value="n" />
+				<input class="" id="floors_waiver_signed" name="floors_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="floors_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="floors_permits_acquired" type="hidden" value="n" />
+				<input class="" id="floors_permits_acquired" name="floors_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="floors_notes" name="floors_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>Plumbing <button type="button" onclick="document.getElementById('plumbing').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('plumbing').className = 'hide';">-</button></h3>
+<div class="hide" id="plumbing">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='plumbing'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='plumbing'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('plumbing_claimed_by').readOnly=false; document.getElementById('plumbing_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="plumbing_claimed_by" name="plumbing_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="plumbing_status" name="plumbing_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question"><label for="plumbing_septic">Septic</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="plumbing_septic" type="hidden" value="n" />
+				<input class="" id="plumbing_septic" name="plumbing_septic" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="plumbing_damage_description" name="plumbing_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="plumbing_floor_affected" name="plumbing_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="plumbing_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="plumbing_inspected" type="hidden" value="n" />
+				<input class="" id="plumbing_inspected" name="plumbing_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="plumbing_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="plumbing_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="plumbing_waste_removal_required" name="plumbing_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="plumbing_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="plumbing_waiver_signed" type="hidden" value="n" />
+				<input class="" id="plumbing_waiver_signed" name="plumbing_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="plumbing_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="plumbing_permits_acquired" type="hidden" value="n" />
+				<input class="" id="plumbing_permits_acquired" name="plumbing_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="plumbing_notes" name="plumbing_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>Kitchen/Bath <button type="button" onclick="document.getElementById('kitchen_bath').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('kitchen_bath').className = 'hide';">-</button></h3>
+<div class="hide" id="kitchen_bath">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='kitchen_bath'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='kitchen_bath'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('kitchen_bath_claimed_by').readOnly=false; document.getElementById('kitchen_bath_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="kitchen_bath_claimed_by" name="kitchen_bath_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="kitchen_bath_status" name="kitchen_bath_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="kitchen_bath_damage_description" name="kitchen_bath_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="kitchen_bath_floor_affected" name="kitchen_bath_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="kitchen_bath_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="kitchen_bath_inspected" type="hidden" value="n" />
+				<input class="" id="kitchen_bath_inspected" name="kitchen_bath_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="kitchen_bath_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="kitchen_bath_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="kitchen_bath_waste_removal_required" name="kitchen_bath_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="kitchen_bath_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="kitchen_bath_waiver_signed" type="hidden" value="n" />
+				<input class="" id="kitchen_bath_waiver_signed" name="kitchen_bath_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="kitchen_bath_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="kitchen_bath_permits_acquired" type="hidden" value="n" />
+				<input class="" id="kitchen_bath_permits_acquired" name="kitchen_bath_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="kitchen_bath_notes" name="kitchen_bath_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>HVAC <button type="button" onclick="document.getElementById('hvac').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('hvac').className = 'hide';">-</button></h3>
+<div class="hide" id="hvac">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='hvac'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='hvac'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('hvac_claimed_by').readOnly=false; document.getElementById('hvac_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="hvac_claimed_by" name="hvac_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="hvac_status" name="hvac_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="hvac_damage_description" name="hvac_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="hvac_floor_affected" name="hvac_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="hvac_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="hvac_inspected" type="hidden" value="n" />
+				<input class="" id="hvac_inspected" name="hvac_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="hvac_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="hvac_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="hvac_waste_removal_required" name="hvac_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="hvac_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="hvac_waiver_signed" type="hidden" value="n" />
+				<input class="" id="hvac_waiver_signed" name="hvac_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="hvac_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="hvac_permits_acquired" type="hidden" value="n" />
+				<input class="" id="hvac_permits_acquired" name="hvac_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="hvac_notes" name="hvac_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>Appliances <button type="button" onclick="document.getElementById('appliances').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('appliances').className = 'hide';">-</button></h3>
+<div class="hide" id="appliances">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='appliances'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='appliances'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('appliances_claimed_by').readOnly=false; document.getElementById('appliances_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="appliances_claimed_by" name="appliances_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="appliances_status" name="appliances_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="appliances_damage_description" name="appliances_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="appliances_floor_affected" name="appliances_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="appliances_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="appliances_inspected" type="hidden" value="n" />
+				<input class="" id="appliances_inspected" name="appliances_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="appliances_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="appliances_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="appliances_waste_removal_required" name="appliances_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="appliances_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="appliances_waiver_signed" type="hidden" value="n" />
+				<input class="" id="appliances_waiver_signed" name="appliances_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="appliances_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="appliances_permits_acquired" type="hidden" value="n" />
+				<input class="" id="appliances_permits_acquired" name="appliances_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="appliances_notes" name="appliances_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>Doors <button type="button" onclick="document.getElementById('doors').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('doors').className = 'hide';">-</button></h3>
+<div class="hide" id="doors">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='doors'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='doors'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('doors_claimed_by').readOnly=false; document.getElementById('doors_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="doors_claimed_by" name="doors_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="doors_status" name="doors_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="doors_damage_description" name="doors_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="doors_floor_affected" name="doors_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="doors_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="doors_inspected" type="hidden" value="n" />
+				<input class="" id="doors_inspected" name="doors_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="doors_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="doors_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="doors_waste_removal_required" name="doors_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="doors_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="doors_waiver_signed" type="hidden" value="n" />
+				<input class="" id="doors_waiver_signed" name="doors_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="doors_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="doors_permits_acquired" type="hidden" value="n" />
+				<input class="" id="doors_permits_acquired" name="doors_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="doors_notes" name="doors_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>Windows <button type="button" onclick="document.getElementById('windows').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('windows').className = 'hide';">-</button></h3>
+<div class="hide" id="windows">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='windows'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='windows'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('windows_claimed_by').readOnly=false; document.getElementById('windows_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="windows_claimed_by" name="windows_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="windows_status" name="windows_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="windows_damage_description" name="windows_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="windows_floor_affected" name="windows_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="windows_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="windows_inspected" type="hidden" value="n" />
+				<input class="" id="windows_inspected" name="windows_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="windows_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="windows_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="windows_waste_removal_required" name="windows_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="windows_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="windows_waiver_signed" type="hidden" value="n" />
+				<input class="" id="windows_waiver_signed" name="windows_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="windows_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="windows_permits_acquired" type="hidden" value="n" />
+				<input class="" id="windows_permits_acquired" name="windows_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="windows_notes" name="windows_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>Siding <button type="button" onclick="document.getElementById('siding').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('siding').className = 'hide';">-</button></h3>
+<div class="hide" id="siding">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='siding'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='siding'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('siding_claimed_by').readOnly=false; document.getElementById('siding_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="siding_claimed_by" name="siding_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="siding_status" name="siding_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="siding_damage_description" name="siding_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="siding_floor_affected" name="siding_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="siding_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="siding_inspected" type="hidden" value="n" />
+				<input class="" id="siding_inspected" name="siding_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="siding_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="siding_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="siding_waste_removal_required" name="siding_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="siding_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="siding_waiver_signed" type="hidden" value="n" />
+				<input class="" id="siding_waiver_signed" name="siding_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="siding_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="siding_permits_acquired" type="hidden" value="n" />
+				<input class="" id="siding_permits_acquired" name="siding_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="siding_notes" name="siding_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h3>Roof &amp; Gutters <button type="button" onclick="document.getElementById('roof_gutters').className = 'unhide';">+</button><button type="button" onclick="document.getElementById('roof_gutters').className = 'hide';">-</button></h3>
+<div class="hide" id="roof_gutters">
+<table>
+	<tr>
+		<td colspan = 2><button type="button" onclick="sectionName='roof_gutters'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; document.getElementById(sectionName + claimedBySuffix).value=document.getElementById('orgName').innerHTML; document.getElementById(sectionName + statusSuffix).value='Open, assigned'; document.getElementById('status').value='Open, assigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; ">Claim This Section</button><button type="button" onclick="sectionName='roof_gutters'; claimedBySuffix = '_claimed_by'; statusSuffix = '_status'; if(window.confirm('WARNING: You are about to remove '+ document.getElementById(sectionName + claimedBySuffix).value + ' as the claiming organization. This cannot be undone. Are you sure you want to continue?')==true) {document.getElementById(sectionName + claimedBySuffix).value='';document.getElementById(sectionName + statusSuffix).value='Open, unassigned'; document.getElementById(sectionName + claimedBySuffix).focus(); return false; } else {return false;}">Delete Claiming Org</button>
+	</tr>
+	<tr>
+		<td class="question">Claimed By: <button type="button" onclick="document.getElementById('roof_gutters_claimed_by').readOnly=false; document.getElementById('roof_gutters_claimed_by').focus(); return false;">edit</button></td>
+		<td class="answer">
+			<div class="form_field"><input class="" id="roof_gutters_claimed_by" name="roof_gutters_claimed_by" type="text" value="" readonly /></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status:</td>
+
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="roof_gutters_status" name="roof_gutters_status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, insufficient resources">Closed, insufficient resources</option>
+					<option value="Closed, deferred maintenance">Closed, deferred maintenance</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+<!-- ADD CUSTOM CHECKBOXES HERE -->
+	<tr>
+		<td class="question"><label for="roof_gutters_shingles">Shingles</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="roof_gutters_shingles" type="hidden" value="n" />
+				<input class="" id="roof_gutters_shingles" name="roof_gutters_shingles" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="roof_gutters_tarping">Tarping</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="roof_gutters_tarping" type="hidden" value="n" />
+				<input class="" id="roof_gutters_tarping" name="roof_gutters_tarping" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Description of Damage:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="roof_gutters_damage_description" name="roof_gutters_damage_description" rows="8"></textarea>
+	  		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Floors Affected:</td>
+		<td class="answer"> 
+	  		<div class="form_field">
+			    <select class="" id="roof_gutters_floor_affected" name="roof_gutters_floor_affected">
+					<option value="" />--Choose One--</option>
+					<option value="First Floor">First Floor</option>
+					<option value="Crawlspace">Crawlspace</option>
+					<option value="Crawlspace and First Floor">Crawlspace and First Floor</option>
+					<option value="All Floors">All Floors</option>
+					<option value="Roof or Attic">Roof or Attic</option>
+					<option value="All Floors and Roof">All Floors and Roof</option>
+				</select>
+		  </div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="roof_gutters_inspected">Inspected</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="roof_gutters_inspected" type="hidden" value="n" />
+				<input class="" id="roof_gutters_inspected" name="roof_gutters_inspected" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="roof_gutters_waste_removal_required">Waste Removal Required</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="roof_gutters_waste_removal_required" type="hidden" value="n" />
+				<input class="" id="roof_gutters_waste_removal_required" name="roof_gutters_waste_removal_required" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="roof_gutters_waiver_signed">Waiver Signed</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="roof_gutters_waiver_signed" type="hidden" value="n" />
+				<input class="" id="roof_gutters_waiver_signed" name="roof_gutters_waiver_signed" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="roof_gutters_permits_acquired">Permits Acquired</label></td>
+		<td class="answer"> 
+			<div class="form_field">
+		    	<input class="" name="roof_gutters_permits_acquired" type="hidden" value="n" />
+				<input class="" id="roof_gutters_permits_acquired" name="roof_gutters_permits_acquired" type="checkbox" value="y" />
+		  	</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Notes:</td>
+		<td class="answer"> 
+			<div class="form_field">
+	    		<textarea class="" id="roof_gutters_notes" name="roof_gutters_notes" rows="4"></textarea>
+	  		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<h2>Hazards</h2>
+<table>
+	<tr>
+		<td class="question"><label for="habitable">Is the home habitable:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="habitable" type="hidden" value="n" />
+				<input checked class="" id="habitable" name="habitable" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="electricity">Power on:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="electricity" type="hidden" value="n" />
+				<input class="" id="electricity" name="electricity" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="electrical_lines">Downed Wires on Property:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="electrical_lines" type="hidden" value="n" />
+				<input class="" id="electrical_lines" name="electrical_lines" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question"><label for="unsafe_roof">Unsafe Roof:</label></td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" name="unsafe_roof" type="hidden" value="n" />
+				<input class="" id="unsafe_roof" name="unsafe_roof" type="checkbox" value="y" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Other Hazards:</td>
+		<td class="answer">
+			<div class="form_field">
+				<textarea class="" id="other_hazards" name="other_hazards"></textarea>
+			</div>
+		</td>
+	</tr>
+</table>
+
+
+<h2>Claim, Status and Report</h2>
+<table>
+	<tr>
+		<td class="question">Claim:</td>
+		<td class="answer">
+			<input class="" name="claim_for_org" type="hidden" value="n" />
+			<input type=checkbox id="claim_for_org" name="claim_for_org" value="y" />
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Current Status:</td>
+		<td class="answer">
+			<div class="form_field">
+				<select class="" id="status" name="status">
+					<option value="Not Requested">Not Requested</option>
+					<option value="Requested">Requested</option>
+					<option value="Open, unassigned">Open, unassigned</option>
+					<option value="Open, assigned">Open, assigned</option>
+					<option value="Open, partially completed">Open, partially completed</option>
+					<option value="Open, needs follow-up">Open, needs follow-up</option>
+					<option value="Closed, completed">Closed, completed</option>
+					<option value="Closed, needs case management">Closed, needs case management</option>
+					<option value="Closed, incomplete">Closed, incomplete</option>
+					<option value="Closed, out of scope">Closed, out of scope</option>
+					<option value="Closed, done by others">Closed, done by others</option>
+					<option value="Closed, no help wanted">Closed, no help wanted</option>
+					<option value="Closed, rejected">Closed, rejected</option>
+					<option value="Closed, duplicate">Closed, duplicate</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+	<tr id="assigned_to_row" class="hide">
+		<td class="question">Assigned To:</td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" id="assigned_to" name="assigned_to" type="text" value="" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Volunteers:</td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" id="total_volunteers" name="total_volunteers" type="text" value="">
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Hours per volunteer:</td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" id="hours_worked_per_volunteer" name="hours_worked_per_volunteer" type="text" value="">
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Initials of resident present during work:</td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" id="initials_of_resident_present" name="initials_of_resident_present" type="text" value="" />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class="question">Status notes:</td>
+		<td class="answer">
+			<div class="form_field">
+				<textarea class="" id="status_notes" name="status_notes"></textarea>
+			</div>
+		</td>
+	</tr>
+</table>
+
+
+<h2>Other Information</h2>
+<table>
+	<tr>
+		<td class="question">Prepared by:</td>
+		<td class="answer">
+			<div class="form_field">
+				<input class="" id="prepared_by" name="prepared_by" type="text" value="" />
+			</div>
+		</td>
+	</tr>
+</table>

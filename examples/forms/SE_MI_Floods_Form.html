@@ -1,4 +1,4 @@
-<!-- 2015-07-09 10:46am -->
+<!-- 2015-11-23 6:51pm -->
 <p><strong>Southeast Michigan Floods</strong>: Enter property damage and needs assessments here. Inform the client this information will be shared with other voluntary organizations in an effort to provide service as fast as possible, which may be several weeks.</p>
 	<h2>Property and Personal Information</h2>
 	<table>
@@ -94,7 +94,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class=question>Phone Numbers:<span class=required-asterisk>*</span></td>
+			<td class=question>Phone Num. (Words OK):<span class=required-asterisk>*</span></td>
 			<td class="answer"> 
 				<div class="form_field">
 					<input class="" id="phone1" name="phone1" type="text" value="" />
@@ -203,6 +203,7 @@
 		</td>
 	</tr>
 </table>
+
 <h3>Muck Out</h3>
 <table>
 	<tr>
@@ -383,8 +384,37 @@
 	</tr>
 </table>
 
-<h3>Deferred Maintenance</h3>
+<h3>Deferred Maintenance &amp; Reconstruction</h3>
 	<table>
+		<tr>
+			<td class=question><label for="needs_visual">Needs Visual Assessment</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="needs_visual" type="hidden" value="n" />
+					<input class="" id="needs_visual" name="needs_visual" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class=question><label for="maintenance_furnace">Furnace</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_furnace" type="hidden" value="n" />
+					<input class="" id="maintenance_furnace" name="maintenance_furnace" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class=question><label for="maintenance_water_heater">Water Heater</label></td>
+			<td class="answer"> 
+				<div class="form_field">
+					<input class="" name="maintenance_water_heater" type="hidden" value="n" />
+					<input class="" id="maintenance_water_heater" name="maintenance_water_heater" type="checkbox" value="y"> 
+				</div>
+			</td>
+		</tr>
+
 		<tr>
 			<td class=question><label for="maintenance_plumbing">Interior Plumbing</label></td>
 			<td class="answer"> 
@@ -493,26 +523,6 @@
 			</td>
 		</tr>
 	</table>
-<h3>Reconstruction</h3>
-<table>
-		<tr>
-			<td class=question><label for="needs_visual">Needs Visual Assessment</label></td>
-			<td class="answer"> 
-				<div class="form_field">
-					<input class="" name="needs_visual" type="hidden" value="n" />
-					<input class="" id="needs_visual" name="needs_visual" type="checkbox" value="y"> 
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td class=question><strong>ADD MORE QUESTIONS HERE</strong></td>
-			<td class="answer"> 
-				<div class="form_field">
-					&nbsp;
-				</div>
-			</td>
-		</tr>
-</table>
 
 <h2>Hazards</h2>
 <table>
@@ -544,11 +554,11 @@
 		</td>
 	</tr>
 	<tr>
-		<td class=question><label for="known_asbestos">Known Lead-based paint:</label></td>
+		<td class=question><label for="known_lead_paint">Known Lead-based paint:</label></td>
 		<td class="answer">
 			<div class="form_field">
-				<input class="" name="known_asbestos" type="hidden" value="n" />
-				<input class="" id="known_asbestos" name="known_asbestos" type="checkbox" value="y" />
+				<input class="" name="known_lead_paint" type="hidden" value="n" />
+				<input class="" id="known_lead_paint" name="known_lead_paint" type="checkbox" value="y" />
 			</div>
 		</td>
 	</tr>

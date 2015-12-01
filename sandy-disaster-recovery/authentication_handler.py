@@ -53,6 +53,7 @@ def GetOrganizationForm(post_data):
   organizations = db.GqlQuery(query_string)
   events = event_db.GetAllCached()
   events = db.GqlQuery("SELECT * From Event ORDER BY created_date DESC")
+
   event_key = None
   if events.count() == 0:
     logging.warning("Initialize called")
@@ -93,7 +94,7 @@ def GetOrganizationForm(post_data):
   class OrganizationForm(wtforms.form.Form):
     event = wtforms.fields.SelectField(
         'Work Event',
-        choices = [(e.name, e.name) for e in events],
+        choices = [(e.name, e.name) for e in events if e.short_name != "sc_fast_track_repairs"],
         validators = [wtforms.validators.required()])
     password = wtforms.fields.PasswordField(
         'Password',

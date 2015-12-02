@@ -94,7 +94,7 @@ def GetOrganizationForm(post_data):
   class OrganizationForm(wtforms.form.Form):
     event = wtforms.fields.SelectField(
         'Work Event',
-        choices = [(e.name, e.name) for e in events if e.short_name != "sc_fast_track_repairs"],
+        choices = [(e.name, e.name) for e in events],
         validators = [wtforms.validators.required()])
     password = wtforms.fields.PasswordField(
         'Password',

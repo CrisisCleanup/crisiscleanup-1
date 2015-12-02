@@ -40,8 +40,8 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
           site_object.delete()
         else:
           deleted_count += 1
-      logging.info("left_count" + left_count)
-      logging.info("deleted_count" + deleted_count)
+      logging.info("left_count" + str(left_count))
+      logging.info("deleted_count" + str(deleted_count))
 
 
 

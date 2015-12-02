@@ -32,7 +32,8 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         q = db.Query(audit_db.Audit)
         q.filter("case_number =", case_number)
         audit_object = q.get()  
-        audit_object.delete()
+        if audit_object:
+          audit_object.delete()
       for case_number in arr:
         q = db.Query(audit_db.Audit)
         q.filter("case_number =", case_number)

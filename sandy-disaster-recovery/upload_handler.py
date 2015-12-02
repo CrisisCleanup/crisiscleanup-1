@@ -28,7 +28,7 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
       q.filter("short_name =", "sc_fast_track_repairs")
       event_object = q.get()
 
-
+      site_count = 0
       orgs = organization.Organization.gql("WHERE name IN ('FEMA', 'FEMA Corps', 'AmeriCorps St. Louis- ERT', 'Americorps St. Louis Emergency Response')")
 
       for org in orgs:

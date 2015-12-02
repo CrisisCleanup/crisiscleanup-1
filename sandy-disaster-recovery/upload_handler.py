@@ -29,6 +29,7 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
       for case_number in arr:
         q = db.Query(site_db.Site)
         q.filter("case_number =", case_number)
+        logging.info("case_number" + case_number)
         site_object = q.get()
         site_object.delete()
 

@@ -46,6 +46,11 @@ class Event(db.Model):
   timestamp_last_login = db.DateTimeProperty()
 
   @property
+  def existing_site_count(self):
+    gql_string = 'SELECT * FROM Siteand event = :1'
+    q = db.GqlQuery(gql_string, where_string, self.key())
+
+  @property
   def organizations(self):
       """
       Active, verified organizations related to this incident.
@@ -113,7 +118,11 @@ def AddSiteToEvent(site, event_id, force=False, can_overwrite=False):
     logging.critical("Could not initialize site: " + str(site.key().id()))
     return False
   site.event = event
-  site.case_number = event.case_label + str(event.num_sites)
+  if event.short_name = "sc_fast_track_repairs":
+    site.case_number = event.case_label + str(event.num_sites + 400)
+  else:
+    site.case_number = event.case_label + str(event.num_sites)
+
   event.num_sites += 1
   cache.PutAndCache(event, ten_minutes)
   site.compute_similarity_matching_fields()

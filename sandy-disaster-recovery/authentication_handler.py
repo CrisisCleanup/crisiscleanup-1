@@ -53,7 +53,6 @@ def GetOrganizationForm(post_data):
   organizations = db.GqlQuery(query_string)
   events = event_db.GetAllCached()
   events = db.GqlQuery("SELECT * From Event ORDER BY created_date DESC")
-
   event_key = None
   if events.count() == 0:
     logging.warning("Initialize called")
@@ -140,17 +139,17 @@ class AuthenticationHandler(base.RequestHandler):
     if selected_org_name == "Admin":
       # admin user
       for x in organization.Organization.gql(
-	  "WHERE name = :name LIMIT 1", name=selected_org_name
+    "WHERE name = :name LIMIT 1", name=selected_org_name
       ):
-	org = x
+        org = x
     else:
       # regular user
       for x in organization.Organization.gql(
-	  "WHERE name = :name AND incidents = :incident LIMIT 1",
+    "WHERE name = :name AND incidents = :incident LIMIT 1",
           name=selected_org_name,
           incident=event.key()
       ):
-	org = x
+        org = x
       if org is None:
           # try legacy incident field
           for x in organization.Organization.gql(

@@ -29,7 +29,7 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
       event_object = q.get()
 
 
-      orgs = organization.Organization.gql("SELECT * FROM Organization WHERE name IN ('FEMA', 'FEMA Corps', 'AmeriCorps St. Louis- ERT', 'Americorps St. Louis Emergency Response')")
+      orgs = organization.Organization.gql("WHERE name IN ('FEMA', 'FEMA Corps', 'AmeriCorps St. Louis- ERT', 'Americorps St. Louis Emergency Response')")
 
       for org in orgs:
         q = db.Query(site_db.Site)

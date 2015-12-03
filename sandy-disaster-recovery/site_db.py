@@ -396,7 +396,7 @@ def GetAllCached(event, ids = None):
   if ids == None:
     q = Query(model_class = Site, keys_only = True)
     q.filter("event =", event)
-    ids = [key.id() for key in q.run(batch_size = 2000)]
+    ids = [key.id() for key in q.run(batch_size = 1000)]
   lookup_ids = [str(id) for id in ids]
   cache_results = memcache.get_multi(lookup_ids, key_prefix = cache_prefix)
   not_found = [id for id in ids if not str(id) in cache_results.keys()]

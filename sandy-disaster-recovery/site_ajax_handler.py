@@ -29,7 +29,7 @@ import base
 import key
 import site_db
 
-PAGE_OFFSET = 50
+PAGE_OFFSET = 100
 
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
@@ -68,7 +68,6 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
         page = self.request.get("page", default_value = "0")
         page_int = int(page)
         logging.debug("page = " + page)
-        logging.debug(event.name)
         
         #query_string = "SELECT * FROM Site WHERE event = :event_key LIMIT %s OFFSET %s" % (PAGE_OFFSET, page_int * PAGE_OFFSET)   
         ##logging.debug("OFFSET = " + PAGE_OFFSET)

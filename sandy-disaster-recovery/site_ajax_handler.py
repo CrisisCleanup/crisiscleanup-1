@@ -101,6 +101,7 @@ class SiteAjaxHandler(base.AuthenticatedHandler):
         output = json.dumps(
             [s[1] for s in site_db.GetAllCached(event, ids)],
             default=dthandler)
+        logging.info("after output")
         self.response.out.write(output)
         return
         

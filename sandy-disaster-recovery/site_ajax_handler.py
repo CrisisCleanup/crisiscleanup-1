@@ -29,7 +29,7 @@ import base
 import key
 import site_db
 
-PAGE_OFFSET = 90
+PAGE_OFFSET = 50
 
 
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None

@@ -53,7 +53,7 @@ class PublicMapAjaxHandler(base.RequestHandler):
     where_string = "Open"
     q = None
     if not event:
-      self.redirect("/public_map?message=An event by that name doesn't exist. Please click on the list next to the map to see public maps.")
+      self.redirect("/public-map?message=An event by that name doesn't exist. Please click on the list next to the map to see public maps.")
       return
     if event.short_name != 'moore':
       gql_string = 'SELECT * FROM Site WHERE status >= :1 and event = :2'

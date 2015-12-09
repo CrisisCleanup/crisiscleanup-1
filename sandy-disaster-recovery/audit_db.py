@@ -52,7 +52,7 @@ def create(site, action, org):
 	audit.put()
 
 def login(ip, org, password_hash, org_name, event_name):
-	audit = Audit(action = "login", ip = ip, initiated_by = org, password_hash = password_hash)
+	audit = Audit(action = "login", ip = ip, initiated_by = org, password_hash = password_hash, org_name = org_name, event_name = event_name)
 	audit.put()
 
 def new_password(org, password_hash):

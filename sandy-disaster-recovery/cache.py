@@ -83,6 +83,7 @@ def GetAllCachedBy(class_type, cache_seconds):
     return ret
   ret = memcache.get(cache_key)
   if not ret:
+    # search class type here
     ret = [a for a in class_type.all()]
     if not memcache.set(cache_key, ret, time = cache_seconds):
       logging.critical("Failed to cache!")

@@ -401,6 +401,7 @@ def GetAllCached(event, ids = None):
   cache_results = memcache.get_multi(lookup_ids, key_prefix = cache_prefix)
   not_found = [id for id in ids if not str(id) in cache_results.keys()]
   data_store_results = []
+  # TODO Get all cached by event
   orgs = dict([(o.key(), o) for o in organization.GetAllCached()])
   events = dict([(e.key(), e) for e in event_db.GetAllCached()])
   if len(not_found):

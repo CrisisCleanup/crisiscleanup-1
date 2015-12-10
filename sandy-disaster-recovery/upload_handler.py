@@ -67,36 +67,36 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 
 
 
-        event_short_name = self.request.get("event")
-        duplicate_detection = self.request.get("duplicate")
-        duplicate_method = self.request.get("duplicate_method_select")
-        upload_files = self.get_uploads('file')  # 'file' is file upload field in the form
-        blob_info = upload_files[0]
-        blob_reader = blobstore.BlobReader(blob_info.key())
-        blob_iterator = BlobIterator(blob_reader)
-        reader = csv.reader(blob_iterator, 'rb')
-        for row in reader:
-          raise Exception(row)
+      event_short_name = self.request.get("event")
+      duplicate_detection = self.request.get("duplicate")
+      duplicate_method = self.request.get("duplicate_method_select")
+      upload_files = self.get_uploads('file')  # 'file' is file upload field in the form
+      blob_info = upload_files[0]
+      blob_reader = blobstore.BlobReader(blob_info.key())
+      blob_iterator = BlobIterator(blob_reader)
+      reader = csv.reader(blob_iterator, 'rb')
+      for row in reader:
+        raise Exception(row)
 
-        q = db.Query(event_db.Event)
-        q.filter("short_name =", event_short_name)
-        event_object = q.get()
-        num_sites_start = event_object.num_sites
-        errors, count, duplicates, saved_duplicates, saved_new, has_references_count = process_csv(blob_info, event_object, duplicate_detection, duplicate_method)
-        blobstore.delete(blob_info.key())  # optional: delete file after import
-        #self.redirect("/")
+      q = db.Query(event_db.Event)
+      q.filter("short_name =", event_short_name)
+      event_object = q.get()
+      num_sites_start = event_object.num_sites
+      errors, count, duplicates, saved_duplicates, saved_new, has_references_count = process_csv(blob_info, event_object, duplicate_detection, duplicate_method)
+      blobstore.delete(blob_info.key())  # optional: delete file after import
+      #self.redirect("/")
 
-        template_params = {
-          "errors": errors,
-          "count": count,
-          "error_count": len(errors),
-          "event_name": event_object.name,
-          "duplicates": duplicates,
-          "saved_duplicates": saved_duplicates,
-          "saved_new": saved_new,
-          "has_references_count": has_references_count
-        }
-        self.response.out.write(template.render(template_params))
+      template_params = {
+        "errors": errors,
+        "count": count,
+        "error_count": len(errors),
+        "event_name": event_object.name,
+        "duplicates": duplicates,
+        "saved_duplicates": saved_duplicates,
+        "saved_new": saved_new,
+        "has_references_count": has_references_count
+      }
+      self.response.out.write(template.render(template_params))
 
 
 

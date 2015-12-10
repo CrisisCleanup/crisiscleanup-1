@@ -162,7 +162,7 @@ app = webapp2.WSGIApplication([
     Route(r'/map', map_handler.MapHandler, 'map'),
     Route(r'/maps', redirect_to_name='map', name='maps_redirect'),              # not needed
     Route(r'/edit', edit_handler.EditHandler, 'edit'),
-    Route(r'/import', import_handler.ImportHandler, 'import'),
+    # Route(r'/import', import_handler.ImportHandler, 'import'),
     Route(r'/old/map', redirect_to=MAP_URL, name='external_map_redirect'),      # not needed
     Route(r'/old/maps', redirect_to_name=MAP_URL, name='external_maps_redirect'),   # not needed
     Route(r'/print', print_handler.PrintHandler, 'print'),                      

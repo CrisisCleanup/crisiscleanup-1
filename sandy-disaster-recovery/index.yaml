@@ -737,3 +737,9 @@ indexes:
   - name: password_hash
   - name: created_at
     direction: desc
+
+- kind: Audit
+  properties:
+  - name: action
+  - name: created_at
+

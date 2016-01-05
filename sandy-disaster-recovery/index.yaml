@@ -743,3 +743,7 @@ indexes:
   - name: action
   - name: created_at
 
+- kind: Audit
+  properties:
+  - name: created_at
+  - name: initiated_by

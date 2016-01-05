@@ -29,6 +29,7 @@ import base
 import event_db
 import site_db
 import site_util
+import audit_db
 import cache
 
 from datetime import datetime
@@ -64,6 +65,18 @@ class AdminStatsHandler(base.AuthenticatedHandler):
             return
         
 	q = event_db.Event.all()
+	q2 = audit_db.Audit.all()
+	q2.order("created_at")
+	q2.order("initiated_by")
+	audits = q2.fetch(1000)
+	audit_ips = {}
+	for audit in audits:
+		if audit.ip in audit_ips:
+			audit_ips[audit.ip] += 1
+		else:
+			audit_ips[audit.ip] = 1
+
+
 	query = q.fetch(1000)
 	for q in query:
 	  if q.short_name == "sandy":
@@ -77,6 +90,8 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 	
         self.response.out.write(template.render(
         {
+        	"audits": audits,
+        	"audit_ips": audit_ips,
             "global_admin": global_admin,
             "SANDY_TOTAL_SITES": SANDY_TOTAL_SITES,
             "MOORE_TOTAL_SITES": MOORE_TOTAL_SITES,

@@ -31,7 +31,7 @@
   </table>
 </div> -->
 
-<!-- 
+
 <div class='col-lg-6'>
   <h3>Logins by IP</h3>
   <p><u>Sorted by most times logged in</u></p>
@@ -44,18 +44,21 @@
       <tr>
         <th>Ip</th>
         <th>Logins</th>
+        <th>Orgs count</th>
       </tr>
     </thead>
     <tbody>
     {% for key in sorted_audit_ips: %}
       <tr>
         <td>{{ key[0] }}</td>
-        <td>{{ key[1] }}</td>
+        <td>{{ key[1]["count"] }}</td>
+        <td>{{ key[1]["orgs_count"] }}</td>
+
       </tr>
     {% endfor %}
     </tbody>
   </table>
-</div> -->
+</div>
 <div class="col-lg-6">
   <h3>Logins by Date</h3>
   <p><u>Sorted by date</u></p>

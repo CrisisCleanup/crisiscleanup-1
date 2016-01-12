@@ -72,12 +72,21 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 	audit_ips = {}
 	date_ips = {}
 	days = 0
-	
+	total_logins = 0
+
 	for audit in audits:
+		total_logins += 1
 		if audit.ip in audit_ips:
-			audit_ips[audit.ip] += 1
+			audit_ips[audit.ip]["count"] += 1
+			if not audit.initiated_by.name in audit_ips[audit.ip]["orgs"]:
+				arr = audit_ips[audit.ip]["orgs"]
+				arr.append(audit.initiated_by.name)
+				audit_ips[audit.ip]["orgs"] = arr
+				audit_ips[audit.ip]["orgs_count"] += 1
 		else:
-			audit_ips[audit.ip] = 1
+			audit_ips[audit.ip] = {"count": 1, "orgs": [audit.initiated_by.name], "orgs_count": 1}
+	# raise Exception(audit_ips)
+
 	for audit in audits:
 		if str(audit.created_at)[0:10] in date_ips:
 			date_ips[str(audit.created_at)[0:10]]["count"] += 1
@@ -126,7 +135,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         	"audits": audits,
         	"sorted_audit_ips": reversed(sorted(audit_ips.items(), key=operator.itemgetter(1))),
         	"days": days,
-        	"total_logins": sum(audit_ips.values()),
+        	"total_logins": total_logins,
         	"audit_ips": audit_ips,
         	"audit_ips_len": len(audit_ips),
         	"sorted_date_ips": sorted(date_ips),

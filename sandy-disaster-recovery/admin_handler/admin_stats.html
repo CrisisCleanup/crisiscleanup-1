@@ -67,13 +67,15 @@
       <tr>
         <th>Ip</th>
         <th>Logins</th>
+        <th>Unique ips</th>
       </tr>
     </thead>
     <tbody>
     {% for key in sorted_date_ips %}
       <tr>
         <td>{{ key }}</td>
-        <td>{{ date_ips[key] }}</td>
+        <td>{{ date_ips[key]["count"] }}</td>
+        <td>{{ date_ips[key]["ips_count"] }}
       </tr>
     {% endfor %}
     </tbody>

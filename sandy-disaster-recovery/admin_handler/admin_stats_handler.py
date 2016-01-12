@@ -80,10 +80,23 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 			audit_ips[audit.ip] = 1
 	for audit in audits:
 		if str(audit.created_at)[0:10] in date_ips:
-			date_ips[str(audit.created_at)[0:10]] += 1
+			date_ips[str(audit.created_at)[0:10]]["count"] += 1
+			if not audit.ip in date_ips[str(audit.created_at)[0:10]]["ips"]:
+
+				date_ips[str(audit.created_at)[0:10]]["ips_count"] += 1
+				arr = date_ips[str(audit.created_at)[0:10]][""]
+				arr.append(audit.ip)
+				date_ips[str(audit.created_at)[0:10]][""] = arr
+				
+
+
+			# if not audit.ip in date_ips[str(audit.created_at)[0:10] + "unique_ips"]:
+			# 	arr = date_ips[str(audit.created_at)[0:10] + "unique_ips"]
+			# 	arr.append(audit.ip)
+			# 	date_ips[str(audit.created_at)[0:10] + "unique_ips"] = arr
 		else:
 			days += 1
-			date_ips[str(audit.created_at)[0:10]] = 1
+			date_ips[str(audit.created_at)[0:10]] = {"count": 1, "ips": [audit.ip], "ips_count": 1}
 
 
 	# q2.order("created_at")

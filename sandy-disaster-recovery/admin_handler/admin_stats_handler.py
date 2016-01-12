@@ -23,6 +23,7 @@ import logging
 import os
 import urllib2
 import wtforms.validators
+import operator
 
 # Local libraries.
 import base
@@ -111,9 +112,11 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         self.response.out.write(template.render(
         {
         	"audits": audits,
+        	"sorted_audit_ips": sorted(audit_ips.items(), key=operator.itemgetter(1)),
         	"days": days,
         	"audit_ips": audit_ips,
         	"audit_ips_len": len(audit_ips),
+        	"sorted_date_ips": sorted(date_ips),
         	"date_ips": date_ips,
             "global_admin": global_admin,
             "SANDY_TOTAL_SITES": SANDY_TOTAL_SITES,

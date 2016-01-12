@@ -84,9 +84,9 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 			if not audit.ip in date_ips[str(audit.created_at)[0:10]]["ips"]:
 
 				date_ips[str(audit.created_at)[0:10]]["ips_count"] += 1
-				arr = date_ips[str(audit.created_at)[0:10]][""]
+				arr = date_ips[str(audit.created_at)[0:10]]["ips"]
 				arr.append(audit.ip)
-				date_ips[str(audit.created_at)[0:10]][""] = arr
+				date_ips[str(audit.created_at)[0:10]]["ips"] = arr
 				
 
 

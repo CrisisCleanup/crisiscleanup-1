@@ -78,7 +78,6 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 			audit_ips[audit.ip] += 1
 		else:
 			audit_ips[audit.ip] = 1
-
 	for audit in audits:
 		if str(audit.created_at)[0:10] in date_ips:
 			date_ips[str(audit.created_at)[0:10]] += 1
@@ -114,6 +113,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         	"audits": audits,
         	"sorted_audit_ips": reversed(sorted(audit_ips.items(), key=operator.itemgetter(1))),
         	"days": days,
+        	"total_logins": sum(audit_ips.values()),
         	"audit_ips": audit_ips,
         	"audit_ips_len": len(audit_ips),
         	"sorted_date_ips": sorted(date_ips),

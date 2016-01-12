@@ -14,30 +14,6 @@
 
 <p>Crisis Cleanup Total Sites = {{ TOTAL_SITES }}</p>
 
-<h2>Login data</h2>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Action</th>
-      <th>Created At</th>
-      <th>Initiated By</th>
-      <th>IP Address</th>
-    </tr>
-  </thead>
-  <tbody>
-	{% for audit in audits %}
-		<tr>
-		  <td>{{ audit.action }}</td>
-		  <td>{{ audit.created_at }}</td>
-		  <td>{{ audit.initiated_by.name }}</td>
-		  <td>{{ audit.ip }}</td>
-		</tr>
-	{% endfor %}
-  </tbody>
-</table>
-
-
 <h2>Logins by IP</h2>
 <table class="table">
   <thead>

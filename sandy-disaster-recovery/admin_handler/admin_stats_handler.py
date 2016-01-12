@@ -66,8 +66,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         
 	q = event_db.Event.all()
 	q2 = audit_db.Audit.all()
-	q2.order("created_at")
-	q2.order("initiated_by")
+	q2.filter("action =", "login")
 	audits = q2.fetch(1000)
 	audit_ips = {}
 	for audit in audits:
@@ -75,6 +74,17 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 			audit_ips[audit.ip] += 1
 		else:
 			audit_ips[audit.ip] = 1
+
+
+	# q2.order("created_at")
+	# q2.order("initiated_by")
+	# audits = q2.fetch(1000)
+	# audit_ips = {}
+	# for audit in audits:
+	# 	if audit.ip in audit_ips:
+	# 		audit_ips[audit.ip] += 1
+	# 	else:
+	# 		audit_ips[audit.ip] = 1
 
 
 	query = q.fetch(1000)

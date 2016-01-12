@@ -68,7 +68,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 	q = event_db.Event.all()
 	q2 = audit_db.Audit.all()
 	q2.filter("action =", "login")
-	audits = q2.fetch(1000)
+	audits = q2.fetch(1500)
 	audit_ips = {}
 	date_ips = {}
 	days = 0

@@ -123,6 +123,6 @@ class AdminStatsHandler(base.AuthenticatedHandler):
             "MOORE_TOTAL_SITES": MOORE_TOTAL_SITES,
             "HATTIESBURG_TOTAL_SITES": HATTIESBURG_TOTAL_SITES,
             "GORDON_BARTOW_TOTAL_SITES": GORDON_BARTOW_TOTAL_SITES,
-            "TOTAL_SITES": SANDY_TOTAL_SITES + MOORE_TOTAL_SITES + HATTIESBURG_TOTAL_SITES + GORDON_BARTOW_TOTAL_SITES
+            "TOTAL_SITES": site_db.Site.all().count()
         }))
         return

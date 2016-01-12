@@ -70,6 +70,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 	audits = q2.fetch(1000)
 	audit_ips = {}
 	date_ips = {}
+	days = 0
 	
 	for audit in audits:
 		if audit.ip in audit_ips:
@@ -81,6 +82,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 		if str(audit.created_at)[0:10] in date_ips:
 			date_ips[str(audit.created_at)[0:10]] += 1
 		else:
+			days += 1
 			date_ips[str(audit.created_at)[0:10]] = 1
 
 
@@ -109,6 +111,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         self.response.out.write(template.render(
         {
         	"audits": audits,
+        	"days": days,
         	"audit_ips": audit_ips,
         	"date_ips": date_ips,
             "global_admin": global_admin,

@@ -46,7 +46,7 @@ class Key(db.Model):
                   str(event.key().id())]))
     cookie["sandy-recovery-auth"]["domain"] = ""
     if not org.only_session_authentication:
-      expires = datetime.datetime.now() + datetime.timedelta(days = 7)
+      expires = datetime.datetime.now() + datetime.timedelta(days = 1)
       cookie["sandy-recovery-auth"]["expires"] = (
           expires.strftime('%a, %d %b %Y %H:%M:%S'))
     return str(cookie)

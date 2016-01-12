@@ -1,32 +1,35 @@
 {% extends "base_template.html" %}
 {% block main_title %}
-<h2>Crisis Cleanup Stats</h2>
+<div class='col-lg-12'>
+  <h2>Crisis Cleanup Stats</h2>
+</div>
 {% endblock %}
 
 {% block main_content %}
+<div class='col-lg-12'>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Sandy Sites</th>
-      <th>Hattiesburg Sites</th>
-      <th>Gordon-Bartow Sites</th>
-      <th>Moore Sites</th>
-      <th>Total Sites</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{ SANDY_TOTAL_SITES }}</td>
-      <td>{{ HATTIESBURG_TOTAL_SITES }}</td>
-      <td>{{ GORDON_BARTOW_TOTAL_SITES }}</td>
-      <td>{{ MOORE_TOTAL_SITES }}</td>
-      <td>{{ TOTAL_SITES }}</td>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Sandy Sites</th>
+        <th>Hattiesburg Sites</th>
+        <th>Gordon-Bartow Sites</th>
+        <th>Moore Sites</th>
+        <th>Total Sites</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ SANDY_TOTAL_SITES }}</td>
+        <td>{{ HATTIESBURG_TOTAL_SITES }}</td>
+        <td>{{ GORDON_BARTOW_TOTAL_SITES }}</td>
+        <td>{{ MOORE_TOTAL_SITES }}</td>
+        <td>{{ TOTAL_SITES }}</td>
 
-    </tr>
-  </tbody>
-</table>
-<h2>Login Stats</h2>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <div class='col-lg-6'>
   <h3>Logins by IP</h3>
   <p><u>Sorted by most times logged in</u></p>

@@ -78,7 +78,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 			audit_ips[audit.ip] = 1
 
 	for audit in audits:
-		if audit.ip in date_ips:
+		if str(audit.created_at)[0:10] in date_ips:
 			date_ips[str(audit.created_at)[0:10]] += 1
 		else:
 			date_ips[str(audit.created_at)[0:10]] = 1

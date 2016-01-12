@@ -112,7 +112,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         self.response.out.write(template.render(
         {
         	"audits": audits,
-        	"sorted_audit_ips": sorted(audit_ips.items(), key=operator.itemgetter(1)),
+        	"sorted_audit_ips": reversed(sorted(audit_ips.items(), key=operator.itemgetter(1))),
         	"days": days,
         	"audit_ips": audit_ips,
         	"audit_ips_len": len(audit_ips),

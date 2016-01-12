@@ -31,4 +31,22 @@
 	{% endfor %}
   </tbody>
 </table>
+
+<h2>Logins by Date</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Ip</th>
+      <th>Logins</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for key in date_ips %}
+    <tr>
+      <td>{{ key }}</td>
+      <td>{{ audit_ips[key] }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

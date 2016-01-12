@@ -69,11 +69,19 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 	q2.filter("action =", "login")
 	audits = q2.fetch(1000)
 	audit_ips = {}
+	date_ips = {}
+	
 	for audit in audits:
 		if audit.ip in audit_ips:
 			audit_ips[audit.ip] += 1
 		else:
 			audit_ips[audit.ip] = 1
+
+	for audit in audits:
+		if audit.ip in date_ips:
+			date_ips[str(audit.created_at)[0:10]] += 1
+		else:
+			date_ips[str(audit.created_at)[0:10]] = 1
 
 
 	# q2.order("created_at")
@@ -102,6 +110,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         {
         	"audits": audits,
         	"audit_ips": audit_ips,
+        	"date_ips": date_ips,
             "global_admin": global_admin,
             "SANDY_TOTAL_SITES": SANDY_TOTAL_SITES,
             "MOORE_TOTAL_SITES": MOORE_TOTAL_SITES,

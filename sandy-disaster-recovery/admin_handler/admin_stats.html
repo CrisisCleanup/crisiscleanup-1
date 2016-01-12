@@ -15,9 +15,9 @@
 <p>Crisis Cleanup Total Sites = {{ TOTAL_SITES }}</p>
 
 <h2>Logins by IP</h2>
-<p>Total users: {{ len(audit_ips) }}</p>
+<p>Total users: {{ audit_ips_len }}</p>
 <p>Days: {{ days }}</p>
-<p>Users per day: {{ len(audit_ips)/days }}</p>
+<p>Users per day: {{ audit_ips_len/days }}</p>
 <table class="table">
   <thead>
     <tr>

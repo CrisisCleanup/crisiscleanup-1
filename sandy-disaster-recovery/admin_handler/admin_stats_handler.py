@@ -113,6 +113,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         	"audits": audits,
         	"days": days,
         	"audit_ips": audit_ips,
+        	"audit_ips_len": len(audit_ips),
         	"date_ips": date_ips,
             "global_admin": global_admin,
             "SANDY_TOTAL_SITES": SANDY_TOTAL_SITES,

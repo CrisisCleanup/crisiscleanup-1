@@ -4,56 +4,74 @@
 {% endblock %}
 
 {% block main_content %}
-<p>Sandy Total Sites = {{ SANDY_TOTAL_SITES }}</p>
 
-<p>Hattiesburg Total Sites = {{ HATTIESBURG_TOTAL_SITES }}</p>
-
-<p>Gordon-Bartow Total Sites = {{ GORDON_BARTOW_TOTAL_SITES }}</p>
-
-<p>Moore Total Sites = {{ MOORE_TOTAL_SITES }}</p>
-
-<p>Crisis Cleanup Total Sites = {{ TOTAL_SITES }}</p>
-
-<h2>Logins by IP</h2>
-
-<p>Total users: {{ audit_ips_len }}</p>
-<p>Days: {{ days }}</p>
-<p>Users per day: {{ audit_ips_len/days }}</p>
 <table class="table">
   <thead>
     <tr>
-      <th>Ip</th>
-      <th>Logins</th>
+      <th>Sandy Sites</th>
+      <th>Hattiesburg Sites</th>
+      <th>Gordon-Bartow Sites</th>
+      <th>Moore Sites</th>
+      <th>Total Sites</th>
     </tr>
   </thead>
   <tbody>
-	{% for key in sorted_audit_ips: %}
-		<tr>
-		  <td>{{ key[0] }}</td>
-		  <td>{{ key[1] }}</td>
-		</tr>
-	{% endfor %}
-  </tbody>
-</table>
+    <tr>
+      <td>{{ SANDY_TOTAL_SITES }}</td>
+      <td>{{ HATTIESBURG_TOTAL_SITES }}</td>
+      <td>{{ GORDON_BARTOW_TOTAL_SITES }}</td>
+      <td>{{ MOORE_TOTAL_SITES }}</td>
+      <td>{{ TOTAL_SITES }}</td>
 
-<h2>Logins by Date</h2>
-<p>Days: {{ days }}</p>
-<p>Logins: 1000</p>
-<p>Average: {{ 1000 / days }}
-<table class="table">
-  <thead>
-    <tr>
-      <th>Ip</th>
-      <th>Logins</th>
     </tr>
-  </thead>
-  <tbody>
-  {% for key in sorted_date_ips %}
-    <tr>
-      <td>{{ key }}</td>
-      <td>{{ date_ips[key] }}</td>
-    </tr>
-  {% endfor %}
   </tbody>
 </table>
+<h2>Login Stats</h2>
+<div class='col-lg-6'>
+  <h3>Logins by IP</h3>
+  <p>Sorted by most times logged in</p>
+
+  <p>Total users: {{ audit_ips_len }}</p>
+  <p>Days: {{ days }}</p>
+  <p>Users per day: {{ audit_ips_len/days }}</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Ip</th>
+        <th>Logins</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for key in sorted_audit_ips: %}
+      <tr>
+        <td>{{ key[0] }}</td>
+        <td>{{ key[1] }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="col-lg-6">
+  <h3>Logins by Date</h3>
+  <p>Sorted by date</p>
+  <p>Days: {{ days }}</p>
+  <p>Logins: 1000</p>
+  <p>Average: {{ 1000 / days }}</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Ip</th>
+        <th>Logins</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for key in sorted_date_ips %}
+      <tr>
+        <td>{{ key }}</td>
+        <td>{{ date_ips[key] }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

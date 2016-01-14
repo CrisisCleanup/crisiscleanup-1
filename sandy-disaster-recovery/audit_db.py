@@ -53,10 +53,9 @@ def create(site, action, org):
 
 def login(ip, org, password_hash, org_name, event_name):
 	audit = Audit(action = "login", ip = ip, initiated_by = org, password_hash = password_hash, org_name = org_name, event_name = event_name)
-	audit.put()
+	a = audit.put()
+	return a
 
 def new_password(org, password_hash):
 	audit = Audit(action = "generate_new_password", initiated_by = org, password_hash = password_hash)
 	audit.put()
-
-

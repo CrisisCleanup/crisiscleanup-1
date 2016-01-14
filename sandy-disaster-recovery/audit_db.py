@@ -33,8 +33,8 @@ import organization
 
 class Audit(db.Expando):
 	created_at = db.DateTimeProperty(auto_now_add=True, required = True)
-	action = db.StringProperty(choices=["create", "edit", "login", "generate_new_password"], required = True)
-	initiated_by = db.ReferenceProperty(organization.Organization, required = True)
+	action = db.StringProperty(choices=["create", "edit", "login", "generate_new_password", "bad_login"], required = True)
+	initiated_by = db.ReferenceProperty(organization.Organization)
 	site = db.ReferenceProperty(site_db.Site)
 	ip = db.StringProperty()
 	password_hash = db.StringProperty()
@@ -55,6 +55,10 @@ def login(ip, org, password_hash, org_name, event_name):
 	audit = Audit(action = "login", ip = ip, initiated_by = org, password_hash = password_hash, org_name = org_name, event_name = event_name)
 	a = audit.put()
 	return a
+
+def bad_login(ip):
+	audit = Audit(action = "bad_login", ip = ip)
+	audit.put()
 
 def new_password(org, password_hash):
 	audit = Audit(action = "generate_new_password", initiated_by = org, password_hash = password_hash)

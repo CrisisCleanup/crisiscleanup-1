@@ -231,4 +231,5 @@ class AuthenticationHandler(base.RequestHandler):
                                        selected_key.getCookie(org, event))
       self.redirect(urllib.unquote(self.request.get('destination', default_value='/').encode('ascii')))
     else:
+      audit_db.bad_login(ip=self.request.remote_addr)
       self.redirect(self.request.url + "?error_message=Incorrect Organization and Passcode Combination")

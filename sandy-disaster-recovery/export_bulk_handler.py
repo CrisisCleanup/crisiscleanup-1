@@ -53,6 +53,8 @@ MIDWEST_WINTER_FLOOD_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 
 
 FLINT_MI_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'case_number', 'Days Waiting From %(today)s', 'request_date', 'name', 'work_type', 'address', 'city', 'county', 'state', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'email', 'filter_delivered', 'filter_delivered_date', 'water_delivered', 'water_delivered_date', 'notified_flyer', 'notified_in_person', 'notified_police', 'notified_other', 'notes', 'work_requested', 'rent_or_own', 'member_of_assessing_organization', 'older_than_60', 'special_needs', 'claim_for_org', 'status', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'status_notes', 'prepared_by']
 
+NJ_COASTAL_FLOOD_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'case_number', 'Days Waiting From %(today)s', 'request_date', 'name', 'work_type', 'address', 'city', 'county', 'state', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'email', 'time_to_call', 'do_not_work_before', 'work_requested', 'house_affected', 'outbuilding_affected', 'exterior_property_affected', 'destruction_level', 'rent_or_own', 'member_of_assessing_organization', 'work_without_resident', 'older_than_60', 'special_needs', 'priority', 'flood_height', 'floors_affected', 'carpet_removal', 'hardwood_floor_removal', 'drywall_removal', 'appliance_removal', 'heavy_item_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'notes', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'debris_blocking', 'uninhabitable', 'electricity', 'heat', 'electrical_lines', 'unsafe_roof', 'other_hazards', 'claim_for_org', 'status', 'assigned_to', 'muck_gut_complete', 'mold_sanitation_complete', 'debris_pick_up', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'status_notes', 'prepared_by']
+
 APP_ID = app_identity.get_application_id()
 BUCKET_NAME = '/' + APP_ID
 
@@ -86,6 +88,8 @@ def get_csv_fields_list(event_short_name):
         csv_fields_list = MIDWEST_WINTER_FLOOD_FIELDS_LIST
     elif event_short_name == "flint_mi_water_crisis":
         csv_fields_list = FLINT_MI_FIELDS_LIST
+    elif event_short_name == "nj_coastal_floods":
+        csv_fields_list = NJ_COASTAL_FLOOD_FIELDS_LIST
     else:
         csv_fields_list = DEFAULT_CSV_FIELDS_LIST
 

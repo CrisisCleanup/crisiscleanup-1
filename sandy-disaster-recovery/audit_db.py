@@ -38,6 +38,7 @@ class Audit(db.Expando):
 	site = db.ReferenceProperty(site_db.Site)
 	ip = db.StringProperty()
 	password_hash = db.StringProperty()
+	email = db.StringProperty()
 
 
 def create(site, action, org):
@@ -51,8 +52,8 @@ def create(site, action, org):
 				setattr(audit, attr, getattr(site, attr).key())
 	audit.put()
 
-def login(ip, org, password_hash, org_name, event_name):
-	audit = Audit(action = "login", ip = ip, initiated_by = org, password_hash = password_hash, org_name = org_name, event_name = event_name)
+def login(ip, org, password_hash, org_name, event_name, email):
+	audit = Audit(action = "login", ip = ip, initiated_by = org, password_hash = password_hash, org_name = org_name, event_name = event_name, email=email)
 	a = audit.put()
 	return a
 

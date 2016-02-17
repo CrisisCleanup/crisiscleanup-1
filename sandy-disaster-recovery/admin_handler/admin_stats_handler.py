@@ -69,7 +69,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 	q2 = audit_db.Audit.all()
 	q2.filter("action =", "login")
 	audits = q2.fetch(1500)
-	emails = []
+	emails = {}
 	audit_ips = {}
 	date_ips = {}
 	days = 0
@@ -77,9 +77,9 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 
 	for audit in audits:
 		if audit.email in emails:
-			pass
+			emails[audit.email] += 1
 		else:
-			emails.append(audit.email)
+			emails[audit.email] = 1
 
 		total_logins += 1
 		if audit.ip in audit_ips:

@@ -142,7 +142,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         	"sorted_audit_ips": reversed(sorted(audit_ips.items(), key=operator.itemgetter(1))),
         	"days": days,
         	"total_logins": total_logins,
-        	"emails", emails,
+        	"emails": emails,
         	"audit_ips": audit_ips,
         	"audit_ips_len": len(audit_ips),
         	"sorted_date_ips": sorted(date_ips),

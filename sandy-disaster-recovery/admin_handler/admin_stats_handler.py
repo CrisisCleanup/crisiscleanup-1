@@ -69,12 +69,18 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 	q2 = audit_db.Audit.all()
 	q2.filter("action =", "login")
 	audits = q2.fetch(1500)
+	emails = []
 	audit_ips = {}
 	date_ips = {}
 	days = 0
 	total_logins = 0
 
 	for audit in audits:
+		if audit.email in emails:
+			pass
+		else:
+			emails.append(audit.email)
+
 		total_logins += 1
 		if audit.ip in audit_ips:
 			audit_ips[audit.ip]["count"] += 1
@@ -136,6 +142,7 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         	"sorted_audit_ips": reversed(sorted(audit_ips.items(), key=operator.itemgetter(1))),
         	"days": days,
         	"total_logins": total_logins,
+        	"emails", emails,
         	"audit_ips": audit_ips,
         	"audit_ips_len": len(audit_ips),
         	"sorted_date_ips": sorted(date_ips),

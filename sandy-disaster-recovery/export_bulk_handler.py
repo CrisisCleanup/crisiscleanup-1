@@ -57,6 +57,8 @@ NJ_COASTAL_FLOOD_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'cas
 
 MS_AL_TORNADOES_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'case_number', 'Days Waiting From %(today)s', 'request_date', 'name', 'work_type', 'address', 'city', 'county', 'state', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'email', 'time_to_call', 'do_not_work_before', 'work_requested', 'house_affected', 'outbuilding_affected', 'exterior_property_affected', 'destruction_level', 'rent_or_own', 'member_of_assessing_organization', 'work_without_resident', 'older_than_60', 'special_needs', 'house_roof_damage', 'outbuilding_roof_damage', 'tarps_needed', 'help_install_tarp', 'num_trees_down', 'num_wide_trees', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinary_required', 'damaged_fence_length', 'fence_type', 'fence_notes', 'notes', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'other_hazards', 'claim_for_org', 'status', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'status_notes', 'prepared_by']
 
+VA_TORNADOES_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'case_number', 'Days Waiting From %(today)s', 'request_date', 'name', 'work_type', 'dwelling_type', 'address', 'city', 'county', 'state', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'email', 'time_to_call', 'do_not_work_before', 'work_requested', 'house_affected', 'outbuilding_affected', 'exterior_property_affected', 'destruction_level', 'rent_or_own', 'member_of_assessing_organization', 'work_without_resident', 'older_than_60', 'special_needs', 'house_roof_damage', 'outbuilding_roof_damage', 'tarps_needed', 'help_install_tarp', 'num_trees_down', 'num_wide_trees', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinary_required', 'damaged_fence_length', 'fence_type', 'fence_notes', 'notes', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'other_hazards', 'claim_for_org', 'status', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'status_notes', 'prepared_by']
+
 APP_ID = app_identity.get_application_id()
 BUCKET_NAME = '/' + APP_ID
 
@@ -94,6 +96,9 @@ def get_csv_fields_list(event_short_name):
         csv_fields_list = NJ_COASTAL_FLOOD_FIELDS_LIST
     elif event_short_name == "ms_al_tornadoes":
         csv_fields_list = MS_AL_TORNADOES_FIELDS_LIST
+    elif event_short_name == " feb_2016_tornadoes":
+        csv_fields_list = VA_TORNADOES_FIELDS_LIST
+
     else:
         csv_fields_list = DEFAULT_CSV_FIELDS_LIST
 

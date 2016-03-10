@@ -88,6 +88,7 @@ class MigrationHandler(base.RequestHandler):
 	    		organizations.filter("__key__ =", db.Key(self.request.get("key")))
 	    		org = organizations.get()
 	    		org_dict = to_dict(org)
+	    		del org_dict['_password_hash_list']
 	    		org_dict["appengine_key"] = str(org.key())
 	    		incidents = org.incidents
 	    		try:

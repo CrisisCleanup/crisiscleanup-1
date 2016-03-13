@@ -90,15 +90,14 @@ class MigrationHandler(base.RequestHandler):
 	    		org_dict = to_dict(org)
 	    		del org_dict['_password_hash_list']
 	    		org_dict["appengine_key"] = str(org.key())
-	    		incidents = org.incidents
 	    		try:
 	    			incidents = org.incidents
-	    		except:
+		    		a = []
+		    		for i in incidents:
+		    			a.append(str(i.key()))
+		    		org_dict["incidents"] = a
+		    	except:
 	    			logging.error(org.name)
-	    		a = []
-	    		for i in incidents:
-	    			a.append(str(i.key()))
-	    		org_dict["incidents"] = a
 	    		self.response.out.write(json.dumps(org_dict, default = dthandler))
 
 	    	if table == "contact":

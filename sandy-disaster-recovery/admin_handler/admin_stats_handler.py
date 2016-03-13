@@ -65,10 +65,9 @@ class AdminStatsHandler(base.AuthenticatedHandler):
             self.redirect("/")
             return
         
-	q = event_db.Event.all()
 	q2 = audit_db.Audit.all()
 	q2.filter("action =", "login")
-	audits = q2.fetch(2300)
+	audits = q2.fetch(2500)
 	emails = {}
 	audit_ips = {}
 	date_ips = {}
@@ -124,17 +123,6 @@ class AdminStatsHandler(base.AuthenticatedHandler):
 	# 	else:
 	# 		audit_ips[audit.ip] = 1
 
-
-	query = q.fetch(1000)
-	for q in query:
-	  if q.short_name == "sandy":
-	    SANDY_TOTAL_SITES = q.num_sites
-	  if q.short_name == "moore":
-	    MOORE_TOTAL_SITES = q.num_sites
-	  if q.short_name == "derechos":
-	    HATTIESBURG_TOTAL_SITES = q.num_sites
-	  if q.short_name == "gordon-barto-tornado":
-	    GORDON_BARTOW_TOTAL_SITES = q.num_sites
 	
         self.response.out.write(template.render(
         {
@@ -148,10 +136,5 @@ class AdminStatsHandler(base.AuthenticatedHandler):
         	"sorted_date_ips": sorted(date_ips),
         	"date_ips": date_ips,
             "global_admin": global_admin,
-            "SANDY_TOTAL_SITES": SANDY_TOTAL_SITES,
-            "MOORE_TOTAL_SITES": MOORE_TOTAL_SITES,
-            "HATTIESBURG_TOTAL_SITES": HATTIESBURG_TOTAL_SITES,
-            "GORDON_BARTOW_TOTAL_SITES": GORDON_BARTOW_TOTAL_SITES,
-            "TOTAL_SITES": site_db.Site.all().count()
         }))
         return

@@ -61,6 +61,8 @@ VA_TORNADOES_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'case_nu
 
 LOUISVILLE_MS_TORNADO_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'case_number', 'Days Waiting From %(today)s', 'request_date', 'name', 'work_type', 'work_requested', 'address', 'city', 'county', 'state', 'zip_code', 'district', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'email', 'time_to_call', 'house_affected', 'outbuilding_affected', 'exterior_property_affected', 'yard_affected', 'rent_or_own', 'member_of_assessing_organization', 'work_without_resident', 'older_than_60', 'special_needs', 'interior_debris_removal', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'unsalvageable_structure', 'heavy_machinary_required', 'num_trees_down', 'num_wide_trees', 'damaged_fence_length', 'fence_type', 'fence_notes', 'house_roof_damage', 'outbuilding_roof_damage', 'tarps_needed', 'help_install_tarp', 'notes', 'habitable', 'electricity', 'electrical_lines', 'unsafe_roof', 'unrestrained_animals', 'other_hazards', 'claim_for_org', 'status', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'status_notes', 'prepared_by', 'do_not_work_before']
 
+LA_MS_TX_FLOOD_FIELDS_LIST = ['claimed_by', 'reported_by', 'modified_by', 'case_number', 'Days Waiting From %(today)s', 'request_date', 'name', 'work_type', 'address', 'city', 'county', 'state', 'zip_code', 'latitude', 'longitude', 'cross_street', 'phone1', 'phone2', 'time_to_call', 'do_not_work_before', 'work_waiver_signed', 'work_requested', 'house_affected', 'outbuilding_affected', 'exterior_property_affected', 'destruction_level', 'rent_or_own', 'member_of_assessing_organization', 'work_without_resident', 'older_than_60', 'special_needs', 'priority', 'flood_height', 'floors_affected', 'carpet_removal', 'hardwood_floor_removal', 'drywall_removal', 'appliance_removal', 'heavy_item_removal', 'standing_water', 'mold_remediation', 'pump_needed', 'notes', 'nonvegitative_debris_removal', 'vegitative_debris_removal', 'debris_blocking', 'house_roof_damage', 'outbuilding_roof_damage', 'tarps_needed', 'help_install_tarp', 'num_trees_down', 'num_wide_trees', 'trees_blocking', 'uninhabitable', 'electricity', 'heat', 'electrical_lines', 'unsafe_roof', 'other_hazards', 'status', 'assigned_to', 'total_volunteers', 'hours_worked_per_volunteer', 'initials_of_resident_present', 'status_notes', 'prepared_by']
+
 APP_ID = app_identity.get_application_id()
 BUCKET_NAME = '/' + APP_ID
 
@@ -102,6 +104,8 @@ def get_csv_fields_list(event_short_name):
         csv_fields_list = VA_TORNADOES_FIELDS_LIST
     elif event_short_name == "louisville_ms_tornado":
         csv_fields_list = LOUISVILLE_MS_TORNADO_FIELDS_LIST
+    elif event_short_name == "la_ms_floods_mar_2016":
+        csv_fields_list = LA_MS_TX_FLOOD_FIELDS_LIST
 
     else:
         csv_fields_list = DEFAULT_CSV_FIELDS_LIST

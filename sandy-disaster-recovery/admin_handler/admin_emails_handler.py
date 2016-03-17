@@ -23,8 +23,8 @@ import base
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
 
-class AdminEmailsHandler(base.AuthenticatedHandler):
-    def AuthenticatedGet(self, org, event):
+class AdminEmailsHandler(base.RequestHandler):
+    def get(self):
         q = audit_db.Audit.all()
         q.filter("action =", "login")
         audits = q.fetch(2500)

@@ -40,9 +40,9 @@ class AdminEmailsHandler(base.AuthenticatedHandler):
 	        	else:
 	        		contacts[audit.email.lower()] = []
 
-	        	uniq_orgs = contacts[audit.email]
+	        	uniq_orgs = contacts[audit.email.lower()]
 	        	if str(audit.initiated_by.key()) not in uniq_orgs:
-	        		contacts[audit.email].append(str(audit.initiated_by.key()))
+	        		contacts[audit.email.lower()].append(str(audit.initiated_by.key()))
     	self.response.write(json.dumps(contacts))
 
 

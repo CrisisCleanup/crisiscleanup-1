@@ -14,8 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+import json
+import datetime
+
 import audit_db
 import base
+dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
+
 
 class AdminEmailsHandler(base.AuthenticatedHandler):
     def AuthenticatedGet(self, org, event):
@@ -31,10 +37,11 @@ class AdminEmailsHandler(base.AuthenticatedHandler):
         	else:
         		contacts[audit.email] = []
 
-        	
-        	contacts[audit.email].append(audit.initiated_by.key())
-        	contacts[audit.email] = set(contacts[audit.email])
-    	self.response.write(contacts)
+        	uniq_orgs = contacts[audit.email]
+        	if str(audit.initiated_by.key()) not in uniq_orgs:
+        		contacts[audit.email].append(str(audit.initiated_by.key()))
+    	self.response.write(json.dumps(contacts))
+
 
 
 

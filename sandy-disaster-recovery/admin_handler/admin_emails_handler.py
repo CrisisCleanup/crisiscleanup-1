@@ -32,10 +32,10 @@ class AdminEmailsHandler(base.AuthenticatedHandler):
 
         contacts = {}
         for audit in audits:
-        	if audit.email in contacts:
+        	if audit.email.lower() in contacts:
         		pass
         	else:
-        		contacts[audit.email] = []
+        		contacts[audit.email.lower()] = []
 
         	uniq_orgs = contacts[audit.email]
         	if str(audit.initiated_by.key()) not in uniq_orgs:

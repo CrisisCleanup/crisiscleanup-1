@@ -17,7 +17,6 @@
 
 import json
 import datetime
-import logging
 
 import audit_db
 import base
@@ -32,17 +31,17 @@ class AdminEmailsHandler(base.AuthenticatedHandler):
         contacts = {}
 
         contacts = {}
-        try: 
-	        for audit in audits:
-	        	if audit.email.lower() in contacts:
-	        		pass
-	        	else:
-	        		contacts[audit.email.lower()] = []
+        for audit in audits:
+        	try:
+        		audit.email.lower()
+        	except:
+        		break
+        	if audit.email.lower() in contacts:
+        		pass
+        	else:
+        		contacts[audit.email.lower()] = []
 
-	        	uniq_orgs = contacts[audit.email]
-	        	if str(audit.initiated_by.key()) not in uniq_orgs:
-	        		contacts[audit.email].append(str(audit.initiated_by.key()))
-    	    	self.response.write(json.dumps(contacts))
-	    except:
-	    	logging.info("email")
-	    	logging.info(audit.email)
+        	uniq_orgs = contacts[audit.email]
+        	if str(audit.initiated_by.key()) not in uniq_orgs:
+        		contacts[audit.email].append(str(audit.initiated_by.key()))
+    	self.response.write(json.dumps(contacts))

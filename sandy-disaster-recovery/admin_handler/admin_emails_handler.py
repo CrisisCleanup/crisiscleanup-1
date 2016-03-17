@@ -32,6 +32,8 @@ class AdminEmailsHandler(base.AuthenticatedHandler):
 
         contacts = {}
         for audit in audits:
+        	if audit.email == "" or audit.email == "null":
+        		break
         	if audit.email in contacts:
         		pass
         	else:

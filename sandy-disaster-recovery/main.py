@@ -103,6 +103,8 @@ from admin_handler import admin_import_contacts_handler
 from admin_handler import admin_create_incident_form_handler
 from admin_handler import admin_global_settings_handler
 from admin_handler import admin_define_permissions
+from admin_handler import admin_emails_handler
+
 
 import form_ajax_handler
 import update_csv_handler
@@ -208,7 +210,8 @@ app = webapp2.WSGIApplication([
     Route(r'/admin-edit-pages', admin_edit_pages_handler.AdminEditPagesHandler, 'admin_edit_pages_handler'),                                    # cms
     Route(r'/admin-edit-pages/download/defaults', admin_edit_pages_handler.AdminDownloadPageBlocks, 'admin_edit_pages_handler'),                # cms
     Route(r'/admin-create-incident-csv', admin_create_incident_csv_handler.AdminCreateIncidentCSVHandler, 'admin_edit_pages_handler'),          # cms
-    Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'),                                                       # accounted for
+    Route(r'/admin-stats', admin_stats_handler.AdminStatsHandler, 'admin_stats_handler'), 
+    Route(r'/admin-emails-handler', admin_emails_handler.AdminEmailsHandler, 'admin_emails_handler'),                                                       # accounted for                                                      # accounted for
     Route(r'/admin-define-permissions', admin_define_permissions.AdminDefinePermissions, 'admin_define_permissions'),                           # not needed
     Route(r'/import-co-flood-handler', import_co_handler.ImportCOHandler, 'import-co-flood'),                                                   # not needed
     Route(r'/organization-info', organization_info_handler.OrganizationInfoHandler, 'organization_info_handler'),                               # accounted for

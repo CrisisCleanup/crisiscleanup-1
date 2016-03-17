@@ -41,52 +41,13 @@ class="activePage"
 {% block main_content %}
 {{ authentication_main_content_pre_form_page_block|safe }}
 <h3><font color="red">{{ error_message }}</font></h3>
-<form method="POST" action="{{page}}">
-<input type="hidden" value="{{destination}}" name="destination" />
 <table>
   <tr>
-    <td class="question">Choose Incident:</td>
-    <td class="answer">{{ form.event(autofocus=True) }}</td>
-  </tr>
-  <tr class="loading" style="display: none">
-    <td></td>
-    <td><i>Loading...</i></td>
-  </tr>
-  <tr class="toggle organization-toggle" style="display: none">
-    <td class=question>Organization:</td>
-    <td class="answer">
-      <select id="organization" name="name">
-      </select>
-    </td>
-  </tr>
-  <tr class="existing-organization-toggle" style="display: none">
-    <td class="question">Existing Organization:</td>
-    <td class="answer">
-      <select id="existing-organization" name="existing-organization">
-      </select>
-    </td>
-  </tr>
-
-  <tr class="toggle" style="display: none">
-    <td class=question>Passcode:</td>
-    <td class="answer">{{ form.password() }}</td>
-  </tr>
-  <tr class="toggle" style="display: none">
-    <td class="question">Your Email:</td>
-    <td class="answer">
-        <input type="text" name="email">
-    </td>
-  </tr>
-  <tr class="toggle" style="display: none">
-    <td></td>
+    <td>&nbsp;</td>
     <td>
-       <b style="color: red">We are upgrading Crisis Cleanup <a href="http://bit.ly/1RMSnaq" target="_blank">March 17, 7am-3pm Eastern (yay)</a>!<br> Your email address will make the upgrade seamless for you.</b>
-    </td>
-  </tr>
-  <tr class="toggle" style="display: none">
-    <td></td>
-    <td>
-      <input type="submit" value="Login" />
+       <b style="color: red">Crisis Cleanup is currently down for maintenance as we launch the New Crisis Cleanup. When it emerges from its cocoon, it will have turned into a magnificent butterfly with all kinds of cool new features.<br />
+       If you are a current user, you'll receive an email confirmation.<br />
+       Crisis Cleanup will be down March 17, 2016 from about 6am-3pm Eastern Time. If you are seeing this message after that time, please contact help@[thiswebsite.org], and we'll give you a hand.</b>
     </td>
   </tr>
 </table>

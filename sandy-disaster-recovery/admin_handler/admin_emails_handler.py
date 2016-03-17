@@ -33,17 +33,18 @@ class AdminEmailsHandler(base.AuthenticatedHandler):
         contacts = {}
         for audit in audits:
         	if audit.email == "" or audit.email == "null" or audit.email == None:
-        		break
-        	if audit.email in contacts:
         		pass
         	else:
-        		contacts[audit.email] = []
+	        	if audit.email in contacts:
+	        		pass
+	        	else:
+	        		contacts[audit.email] = []
 
-        	uniq_orgs = contacts[audit.email]
-        	if str(audit.initiated_by.key()) not in uniq_orgs:
-        		contacts[audit.email].append(str(audit.initiated_by.key()))
+	        	uniq_orgs = contacts[audit.email]
+	        	if str(audit.initiated_by.key()) not in uniq_orgs:
+	        		contacts[audit.email].append(str(audit.initiated_by.key()))
     	self.response.write(json.dumps(contacts))
-
+    	
 
 
 

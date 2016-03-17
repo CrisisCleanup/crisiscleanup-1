@@ -42,7 +42,12 @@ class AdminEmailsHandler(base.RequestHandler):
 
 	        	uniq_orgs = contacts[audit.email.lower()]
 	        	if str(audit.initiated_by.key()) not in uniq_orgs:
-	        		contacts[audit.email.lower()].append(str(audit.initiated_by.key()))
+	        		if audit.email.lower() == "missourifloodresponse@gmail.com" and str(audit.initiated_by.key()) == "ahlzfnNhbmR5LWRpc2FzdGVyLXJlY292ZXJ5chkLEgxPcmdhbml6YXRpb24YgICAyOWViAkM":
+	        			pass
+	        		elif "aaron.l" in audit.email.lower() and str(audit.initiated_by.key()) == "ahlzfnNhbmR5LWRpc2FzdGVyLXJlY292ZXJ5chkLEgxPcmdhbml6YXRpb24YgICAuJPNhQkM":
+	        			pass
+	        		else:
+		        		contacts[audit.email.lower()].append(str(audit.initiated_by.key()))
     	self.response.write(json.dumps(contacts))
 
 
